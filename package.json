@@ -1,0 +1,47 @@
+{
+  "name": "mobile-contact-bar",
+  "version": "2.0.2",
+  "homepage": "http://mobilecontactbar.com",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "clean-css-cli": "^4.1.11",
+    "eslint": "^4.19.1",
+    "npm-run-all": "^4.1.3",
+    "onchange": "^4.0.0",
+    "run-for-every-file": "^1.1.0",
+    "shx": "^0.2.2",
+    "uglify-js": "^3.3.27",
+    "watch": "^1.0.2"
+  },
+  "scripts": {
+    "watch": "run-p watch:**",
+    "test": "run-p lint:*",
+    "build": "run-p build:*",
+    "build:js": "run-s clean:js uglify:js concat:js",
+    "build:css": "run-s minify:css",
+    "watch:css:admin": "onchange \"./assets/css/admin/*.css\" -- run-s minify:css:admin",
+    "watch:css:public": "onchange \"./assets/css/public/*.css\" -- run-s minify:css:public",
+    "watch:js:admin": "onchange \"./assets/js/admin/!(*.min).js\" -- run-s clean:js:admin uglify:js:admin concat:js:admin",
+    "watch:js:public": "onchange \"./assets/js/public/!(*.min).js\" -- run-s clean:js:public uglify:js:public concat:js:public",
+    "watch:js:upgrade": "onchange \"./assets/js/upgrade/!(*.min).js\" -- run-s clean:js:upgrade uglify:js:upgrade concat:js:upgrade",
+    "minify:css": "run-p minify:css:*",
+    "minify:css:admin": "cleancss --skip-rebase -o \"./assets/css/admin.min.css\" \"./assets/css/admin/*.css\"",
+    "minify:css:public": "cleancss --skip-rebase -o \"./assets/css/public.min.css\" \"./assets/css/public/*.css\"",
+    "uglify:js": "run-p uglify:js:*",
+    "uglify:js:admin": "run-for-every-file --src \"./assets/js/admin/\" --dest \"./assets/js/admin/\" --file \"**/*.js\" --not-file \"**/*.min.js\" --not-file \"**/*/\" --run \"uglifyjs {{src-file}} -o {{dest}}{{file-name}}.min.js --compress loops=false,typeofs=false --comments /^/*!/\"",
+    "uglify:js:public": "run-for-every-file --src \"./assets/js/public/\" --dest \"./assets/js/public/\" --file \"**/*.js\" --not-file \"**/*.min.js\" --not-file \"**/*/\" --run \"uglifyjs {{src-file}} -o {{dest}}{{file-name}}.min.js --compress loops=false,typeofs=false --comments /^/*!/\"",
+    "uglify:js:upgrade": "run-for-every-file --src \"./assets/js/upgrade/\" --dest \"./assets/js/upgrade/\" --file \"**/*.js\" --not-file \"**/*.min.js\" --not-file \"**/*/\" --run \"uglifyjs {{src-file}} -o {{dest}}{{file-name}}.min.js --compress loops=false,typeofs=false --comments /^/*!/\"",
+    "clean:js": "shx rm -f ./assets/js/*.min.js",
+    "clean:js:admin": "shx rm -f \"./assets/js/admin.min.js\"",
+    "clean:js:public": "shx rm -f \"./assets/js/public.min.js\"",
+    "clean:js:upgrade": "shx rm -f \"./assets/js/upgrade.min.js\"",
+    "concat:js": "run-p concat:js:*",
+    "concat:js:admin": "run-for-every-file --src \"./assets/js/admin/\" --dest \"assets/js/\" --file=\"**/*.min.js\" --run \"shx cat {{src-file}} >> {{dest}}admin.min.js\"",
+    "concat:js:public": "run-for-every-file --src \"./assets/js/public/\" --dest \"assets/js/\" --file=\"**/*.min.js\" --run \"shx cat {{src-file}} >> {{dest}}public.min.js\"",
+    "concat:js:upgrade": "run-for-every-file --src \"./assets/js/upgrade/\" --dest \"assets/js/\" --file=\"**/*.min.js\" --run \"shx cat {{src-file}} >> {{dest}}upgrade.min.js\"",
+    "lint:js": "eslint \"./assets/js/**/!(*.min).js\""
+  },
+  "dependencies": {
+    "npm": "^6.1.0"
+  }
+}
