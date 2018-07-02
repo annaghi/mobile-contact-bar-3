@@ -34,6 +34,15 @@ final class Mobile_Contact_Bar_Option {
 
 
 	/**
+	 * Contact types.
+	 *
+	 * @var array
+	 */
+	public static $contact_types = null;
+
+
+
+	/**
 	 * Hooks WordPress's admin and AJAX actions and filters.
 	 *
 	 * @since 0.0.1
@@ -58,6 +67,9 @@ final class Mobile_Contact_Bar_Option {
 	public static function init() {
 		self::$option   = get_option( MOBILE_CONTACT_BAR__NAME );
 		self::$settings = Mobile_Contact_Bar_Settings::settings();
+		foreach ( glob( plugin_dir_path( MOBILE_CONTACT_BAR__PATH ) . 'includes/contacts/class-*.php' ) as $path ) {
+			self::$contact_types[] = substr( basename( $path, '.php' ), 6 );
+		}
 	}
 
 
@@ -240,23 +252,24 @@ final class Mobile_Contact_Bar_Option {
 	 * @param array $args section_id, setting_id, setting.
 	 */
 	public static function callback_output_setting( $args ) {
+		$id   = 'mcb-' . $args['section_id'] . '-' . $args['setting_id'];
+		$name = MOBILE_CONTACT_BAR__NAME . '[settings][' . $args['section_id'] . '][' . $args['setting_id'] . ']';
+
 		switch ( $args['setting']['type'] ) {
 			case 'color-picker':
 				printf(
-					'<input type="text" id="mcb-%2$s-%3$s" name="%1$s[settings][%2$s][%3$s]" class="cs-wp-color-picker" value="%4$s">',
-					esc_attr( MOBILE_CONTACT_BAR__NAME ),
-					esc_attr( $args['section_id'] ),
-					esc_attr( $args['setting_id'] ),
+					'<input type="text" id="%s" name="%s" class="cs-wp-color-picker" value="%s">',
+					esc_attr( $id ),
+					esc_attr( $name ),
 					esc_attr( self::$option['settings'][ $args['section_id'] ][ $args['setting_id'] ] )
 				);
 				break;
 
 			case 'select':
 				printf(
-					'<select id="mcb-%2$s-%3$s" name="%1$s[settings][%2$s][%3$s]" class="mcb-regular-text">',
-					esc_attr( MOBILE_CONTACT_BAR__NAME ),
-					esc_attr( $args['section_id'] ),
-					esc_attr( $args['setting_id'] )
+					'<select id="%s" name="%s" class="mcb-regular-text">',
+					esc_attr( $id ),
+					esc_attr( $name )
 				);
 				foreach ( $args['setting']['options'] as $value => $label ) {
 					printf(
@@ -271,18 +284,16 @@ final class Mobile_Contact_Bar_Option {
 
 			case 'radio':
 				printf(
-					'<fieldset class="mcb-radio-label-wrap" id="mcb-%s-%s">',
-					esc_attr( $args['section_id'] ),
-					esc_attr( $args['setting_id'] )
+					'<fieldset class="mcb-radio-label-wrap" id="%s">',
+					esc_attr( $id )
 				);
 				foreach ( $args['setting']['options'] as $value => $label ) {
 					printf(
-						'<label class="mcb-radio-label" for="mcb-%2$s-%3$s--%4$s">
-                            <input type="radio" id="mcb-%2$s-%3$s--%4$s" name="%1$s[settings][%2$s][%3$s]" value="%4$s" %5$s>%6$s
+						'<label class="mcb-radio-label" for="%1$s--%3$s">
+                            <input type="radio" id="%1$s--%3$s" name="%2$s" value="%3$s" %4$s>%5$s
                         </label>',
-						esc_attr( MOBILE_CONTACT_BAR__NAME ),
-						esc_attr( $args['section_id'] ),
-						esc_attr( $args['setting_id'] ),
+						esc_attr( $id ),
+						esc_attr( $name ),
 						esc_attr( $value ),
 						checked( $value, self::$option['settings'][ $args['section_id'] ][ $args['setting_id'] ], false ),
 						esc_html( $label )
@@ -293,12 +304,11 @@ final class Mobile_Contact_Bar_Option {
 
 			case 'checkbox':
 				printf(
-					'<label for="mcb-%2$s-%3$s">
-                        <input type="checkbox" id="mcb-%2$s-%3$s" name="%1$s[settings][%2$s][%3$s]" %4$s value="1">%5$s
+					'<label for="%1$s">
+                        <input type="checkbox" id="%1$s" name="%2$s" %3$s value="1">%4$s
                     </label>',
-					esc_attr( MOBILE_CONTACT_BAR__NAME ),
-					esc_attr( $args['section_id'] ),
-					esc_attr( $args['setting_id'] ),
+					esc_attr( $id ),
+					esc_attr( $name ),
 					checked( self::$option['settings'][ $args['section_id'] ][ $args['setting_id'] ], 1, false ),
 					esc_html( $args['setting']['label'] )
 				);
@@ -306,21 +316,19 @@ final class Mobile_Contact_Bar_Option {
 
 			case 'text':
 				printf(
-					'<input type="text" id="mcb-%2$s-%3$s" name="%1$s[settings][%2$s][%3$s]" class="mcb-regular-text" value="%4$s">',
-					esc_attr( MOBILE_CONTACT_BAR__NAME ),
-					esc_attr( $args['section_id'] ),
-					esc_attr( $args['setting_id'] ),
+					'<input type="text" id="%s" name="%s" class="mcb-regular-text" value="%s">',
+					esc_attr( $id ),
+					esc_attr( $name ),
 					esc_attr( self::$option['settings'][ $args['section_id'] ][ $args['setting_id'] ] )
 				);
 				break;
 
 			case 'number':
 				printf(
-					'<input type="number" id="mcb-%2$s-%3$s" name="%1$s[settings][%2$s][%3$s]" class="mcb-regular-text" value="%4$d">
-                    <span>%5$s</span>',
-					esc_attr( MOBILE_CONTACT_BAR__NAME ),
-					esc_attr( $args['section_id'] ),
-					esc_attr( $args['setting_id'] ),
+					'<input type="number" id="%s" name="%s" class="mcb-regular-text" value="%d">
+                    <span>%s</span>',
+					esc_attr( $id ),
+					esc_attr( $name ),
 					esc_attr( self::$option['settings'][ $args['section_id'] ][ $args['setting_id'] ] ),
 					esc_html( $args['setting']['postfix'] )
 				);
@@ -328,11 +336,10 @@ final class Mobile_Contact_Bar_Option {
 
 			case 'slider':
 				printf(
-					'<input type="range" id="mcb-%2$s-%3$s" name="%1$s[settings][%2$s][%3$s]" class="mcb-slider-input" value="%4$s" min="%5$s" max="%6$s" step="%7$s">
-                    <span class="mcb-slider-value">%4$s</span>',
-					esc_attr( MOBILE_CONTACT_BAR__NAME ),
-					esc_attr( $args['section_id'] ),
-					esc_attr( $args['setting_id'] ),
+					'<input type="range" id="%1$s" name="%2$s" class="mcb-slider-input" value="%3$s" min="%4$s" max="%5$s" step="%6$s">
+                    <span class="mcb-slider-value">%3$s</span>',
+					esc_attr( $id ),
+					esc_attr( $name ),
 					esc_attr( self::$option['settings'][ $args['section_id'] ][ $args['setting_id'] ] ),
 					esc_attr( $args['setting']['min'] ),
 					esc_attr( $args['setting']['max'] ),
@@ -427,8 +434,8 @@ final class Mobile_Contact_Bar_Option {
 	 * @param  array $args contact_id, contact.
 	 */
 	public static function callback_render_contact_td( $args ) {
-		$prefix        = MOBILE_CONTACT_BAR__NAME . '[contacts][' . $args['contact_id'] . ']';
-		$sanitized_uri = Mobile_Contact_Bar_Validator::escape_contact_uri( $args['contact']['uri'] );
+		$prefix = MOBILE_CONTACT_BAR__NAME . '[contacts][' . $args['contact_id'] . ']';
+		$uri    = Mobile_Contact_Bar_Validator::escape_contact_uri_sms_skype( $args['contact']['uri'] );
 
 		// Hidden 'placeholder'.
 		printf(
@@ -446,14 +453,14 @@ final class Mobile_Contact_Bar_Option {
 				'<input name="%1$s[uri]" value="%2$s" type="hidden">
 				<li class="mcb-contact-uri">%2$s</li>',
 				esc_attr( $prefix ),
-				esc_url( $sanitized_uri )
+				esc_url( $uri, Mobile_Contact_Bar_Validator::$protocols )
 			);
 		} else {
 			// Input 'URI' and displayed 'URI'.
 			printf(
 				'<li class="mcb-contact-uri"><input name="%s[uri]" value="%s" placeholder="%s" type="text"></li>',
 				esc_attr( $prefix ),
-				esc_url( $sanitized_uri ),
+				esc_url( $uri, Mobile_Contact_Bar_Validator::$protocols ),
 				esc_attr( $args['contact']['placeholder'] )
 			);
 		}
@@ -478,7 +485,7 @@ final class Mobile_Contact_Bar_Option {
 	 * @param  string $contact_type  Contact type.
 	 * @return string                HTML TH
 	 */
-	public static function output_parameter_th( $parameter_id = '', $parameter_key = '', $contact_id = '', $contact_type = 'Custom' ) {
+	private static function output_parameter_th( $parameter_id = '', $parameter_key = '', $contact_id = '', $contact_type = 'Custom' ) {
 		$prefix = MOBILE_CONTACT_BAR__NAME . '[contacts][' . $contact_id . '][parameters][' . $parameter_id . ']';
 		$out    = '';
 
@@ -648,11 +655,6 @@ final class Mobile_Contact_Bar_Option {
 		$contacts           = $input['contacts'];
 		$sanitized_contacts = array();
 
-		$valid_contact_types = array();
-		foreach ( glob( plugin_dir_path( MOBILE_CONTACT_BAR__PATH ) . 'includes/contacts/class-*.php' ) as $path ) {
-			$valid_contact_types[] = substr( basename( $path, '.php' ), 6 );
-		}
-
 		foreach ( $contacts as $contact_id => &$contact ) {
 			// Remove contact if invalid 'icon', but leave empty icons.
 			if ( $contact['icon'] && ! Mobile_Contact_Bar_Page::in_icons( $contact['icon'] ) ) {
@@ -660,7 +662,7 @@ final class Mobile_Contact_Bar_Option {
 			}
 
 			// Remove contact if invalid 'type'.
-			if ( ! in_array( strtolower( $contact['type'] ), $valid_contact_types, true ) ) {
+			if ( ! in_array( strtolower( $contact['type'] ), self::$contact_types, true ) ) {
 				unset( $contacts[ $contact_id ] );
 			}
 
@@ -695,7 +697,7 @@ final class Mobile_Contact_Bar_Option {
 			$sanitized_contact['placeholder'] = $contact['placeholder'];
 
 			// Sanitize 'uri'.
-			$sanitized_contact['uri'] = Mobile_Contact_Bar_Validator::sanitize_contact_uri( $contact['uri'] );
+			$sanitized_contact['uri'] = esc_url_raw( Mobile_Contact_Bar_Validator::sanitize_contact_uri_skype_sms( $contact['uri'] ), Mobile_Contact_Bar_Validator::$protocols );
 
 			// sanitize 'parameters'.
 			if ( isset( $contact['parameters'] ) ) {
@@ -733,10 +735,9 @@ final class Mobile_Contact_Bar_Option {
 	 * @since 0.0.1
 	 *
 	 * @param  array $new_value The new value.
-	 * @param  array $old_value The old value.
 	 * @return array            The updated option
 	 */
-	public static function pre_update_option( $new_value, $old_value = array() ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+	public static function pre_update_option( $new_value ) {
 		$bar    = $new_value['settings']['bar'];
 		$icons  = $new_value['settings']['icons'];
 		$toggle = $new_value['settings']['toggle'];
@@ -759,6 +760,7 @@ final class Mobile_Contact_Bar_Option {
 		$styles .= 'font-size:1rem;';
 		$styles .= 'opacity:' . $bar['opacity'] . ';';
 		$styles .= 'position:relative;';
+		$styles .= 'white-space:nowrap;';
 		$styles .= 'width:' . $bar['width'] . '%;';
 		$styles .= 'z-index:9998;';
 		$styles .= '}';
@@ -1170,60 +1172,29 @@ final class Mobile_Contact_Bar_Option {
 	 * @uses $_POST
 	 */
 	public static function ajax_add_contact() {
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], MOBILE_CONTACT_BAR__NAME ) ) {
-			exit;
-		}
-		if ( ! isset( $_POST['contact_type'] ) || ! $_POST['contact_type'] ) {
-			exit;
-		}
+		if ( isset( $_POST['nonce'], $_POST['contact_type'] ) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ), MOBILE_CONTACT_BAR__NAME ) ) {
 
-		$class   = 'Mobile_Contact_Bar_Contact_' . $_POST['contact_type'];
-		$contact = $class::admin_get_contact();
+			$type = sanitize_text_field( wp_unslash( $_POST['contact_type'] ) );
+			if ( in_array( strtolower( $type ), self::$contact_types, true ) ) {
 
-		if ( $contact ) {
-			$data = null;
-			$out  = '';
+				$class   = 'Mobile_Contact_Bar_Contact_' . $type;
+				$contact = $class::admin_get_contact();
 
-			$out .= '<tr class="mcb-contact">';
-			$out .= '<th scope="row">';
-			$out .= self::output_contact_th( '', $contact );
-			$out .= '</th>';
+				if ( $contact ) {
+					$data = null;
+					$out  = '';
 
-			$out .= '<td>';
-			ob_start();
-			self::callback_render_contact_td(
-				array(
-					'contact_id' => '',
-					'contact'    => $contact,
-				)
-			);
-			$out .= ob_get_contents();
-			ob_end_clean();
-			$out .= '</td>';
-
-			$out .= '</tr>';
-
-			$data['contact'] = $out;
-
-			if ( isset( $contact['parameters'] ) && $contact['parameters'] ) {
-				$parameters = array();
-
-				foreach ( $contact['parameters'] as $parameter_id => $parameter ) {
-					$out = '';
-
-					$out .= '<tr class="mcb-parameter hidden">';
+					$out .= '<tr class="mcb-contact">';
 					$out .= '<th scope="row">';
-					$out .= self::output_parameter_th( $parameter_id, $parameter['key'], '', $contact['type'] );
+					$out .= self::output_contact_th( '', $contact );
 					$out .= '</th>';
 
 					$out .= '<td>';
 					ob_start();
-					self::callback_render_parameter_td(
+					self::callback_render_contact_td(
 						array(
-							'parameter_id' => $parameter_id,
-							'parameter'    => $parameter,
-							'contact_id'   => '',
-							'contact_type' => $contact['type'],
+							'contact_id' => '',
+							'contact'    => $contact,
 						)
 					);
 					$out .= ob_get_contents();
@@ -1232,13 +1203,44 @@ final class Mobile_Contact_Bar_Option {
 
 					$out .= '</tr>';
 
-					$parameters[] = $out;
-				}
-				$data['parameters'] = $parameters;
-			}
+					$data['contact'] = $out;
 
-			echo wp_json_encode( $data );
-			exit;
+					if ( isset( $contact['parameters'] ) && $contact['parameters'] ) {
+						$parameters = array();
+
+						foreach ( $contact['parameters'] as $parameter_id => $parameter ) {
+							$out = '';
+
+							$out .= '<tr class="mcb-parameter hidden">';
+							$out .= '<th scope="row">';
+							$out .= self::output_parameter_th( $parameter_id, $parameter['key'], '', $contact['type'] );
+							$out .= '</th>';
+
+							$out .= '<td>';
+							ob_start();
+							self::callback_render_parameter_td(
+								array(
+									'parameter_id' => $parameter_id,
+									'parameter'    => $parameter,
+									'contact_id'   => '',
+									'contact_type' => $contact['type'],
+								)
+							);
+							$out .= ob_get_contents();
+							ob_end_clean();
+							$out .= '</td>';
+
+							$out .= '</tr>';
+
+							$parameters[] = $out;
+						}
+						$data['parameters'] = $parameters;
+					}
+
+					echo wp_json_encode( $data );
+					exit;
+				}
+			}
 		}
 		exit;
 	}

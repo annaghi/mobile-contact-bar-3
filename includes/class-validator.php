@@ -12,15 +12,27 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Mobile_Contact_Bar_Validator {
 
+
 	/**
-	 * Sanitizes the contact URI.
+	 * Supported protocols.
+	 *
+	 * @var array
+	 */
+	public static $protocols = array( 'http', 'https', 'mailto', 'skype', 'sms', 'tel' );
+
+
+
+	/**
+	 * Checks and cleans the contact with 'skype' or 'sms' protocols for database.
+	 *
+	 * @see https://codex.wordpress.org/Function_Reference/esc_url_raw
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param  string $uri Contact URI (URL, phone number, email address, etc.).
-	 * @return string      Sanitized URI
+	 * @param  string $uri Contact URI.
+	 * @return string      Escaped URI if it has 'skype' or 'sms' protocols
 	 */
-	public static function sanitize_contact_uri( $uri ) {
+	public static function sanitize_contact_uri_skype_sms( $uri ) {
 		if ( '' === $uri || '#' === $uri ) {
 			return $uri;
 		}
@@ -30,7 +42,6 @@ final class Mobile_Contact_Bar_Validator {
 
 		if ( isset( $parsed_uri['scheme'] ) && ( isset( $parsed_uri['host'] ) || isset( $parsed_uri['path'] ) ) ) {
 			switch ( $parsed_uri['scheme'] ) {
-				case 'tel':
 				case 'sms':
 					$path    = self::sanitize_phone_number( $parsed_uri['path'] );
 					$new_uri = ( '' !== $path ) ? $parsed_uri['scheme'] . ':+' . $path : '';
@@ -42,22 +53,8 @@ final class Mobile_Contact_Bar_Validator {
 					$new_uri = ( '' !== $path ) ? $parsed_uri['scheme'] . ':' . $path . '?' . $action : '';
 					break;
 
-				case 'mailto':
-					$path    = sanitize_email( $parsed_uri['path'] );
-					$new_uri = ( is_email( $path ) ) ? $parsed_uri['scheme'] . ':' . $path : '';
-					break;
-
-				case 'http':
-				case 'https':
-					if ( isset( $parsed_uri['path'] ) ) {
-						$new_uri = untrailingslashit( esc_url_raw( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] . $parsed_uri['path'] ) );
-					} else {
-						$new_uri = untrailingslashit( esc_url_raw( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] ) );
-					}
-					break;
-
 				default:
-					$new_uri = '';
+					$new_uri = $uri;
 					break;
 			}
 		}
@@ -67,14 +64,16 @@ final class Mobile_Contact_Bar_Validator {
 
 
 	/**
-	 * Escapes the contact URI.
+	 * Checks and cleans the contact with 'skype' or 'sms' protocols for HTML.
+	 *
+	 * @see https://codex.wordpress.org/Function_Reference/esc_url
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param  string $uri Contact URI (URL, phone number, email address, etc.).
-	 * @return string      Escaped URI
+	 * @param  string $uri Contact URI.
+	 * @return string      Escaped URI if it has 'skype' or 'sms' protocols
 	 */
-	public static function escape_contact_uri( $uri ) {
+	public static function escape_contact_uri_sms_skype( $uri ) {
 		if ( '' === $uri || '#' === $uri ) {
 			return $uri;
 		}
@@ -84,7 +83,6 @@ final class Mobile_Contact_Bar_Validator {
 
 		if ( isset( $parsed_uri['scheme'] ) && ( isset( $parsed_uri['host'] ) || isset( $parsed_uri['path'] ) ) ) {
 			switch ( $parsed_uri['scheme'] ) {
-				case 'tel':
 				case 'sms':
 					$path    = self::sanitize_phone_number( $parsed_uri['path'] );
 					$new_uri = ( '' !== $path ) ? $parsed_uri['scheme'] . ':+' . $path : '';
@@ -96,22 +94,8 @@ final class Mobile_Contact_Bar_Validator {
 					$new_uri = ( '' !== $path ) ? $parsed_uri['scheme'] . ':' . $path . '?' . $action : '';
 					break;
 
-				case 'mailto':
-					$path    = sanitize_email( $parsed_uri['path'] );
-					$new_uri = ( is_email( $path ) ) ? $parsed_uri['scheme'] . ':' . $path : '';
-					break;
-
-				case 'http':
-				case 'https':
-					if ( isset( $parsed_uri['path'] ) ) {
-						$new_uri = untrailingslashit( esc_url( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] . $parsed_uri['path'] ) );
-					} else {
-						$new_uri = untrailingslashit( esc_url( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] ) );
-					}
-					break;
-
 				default:
-					$new_uri = '';
+					$new_uri = $uri;
 					break;
 			}
 		}

@@ -112,91 +112,83 @@ final class Mobile_Contact_Bar_Renderer {
 	 * @param array $settings Associative array of settings.
 	 */
 	public static function render_html( $contacts, $settings ) {
-		if ( 1 === did_action( 'mobile_contact_bar_public_render_html' ) ) {
-			$html = '';
+		if ( 1 === did_action( 'mobile_contact_bar_public_render_html' ) ) : ?>
 
-			$paths = array(
-				'top_rounded'    => '<path d="M 550 0 L 496.9 137.2 C 490.4 156.8 474.1 170 451.4 170 H 98.6 C 77.9 170 59.6 156.8 53.1 137.2 L 0 0 z">',
-				'top_sharp'      => '<path d="M 550 0 L 494.206 170 H 65.794 L 0 0 z">',
-				'bottom_rounded' => '<path d="M 550 170 L 496.9 32.8 C 490.4 13.2 474.1 0 451.4 0 H 98.6 C 77.9 0 59.6 13.2 53.1 32.8 L 0 170 z">',
-				'bottom_sharp'   => '<path d="M 550 170 L 494.206 0 H 65.794 L 0 170 z">',
-			);
+			<div id="mobile-contact-bar">
 
-			$html .= '<div id="mobile-contact-bar">';
+			<?php if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] ) : ?>
+				<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox">
 
-			if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] ) {
-				$html .= '<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox">';
+				<label for="mobile-contact-bar-toggle-checkbox" id="mobile-contact-bar-toggle">
+				<?php if ( $settings['toggle']['label'] ) : ?>
+					<span><?php echo esc_attr( $settings['toggle']['label'] ); ?></span>
+				<?php endif; ?>
 
-				$html .= '<label for="mobile-contact-bar-toggle-checkbox" id="mobile-contact-bar-toggle">';
-				$html .= ( $settings['toggle']['label'] ) ? '<span>' . esc_attr( $settings['toggle']['label'] ) . '</span>' : '';
+					<svg viewBox="0 0 550 170" width="110" height="34">
 
-				$html .= '<svg viewBox="0 0 550 170" width="110" height="34">';
-				if ( 'bottom' === $settings['bar']['vertical_position'] ) {
-					if ( 'rounded' === $settings['toggle']['shape'] ) {
-						$html .= $paths['bottom_rounded'];
-					} else {
-						$html .= $paths['bottom_sharp'];
+					<?php if ( 'bottom' === $settings['bar']['vertical_position'] && 'rounded' === $settings['toggle']['shape'] ) : ?>
+						<path d="M 550 170 L 496.9 32.8 C 490.4 13.2 474.1 0 451.4 0 H 98.6 C 77.9 0 59.6 13.2 53.1 32.8 L 0 170 z">
+					<?php elseif ( 'bottom' === $settings['bar']['vertical_position'] && 'sharp' === $settings['toggle']['shape'] ) : ?>
+						<path d="M 550 170 L 494.206 0 H 65.794 L 0 170 z">
+					<?php elseif ( 'top' === $settings['bar']['vertical_position'] && 'rounded' === $settings['toggle']['shape'] ) : ?>
+						<path d="M 550 0 L 496.9 137.2 C 490.4 156.8 474.1 170 451.4 170 H 98.6 C 77.9 170 59.6 156.8 53.1 137.2 L 0 0 z">
+					<?php elseif ( 'top' === $settings['bar']['vertical_position'] && 'sharp' === $settings['toggle']['shape'] ) : ?>
+						<path d="M 550 0 L 494.206 170 H 65.794 L 0 0 z">
+					<?php endif; ?>
+
+					</svg>
+
+				</label>
+			<?php endif; ?>
+
+			<div id="mobile-contact-bar-outer">
+				<ul>
+				<?php
+
+				$new_tab = ( $settings['bar']['is_new_tab'] ) ? ' target="_blank"' : '';
+
+				foreach ( $contacts as $contact ) :
+
+					$uri     = Mobile_Contact_Bar_Validator::escape_contact_uri_sms_skype( $contact['uri'] );
+					$new_tab = ( substr( $uri, 0, 4 ) === 'http' ) ? $new_tab : '';
+					$class   = 'Mobile_Contact_Bar_Contact_' . $contact['type'];
+					$counter = ( method_exists( $class, 'public_output_badge' ) ) ? $class::public_output_badge() : '';
+					$js      = '';
+					if ( method_exists( $class, 'public_render_scripts' ) ) {
+						ob_start();
+						$class::public_render_scripts();
+						$js = ob_get_contents();
+						ob_end_clean();
 					}
-				} elseif ( 'top' === $settings['bar']['vertical_position'] ) {
-					if ( 'rounded' === $settings['toggle']['shape'] ) {
-						$html .= $paths['top_rounded'];
-					} else {
-						$html .= $paths['top_sharp'];
-					}
-				}
-				$html .= '</svg>';
-				$html .= '</label>';
-			}
 
-			$html .= '<div id="mobile-contact-bar-outer">';
-			$html .= '<ul>';
+					if ( isset( $contact['parameters'] ) ) {
+						$query_arg = array();
 
-			$new_tab = ( $settings['bar']['is_new_tab'] ) ? ' target="_blank"' : '';
-
-			foreach ( $contacts as $contact ) {
-				$class   = 'Mobile_Contact_Bar_Contact_' . $contact['type'];
-				$uri     = Mobile_Contact_Bar_Validator::escape_contact_uri( $contact['uri'] );
-				$new_tab = ( substr( $uri, 0, 4 ) === 'http' ) ? $new_tab : '';
-
-				if ( isset( $contact['parameters'] ) ) {
-					$query_arg = array();
-
-					foreach ( $contact['parameters'] as $parameter ) {
-						if ( $parameter['value'] ) {
-							$key               = sanitize_key( $parameter['key'] );
-							$query_arg[ $key ] = rawurlencode( $parameter['value'] );
+						foreach ( $contact['parameters'] as $parameter ) {
+							if ( $parameter['value'] ) {
+								$key               = sanitize_key( $parameter['key'] );
+								$query_arg[ $key ] = rawurlencode( $parameter['value'] );
+							}
 						}
+						$uri = add_query_arg( $query_arg, $uri );
 					}
-					$uri = add_query_arg( $query_arg, $uri );
-				}
 
-				$counter = ( method_exists( $class, 'public_output_badge' ) ) ? $class::public_output_badge() : '';
-
-				$html .= '<li>';
-				$html .= sprintf(
-					'<a data-rel="external" href="%s"%s><span class="fa-stack fa-%s"><i class="fa-fw %s"></i>%s<span class="screen-reader-text">%s</span></span></a>',
-					esc_url( $uri ),
-					wp_kses_post( $new_tab ),
-					esc_attr( $settings['icons']['size'] ),
-					esc_attr( $contact['icon'] ),
-					wp_kses_post( $counter ),
-					esc_html( $contact['title'] )
-				);
-				if ( method_exists( $class, 'public_scripts' ) ) {
-					ob_start();
-					esc_js( $class::public_scripts() );
-					$html .= ob_get_contents();
-					ob_end_clean();
-				}
-				$html .= '</li>';
-			}
-
-			$html .= '</ul>';
-			$html .= '</div>';
-
-			$html .= '</div>';
-
-			echo $html; // phpcs:ignore
-		}
+					printf(
+						'<li><a data-rel="external" href="%s"%s><span class="fa-stack fa-%s"><i class="fa-fw %s"></i>%s<span class="screen-reader-text">%s</span></span></a>%s</li>',
+						esc_url( $uri, Mobile_Contact_Bar_Validator::$protocols ),
+						wp_kses_post( $new_tab ),
+						esc_attr( $settings['icons']['size'] ),
+						esc_attr( $contact['icon'] ),
+						wp_kses_post( $counter ),
+						esc_html( $contact['title'] ),
+						$js // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+					);
+				endforeach;
+				?>
+				</ul>
+			</div>
+			</div>
+			<?php
+		endif;
 	}
 }

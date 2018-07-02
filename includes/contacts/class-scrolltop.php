@@ -93,46 +93,46 @@ final class Mobile_Contact_Bar_Contact_ScrollTop {
 	 *
 	 * @since 2.0.0
 	 */
-	public static function public_scripts() {
+	public static function public_render_scripts() {
 		?>
-		<script id="mobile-contact-bar-scroll">
-		(function() {
-			function scrollTo(to = 0, duration = 1000) {
-				var start       = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0,
-					change      = to - start,
-					increment   = 20,
-					currentTime = 0;
+<script id="mobile-contact-bar-scrolltop">
+(function() {
+	function scrollTo(to = 0, duration = 1000) {
+		var start       = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0,
+			change      = to - start,
+			increment   = 20,
+			currentTime = 0;
 
-				function animateScroll() {
-					currentTime += increment;
-					var val = Math.easeInOutQuad(currentTime, start, change, duration);
+		function animateScroll() {
+			currentTime += increment;
+			var val = Math.easeInOutQuad(currentTime, start, change, duration);
 
-					window.pageYOffset = val;
-					document.documentElement.scrollTop = val;
-					document.body.scrollTop = val;
+			window.pageYOffset = val;
+			document.documentElement.scrollTop = val;
+			document.body.scrollTop = val;
 
-					if( currentTime < duration ) {
-						setTimeout(animateScroll, increment);
-					}
-				}
-				animateScroll();
-			};
+			if( currentTime < duration ) {
+				setTimeout(animateScroll, increment);
+			}
+		}
+		animateScroll();
+	};
 
-			Math.easeInOutQuad = function( t, b, c, d ) {
-				t /= d/2;
-				if (t < 1) return c/2*t*t + b;
-				t--;
-				return -c/2 * (t*(t-2) - 1) + b;
-			};
+	Math.easeInOutQuad = function( t, b, c, d ) {
+		t /= d/2;
+		if (t < 1) return c/2*t*t + b;
+		t--;
+		return -c/2 * (t*(t-2) - 1) + b;
+	};
 
-			document.addEventListener('DOMContentLoaded', function() {
-				document.scripts['mobile-contact-bar-scroll'].parentElement.firstChild.onclick = function( event ) {
-					event.preventDefault();
-					scrollTo(0, 300);
-				}
-			});
-		})();
-		</script>
+	document.addEventListener('DOMContentLoaded', function() {
+		document.scripts['mobile-contact-bar-scrolltop'].parentElement.firstChild.onclick = function( event ) {
+			event.preventDefault();
+			scrollTo(0, 300);
+		}
+	});
+})();
+</script>
 		<?php
 	}
 }

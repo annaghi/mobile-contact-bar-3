@@ -69,12 +69,17 @@ final class Mobile_Contact_Bar_Updater {
 			Mobile_Contact_Bar_Page::$page,
 		);
 
+		$query_args = array(
+			'do_update_mobile_contact_bar' => 'true',
+			'nonce'                        => wp_create_nonce( MOBILE_CONTACT_BAR__NAME ),
+		);
+
 		if ( get_option( MOBILE_CONTACT_BAR__NAME . '_update' ) && in_array( $screen->base, $show_on_screens, true ) ) {
 			?>
 			<div class="notice notice-info">
 				<p><strong><?php esc_html_e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?></strong>&#8195;&#8226;&#8195;<?php esc_html_e( 'The plugin needs to migrate your contacts and settings to version 2, and upgrade Font Awesome to version 5.', 'mobile-contact-bar' ); ?></p>
 				<p class="submit">
-					<a href="<?php echo esc_url( add_query_arg( 'do_update_mobile_contact_bar', 'true', admin_url( 'options-general.php?page=' . MOBILE_CONTACT_BAR__SLUG ) ) ); ?>" class="mcb-update-now button-primary"><?php esc_html_e( 'Run the updater', 'mobile-contact-bar' ); ?></a>
+					<a href="<?php echo esc_url( add_query_arg( $query_args, admin_url( 'options-general.php?page=' . MOBILE_CONTACT_BAR__SLUG ) ) ); ?>" class="mcb-update-now button-primary"><?php esc_html_e( 'Run the updater', 'mobile-contact-bar' ); ?></a>
 				</p>
 			</div>
 			<script type="text/javascript">
@@ -152,30 +157,36 @@ final class Mobile_Contact_Bar_Updater {
 				<p>
 					<p>
 						<?php
-						echo wp_kses_post( sprintf(
-							/* translators: 1: hook name 2: file name */
-							__( 'We have removed the %1$s filter, so you too can safely remove the unused code from your %2$s file.', 'mobile-contact-bar' ),
-							'<code>mcb_admin_update_contacts</code>',
-							'<code>functions.php</code>'
-						));
+						echo wp_kses_post(
+							sprintf(
+								/* translators: 1: hook name 2: file name */
+								__( 'We have removed the %1$s filter, so you too can safely remove the unused code from your %2$s file.', 'mobile-contact-bar' ),
+								'<code>mcb_admin_update_contacts</code>',
+								'<code>functions.php</code>'
+							)
+						);
 						?>
 					</p>
 					<p>
 						<b>
 							<?php
-							echo esc_html( sprintf(
-								/* translators: %d: icon count */
-								_n( 'There is %d contact added by you using that filter.', 'There are %d contacts added by you using that filter.', $hooked, 'mobile-contact-bar' ),
-								$hooked
-							));
+							echo esc_html(
+								sprintf(
+									/* translators: %d: icon count */
+									_n( 'There is %d contact added by you using that filter.', 'There are %d contacts added by you using that filter.', $hooked, 'mobile-contact-bar' ),
+									$hooked
+								)
+							);
 							?>
 						</b>
 						<?php
-						echo wp_kses_post( sprintf(
-							/* translators: %s: icon */
-							_n( 'Please set manually the Font Awesome 5 icon by clicking on the %s button.', 'Please set manually the Font Awesome 5 icons by clicking on the %s button.', $hooked, 'mobile-contact-bar' ),
-							'<span style="color:#228ae6;border: 1px solid #ccc;border-radius: 2px;padding:3px;"><i class="fab fa-font-awesome-flag fa-fw" aria-hidden="true"></i></span>'
-						));
+						echo wp_kses_post(
+							sprintf(
+								/* translators: %s: icon */
+								_n( 'Please set manually the Font Awesome 5 icon by clicking on the %s button.', 'Please set manually the Font Awesome 5 icons by clicking on the %s button.', $hooked, 'mobile-contact-bar' ),
+								'<span style="color:#228ae6;border: 1px solid #ccc;border-radius: 2px;padding:3px;"><i class="fab fa-font-awesome-flag fa-fw" aria-hidden="true"></i></span>'
+							)
+						);
 						?>
 					</p>
 				</p>
@@ -198,7 +209,7 @@ final class Mobile_Contact_Bar_Updater {
 	 * @since 2.0.0
 	 */
 	public static function admin_init() {
-		if ( isset( $_GET['do_update_mobile_contact_bar'] ) ) {
+		if ( isset( $_GET['nonce'], $_GET['do_update_mobile_contact_bar'] ) && wp_verify_nonce( sanitize_key( $_GET['nonce'] ), MOBILE_CONTACT_BAR__NAME ) ) {
 			$old_option = get_option( 'mcb_option' );
 			$new_option = get_option( MOBILE_CONTACT_BAR__NAME );
 
@@ -336,8 +347,8 @@ final class Mobile_Contact_Bar_Updater {
 					case 'skype':
 						$new_contact['type']        = 'Sample';
 						$new_contact['icon']        = 'fab fa-skype';
-						$new_contact['title']       = 'Skype for calling';
-						$new_contact['placeholder'] = 'skype:username?call';
+						$new_contact['title']       = 'Skype for chatting';
+						$new_contact['placeholder'] = 'skype:username?chat';
 						break;
 
 					case 'address':
@@ -471,7 +482,7 @@ final class Mobile_Contact_Bar_Updater {
 				set_transient( MOBILE_CONTACT_BAR__NAME . '_updated_succes', 1 );
 			}
 
-			wp_safe_redirect( remove_query_arg( array( 'do_update_mobile_contact_bar' ) ) );
+			wp_safe_redirect( remove_query_arg( array( 'do_update_mobile_contact_bar', 'nonce' ) ) );
 			exit;
 		}
 	}
