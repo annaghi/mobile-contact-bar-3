@@ -94,8 +94,6 @@ final class Mobile_Contact_Bar_Option {
 				continue;
 			}
 
-			$title = ucfirst( $section_id );
-
 			add_settings_section(
 				'mcb-section-' . $section_id,
 				$titles[ $section_id ],
