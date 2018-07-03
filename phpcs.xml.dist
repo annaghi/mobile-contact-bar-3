@@ -2,8 +2,8 @@
 <ruleset name="Mobile Contact Bar">
 	<description>A custom set of rules to check for a WPized WordPress project</description>
 
-    <!-- Show progress of the run -->
-    <arg value="p"/>
+	<!-- Show progress of the run -->
+	<arg value="p"/>
 
 	<!-- Exclude the Node Modules directory. -->
 	<exclude-pattern>/node_modules/*</exclude-pattern>
@@ -79,11 +79,11 @@
 		</properties>
 	</rule>
 
-    <rule ref="WordPress.Files.FileName">
-	    <properties>
-	        <property name="is_theme" value="false" />
-            <property name="strict_class_file_names" value="false"/>
-	    </properties>
-    </rule>
+	<rule ref="WordPress.Files.FileName">
+		<properties>
+			<property name="is_theme" value="false" />
+			<property name="strict_class_file_names" value="false"/>
+		</properties>
+	</rule>
 
 </ruleset>
