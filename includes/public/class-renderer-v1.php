@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Mobile_Contact_Bar_Renderer class
  */
-final class Mobile_Contact_Bar_Renderer {
+final class Mobile_Contact_Bar_Renderer_V1 {
 
 
 	/**

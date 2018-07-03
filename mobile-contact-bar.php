@@ -56,10 +56,11 @@ if ( is_admin() ) {
 } else {
 	if ( get_option( 'mcb_option' ) ) {
 		include_once plugin_dir_path( __FILE__ ) . 'includes/public/class-renderer-v1.php';
+		add_action( 'plugins_loaded', array( 'Mobile_Contact_Bar_Renderer_V1', 'plugins_loaded' ) );
 	} else {
 		include_once plugin_dir_path( __FILE__ ) . 'includes/public/class-renderer.php';
+		add_action( 'plugins_loaded', array( 'Mobile_Contact_Bar_Renderer', 'plugins_loaded' ) );
 	}
-	add_action( 'plugins_loaded', array( 'Mobile_Contact_Bar_Renderer', 'plugins_loaded' ) );
 }
 
 
