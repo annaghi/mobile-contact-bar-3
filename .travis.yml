@@ -12,4 +12,4 @@ before_script:
   - if [[ "$RUN_PHPCS" == "1" ]]; then composer install; fi
 
 script:
-  - if [[ "$RUN_PHPCS" == "1" ]]; then echo "Running Code Sniffer."; ./vendor/bin/phpcs --encoding=utf-8 -p -n --standard=phpcs.xml.dist./vendor/bin/phpcs --encoding=utf-8 -p -n --standard=phpcs.xml.dist ./includes ./mobile-contact-bar.php ./uninstall.php; fi
+  - if [[ "$RUN_PHPCS" == "1" ]]; then echo "Running Code Sniffer."; ./vendor/bin/phpcs --encoding=utf-8 -p --standard=phpcs.xml.dist ./includes ./mobile-contact-bar.php ./uninstall.php; fi
