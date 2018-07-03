@@ -1,24 +1,23 @@
 {
-	"name"       : "mobile-contact-bar",
-	"description": "Allow your visitors to contact you via mobile phones, or access your site's pages instantly.",
-	"type"       : "wordpress-plugin",
-	"license"    : "GPL-3.0",
-	"authors"    : [
-		{
-			"name"    : "Anna Bansaghi",
-			"homepage": "https://github.com/annaghi/mobile-contact-bar"
-
-		}
-	],
-	"prefer-stable" : true,
-	"minimum-stability": "dev",
-    "require" : {
-		"composer/installers": "~1.5.0"
-    },
-	"require-dev" : {
-		"dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
-		"squizlabs/php_codesniffer": "^3.3.0",
-        "wimg/php-compatibility": "^8.1.0",
-		"wp-coding-standards/wpcs": "^0.14.1"
-	}
+  "name": "mobile-contact-bar",
+  "description": "Allow your visitors to contact you via mobile phones, or access your site's pages instantly.",
+  "type": "wordpress-plugin",
+  "license": "GPL-3.0",
+  "authors": [
+    {
+      "name": "Anna Bansaghi",
+      "homepage": "https://github.com/annaghi/mobile-contact-bar"
+    }
+  ],
+  "prefer-stable" : true,
+  "minimum-stability": "dev",
+  "require" : {
+    "composer/installers": "~1.5.0"
+  },
+  "require-dev" : {
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+    "squizlabs/php_codesniffer": "^3.3.0",
+    "wimg/php-compatibility": "^8.1.0",
+    "wp-coding-standards/wpcs": "^0.14.1"
+  }
 }
