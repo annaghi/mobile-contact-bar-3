@@ -7,7 +7,7 @@ Tags: social media, icon, contact, mobile, woocommerce cart
 Requires at least: 4.2
 Tested up to: 4.9
 Requires PHP: 5.3
-Stable tag: 2.0.2
+Stable tag: 2.1.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
 
