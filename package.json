@@ -1,7 +1,11 @@
 {
   "name": "mobile-contact-bar",
-  "version": "2.0.2",
-  "homepage": "http://mobilecontactbar.com",
+  "version": "2.1.0",
+  "homepage": "https://wordpress.org/plugins/mobile-contact-bar/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/annaghi/mobile-contact-bar.git"
+  },
   "license": "GPL-3.0",
   "devDependencies": {
     "clean-css-cli": "^4.1.11",
@@ -41,7 +45,8 @@
     "concat:js:upgrade": "run-for-every-file --src \"./assets/js/upgrade/\" --dest \"assets/js/\" --file=\"**/*.min.js\" --run \"shx cat {{src-file}} >> {{dest}}upgrade.min.js\"",
     "lint:js": "eslint \"./assets/js/**/!(*.min).js\""
   },
-  "dependencies": {
-    "npm": "^6.1.0"
+  "engines": {
+    "node": ">=8.11.0",
+    "npm": ">=6.1.0"
   }
 }
