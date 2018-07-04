@@ -25,7 +25,7 @@ function mcb_manually_load_plugin() {
 
 	require_once dirname( dirname( __FILE__ ) ) . '/mobile-contact-bar.php';
 }
-tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
+tests_add_filter( 'muplugins_loaded', 'mcb_manually_load_plugin' );
 
 // Start up the WP testing environment.
 require_once $mcb_tests_dir . '/includes/bootstrap.php';
