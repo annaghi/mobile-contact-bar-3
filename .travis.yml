@@ -6,16 +6,18 @@ jobs:
   include:
     - stage: test
       php: 7.2
-      env: WP_VERSION=latest WP_MULTISITE=0
+      env: WP_VERSION=latest
       script:
           - bash ./tests/bin/install_wp_tests.sh mobile_contact_bar_test root '' localhost $WP_VERSION
           - export PATH="$HOME/.composer/vendor/bin:$PATH"
           - composer global require "phpunit/phpunit:^6"
           - echo "Running WP unit tests."
+          - WP_MULTISITE=0 phpunit || exit 1
+          - WP_MULTISITE=1 phpunit || exit 1
 
     - stage: test
       php: 5.6
       script:
-        - composer install
+        - composer install || exit 1
         - echo "Running Code Sniffer."
         - ./vendor/bin/phpcs -p --standard=phpcs.xml.dist ./includes ./tests ./mobile-contact-bar.php ./uninstall.php
