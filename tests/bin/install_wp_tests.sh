@@ -17,6 +17,10 @@ WP_CORE_DIR=${WP_CORE_DIR-/tmp/wordpress/}
 WP_TESTS_DIR=${WP_TESTS_DIR-/tmp/wordpress-tests-lib}
 
 
+command_exists() {
+    type -t "$1" >/dev/null 2>&1
+}
+
 download() {
     if command_exists "curl"; then
         curl -s -o "${2:--}" "$1"
