@@ -25,7 +25,7 @@ download() {
     if command_exists "curl"; then
         curl -s -o "${2:--}" "$1"
     elif command_exists "wget"; then
-		wget -nv -O "${2:--}" "$1"
+        wget -nv -O "${2:--}" "$1"
     fi
 }
 
@@ -40,9 +40,9 @@ elif [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
 else
     # http serves a single offer, whereas https serves multiple. we only want one
     download http://api.wordpress.org/core/version-check/1.7/ /tmp/wp-latest.json
-	# This grep will not work
+    # This grep will not work
     grep '[0-9]+\.[0-9]+(\.[0-9]+)?' /tmp/wp-latest.json
-	# This grep will work
+    # This grep will work
     LATEST_VERSION=$(grep -o '"version":"[^"]*' /tmp/wp-latest.json | sed 's/"version":"//')
     if [[ -z "$LATEST_VERSION" ]]; then
         echo "Latest WordPress version could not be found"
