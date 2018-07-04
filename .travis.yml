@@ -12,12 +12,12 @@ jobs:
           - export PATH="$HOME/.composer/vendor/bin:$PATH"
           - composer global require "phpunit/phpunit:^6"
           - echo "Running WP unit tests."
-          - WP_MULTISITE=0 phpunit || exit 1
-          - WP_MULTISITE=1 phpunit || exit 1
+          - WP_MULTISITE=0 phpunit
+          - WP_MULTISITE=1 phpunit
 
     - stage: test
       php: 5.6
       script:
-        - composer install || exit 1
+        - composer install
         - echo "Running Code Sniffer."
         - ./vendor/bin/phpcs -p --standard=phpcs.xml.dist ./includes ./tests ./mobile-contact-bar.php ./uninstall.php
