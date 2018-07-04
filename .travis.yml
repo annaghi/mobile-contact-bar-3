@@ -2,21 +2,20 @@ language: php
 
 sudo: false
 
-matrix:
+jobs:
   include:
-    - php: 5.6
-      env: RUN_PHPCS=1
+    - stage: test
+      php: 7.2
+      env: WP_VERSION=latest WP_MULTISITE=0
+      script:
+          - bash ./tests/bin/install_wp_tests.sh mobile_contact_bar_test root '' localhost $WP_VERSION
+          - export PATH="$HOME/.composer/vendor/bin:$PATH"
+          - composer global require "phpunit/phpunit:^6"
+          - echo "Running WP unit tests."
 
-
-before_script:
-  - |
-    if [[ "$RUN_PHPCS" == "1" ]] ; then
-      composer install
-    fi
-
-script:
-  - |
-    if [[ "$RUN_PHPCS" == "1" ]] ; then
-      echo "Running Code Sniffer."
-      ./vendor/bin/phpcs --encoding=utf-8 -p --standard=phpcs.xml.dist ./includes ./mobile-contact-bar.php ./uninstall.php
-    fi
+    - stage: test
+      php: 5.6
+      script:
+        - composer install
+        - echo "Running Code Sniffer."
+        - ./vendor/bin/phpcs -p --standard=phpcs.xml.dist ./includes ./tests ./mobile-contact-bar.php ./uninstall.php
