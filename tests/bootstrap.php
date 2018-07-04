@@ -16,7 +16,7 @@ if ( ! file_exists( $mcb_tests_dir . '/includes/functions.php' ) ) {
 }
 
 // Load test function so tests_add_filter() is available.
-require_once $this->wp_tests_dir . '/includes/functions.php';
+require_once $mcb_tests_dir . '/includes/functions.php';
 
 /**
  * Manually load the plugin being tested.
