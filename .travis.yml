@@ -9,7 +9,8 @@ jobs:
       env: WP_VERSION=latest
       script:
         - bash ./tests/bin/install_wp_tests.sh mobile_contact_bar_test root '' localhost $WP_VERSION
-        - phpunit --version
+        - export PATH="$HOME/.composer/vendor/bin:$PATH"
+        - composer global require "phpunit/phpunit=6.*"
         - WP_MULTISITE=0 phpunit
         - WP_MULTISITE=1 phpunit
 
