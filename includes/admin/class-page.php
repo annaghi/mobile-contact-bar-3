@@ -373,7 +373,7 @@ final class Mobile_Contact_Bar_Page {
 
 		?>
 		<div id="mcb-model">
-			<?php include_once plugin_dir_path( MOBILE_CONTACT_BAR__PATH ) . 'assets/images/settings/real-time-model/model.svg'; ?>
+			<?php include_once plugin_dir_path( MOBILE_CONTACT_BAR__PATH ) . 'assets/images/real-time-model.svg'; ?>
 			<footer><em><sup>*</sup> <?php esc_html_e( 'The model is an approximation. A lot depends on your active theme"s styles.', 'mobile-contact-bar' ); ?></em></footer>
 		</div>
 
