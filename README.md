@@ -1,5 +1,7 @@
 # Mobile Contact Bar
+
 [![Build Status](https://travis-ci.org/annaghi/mobile-contact-bar.svg?branch=master)](https://travis-ci.org/annaghi/mobile-contact-bar)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
 
 Welcome to the Mobile Contact Bar repository on GitHub.
 
