@@ -1,8 +1,12 @@
 {
   "name": "mobile-contact-bar",
   "version": "2.1.0",
-  "homepage": "http://mobilecontactbar.com",
+  "homepage": "https://wordpress.org/plugins/mobile-contact-bar/",
   "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/annaghi/mobile-contact-bar.git"
+  },
   "devDependencies": {
     "clean-css-cli": "^4.1.11",
     "eslint": "^5.0.1",
@@ -10,7 +14,7 @@
     "onchange": "^4.0.0",
     "run-for-every-file": "^1.1.0",
     "shx": "^0.3.1",
-    "uglify-js": "^3.3.27",
+    "uglify-js": "^3.4.3",
     "watch": "^1.0.2"
   },
   "scripts": {
@@ -41,7 +45,8 @@
     "concat:js:upgrade": "run-for-every-file --src \"./assets/js/upgrade/\" --dest \"assets/js/\" --file=\"**/*.min.js\" --run \"shx cat {{src-file}} >> {{dest}}upgrade.min.js\"",
     "lint:js": "eslint \"./assets/js/**/!(*.min).js\""
   },
-  "dependencies": {
-    "npm": "^6.1.0"
+  "engines": {
+    "node": ">=8.11.0",
+    "npm": ">=6.1.0"
   }
 }
