@@ -49,7 +49,9 @@
     "concat:js:admin": "run-for-every-file --src \"./assets/js/admin/\" --dest \"assets/js/\" --file=\"**/*.min.js\" --run \"shx cat {{src-file}} >> {{dest}}admin.min.js\"",
     "concat:js:public": "run-for-every-file --src \"./assets/js/public/\" --dest \"assets/js/\" --file=\"**/*.min.js\" --run \"shx cat {{src-file}} >> {{dest}}public.min.js\"",
     "concat:js:upgrade": "run-for-every-file --src \"./assets/js/upgrade/\" --dest \"assets/js/\" --file=\"**/*.min.js\" --run \"shx cat {{src-file}} >> {{dest}}upgrade.min.js\"",
-    "lint:js": "eslint --fix \"./assets/js/**/!(*.min).js\""
+    "lint:js": "eslint --fix \"./assets/js/**/!(*.min).js\"",
+    "ci": "run-p ci:*",
+    "ci:js": "eslint \"./assets/js/**/!(*.min).js\""
   },
   "engines": {
     "node": ">=8.11.0",
