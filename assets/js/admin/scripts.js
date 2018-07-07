@@ -240,6 +240,14 @@
         $(this).next('span').html(this.value)
       })
 
+      $('.mcb-settings').on('change', '#mcb-badges-corner input', function () {
+        var corner = $('#mcb-badges-corner input:checked').val()
+        $('#mcb-table-contacts')
+          .find('.mcb-badge')
+          .removeClass('mcb-badge-top-right mcb-badge-bottom-right mcb-badge-bottom-left mcb-badge-top-left')
+          .addClass('mcb-badge-' + corner)
+      })
+
       // Hover action buttons and icons
       $('#mcb-table-contacts thead').on({
         mouseenter: function () {

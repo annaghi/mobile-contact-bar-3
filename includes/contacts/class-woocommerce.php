@@ -69,6 +69,7 @@ final class Mobile_Contact_Bar_Contact_WooCommerce {
 		$icons[20] = array(
 			'type'  => self::$type,
 			'icon'  => self::$icon,
+			'badge' => 1,
 			'title' => __( 'Add WooCommerce Cart', 'mobile-contact-bar' ),
 		);
 		return $icons;
@@ -88,6 +89,7 @@ final class Mobile_Contact_Bar_Contact_WooCommerce {
 			'checked'     => 0,
 			'type'        => self::$type,
 			'icon'        => self::$icon,
+			'badge'       => 1,
 			'title'       => __( 'WooCommerce Cart', 'mobile-contact-bar' ),
 			'placeholder' => is_ssl() ? 'https://mysite.com/cart' : 'http://mysite.com/cart',
 			'uri'         => get_site_url() . '/cart',
