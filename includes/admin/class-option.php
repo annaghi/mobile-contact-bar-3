@@ -216,8 +216,13 @@ final class Mobile_Contact_Bar_Option {
 						<ul id="mcb-integration-icons">
 							<?php foreach ( $icons as $icon ) { ?>
 							<li class="mcb-action wp-ui-text-highlight" data-contact-type="<?php echo esc_attr( $icon['type'] ); ?>">
-								<i class="mcb-integration <?php echo esc_attr( $icon['icon'] ); ?> fa-fw" title="<?php echo esc_attr( $icon['title'] ); ?>" aria-hidden="true"></i>
-								<span class="screen-reader-text"><?php echo esc_attr( $icon['title'] ); ?></span>
+								<span class="fa-stack">
+									<i class="mcb-integration <?php echo esc_attr( $icon['icon'] ); ?>" title="<?php echo esc_attr( $icon['title'] ); ?>" aria-hidden="true"></i>
+									<span class="screen-reader-text"><?php echo esc_attr( $icon['title'] ); ?></span>
+									<?php if ( isset( $icon['badge'] ) && $icon['badge'] ) { ?>
+										<span class="mcb-badge mcb-badge-<?php echo esc_attr( self::$option['settings']['badges']['corner'] ); ?> wp-ui-notification"></span>
+									<?php } ?>
+								</span>
 							</li>
 							<?php } ?>
 						</ul>
@@ -380,6 +385,15 @@ final class Mobile_Contact_Bar_Option {
 			esc_attr( $contact['icon'] )
 		);
 
+		// Hidden 'badge'.
+		if ( isset( $contact['badge'] ) && $contact['badge'] ) {
+			$out .= sprintf(
+				'<input name="%s[badge]" value="%s" type="hidden">',
+				esc_attr( $prefix ),
+				esc_attr( $contact['badge'] )
+			);
+		}
+
 		// Hidden 'title'.
 		if ( 'Sample' === $contact['type'] ) {
 			$out .= sprintf(
@@ -398,10 +412,11 @@ final class Mobile_Contact_Bar_Option {
 			( $contact['checked'] ) ? checked( $contact['checked'], 1, false ) : ''
 		);
 
-		// Displayed 'icon'.
+		// Displayed 'icon' and 'badge'.
 		$out .= sprintf(
-			'<li class="mcb-contact-icon ui-sortable-handle"><i class="%s fa-lg"></i></li>',
-			esc_attr( $contact['icon'] )
+			'<li class="mcb-contact-icon ui-sortable-handle"><span class="fa-stack"><i class="%s fa-lg"></i>%s</span></li>',
+			esc_attr( $contact['icon'] ),
+			( isset( $contact['badge'] ) && $contact['badge'] ) ? sprintf( '<span class="mcb-badge mcb-badge-%s wp-ui-notification"></span>', esc_attr( self::$option['settings']['badges']['corner'] ) ) : ''
 		);
 
 		// Displayed 'title'.
@@ -688,6 +703,9 @@ final class Mobile_Contact_Bar_Option {
 			// 'icon' is already sanitized.
 			$sanitized_contact['icon'] = $contact['icon'];
 
+			// Sanitize 'badge'.
+			$sanitized_contact['badge'] = (int) $contact['badge'];
+
 			// Sanitize 'title'.
 			$sanitized_contact['title'] = sanitize_text_field( $contact['title'] );
 
@@ -953,7 +971,7 @@ final class Mobile_Contact_Bar_Option {
 			$styles .= 'width:1.5em;';
 			$styles .= 'line-height:1.5;';
 			$styles .= 'position:absolute;';
-			switch ( $badges['place'] ) {
+			switch ( $badges['corner'] ) {
 				case 'top-right':
 					$styles .= 'top:0;';
 					$styles .= 'right:0;';

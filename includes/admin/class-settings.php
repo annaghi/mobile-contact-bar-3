@@ -257,10 +257,10 @@ final class Mobile_Contact_Bar_Settings {
 					'step'    => 0.05,
 					'title'   => __( 'Badge Size', 'mobile-contact-bar' ),
 				),
-				'place'            => array(
+				'corner'           => array(
 					'type'    => 'radio',
 					'default' => 'top-right',
-					'title'   => __( 'Position', 'mobile-contact-bar' ),
+					'title'   => __( 'Corner', 'mobile-contact-bar' ),
 					'options' => array(
 						'top-right'    => __( 'top-right', 'mobile-contact-bar' ),
 						'bottom-right' => __( 'bottom-right', 'mobile-contact-bar' ),

@@ -87,11 +87,13 @@
 
 #mcb-table-contacts .mcb-contact th,
 #mcb-table-contacts .mcb-contact td {
+  line-height: 2em;
   padding: 0 14px;
 }
 
 #mcb-table-contacts .mcb-parameter th,
 #mcb-table-contacts .mcb-parameter td {
+  line-height: 2em;
   padding: 14px;
 }
 
@@ -99,7 +101,6 @@
 #mcb-table-contacts td textarea,
 #mcb-table-contacts td .mcb-contact-uri {
   font-family: Consolas, Monaco, monospace;
-  line-height: inherit;
 }
 
 #mcb-table-contacts tr {
@@ -151,10 +152,8 @@
 }
 
 #mcb-table-contacts .mcb-th li,
-#mcb-table-contacts .mcb-td > li {
-  height: 26px;
+#mcb-table-contacts .mcb-td li {
   padding: 14px 0;
-  vertical-align: bottom;
 }
 
 /* Action Icons and Buttons */
@@ -176,24 +175,19 @@
 }
 
 #mcb-integration-icons li {
-  font-size: 1.2em;
+  font-size: 1em;
   margin: 0 15px 0 0;
-  padding: 4px 6px;
-  width: 1.5em;
+  padding: 0px 4px;
 }
 
 #mcb-integration-icons .mcb-badge {
-  background-color: #c86414;
   border-radius: 100%;
-  color: #ffffff;
   display: block;
-  font-size: 0.5em;
+  font-size: 0.4em;
   height: 1.5em;
   width: 1.5em;
   line-height: 1.5;
   position: absolute;
-  top: 0;
-  right: 0;
   text-indent: 0;
 }
 
@@ -223,7 +217,9 @@
 
 #mcb-table-contacts td input,
 #mcb-table-contacts td textarea {
+  line-height: inherit;
   margin: 0;
+  padding: 0 6px;
   width: 100%;
 }
 
@@ -238,8 +234,15 @@
   width: 3em;
 }
 
-#mcb-table-contacts .mcb-contact-icon i {
-  vertical-align: bottom;
+#mcb-table-contacts tbody .mcb-badge {
+  border-radius: 100%;
+  display: block;
+  font-size: 0.5em;
+  height: 1.5em;
+  width: 1.5em;
+  line-height: 1.5;
+  position: absolute;
+  text-indent: 0;
 }
 
 #mcb-table-contacts .mcb-contact-title,
@@ -248,7 +251,9 @@
 }
 
 #mcb-table-contacts .mcb-contact-title input {
+  line-height: inherit;
   margin: 0;
+  padding: 0 6px;
   width: 100%;
 }
 
@@ -303,6 +308,27 @@
   border: 1px solid #ccc;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   display: table;
+}
+
+/* Badge postions */
+
+.mcb-badge-top-right {
+  top: 0;
+  right: 0;
+}
+.mcb-badge-bottom-right {
+  bottom: 0;
+  right: 0;
+}
+
+.mcb-badge-bottom-left {
+  bottom: 0;
+  left: 0;
+}
+
+.mcb-badge-top-left {
+  top: 0;
+  left: 0;
 }
 
 @media only screen and (max-width: 1120px) {
