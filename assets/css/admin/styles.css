@@ -1,8 +1,3 @@
-/*!
- * Mobile Contact Bar 2.1.0 by Anna Bansaghi - http://mobilecontactbar.com
- * License GPL-3.0 - https://www.gnu.org/licenses/gpl-3.0.en.html
- */
-
 /* Help Tabs */
 
 .mcb-tab-status-green {
@@ -186,6 +181,23 @@
   padding: 4px 6px;
   width: 1.5em;
 }
+
+#mcb-integration-icons .mcb-badge {
+  background-color: #c86414;
+  border-radius: 100%;
+  color: #ffffff;
+  display: block;
+  font-size: 0.5em;
+  height: 1.5em;
+  width: 1.5em;
+  line-height: 1.5;
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-indent: 0;
+}
+
+/* Row Icons */
 
 #mcb-table-contacts .mcb-row-icons li {
   background-color: #fff;
