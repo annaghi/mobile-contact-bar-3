@@ -29,6 +29,9 @@ final class Mobile_Contact_Bar_Updater {
 
 			// Add new settings.
 			foreach ( $default_option['settings'] as $section_id => $section ) {
+				if ( ! isset( $option['settings'][ $section_id ] ) ) {
+					$option['settings'][ $section_id ] = array();
+				}
 				foreach ( $section as $setting_id => $setting ) {
 					if ( ! isset( $option['settings'][ $section_id ][ $setting_id ] ) ) {
 						$option['settings'][ $section_id ][ $setting_id ] = $setting;
@@ -36,9 +39,29 @@ final class Mobile_Contact_Bar_Updater {
 				}
 			}
 
-			// Renamed setting in v2.1.0.
-			$option['settings']['badges']['corner'] = $option['settings']['badges']['place'];
-			unset( $option['settings']['badges']['place'] );
+			// Reorganized or renamed settings in v2.1.0.
+			if ( isset( $option['settings']['bar']['device'] ) ) {
+				$option['settings']['general']['device'] = $option['settings']['bar']['device'];
+				unset( $option['settings']['bar']['device'] );
+			}
+
+			if ( isset( $option['settings']['bar']['is_new_tab'] ) ) {
+				$option['settings']['general']['is_new_tab'] = $option['settings']['bar']['is_new_tab'];
+				unset( $option['settings']['bar']['is_new_tab'] );
+			}
+
+			if ( isset( $option['settings']['badges']['place'] ) ) {
+				$option['settings']['badges']['corner'] = $option['settings']['badges']['place'];
+				unset( $option['settings']['badges']['place'] );
+			}
+
+			// Reorder sections.
+			$ordered_keys = array_keys( Mobile_Contact_Bar_Settings::string_literals() );
+			$settings     = array();
+			foreach ( $ordered_keys as $key ) {
+				$settings[ $key ] = $option['settings'][ $key ];
+			}
+			$option['settings'] = $settings;
 
 			// Added new field to contacts in v2.1.0.
 			foreach ( $option['contacts'] as &$contact ) {

@@ -602,6 +602,11 @@
   vertical-align: top;
 }
 
+.mcb-settings .mcb-radio-v {
+  display: block;
+  margin: 0.25em 0 0.5em !important;
+}
+
 @media screen and (max-width: 782px) {
   .mcb-settings td {
     padding-left: 12px;
@@ -619,7 +624,7 @@
     display: inline-block;
   }
 
-  .mcb-settings .mcb-radio-label {
+  .mcb-settings .mcb-radio-h {
     display: block;
     margin: 0.25em 0 0.5em !important;
   }
