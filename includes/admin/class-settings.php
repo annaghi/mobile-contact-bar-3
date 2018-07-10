@@ -309,11 +309,21 @@ final class Mobile_Contact_Bar_Settings {
 					'label'   => __( 'Show toggle', 'mobile-contact-bar' ),
 					'desc'    => __( 'The toggle will be displayed only if the bar is fixed at its position.', 'mobile-contact-bar' ),
 				),
+				'state'        => array(
+					'type'    => 'radio',
+					'align'   => 'horizontal',
+					'default' => 'open',
+					'title'   => __( 'Initial State', 'mobile-contact-bar' ),
+					'options' => array(
+						'open'   => __( 'bar is open', 'mobile-contact-bar' ),
+						'closed' => __( 'bar is closed', 'mobile-contact-bar' ),
+					),
+				),
 				'is_cookie'    => array(
 					'type'    => 'checkbox',
-					'default' => 0,
-					'title'   => __( 'State Cookie', 'mobile-contact-bar' ),
-					'label'   => __( 'Save toggle state (open or closed) in a cookie', 'mobile-contact-bar' ),
+					'default' => 1,
+					'title'   => __( 'Dynamic State', 'mobile-contact-bar' ),
+					'label'   => __( 'Save toggle state (bar is open or closed) in a cookie', 'mobile-contact-bar' ),
 				),
 				'shape'        => array(
 					'type'    => 'radio',
@@ -347,7 +357,7 @@ final class Mobile_Contact_Bar_Settings {
 				'is_animation' => array(
 					'type'    => 'checkbox',
 					'default' => 1,
-					'title'   => __( 'Animation', 'mobile-contact-bar' ),
+					'title'   => __( 'Animation Ease', 'mobile-contact-bar' ),
 					'label'   => __( 'Slow down toggle animation', 'mobile-contact-bar' ),
 				),
 			),
