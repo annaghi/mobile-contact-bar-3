@@ -114,8 +114,14 @@ final class Mobile_Contact_Bar_Renderer {
 
 			<div id="mobile-contact-bar">
 
-			<?php if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] ) : ?>
-				<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox">
+			<?php
+			if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] ) :
+				$checked = 'closed' === self::$option['settings']['toggle']['state'];
+				if ( self::$option['settings']['toggle']['is_cookie'] && isset( $_COOKIE['mobile_contact_bar_toggle'] ) ) {
+					$checked = 'closed' === $_COOKIE['mobile_contact_bar_toggle'];
+				}
+				?>
+				<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox" <?php checked( true, $checked, true ); ?>>
 
 				<label for="mobile-contact-bar-toggle-checkbox" id="mobile-contact-bar-toggle">
 				<?php if ( $settings['toggle']['label'] ) : ?>
