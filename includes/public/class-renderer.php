@@ -38,17 +38,15 @@ final class Mobile_Contact_Bar_Renderer {
 				}
 			);
 
-			$is_moble = wp_is_mobile();
-			$device   = self::$option['settings']['bar']['device'];
+			$device    = self::$option['settings']['general']['device'];
+			$detection = self::$option['settings']['general']['device_detection'];
 
-			if ( self::$option['contacts'] ) {
-				if (
-					( $is_moble && 'mobile' === $device )
-					||
-					( ! $is_moble && 'desktop' === $device )
-					||
-					( 'both' === $device )
-				) {
+			if ( self::$option['contacts'] && 'none' !== $device ) {
+
+				$is_mobile  = 'php' === $detection && 'mobile' === $device && wp_is_mobile();
+				$is_desktop = 'php' === $detection && 'desktop' === $device && ! wp_is_mobile();
+
+				if ( $is_mobile || $is_desktop || 'both' === $device || 'css' === $detection ) {
 					add_action( 'wp_enqueue_scripts', array( __CLASS__, 'wp_enqueue_scripts' ) );
 					add_action( 'wp_footer', array( __CLASS__, 'wp_footer' ) );
 				}
@@ -68,7 +66,7 @@ final class Mobile_Contact_Bar_Renderer {
 			'mobile-contact-bar',
 			plugins_url( 'assets/css/public.min.css', MOBILE_CONTACT_BAR__PATH ),
 			array(),
-			'5.0.13',
+			'5.1.0',
 			'all'
 		);
 

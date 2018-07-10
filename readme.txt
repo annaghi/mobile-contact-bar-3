@@ -78,7 +78,7 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 = First time Mobile Contact Bar user =
 
 Thank you for choosing Mobile Contact Bar! In order to create your bar, simply activate the plugin and visit the plugin's settings page by clicking on *Settings &rarr; Mobile Contact Bar* in your left navigation menu.
-Once the plugin page loads, open the *Bar* box, choose the *Display on Devices* option, select the device type to enable the bar and then press the *Save Changes* button at the bottom of the page.
+Once the plugin page loads, open the *General* box, choose the *Display on Devices* option, select the device type to enable the bar and then press the *Save Changes* button at the bottom of the page.
 Mobile Contact Bar will automatically create a default bar with an envelope icon, which uses the email address of your site's admin.
 
 = Adding icons to your bar =

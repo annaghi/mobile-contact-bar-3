@@ -290,11 +290,13 @@ final class Mobile_Contact_Bar_Option {
 					'<fieldset class="mcb-radio-label-wrap" id="%s">',
 					esc_attr( $id )
 				);
+				$class = ( 'vertical' === $args['setting']['align'] ) ? 'mcb-radio-v' : 'mcb-radio-h';
 				foreach ( $args['setting']['options'] as $value => $label ) {
 					printf(
-						'<label class="mcb-radio-label" for="%1$s--%3$s">
-                            <input type="radio" id="%1$s--%3$s" name="%2$s" value="%3$s" %4$s>%5$s
+						'<label class="mcb-radio-label %1$s" for="%2$s--%4$s">
+                            <input type="radio" id="%2$s--%4$s" name="%3$s" value="%4$s" %5$s>%6$s
                         </label>',
+						esc_attr( $class ),
 						esc_attr( $id ),
 						esc_attr( $name ),
 						esc_attr( $value ),
@@ -756,10 +758,11 @@ final class Mobile_Contact_Bar_Option {
 	 * @return array            The updated option
 	 */
 	public static function pre_update_option( $new_value ) {
-		$bar    = $new_value['settings']['bar'];
-		$icons  = $new_value['settings']['icons'];
-		$toggle = $new_value['settings']['toggle'];
-		$badges = ( isset( $new_value['settings']['badges'] ) ) ? $new_value['settings']['badges'] : null;
+		$general = $new_value['settings']['general'];
+		$bar     = $new_value['settings']['bar'];
+		$icons   = $new_value['settings']['icons'];
+		$toggle  = $new_value['settings']['toggle'];
+		$badges  = ( isset( $new_value['settings']['badges'] ) ) ? $new_value['settings']['badges'] : null;
 
 		$contacts       = array_filter(
 			$new_value['contacts'], function( $contact ) {
@@ -1092,6 +1095,11 @@ final class Mobile_Contact_Bar_Option {
 					$styles .= '}';
 					break;
 			}
+		}
+
+		// Add @media query.
+		if ( 'css' === $general['device_detection'] ) {
+			$styles .= '@media screen and (min-width:' . $general['max_screen_width'] . 'px){#mobile-contact-bar{display:none;}}';
 		}
 
 		$new_value['styles'] = $styles;

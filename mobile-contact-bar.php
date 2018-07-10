@@ -41,7 +41,6 @@ if ( is_admin() ) {
 		add_action( 'plugins_loaded', array( 'Mobile_Contact_Bar_Upgrader', 'plugins_loaded' ) );
 	}
 
-
 	// Plugin load.
 	include_once $mobile_contact_bar_dir . 'includes/admin/class-updater.php';
 	include_once $mobile_contact_bar_dir . 'includes/admin/class-page.php';
@@ -56,9 +55,9 @@ if ( is_admin() ) {
 	// Plugin update.
 	add_action( 'upgrader_process_complete', array( 'Mobile_Contact_Bar_Page', 'upgrader_process_complete' ), 10, 2 );
 
+	/* Public functionality */
 } else {
 
-	/* Public functionality */
 	if ( get_option( 'mcb_option' ) ) {
 		include_once plugin_dir_path( __FILE__ ) . 'includes/public/class-renderer-v1.php';
 		add_action( 'plugins_loaded', array( 'Mobile_Contact_Bar_Renderer_V1', 'plugins_loaded' ) );

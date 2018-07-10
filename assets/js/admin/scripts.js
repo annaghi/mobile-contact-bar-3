@@ -225,7 +225,7 @@
 
       // init row classes
       // bind toggle children settings
-      $('#mcb-table-bar tbody, #mcb-table-icons tbody, #mcb-table-toggle tbody').initSettings()
+      $('.mcb-settings tbody').each(function () { $(this).initSettings() })
 
       // init row classes, data-contact-id, toggle buttons
       // bind sortables
