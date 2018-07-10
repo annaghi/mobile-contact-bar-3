@@ -80,12 +80,37 @@ final class Mobile_Contact_Bar_Page {
 				foreach ( $blog_ids as $blog_id ) {
 					switch_to_blog( $blog_id );
 
-					self::update_plugin_options( $default_option );
+					Mobile_Contact_Bar_Updater::update_plugin_options( $default_option );
 
 					restore_current_blog();
 				}
 			} else {
-				self::update_plugin_options( $default_option );
+				Mobile_Contact_Bar_Updater::update_plugin_options( $default_option );
+			}
+		}
+	}
+
+
+
+	/**
+	 * Sets transient for update.
+	 *
+	 * @since 2.1.0
+	 *
+	 * @param object $upgrader   WP_Upgrader object.
+	 * @param array  $hook_extra Plugins info.
+	 */
+	public static function upgrader_process_complete( $upgrader, $hook_extra ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+		if ( is_array( $hook_extra ) && isset( $hook_extra['action'] ) && isset( $hook_extra['type'] ) && isset( $hook_extra['plugins'] ) ) {
+			if ( 'update' === $hook_extra['action'] && 'plugin' === $hook_extra['type'] && is_array( $hook_extra['plugins'] ) && ! empty( $hook_extra['plugins'] ) ) {
+				$this_plugin = plugin_basename( MOBILE_CONTACT_BAR__PATH );
+
+				foreach ( $hook_extra['plugins'] as $plugin ) {
+					if ( $this_plugin === $plugin ) {
+						set_transient( MOBILE_CONTACT_BAR__NAME . '_updated', 1 );
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -98,11 +123,18 @@ final class Mobile_Contact_Bar_Page {
 	 * @since 0.0.1
 	 */
 	public static function plugins_loaded() {
+		if ( get_transient( MOBILE_CONTACT_BAR__NAME . '_updated' ) ) {
+			$default_option = self::default_option();
+			Mobile_Contact_Bar_Updater::update_plugin_options( $default_option );
+
+			delete_transient( MOBILE_CONTACT_BAR__NAME . '_updated' );
+		}
+
 		$basename = plugin_basename( MOBILE_CONTACT_BAR__PATH );
 
 		load_plugin_textdomain( 'mobile-contact-bar', false, dirname( $basename ) . '/languages' );
 
-		add_action( 'init', array( __CLASS__, 'init' ) );
+		add_action( 'init', array( __CLASS__, 'init' ) ); /* Remove in > v2.1.0 */
 		add_action( 'wpmu_new_blog', array( __CLASS__, 'wpmu_new_blog' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_boxes' ) );
@@ -114,8 +146,7 @@ final class Mobile_Contact_Bar_Page {
 
 
 	/**
-	 * Updates plugin version
-	 * Restores option
+	 * Checks if update is needed and calls the updater.
 	 *
 	 * @since 2.0.1
 	 */
@@ -124,7 +155,7 @@ final class Mobile_Contact_Bar_Page {
 
 		if ( version_compare( $version, MOBILE_CONTACT_BAR__VERSION, '<' ) ) {
 			$default_option = self::default_option();
-			self::update_plugin_options( $default_option );
+			Mobile_Contact_Bar_Updater::update_plugin_options( $default_option );
 		}
 	}
 
@@ -193,25 +224,25 @@ final class Mobile_Contact_Bar_Page {
 			<h2><?php esc_html_e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?></h2>
 
 			<form id="mcb-form" action="options.php" method="post">
-				<?php
-				settings_fields( MOBILE_CONTACT_BAR__NAME . '_group' );
-				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
-				wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false );
-				?>
+			<?php
+			settings_fields( MOBILE_CONTACT_BAR__NAME . '_group' );
+			wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
+			wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false );
+			?>
 
 				<div id="poststuff">
 					<div id="post-body" class="metabox-holder columns-<?php echo ( 1 === get_current_screen()->get_columns() ) ? '1' : '2'; ?>">
 
 						<div id="postbox-container-2" class="postbox-container">
-							<?php do_meta_boxes( self::$page, 'advanced', null ); ?>
+						<?php do_meta_boxes( self::$page, 'advanced', null ); ?>
 						</div><!-- #postbox-container-2 -->
 
 						<div id="postbox-container-1" class="postbox-container">
-							<?php do_meta_boxes( self::$page, 'side', null ); ?>
+						<?php do_meta_boxes( self::$page, 'side', null ); ?>
 						</div><!-- #postbox-container-1 -->
 
 						<div id="post-body-content">
-							<?php submit_button(); ?>
+						<?php submit_button(); ?>
 						</div>
 
 					</div><!-- #post-body -->
@@ -225,7 +256,7 @@ final class Mobile_Contact_Bar_Page {
 
 		</div>
 		<div class="clear"></div>
-		<?php
+			<?php
 	}
 
 
@@ -373,7 +404,7 @@ final class Mobile_Contact_Bar_Page {
 
 		?>
 		<div id="mcb-model">
-			<?php include_once plugin_dir_path( MOBILE_CONTACT_BAR__PATH ) . 'assets/images/real-time-model.svg'; ?>
+		<?php include_once plugin_dir_path( MOBILE_CONTACT_BAR__PATH ) . 'assets/images/real-time-model.svg'; ?>
 			<footer><em><sup>*</sup> <?php esc_html_e( 'The model is an approximation. A lot depends on your active theme"s styles.', 'mobile-contact-bar' ); ?></em></footer>
 		</div>
 
@@ -386,16 +417,18 @@ final class Mobile_Contact_Bar_Page {
 				<li><a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/mobile-contact-bar' ); ?>" target="_blank"><?php esc_html_e( 'Requests', 'mobile-contact-bar' ); ?></a></li>
 			</ul>
 			<footer>
-				<?php
-				echo wp_kses_post( sprintf(
+			<?php
+			echo wp_kses_post(
+				sprintf(
 					/* translators: %s plugin URI */
 					__( 'Thank you for networking with <a href="%s">MCB</a>.', 'mobile-contact-bar' ),
 					esc_url( $plugin_data['Plugin URI'] )
-				));
-				?>
+				)
+			);
+			?>
 			</footer>
 		</div>
-		<?php
+			<?php
 	}
 
 
@@ -452,10 +485,10 @@ final class Mobile_Contact_Bar_Page {
 	public static function render_help_tab_tel() {
 		?>
 		<h4><?php esc_html_e( 'Initiating phone or mobile audio calls', 'mobile-contact-bar' ); ?></h4>
-		<?php echo wp_kses_post( __( '<code>tel:+1-541-754-3010</code> or <code>tel:+15417543010</code>', 'mobile-contact-bar' ) ); ?>
+			<?php echo wp_kses_post( __( '<code>tel:+1-541-754-3010</code> or <code>tel:+15417543010</code>', 'mobile-contact-bar' ) ); ?>
 		<p><?php esc_html_e( 'Use the international dialing format: the plus sign (<code>+</code>), country code, area code, and number. You can separate each segment of the number with a hyphen (<code>-</code>) for easier reading.', 'mobile-contact-bar' ); ?></p>
 		<p class="mcb-tab-status-green"><?php esc_html_e( 'Standardised protocol', 'mobile-contact-bar' ); ?></p>
-		<?php
+			<?php
 	}
 
 
@@ -468,7 +501,7 @@ final class Mobile_Contact_Bar_Page {
 	public static function render_help_tab_sms() {
 		?>
 		<h4><?php esc_html_e( 'Sending text messages to mobile phones', 'mobile-contact-bar' ); ?></h4>
-		<?php echo wp_kses_post( __( '<code>sms:+1-541-754-3010</code> or <code>sms:+15417543010</code>', 'mobile-contact-bar' ) ); ?>
+			<?php echo wp_kses_post( __( '<code>sms:+1-541-754-3010</code> or <code>sms:+15417543010</code>', 'mobile-contact-bar' ) ); ?>
 		<p><?php esc_html_e( 'Use the international dialing format: the plus sign (<code>+</code>), country code, area code, and number. You can separate each segment of the number with a hyphen (<code>-</code>) for easier reading.', 'mobile-contact-bar' ); ?></p>
 		<p><?php esc_html_e( 'Optional query parameter:', 'mobile-contact-bar' ); ?></p>
 		<ul class="mcb-query-parameters">
@@ -478,7 +511,7 @@ final class Mobile_Contact_Bar_Page {
 			</li>
 		</ul>
 		<p class="mcb-tab-status-yellow"><?php esc_html_e( 'Inconsistent protocol', 'mobile-contact-bar' ); ?></p>
-		<?php
+			<?php
 	}
 
 
@@ -491,7 +524,7 @@ final class Mobile_Contact_Bar_Page {
 	public static function render_help_tab_mailto() {
 		?>
 		<h4><?php esc_html_e( 'Sending emails to email addresses', 'mobile-contact-bar' ); ?></h4>
-		<?php echo wp_kses_post( __( '<code>mailto:someone@domain.com</code>', 'mobile-contact-bar' ) ); ?>
+			<?php echo wp_kses_post( __( '<code>mailto:someone@domain.com</code>', 'mobile-contact-bar' ) ); ?>
 		<p><?php esc_html_e( 'Optional query parameters:', 'mobile-contact-bar' ); ?></p>
 		<ul class="mcb-query-parameters">
 			<li>
@@ -512,7 +545,7 @@ final class Mobile_Contact_Bar_Page {
 			</li>
 		</ul>
 		<p class="mcb-tab-status-green"><?php esc_html_e( 'Standardised protocol', 'mobile-contact-bar' ); ?></p>
-		<?php
+			<?php
 	}
 
 
@@ -525,12 +558,12 @@ final class Mobile_Contact_Bar_Page {
 	public static function render_help_tab_http() {
 		?>
 		<h4><?php esc_html_e( 'Linking to web pages on your or others websites', 'mobile-contact-bar' ); ?></h4>
-		<?php echo wp_kses_post( __( '<code>http://domain.com</code> or <code>http://domain.com/path/to/page</code>', 'mobile-contact-bar' ) ); ?>
+			<?php echo wp_kses_post( __( '<code>http://domain.com</code> or <code>http://domain.com/path/to/page</code>', 'mobile-contact-bar' ) ); ?>
 		<p><?php esc_html_e( 'For secure websites using SSL to encrypt data and authenticate the website use the <code>https</code> protocol:', 'mobile-contact-bar' ); ?></p>
-		<?php echo wp_kses_post( __( '<code>https://domain.com</code> or <code>https://domain.com/path/to/page</code>', 'mobile-contact-bar' ) ); ?>
+			<?php echo wp_kses_post( __( '<code>https://domain.com</code> or <code>https://domain.com/path/to/page</code>', 'mobile-contact-bar' ) ); ?>
 		<p><?php esc_html_e( 'You can append query parameters to URLs using the', 'mobile-contact-bar' ); ?> <span class="mcb-tab-button button"><i class="fas fa-plus fa-sm" aria-hidden="true"></i></span> <?php esc_html_e( 'button', 'mobile-contact-bar' ); ?></p>
 		<p class="mcb-tab-status-green"><?php esc_html_e( 'Standardised protocol', 'mobile-contact-bar' ); ?></p>
-		<?php
+			<?php
 	}
 
 
@@ -543,11 +576,11 @@ final class Mobile_Contact_Bar_Page {
 	public static function render_help_tab_skype() {
 		?>
 		<h4><?php esc_html_e( 'Sending instant messages to other Skype users, phones, or mobiles', 'mobile-contact-bar' ); ?></h4>
-		<?php echo wp_kses_post( __( '<code>skype:username?chat</code> or <code>skype:+phone-number?chat</code>', 'mobile-contact-bar' ) ); ?>
+			<?php echo wp_kses_post( __( '<code>skype:username?chat</code> or <code>skype:+phone-number?chat</code>', 'mobile-contact-bar' ) ); ?>
 		<h4><?php esc_html_e( 'Initiating audio calls to other Skype users, phones, or mobiles', 'mobile-contact-bar' ); ?></h4>
-		<?php echo wp_kses_post( __( '<code>skype:username?call</code> or <code>skype:+phone-number?call</code>', 'mobile-contact-bar' ) ); ?>
+			<?php echo wp_kses_post( __( '<code>skype:username?call</code> or <code>skype:+phone-number?call</code>', 'mobile-contact-bar' ) ); ?>
 		<p class="mcb-tab-status-yellow"><?php esc_html_e( 'Inconsistent protocol', 'mobile-contact-bar' ); ?></p>
-		<?php
+			<?php
 	}
 
 
@@ -630,43 +663,6 @@ final class Mobile_Contact_Bar_Page {
 			'contacts' => $option['contacts'],
 			'styles'   => $option['styles'],
 		);
-	}
-
-
-
-	/**
-	 * Updates version, repairs or creates plugin option.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param array $default_option Default option.
-	 */
-	private static function update_plugin_options( $default_option ) {
-		$option = get_option( MOBILE_CONTACT_BAR__NAME );
-
-		if ( $option ) {
-			$damaged = false;
-
-			// Repair 'settings'.
-			foreach ( $default_option['settings'] as $section_id => $section ) {
-				foreach ( $section as $setting_id => $setting ) {
-					if ( ! isset( $option['settings'][ $section_id ][ $setting_id ] ) ) {
-						$option['settings'][ $section_id ][ $setting_id ] = $setting;
-						$damaged = true;
-					}
-				}
-			}
-
-			// Repair 'styles'.
-			if ( ! isset( $option['styles'] ) || ! $option['styles'] || $damaged ) {
-				$option = Mobile_Contact_Bar_Option::pre_update_option( $option );
-			}
-			update_option( MOBILE_CONTACT_BAR__NAME, $option );
-		} else {
-			add_option( MOBILE_CONTACT_BAR__NAME, $default_option );
-		}
-
-		update_option( MOBILE_CONTACT_BAR__NAME . '_version', MOBILE_CONTACT_BAR__VERSION );
 	}
 
 }

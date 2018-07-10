@@ -619,7 +619,6 @@ final class Mobile_Contact_Bar_Option {
 		}
 		unset( $section );
 
-		// Sanitize settings.
 		foreach ( self::$settings as $section_id => $section ) {
 			foreach ( $section as $setting_id => $setting ) {
 				$value = $settings[ $section_id ][ $setting_id ];
@@ -740,7 +739,10 @@ final class Mobile_Contact_Bar_Option {
 		self::$option['settings'] = $sanitized_settings;
 		self::$option['contacts'] = $sanitized_contacts;
 
-		return self::$option;
+		return array(
+			'settings' => $sanitized_settings,
+			'contacts' => $sanitized_contacts,
+		);
 	}
 
 
