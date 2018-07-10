@@ -74,6 +74,7 @@ final class Mobile_Contact_Bar_Settings {
 					'max'     => 1,
 					'step'    => 0.05,
 					'title'   => __( 'Bar Opacity', 'mobile-contact-bar' ),
+					'desc'    => __( 'You can set transparency individually on each color with the Color Pickers\' horizontal slider.', 'mobile-contact-bar' ),
 				),
 				'height'              => array(
 					'type'    => 'number',
