@@ -38,17 +38,15 @@ final class Mobile_Contact_Bar_Renderer {
 				}
 			);
 
-			$is_moble = wp_is_mobile();
-			$device   = self::$option['settings']['bar']['device'];
+			$device    = self::$option['settings']['general']['device'];
+			$detection = self::$option['settings']['general']['device_detection'];
 
-			if ( self::$option['contacts'] ) {
-				if (
-					( $is_moble && 'mobile' === $device )
-					||
-					( ! $is_moble && 'desktop' === $device )
-					||
-					( 'both' === $device )
-				) {
+			if ( self::$option['contacts'] && 'none' !== $device ) {
+
+				$is_mobile  = 'php' === $detection && 'mobile' === $device && wp_is_mobile();
+				$is_desktop = 'php' === $detection && 'desktop' === $device && ! wp_is_mobile();
+
+				if ( $is_mobile || $is_desktop || 'both' === $device || 'css' === $detection ) {
 					add_action( 'wp_enqueue_scripts', array( __CLASS__, 'wp_enqueue_scripts' ) );
 					add_action( 'wp_footer', array( __CLASS__, 'wp_footer' ) );
 				}
@@ -68,7 +66,7 @@ final class Mobile_Contact_Bar_Renderer {
 			'mobile-contact-bar',
 			plugins_url( 'assets/css/public.min.css', MOBILE_CONTACT_BAR__PATH ),
 			array(),
-			'5.0.13',
+			'5.1.0',
 			'all'
 		);
 
@@ -116,8 +114,14 @@ final class Mobile_Contact_Bar_Renderer {
 
 			<div id="mobile-contact-bar">
 
-			<?php if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] ) : ?>
-				<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox">
+			<?php
+			if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] ) :
+				$checked = 'closed' === self::$option['settings']['toggle']['state'];
+				if ( self::$option['settings']['toggle']['is_cookie'] && isset( $_COOKIE['mobile_contact_bar_toggle'] ) ) {
+					$checked = 'closed' === $_COOKIE['mobile_contact_bar_toggle'];
+				}
+				?>
+				<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox" <?php checked( true, $checked, true ); ?>>
 
 				<label for="mobile-contact-bar-toggle-checkbox" id="mobile-contact-bar-toggle">
 				<?php if ( $settings['toggle']['label'] ) : ?>

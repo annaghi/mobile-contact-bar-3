@@ -102,7 +102,7 @@ final class Mobile_Contact_Bar_Upgrader {
 		if ( get_transient( MOBILE_CONTACT_BAR__NAME . '_upgraded_info' ) ) {
 			?>
 			<div class="notice notice-info notice is-dismissible">
-				<p><?php esc_html_e( 'The bar rendering method has been changed, please check the "Display on Devices" option in the "Bar" box.', 'mobile-contact-bar' ); ?></p>
+				<p><?php esc_html_e( 'The bar rendering method has been changed, please check the options in the "General" box.', 'mobile-contact-bar' ); ?></p>
 			</div>
 			<?php
 
@@ -222,9 +222,11 @@ final class Mobile_Contact_Bar_Upgrader {
 			/* SETTINGS */
 
 			if ( $old_settings && isset( $old_option['styles'] ) ) {
-				$new_settings['bar']['device']              = ( $old_settings['bar_max_screen_width'] > 1400 ) ? 'both' : 'mobile';
-				$new_settings['bar']['device']              = ( ! $old_settings['bar_is_active'] || ! $old_contacts ) ? 'none' : $new_settings['bar']['device'];
-				$new_settings['bar']['is_new_tab']          = ( isset( $old_settings['bar_is_new_tab'] ) ) ? $old_settings['bar_is_new_tab'] : 0;
+				$new_settings['general']['device']           = ( $old_settings['bar_is_active'] ) ? 'both' : 'none';
+				$new_settings['general']['device_detection'] = 'css';
+				$new_settings['general']['max_screen_width'] = $old_settings['bar_max_screen_width'];
+				$new_settings['general']['is_new_tab']       = ( isset( $old_settings['bar_is_new_tab'] ) ) ? $old_settings['bar_is_new_tab'] : 0;
+
 				$new_settings['bar']['color']               = $old_settings['bar_color'];
 				$new_settings['bar']['opacity']             = $old_settings['bar_opacity'];
 				$new_settings['bar']['height']              = $old_settings['bar_height'];
