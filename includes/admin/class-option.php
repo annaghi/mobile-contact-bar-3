@@ -108,10 +108,12 @@ final class Mobile_Contact_Bar_Option {
 					'setting'    => $setting,
 				);
 
-				if ( isset( $setting['parent'] ) ) {
-					$args['class'] = 'hidden mcb-child mcb-parent-' . $section_id . '-' . $setting['parent'];
-				} elseif ( isset( $setting['trigger'] ) ) {
-					$args['class'] = 'mcb-parent mcb-parent-' . $section_id . '-' . $setting_id . ' mcb-trigger-' . $setting['trigger'];
+				$args['class'] = 'mcb-setting-' . $section_id . '-' . $setting_id;
+				if ( isset( $setting['visible'] ) ) {
+					$args['class'] .= ' hidden mcb-child';
+					foreach ( $setting['visible'] as $parent => $trigger ) {
+						$args['class'] .= ' mcb-parent-' . $parent . '--' . $trigger;
+					}
 				}
 
 				add_settings_field(

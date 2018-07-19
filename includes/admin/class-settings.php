@@ -66,7 +66,6 @@ final class Mobile_Contact_Bar_Settings {
 						'php' => __( 'PHP - Official way of device detection (see wp_is_mobile)', 'mobile-contact-bar' ),
 						'css' => __( 'CSS - Media query, useful if you are using a cache plugin without mobile support', 'mobile-contact-bar' ),
 					),
-					'trigger' => '==css',
 				),
 				'max_screen_width' => array(
 					'type'    => 'number',
@@ -75,7 +74,9 @@ final class Mobile_Contact_Bar_Settings {
 					'title'   => __( 'Max Screen Width', 'mobile-contact-bar' ),
 					'postfix' => 'px',
 					'desc'    => __( 'The bar will be displayed on those screens where the width is below of this value.', 'mobile-contact-bar' ),
-					'parent'  => 'device_detection',
+					'visible' => array(
+						'general-device_detection' => '==css',
+					),
 				),
 				'is_new_tab'       => array(
 					'type'    => 'checkbox',
@@ -114,7 +115,6 @@ final class Mobile_Contact_Bar_Settings {
 					'max'     => 100,
 					'title'   => __( 'Bar Width', 'mobile-contact-bar' ),
 					'postfix' => '%',
-					'trigger' => '<100',
 				),
 				'horizontal_position' => array(
 					'type'    => 'radio',
@@ -127,7 +127,9 @@ final class Mobile_Contact_Bar_Settings {
 						'center' => __( 'center', 'mobile-contact-bar' ),
 						'right'  => __( 'right', 'mobile-contact-bar' ),
 					),
-					'parent'  => 'width',
+					'visible' => array(
+						'bar-width' => '<100',
+					),
 				),
 				'vertical_position'   => array(
 					'type'    => 'radio',
@@ -175,13 +177,14 @@ final class Mobile_Contact_Bar_Settings {
 						'two'  => __( 'top and bottom', 'mobile-contact-bar' ),
 						'none' => __( 'no border', 'mobile-contact-bar' ),
 					),
-					'trigger' => '!=none',
 				),
 				'border_color'        => array(
 					'type'    => 'color-picker',
 					'default' => '#174b38',
 					'title'   => __( 'Border Color', 'mobile-contact-bar' ),
-					'parent'  => 'is_border',
+					'visible' => array(
+						'bar-is_border' => '!=none',
+					),
 				),
 				'border_width'        => array(
 					'type'    => 'number',
@@ -190,7 +193,9 @@ final class Mobile_Contact_Bar_Settings {
 					'max'     => 100,
 					'title'   => __( 'Border Width', 'mobile-contact-bar' ),
 					'postfix' => 'px',
-					'parent'  => 'is_border',
+					'visible' => array(
+						'bar-is_border' => '!=none',
+					),
 				),
 			),
 
@@ -229,7 +234,6 @@ final class Mobile_Contact_Bar_Settings {
 						'justified' => __( 'justified', 'mobile-contact-bar' ),
 						'centered'  => __( 'centered', 'mobile-contact-bar' ),
 					),
-					'trigger' => '==centered',
 				),
 				'width'        => array(
 					'type'    => 'number',
@@ -237,7 +241,9 @@ final class Mobile_Contact_Bar_Settings {
 					'min'     => 0,
 					'title'   => __( 'Icon Width', 'mobile-contact-bar' ),
 					'postfix' => 'px',
-					'parent'  => 'alignment',
+					'visible' => array(
+						'icons-alignment' => '==centered',
+					),
 				),
 				'is_border'    => array(
 					'type'    => 'radio',
@@ -249,13 +255,14 @@ final class Mobile_Contact_Bar_Settings {
 						'four' => __( 'all around', 'mobile-contact-bar' ),
 						'none' => __( 'no border', 'mobile-contact-bar' ),
 					),
-					'trigger' => '!=none',
 				),
 				'border_color' => array(
 					'type'    => 'color-picker',
 					'default' => '#ffffff',
 					'title'   => __( 'Border Color', 'mobile-contact-bar' ),
-					'parent'  => 'is_border',
+					'visible' => array(
+						'icons-is_border' => '!=none',
+					),
 				),
 				'border_width' => array(
 					'type'    => 'number',
@@ -264,7 +271,9 @@ final class Mobile_Contact_Bar_Settings {
 					'max'     => 100,
 					'title'   => __( 'Border Width', 'mobile-contact-bar' ),
 					'postfix' => 'px',
-					'parent'  => 'is_border',
+					'visible' => array(
+						'icons-is_border' => '!=none',
+					),
 				),
 			),
 
