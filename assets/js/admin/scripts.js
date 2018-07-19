@@ -54,54 +54,38 @@
     }
 
     tbody.children('.mcb-child').each(function () {
-      var parentClass = '.' + $(this).classList().find(function (klass) { return klass.startsWith('mcb-parent-') })
+      var self = this
+      var classes = self.classList
+      var parent
 
-      var parent = tbody.children('.mcb-parent' + parentClass)
+      for (var i = 0; i < classes.length; i++) {
+        if (classes[i].startsWith('mcb-parent-')) {
+          var tmp = classes[i].split('--')
+          parent = tmp[0].replace('parent', 'setting')
+          parent = tbody.children('.' + parent)
 
-      var trigger = parent.classList().find(function (klass) { return klass.startsWith('mcb-trigger-') })
+          var match = tmp[1].match(/^([^a-zA-Z0-9]+)(.+)$/)
+          var operator = match[1]
+          var operands = match[2].split(',')
+          var value = '' + parent.find('input').getValue()
 
-      var match = trigger.match(/^mcb-trigger-([^a-zA-Z0-9]+)(.+)$/)
+          if (operators[operator](value, operands)) {
+            $(self).fadeIn(500)
+          } else {
+            $(self).fadeOut(500)
+          }
 
-      var operator = match[1]
-
-      var operands = match[2].split(',')
-
-      var value = '' + parent.find('input').getValue()
-
-      if (operators[operator](value, operands)) {
-        $(this).fadeIn(500)
-      } else {
-        $(this).fadeOut(500)
-      }
-    })
-
-    tbody.children('.mcb-parent').each(function () {
-      var self = $(this)
-
-      var parentClass = '.' + self.classList().find(function (klass) { return klass.startsWith('mcb-parent-') })
-
-      var children = tbody.children('.mcb-child' + parentClass)
-
-      var trigger = self.classList().find(function (klass) { return klass.startsWith('mcb-trigger-') })
-
-      var match = trigger.match(/^mcb-trigger-([^a-zA-Z0-9]+)(.+)$/)
-
-      var operator = match[1]
-
-      var operands = match[2].split(',')
-
-      var value
-
-      // bind toggle event to parent
-      self.find('input, option').on('change input', function () {
-        value = '' + $(this).getValue()
-
-        if (operators[operator](value, operands)) {
-          children.each(function () { $(this).fadeIn(500) })
-        } else {
-          children.each(function () { $(this).fadeOut(500) })
+          // bind toggle event to parent
+          parent.find('input, option').on('change input', function () {
+            value = '' + $(this).getValue()
+            if (operators[operator](value, operands)) {
+              $(self).fadeIn(500)
+            } else {
+              $(self).fadeOut(500)
+            }
+          })
         }
-      })
+      }
     })
 
     return this
@@ -193,10 +177,6 @@
         break
     }
     return value
-  }
-
-  $.fn.classList = function () {
-    return this[0].className.split(/\s+/)
   }
 
   $.fn.maxId = function (rowType) {

@@ -67,7 +67,7 @@ final class Mobile_Contact_Bar_Option {
 	public static function init() {
 		self::$option   = get_option( MOBILE_CONTACT_BAR__NAME );
 		self::$settings = Mobile_Contact_Bar_Settings::settings();
-		foreach ( glob( plugin_dir_path( MOBILE_CONTACT_BAR__PATH ) . 'includes/contacts/class-*.php' ) as $path ) {
+		foreach ( glob( plugin_dir_path( MOBILE_CONTACT_BAR__PATH ) . 'includes/shared/contacts/class-*.php' ) as $path ) {
 			self::$contact_types[] = substr( basename( $path, '.php' ), 6 );
 		}
 	}
@@ -108,10 +108,12 @@ final class Mobile_Contact_Bar_Option {
 					'setting'    => $setting,
 				);
 
-				if ( isset( $setting['parent'] ) ) {
-					$args['class'] = 'hidden mcb-child mcb-parent-' . $section_id . '-' . $setting['parent'];
-				} elseif ( isset( $setting['trigger'] ) ) {
-					$args['class'] = 'mcb-parent mcb-parent-' . $section_id . '-' . $setting_id . ' mcb-trigger-' . $setting['trigger'];
+				$args['class'] = 'mcb-setting-' . $section_id . '-' . $setting_id;
+				if ( isset( $setting['visible'] ) ) {
+					$args['class'] .= ' hidden mcb-child';
+					foreach ( $setting['visible'] as $parent => $trigger ) {
+						$args['class'] .= ' mcb-parent-' . $parent . '--' . $trigger;
+					}
 				}
 
 				add_settings_field(
