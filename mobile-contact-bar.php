@@ -72,9 +72,9 @@ if ( is_admin() ) {
 /* Shared functionality */
 $mobile_contact_bar_dir = plugin_dir_path( __FILE__ );
 
-require_once $mobile_contact_bar_dir . 'includes/class-validator.php';
+require_once $mobile_contact_bar_dir . 'includes/shared/class-validator.php';
 
-foreach ( glob( $mobile_contact_bar_dir . 'includes/contacts/class-*.php' ) as $path ) {
+foreach ( glob( $mobile_contact_bar_dir . 'includes/shared/contacts/class-*.php' ) as $path ) {
 	include_once $path;
 
 	$mobile_contact_bar_type       = substr( basename( $path, '.php' ), 6 );
