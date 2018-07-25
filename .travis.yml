@@ -1,39 +1,76 @@
-language: php
-
 sudo: false
 
-cache:
-  directories:
-    - $HOME/.npm
-    - $HOME/.composer/cache
-    - vendor
+language: php
 
 before_install:
   - nvm install && nvm use
   - npm install npm -g
 
-jobs:
+cache:
+  directories:
+    - $HOME/.npm
+    - $HOME/.composer/cache
+
+matrix:
   include:
-    - stage: test
-      script:
-        - npm install
-        - npm run ci
-
-    - stage: test
-      php: 5.6
-      script:
-        - composer install
-        - vendor/bin/phpcs -p --standard=phpcs.xml.dist ./includes ./tests/*.php ./*.php
-
-    - stage: test
-      php: 7.2
+    - php: 7.1
       env: WP_VERSION=latest
-      script:
-        - bash tests/bin/install_wp_tests.sh mobile_contact_bar_test root '' localhost $WP_VERSION
-        - export PATH="$HOME/.composer/vendor/bin:$PATH"
-        - composer global require "phpunit/phpunit=6.*"
-        - WP_MULTISITE=0 phpunit
-        - WP_MULTISITE=1 phpunit
+    - php: 7.0
+      env: WP_VERSION=latest
+    - php: 5.6
+      env: WP_VERSION=4.2
+    - php: 5.6
+      env: WP_VERSION=latest
+    - php: 5.6
+      env: WP_VERSION=trunk
+    - php: 5.6
+      env: WP_TRAVISCI=phpcs
+    - php: 5.3
+      env: WP_VERSION=latest
+      dist: precise
+    - env: WP_TRAVISCI=node
+
+
+before_script:
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - |
+    if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
+      phpenv config-rm xdebug.ini
+    else
+      echo "xdebug.ini does not exist"
+    fi
+  - |
+    if [[ ! -z "$WP_VERSION" ]] ; then
+      bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+      composer global require "phpunit/phpunit=4.8.*|5.7.*"
+    fi
+  - |
+    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
+      composer global require wp-coding-standards/wpcs
+      composer global require phpcompatibility/php-compatibility
+      composer global require dealerdirect/phpcodesniffer-composer-installer
+    fi
+  - |
+    if [[ "$WP_TRAVISCI" == "node" ]] ; then
+      npm install
+    fi
+
+script:
+  - |
+    if [[ ! -z "$WP_VERSION" ]] ; then
+      WP_MULTISITE=0 phpunit
+      WP_MULTISITE=1 phpunit
+    fi
+  - |
+    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
+      phpcs
+    fi
+  - |
+    if [[ "$WP_TRAVISCI" == "node" ]] ; then
+      npm run ci
+    fi
+
+
 
 notifications:
   email:
