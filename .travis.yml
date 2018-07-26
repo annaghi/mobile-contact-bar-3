@@ -20,10 +20,12 @@ jobs:
   include:
     - stage: test
       language: node_js
+      cache: []
+      install:
+        - npm install
       before_script: []
       script:
         - npm run ci
-      cache: []
 
     - stage: test
       php: 5.3
