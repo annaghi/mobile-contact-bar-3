@@ -1,23 +1,8 @@
-sudo: false
-
 language: php
 
-php:
-  - '5.6'
-  - '7.0'
-  - '7.1'
+sudo: false
 
-env:
-  global:
-    - WP_VERSION=latest
-
-  matrix:
-    - PHPUNIT_VERSION="5.*"
-    - PHPUNIT_VERSION="6.*"
-    - PHPUNIT_VERSION="7.*"
-
-
-before_script:
+after_install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - |
     if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
@@ -25,19 +10,49 @@ before_script:
     else
       echo "xdebug.ini does not exist"
     fi
-  - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-  - composer global require phpunit/phpunit:${PHPUNIT_VERSION}
 
 
-script:
-  - WP_MULTISITE=0 phpunit
-  - WP_MULTISITE=1 phpunit
+jobs:
+  include:
+    - stage: test
+      language: node_js
+      install:
+        - nvm install && nvm use
+        - npm install npm -g
+      after_install: []
+      script:
+        - npm install
+        - npm run ci
+      cache:
+        directories:
+          - "$HOME/.nvm"
+          - "$HOME/.npm"
 
+    - stage: test
+      php: 5.3
+      dist: precise
+      before_script:
+        - composer global require wp-coding-standards/wpcs
+        - composer global require phpcompatibility/php-compatibility
+        - composer global require dealerdirect/phpcodesniffer-composer-installer
+      script:
+        - phpcs
+      cache:
+        directories:
+          - $HOME/.composer/cache
 
-cache:
-  directories:
-    - $HOME/.npm
-    - $HOME/.composer/cache
+    - stage: test
+      php: 5.6
+      env: WP_VERSION=latest
+      before_script:
+        - bash tests/bin/install_wp_tests.sh mobile_contact_bar_test root '' localhost $WP_VERSION
+        - composer global require "phpunit/phpunit=6.*"
+      script:
+        - WP_MULTISITE=0 phpunit
+        - WP_MULTISITE=1 phpunit
+      cache:
+        directories:
+          - $HOME/.composer/cache
 
 
 notifications:
