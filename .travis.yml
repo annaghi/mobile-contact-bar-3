@@ -21,7 +21,6 @@ jobs:
         - npm install npm -g
       before_script: []
       script:
-        - npm install
         - npm run ci
       cache:
         directories:
@@ -45,7 +44,7 @@ jobs:
       php: 5.6
       env: WP_VERSION=latest
       before_script:
-        - bash bin/install_wp_tests.sh mobile_contact_bar_test root '' localhost $WP_VERSION
+        - bash bin/install-wp-tests.sh mobile_contact_bar_test root '' localhost $WP_VERSION
         - composer global require "phpunit/phpunit=6.*"
       script:
         - WP_MULTISITE=0 phpunit
