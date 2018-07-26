@@ -11,14 +11,14 @@ before_script:
       echo "xdebug.ini does not exist"
     fi
   - |
-    if [[ ! -z "$PHPUNIT_VERSION" ]] ; then
+    if [[ ! -z "$WP_VERSION" ]] ; then
       bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+    fi
+  - |
+    if [[ ! -z "$PHPUNIT_VERSION" ]] ; then
       composer global require phpunit/phpunit=$PHPUNIT_VERSION
     fi
 
-script:
-  - WP_MULTISITE=0 phpunit
-  - WP_MULTISITE=1 phpunit
 
 cache:
   directories:
@@ -48,10 +48,16 @@ jobs:
     - stage: test
       php: 5.6
       env: WP_VERSION=4.2 PHPUNIT_VERSION=5.*
+      script:
+        - WP_MULTISITE=0 phpunit
+        - WP_MULTISITE=1 phpunit
 
     - stage: test
       php: 7.0
       env: WP_VERSION=latest PHPUNIT_VERSION=6.*
+      script:
+        - WP_MULTISITE=0 phpunit
+        - WP_MULTISITE=1 phpunit
 
 
 notifications:
