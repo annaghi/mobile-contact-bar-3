@@ -36,25 +36,19 @@ jobs:
     - stage: test
       php: 5.3
       dist: precise
-      env:
-        global:
-          - WP_VERSION=4.2
-          - PHPUNIT_VERSION="4.*"
+      env: WP_VERSION=4.2 PHPUNIT_VERSION="4.*"
       script:
         - bash bin/install-wp-tests.sh mobile_contact_bar_test root '' localhost $WP_VERSION
-        - composer global require phpunit/phpunit:${PHPUNIT_VERSION}
+        - composer global require phpunit/phpunit=${PHPUNIT_VERSION}
         - WP_MULTISITE=0 phpunit
         - WP_MULTISITE=1 phpunit
 
     - stage: test
       php: 7.0
-      env:
-        global:
-          - WP_VERSION=latest
-          - PHPUNIT_VERSION="6.*"
+      env: WP_VERSION=latest PHPUNIT_VERSION="6.*"
       script:
         - bash bin/install-wp-tests.sh mobile_contact_bar_test root '' localhost $WP_VERSION
-        - composer global require phpunit/phpunit:${PHPUNIT_VERSION}
+        - composer global require phpunit/phpunit=${PHPUNIT_VERSION}
         - WP_MULTISITE=0 phpunit
         - WP_MULTISITE=1 phpunit
 
