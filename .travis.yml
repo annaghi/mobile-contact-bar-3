@@ -14,10 +14,10 @@ env:
 
   matrix:
     - dist: precise
-      PHPUNIT_VERSION=4.*
-    - PHPUNIT_VERSION=5.*
-    - PHPUNIT_VERSION=6.*
-    - PHPUNIT_VERSION=6.*
+      PHPUNIT_VERSION="4.*"
+    - PHPUNIT_VERSION="5.*"
+    - PHPUNIT_VERSION="6.*"
+    - PHPUNIT_VERSION="6.*"
 
 
 before_script:
