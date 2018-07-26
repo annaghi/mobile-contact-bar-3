@@ -100,7 +100,7 @@ final class Mobile_Contact_Bar_Page {
 	 * @param object $upgrader   WP_Upgrader object.
 	 * @param array  $hook_extra Plugins info.
 	 */
-	public static function upgrader_process_complete( $upgrader, $hook_extra ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+	public static function upgrader_process_complete( $upgrader, $hook_extra ) {
 		if ( is_array( $hook_extra ) && isset( $hook_extra['action'] ) && isset( $hook_extra['type'] ) && isset( $hook_extra['plugins'] ) ) {
 			if ( 'update' === $hook_extra['action'] && 'plugin' === $hook_extra['type'] && is_array( $hook_extra['plugins'] ) && ! empty( $hook_extra['plugins'] ) ) {
 				$this_plugin = plugin_basename( MOBILE_CONTACT_BAR__PATH );

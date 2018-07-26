@@ -21,16 +21,16 @@ if ( is_multisite() ) {
 		switch_to_blog( $blog_id );
 
 		$mobile_contact_bar_plugin_options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'mobile_contact_bar%'" );
-		foreach ( $mobile_contact_bar_plugin_options as $option ) {
-			delete_option( $option->option_name );
+		foreach ( $mobile_contact_bar_plugin_options as $mobile_contact_bar_plugin_option ) {
+			delete_option( $mobile_contact_bar_plugin_option->option_name );
 		}
 
 		restore_current_blog();
 	}
 } else {
 	$mobile_contact_bar_plugin_options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'mobile_contact_bar%'" );
-	foreach ( $mobile_contact_bar_plugin_options as $option ) {
-		delete_option( $option->option_name );
+	foreach ( $mobile_contact_bar_plugin_options as $mobile_contact_bar_plugin_option ) {
+		delete_option( $mobile_contact_bar_plugin_option->option_name );
 	}
 }
 
@@ -41,8 +41,8 @@ if ( ! $mobile_contact_bar_user ) {
 	wp_die( -1 );
 }
 $mobile_contact_bar_user_options = $wpdb->get_results( "SELECT meta_key FROM $wpdb->usermeta WHERE meta_key LIKE '%mobile-contact-bar%'" );
-foreach ( $mobile_contact_bar_user_options as $option ) {
-	delete_user_option( $mobile_contact_bar_user->ID, $option->meta_key, true );
+foreach ( $mobile_contact_bar_user_options as $mobile_contact_bar_plugin_option ) {
+	delete_user_option( $mobile_contact_bar_user->ID, $mobile_contact_bar_plugin_option->meta_key, true );
 }
 
 

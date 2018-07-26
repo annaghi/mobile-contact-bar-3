@@ -187,7 +187,7 @@ final class Mobile_Contact_Bar_Option {
 	 * @param object $object  null.
 	 * @param array  $section Passed from add_meta_box as sixth parameter.
 	 */
-	public static function callback_render_section( $object, $section ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+	public static function callback_render_section( $object, $section ) {
 		$table_id = str_replace( '-section-', '-table-', $section['id'] );
 
 		$out_buttons = '';
