@@ -47,7 +47,7 @@ jobs:
 
     - stage: test
       php: 5.6
-      env: WP_VERSION=4.2 PHPUNIT_VERSION=5.*
+      env: WP_VERSION=4.4 PHPUNIT_VERSION=5.*
 
     - stage: test
       php: 7.0
