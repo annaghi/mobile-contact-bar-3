@@ -11,6 +11,9 @@ before_script:
       echo "xdebug.ini does not exist"
     fi
 
+  cache:
+    directories:
+      - $HOME/.composer/cache
 
 jobs:
   include:
@@ -18,12 +21,8 @@ jobs:
       language: node_js
       before_script: []
       script:
-        - npm install
         - npm run ci
-      cache:
-        directories:
-          - "$HOME/.nvm"
-          - "$HOME/.npm"
+      cache: []
 
     - stage: test
       php: 5.3
@@ -33,9 +32,6 @@ jobs:
         - composer global require phpcompatibility/php-compatibility
         - composer global require dealerdirect/phpcodesniffer-composer-installer
         - phpcs
-      cache:
-        directories:
-          - $HOME/.composer/cache
 
     - stage: test
       php: 7.0
@@ -45,9 +41,6 @@ jobs:
         - composer global require "phpunit/phpunit=6.*"
         - WP_MULTISITE=0 phpunit
         - WP_MULTISITE=1 phpunit
-      cache:
-        directories:
-          - $HOME/.composer/cache
 
 
 notifications:

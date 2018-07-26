@@ -31,8 +31,8 @@
     </rule>
 	<rule ref="Generic.PHP.ForbiddenFunctions">
          <properties>
-              <property name="forbiddenFunctions" type="array">
-                <element key="dbg" value="null"/>
+              <property name="forbiddenFunctions" type="array" value="dbg=>null">
+                <!--<element key="dbg" value="null"/>-->
               </property>
          </properties>
     </rule>
