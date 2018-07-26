@@ -20,9 +20,9 @@ jobs:
   include:
     - stage: test
       language: node_js
-      cache: []
-      install:
-        - npm install
+      cache:
+        directories:
+          []
       before_script: []
       script:
         - npm run ci
