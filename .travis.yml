@@ -29,8 +29,7 @@ jobs:
         - npm run ci
 
     - stage: test
-      php: 5.3
-      dist: precise
+      php: 5.4
       script:
         - composer global require wp-coding-standards/wpcs
         - composer global require phpcompatibility/php-compatibility
