@@ -11,7 +11,7 @@
 $mcb_tests_dir = ( getenv( 'WP_TESTS_DIR' ) ) ? getenv( 'WP_TESTS_DIR' ) : '/tmp/wordpress-tests-lib';
 
 if ( ! file_exists( $mcb_tests_dir . '/includes/functions.php' ) ) {
-	echo '"Could not find $mcb_tests_dir/includes/functions.php, have you run ./bin/install-wp-tests.sh?"';
+	echo '"Could not find $mcb_tests_dir/includes/functions.php, have you run bin/install-wp-tests.sh?"';
 	exit( 1 );
 }
 
