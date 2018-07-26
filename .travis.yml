@@ -6,11 +6,6 @@ before_install:
   - nvm install && nvm use
   - npm install npm -g
 
-cache:
-  directories:
-    - $HOME/.npm
-    - $HOME/.composer/cache
-
 matrix:
   include:
     - php: 7.1
@@ -70,6 +65,11 @@ script:
       npm run ci
     fi
 
+
+cache:
+  directories:
+    - $HOME/.npm
+    - $HOME/.composer/cache
 
 
 notifications:
