@@ -784,7 +784,7 @@ final class Mobile_Contact_Bar_Option {
 		$styles .= 'opacity:' . $bar['opacity'] . ';';
 		$styles .= 'position:relative;';
 		$styles .= 'white-space:nowrap;';
-		$styles .= 'width:' . $bar['width'] . '%;';
+		$styles .= ( $bar['width'] > 100 ) ? 'width:100%;' : 'width:' . $bar['width'] . '%;';
 		$styles .= 'z-index:9998;';
 		$styles .= '}';
 
@@ -828,6 +828,7 @@ final class Mobile_Contact_Bar_Option {
 		$styles .= '#mobile-contact-bar ul{';
 		$styles .= '-webkit-box-sizing:border-box;';
 		$styles .= 'box-sizing:border-box;';
+		$styles .= 'height:100%;';
 		$styles .= 'line-height:0;';
 		$styles .= 'list-style-type:none;';
 		$styles .= 'margin:0;';
@@ -842,6 +843,7 @@ final class Mobile_Contact_Bar_Option {
 		$styles .= 'box-sizing:border-box;';
 		$styles .= 'display:inline-block;';
 		$styles .= 'height:' . $bar['height'] . 'px;';
+		$styles .= 'margin:0;';
 		$styles .= 'text-align:center;';
 		switch ( $bar['is_border'] ) {
 			case 'one':
@@ -905,7 +907,7 @@ final class Mobile_Contact_Bar_Option {
 		$styles .= 'outline:none;';
 		$styles .= '}';
 
-		$styles .= '.fa-stack{';
+		$styles .= '.mobile-contact-bar-fa-stack{';
 		$styles .= 'height:2em;';
 		$styles .= 'line-height:2em;';
 		$styles .= 'width:2em;';
@@ -985,15 +987,15 @@ final class Mobile_Contact_Bar_Option {
 					break;
 
 				case 'bottom-right':
-					$styles .= 'bottom:0;';
 					$styles .= 'right:0;';
+					$styles .= 'bottom:0;';
 					break;
 
 				case 'bottom-left':
 					$styles .= 'bottom:0;';
 					$styles .= 'left:0;';
-
 					break;
+
 				case 'top-left':
 					$styles .= 'top:0;';
 					$styles .= 'left:0;';
@@ -1003,6 +1005,8 @@ final class Mobile_Contact_Bar_Option {
 			$styles .= '}';
 
 		}
+
+		$styles .= '/*(no-admin*/';
 
 		// Bottom and Fixed position.
 		if ( 'bottom' === $bar['vertical_position'] && $bar['is_fixed'] ) {
@@ -1027,11 +1031,11 @@ final class Mobile_Contact_Bar_Option {
 				$styles .= '}';
 			}
 
-				$styles .= '#mobile-contact-bar{';
-				$styles .= 'position:fixed;';
-				$styles .= 'left:0;';
-				$styles .= ( $bar['space_height'] > 0 ) ? 'top:' . $bar['space_height'] . 'px;' : 'top:0;';
-				$styles .= '}';
+			$styles .= '#mobile-contact-bar{';
+			$styles .= 'position:fixed;';
+			$styles .= 'left:0;';
+			$styles .= ( $bar['space_height'] > 0 ) ? 'top:' . $bar['space_height'] . 'px;' : 'top:0;';
+			$styles .= '}';
 
 			if ( $toggle['is_render'] ) {
 				$styles .= '#mobile-contact-bar-toggle{';
@@ -1055,6 +1059,7 @@ final class Mobile_Contact_Bar_Option {
 			$styles .= 'margin-top:-' . $bar['height'] . 'px;';
 			$styles .= 'position:relative;';
 			$styles .= 'left:0;';
+
 			if ( $bar['placeholder_height'] > 0 ) {
 				$styles .= ( $bar['space_height'] > 0 ) ? 'bottom:' . ( $bar['space_height'] - $bar['placeholder_height'] ) . 'px;' : 'bottom:-' . $bar['placeholder_height'] . 'px;';
 			} else {
@@ -1098,6 +1103,8 @@ final class Mobile_Contact_Bar_Option {
 					break;
 			}
 		}
+
+		$styles .= '/*no-admin)*/';
 
 		// Add @media query.
 		if ( 'css' === $general['device_detection'] ) {
