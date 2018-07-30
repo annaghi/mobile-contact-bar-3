@@ -338,7 +338,7 @@ final class Mobile_Contact_Bar_Page {
 		add_meta_box(
 			'mcb-section-model',
 			__( 'Real-time Model <sup>*</sup>', 'mobile-contact-bar' ),
-			array( __CLASS__, 'callback_render_model' ),
+			array( 'Mobile_Contact_Bar_Model', 'callback_render_model' ),
 			self::$page,
 			'side',
 			'default'
@@ -388,52 +388,6 @@ final class Mobile_Contact_Bar_Page {
 
 
 	/**
-	 * Renders Real-time Model and Plugin Info meta box
-	 *
-	 * @since 2.0.0
-	 */
-	public static function callback_render_model() {
-		$plugin_data = get_file_data(
-			MOBILE_CONTACT_BAR__PATH,
-			array(
-				'Description' => 'Description',
-				'Plugin URI'  => 'Plugin URI',
-				'Author URI'  => 'Author URI',
-			)
-		);
-
-		?>
-		<div id="mcb-model">
-		<?php include_once plugin_dir_path( MOBILE_CONTACT_BAR__PATH ) . 'assets/images/real-time-model.svg'; ?>
-			<footer><em><sup>*</sup> <?php esc_html_e( 'The model is an approximation. A lot depends on your active theme"s styles.', 'mobile-contact-bar' ); ?></em></footer>
-		</div>
-
-		<div id="mcb-about">
-			<h2><?php echo 'Mobile Contact Bar'; ?> <?php echo esc_attr( MOBILE_CONTACT_BAR__VERSION ); ?></h2>
-			<p><?php echo esc_html( $plugin_data['Description'] ); ?></p>
-			<ul>
-				<li><a href="<?php echo esc_url( $plugin_data['Plugin URI'] . '#developers' ); ?>" target="_blank"><?php esc_html_e( 'Changelog', 'mobile-contact-bar' ); ?></a></li>
-				<li><a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/mobile-contact-bar' ); ?>" target="_blank"><?php esc_html_e( 'Forum', 'mobile-contact-bar' ); ?></a></li>
-				<li><a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/mobile-contact-bar' ); ?>" target="_blank"><?php esc_html_e( 'Requests', 'mobile-contact-bar' ); ?></a></li>
-			</ul>
-			<footer>
-			<?php
-			echo wp_kses_post(
-				sprintf(
-					/* translators: %s plugin URI */
-					__( 'Thank you for networking with <a href="%s">MCB</a>.', 'mobile-contact-bar' ),
-					esc_url( $plugin_data['Plugin URI'] )
-				)
-			);
-			?>
-			</footer>
-		</div>
-			<?php
-	}
-
-
-
-	/**
 	 * Loads styles and scripts for plugin option page.
 	 *
 	 * @since 0.0.1
@@ -449,21 +403,74 @@ final class Mobile_Contact_Bar_Page {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_script( 'wp-color-picker' );
 
-			wp_enqueue_style(
-				'mcb-admin',
-				plugins_url( 'assets/css/admin.min.css', MOBILE_CONTACT_BAR__PATH ),
-				array( 'wp-color-picker' ),
-				MOBILE_CONTACT_BAR__VERSION,
-				'all'
-			);
+			if ( WP_DEBUG === true ) {
+				wp_enqueue_style(
+					'mcb-admin-cp',
+					plugins_url( 'assets/css/admin/cs-wp-color-picker.css', MOBILE_CONTACT_BAR__PATH ),
+					array( 'wp-color-picker' ),
+					MOBILE_CONTACT_BAR__VERSION,
+					'all'
+				);
+				wp_enqueue_style(
+					'mcb-admin-fa',
+					plugins_url( 'assets/css/fontawesome-all.css', MOBILE_CONTACT_BAR__PATH ),
+					array(),
+					MOBILE_CONTACT_BAR__VERSION,
+					'all'
+				);
+				wp_enqueue_style(
+					'mcb-admin',
+					plugins_url( 'assets/css/admin/styles.css', MOBILE_CONTACT_BAR__PATH ),
+					array( 'mcb-admin-cp', 'mcb-admin-fa' ),
+					MOBILE_CONTACT_BAR__VERSION,
+					'all'
+				);
 
-			wp_enqueue_script(
-				'mcb-admin',
-				plugins_url( 'assets/js/admin.min.js', MOBILE_CONTACT_BAR__PATH ),
-				array( 'jquery', 'jquery-ui-slider', 'jquery-ui-sortable', 'postbox', 'wp-color-picker' ),
-				MOBILE_CONTACT_BAR__VERSION,
-				false
-			);
+				wp_enqueue_script(
+					'mcb-admin-cp',
+					plugins_url( 'assets/js/admin/cs-wp-color-picker.js', MOBILE_CONTACT_BAR__PATH ),
+					array( 'jquery', 'wp-color-picker' ),
+					MOBILE_CONTACT_BAR__VERSION,
+					false
+				);
+				wp_enqueue_script(
+					'mcb-admin-hook',
+					plugins_url( 'assets/js/admin/hook.js', MOBILE_CONTACT_BAR__PATH ),
+					array(),
+					MOBILE_CONTACT_BAR__VERSION,
+					false
+				);
+				wp_enqueue_script(
+					'mcb-admin-model',
+					plugins_url( 'assets/js/admin/model-new.js', MOBILE_CONTACT_BAR__PATH ),
+					array( 'jquery', 'mcb-admin-hook' ),
+					MOBILE_CONTACT_BAR__VERSION,
+					false
+				);
+				wp_enqueue_script(
+					'mcb-admin',
+					plugins_url( 'assets/js/admin/scripts.js', MOBILE_CONTACT_BAR__PATH ),
+					array( 'jquery', 'jquery-ui-slider', 'jquery-ui-sortable', 'postbox', 'mcb-admin-cp', 'mcb-admin-hook', 'mcb-admin-model' ),
+					MOBILE_CONTACT_BAR__VERSION,
+					false
+				);
+			} else {
+				wp_enqueue_style(
+					'mcb-admin',
+					plugins_url( 'assets/css/admin.min.css', MOBILE_CONTACT_BAR__PATH ),
+					array( 'wp-color-picker' ),
+					MOBILE_CONTACT_BAR__VERSION,
+					'all'
+				);
+
+				wp_enqueue_script(
+					'mcb-admin',
+					plugins_url( 'assets/js/admin.min.js', MOBILE_CONTACT_BAR__PATH ),
+					array( 'jquery', 'jquery-ui-slider', 'jquery-ui-sortable', 'postbox', 'wp-color-picker' ),
+					MOBILE_CONTACT_BAR__VERSION,
+					false
+				);
+			}
 
 			wp_localize_script(
 				'mcb-admin',
@@ -472,6 +479,13 @@ final class Mobile_Contact_Bar_Page {
 					'nonce' => wp_create_nonce( MOBILE_CONTACT_BAR__NAME ),
 				)
 			);
+
+			$option = get_option( MOBILE_CONTACT_BAR__NAME );
+			$styles = wp_kses( $option['styles'], array( "\'", '\"' ) );
+
+			$styles = preg_replace( '/\*\(no-admin\*\/(.*)\/\*no-admin\)\*/', '', $styles );
+			$styles = preg_replace( '/z-index:9998/', 'z-index:1', $styles );
+			wp_add_inline_style( 'mcb-admin', $styles );
 		}
 	}
 
