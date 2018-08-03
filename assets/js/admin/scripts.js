@@ -1,4 +1,4 @@
-/* global ajaxurl, pagenow, postboxes, mobile_contact_bar, hook */
+/* global ajaxurl, pagenow, postboxes, mobile_contact_bar, mcb */
 
 (function ($, document) {
   'use strict'
@@ -128,7 +128,7 @@
         allParameters = null
         $(this).children('.mcb-contact').addClassOdd('mcb-odd')
 
-        hook.call('onStopSortingContactList')
+        mcb.hook.call('onStopSortingContactList')
       }
     })
     return this
@@ -279,7 +279,7 @@
 
         if (checkbox.prop('checked')) {
           var index = $('.mcb-contact-checkbox input:checked').index(checkbox)
-          hook.call('onDeleteContact', index)
+          mcb.hook.call('onDeleteContact', index)
         }
 
         option.tbody.children('[data-contact-id="' + contactId + '"]').remove()
@@ -379,7 +379,7 @@
 
           if (checkbox.prop('checked')) {
             var index = $('.mcb-contact-checkbox input:checked').index(checkbox)
-            hook.call('onSelectIcon', {index: index, icon: icon})
+            mcb.hook.call('onSelectIcon', {index: index, icon: icon})
           }
         })
 

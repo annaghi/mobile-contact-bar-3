@@ -1,4 +1,4 @@
-/* global hook */
+/* global mcb */
 
 (function ($, document) {
   'use strict'
@@ -6,6 +6,9 @@
   var model = {
 
     init: function () {
+
+      model.update_toggle_x()
+
       model.canvas = {
         min: 150,
         max: 1350
@@ -18,7 +21,7 @@
         maxOut: 750
       }
 
-      hook.register('onStopSortingContactList', function (args) {
+      mcb.hook.register('onStopSortingContactList', function (args) {
         var cs = $('.mcb-contact-checkbox input:checked')
         var lis = $('#mobile-contact-bar-outer li')
         var e
@@ -33,11 +36,11 @@
         model.update_badges()
       })
 
-      hook.register('onSelectIcon', function (args) {
+      mcb.hook.register('onSelectIcon', function (args) {
         $('#mobile-contact-bar-outer li:eq(' + args.index + ')').find('i').removeClass().addClass(args.icon + ' fa-fw')
       })
 
-      hook.register('onDeleteContact', function (args) {
+      mcb.hook.register('onDeleteContact', function (args) {
         $('#mobile-contact-bar-outer li:eq(' + args + ')').remove()
         model.update_icons_width()
         model.update_icons_borders()
@@ -103,15 +106,32 @@
 
       $('#mcb-bar-height').on('input', function () {
         var h = (this.value > 0) ? this.value : 0
-        model.update_bar_height(h)
+        var t = $('#mcb-toggle-is_render').prop('checked')
+
+        if (t) {
+          $('#mcb-model-bar').attr('height', +h + 34)
+        } else {
+          $('#mcb-model-bar').attr('height', h)
+        }
+
+        $('#mobile-contact-bar-outer').css('height', h)
+        model.update_bar_li_height()
+        model.update_bar_y()
+        model.update_toggle_y()
       })
 
       $('#mcb-bar-width').on('input', function () {
         var w = (this.value > 100) ? 100 : this.value
         $('#mobile-contact-bar').css('width', w + '%')
+        $('#mobile-contact-bar-toggle').css('width', w + '%')
+
+        model.update_toggle_x()
       })
 
-      $('#mcb-bar-horizontal_position input').on('change', model.update_bar_x)
+      $('#mcb-bar-horizontal_position input').on('change', function () {
+        model.update_bar_x()
+        model.update_toggle_x()
+      })
 
       $('#mcb-bar-vertical_position input').on('change', function () {
         var mgt = $('#mcb-model-mobile-group').attr('transform').match(/\w+\(([^,)]+),([^)]+)\)/)
@@ -126,14 +146,32 @@
         model.update_bar_y()
         model.update_model_placeholder_y()
         model.update_bar_borders()
+        model.update_toggle()
       })
 
       $('#mcb-bar-is_fixed').on('change', function () {
-        model.update_bar()
+        var vp = $('#mcb-bar-vertical_position input:checked').val()
+
+        model.update_toggle()
+
+        if (this.checked) {
+          $('#mcb-model-toggle').css('display', 'block')
+          if (vp === 'top') {
+            $('#mcb-model-bar').detach().insertAfter('#mcb-model-toggle')
+          } else if (vp === 'bottom') {
+            $('#mcb-model-bar').detach().insertBefore('#mcb-model-toggle')
+          }
+        } else {
+          $('#mcb-model-toggle').css('display', 'none')
+          $('#mcb-model-bar').detach().insertBefore('#mcb-model-mobile-group')
+        }
+
+        model.update_bar_y()
       })
 
       $('#mcb-bar-space_height').on('input', function () {
         model.update_bar_y()
+        model.update_toggle_y()
       })
 
       $('#mcb-bar-placeholder_height').on('input', function () {
@@ -226,13 +264,27 @@
       /* Toggle options */
 
       $('#mcb-toggle-is_render').on('change', function () {
-        // var vp = $('#mcb-bar-vertical_position input:checked').val()
-
         if (this.checked) {
-          $('#mobile-contact-bar-toggle').css('display', 'table')
+          $('#mcb-model-toggle').css('display', 'block')
         } else {
-          $('#mobile-contact-bar-toggle').css('display', 'none')
+          $('#mcb-model-toggle').css('display', 'none')
         }
+      })
+
+      $('#mcb-toggle-shape input').on('change', function () {
+        model.update_toggle_shape()
+      })
+
+      $('#mcb-toggle-color').on('input change', function () {
+        $('#mobile-contact-bar-toggle svg').css('fill', this.value)
+      })
+
+      $('#mcb-toggle-label').on('input', function () {
+        $('#mobile-contact-bar-toggle span').text(this.value)
+      })
+
+      $('#mcb-toggle-size').on('input change', function () {
+        $('#mobile-contact-bar-toggle span').css('font-size', this.value + 'rem')
       })
 
       /* Contact list */
@@ -242,6 +294,7 @@
           var index = $('.mcb-contact-checkbox input:checked').index(this)
           var l = $('#mobile-contact-bar-outer li:eq(0)').clone()
           var e = $(this).closest('ul').find('.fa-stack').children().clone()
+
           l.find('.fa-stack').empty().append(e)
           l.find('i').removeClass('fa-lg').addClass('fa-fw')
           l.find('.mcb-badge').removeClass().addClass('mobile-contact-bar-badge')
@@ -255,7 +308,7 @@
           var cs = $('.mcb-contact-checkbox input:checked')
           var lis = $('#mobile-contact-bar-outer li')
           var cc = []
-          var n
+          var n, c
 
           for (var i = 0; i < cs.length; ++i) {
             n = cs[i].name.replace('checked', 'icon')
@@ -263,11 +316,14 @@
           }
 
           for (var j = 0; j < lis.length; ++j) {
-            if (!$(lis[j]).find('i').hasClass(cc[j])) {
+            c = $(lis[j]).find('i').removeClass('fa-fw').attr('class')
+            if (c !== cc[j]) {
               $(lis[j]).remove()
               break
             }
           }
+
+          lis.find('i').addClass('fa-fw')
         }
         model.update_icons_borders()
         model.update_icons_width()
@@ -275,29 +331,10 @@
       })
     },
 
-    update_bar: function () {
-      var f = $('#mcb-bar-is_fixed').prop('checked')
-
-      if (f) {
-        $('#mcb-model-bar').detach().insertAfter('#mcb-model-mobile-draggable')
-      } else {
-        $('#mcb-model-bar').detach().insertAfter('#mcb-model-placeholder')
-      }
-
-      model.update_bar_y()
-    },
-
-    update_bar_height: function (height) {
-      $('#mcb-model-bar').attr('height', height)
-      $('#mobile-contact-bar-outer').css('height', height)
-      model.update_bar_li_height()
-      model.update_bar_y()
-    },
-
     update_bar_y: function () {
       var f = $('#mcb-bar-is_fixed').prop('checked')
       var vp = $('#mcb-bar-vertical_position input:checked').val()
-      var h = $('#mcb-model-bar').attr('height')
+      var h = $('#mcb-bar-height').val()
       var ph = $('#mcb-model-placeholder').attr('height')
       var sh = ($('#mcb-bar-space_height').val() > 0) ? $('#mcb-bar-space_height').val() : 0
 
@@ -434,6 +471,8 @@
 
       switch (b) {
         case 'two':
+          $('#mobile-contact-bar ul li').css('border-top', 'none')
+          $('#mobile-contact-bar ul li').css('border-bottom', 'none')
           $('#mobile-contact-bar ul li').css('border-left', bw + 'px solid ' + bc)
           $('#mobile-contact-bar ul li').css('border-right', 'none')
           $('#mobile-contact-bar ul li:last-child').css('border-right', bw + 'px solid ' + bc)
@@ -512,8 +551,98 @@
       $('.mobile-contact-bar-badge').css('font-size', fs + 'em')
 
       model.update_badges_corner()
-    }
+    },
 
+    update_toggle: function () {
+      var f = $('#mcb-bar-is_fixed').prop('checked')
+      var vp = $('#mcb-bar-vertical_position input:checked').val()
+
+      if (f) {
+        if (vp === 'top') {
+          $('#mcb-model-toggle').detach().insertBefore('#mcb-model-mobile')
+        } else if (vp === 'bottom') {
+          $('#mcb-model-toggle').detach().prependTo('#mcb-model-mobile-group')
+        }
+        model.update_toggle_y()
+        model.update_toggle_shape()
+      }
+    },
+
+    update_toggle_y: function () {
+      var h = $('#mcb-bar-height').val()
+      var vp = $('#mcb-bar-vertical_position input:checked').val()
+      var sh = ($('#mcb-bar-space_height').val() > 0) ? $('#mcb-bar-space_height').val() : 0
+
+      if (vp === 'top') {
+        $('#mcb-model-toggle').attr('y', model.mobile.minOut + +sh + +h)
+      } else if (vp === 'bottom') {
+        $('#mcb-model-toggle').attr('y', model.mobile.maxOut - h - sh - 34)
+      }
+    },
+
+    update_toggle_x: function () {
+      var hp = $('#mcb-bar-horizontal_position input:checked').val()
+      var w = $('#mcb-bar-width').val()
+
+      $('#mobile-contact-bar-toggle').css('width', w + '%')
+      $('#mobile-contact-bar-toggle').css('margin', 0)
+
+      switch (hp) {
+        case 'left':
+          $('#mobile-contact-bar-toggle').css('left', '0')
+          $('#mobile-contact-bar-toggle').css('-webkit-transform', 'unset')
+          $('#mobile-contact-bar-toggle').css('-ms-transform', 'unset')
+          $('#mobile-contact-bar-toggle').css('transform', 'unset')
+          break
+
+        case 'center':
+          $('#mobile-contact-bar-toggle').css('left', '50%')
+          $('#mobile-contact-bar-toggle').css('-webkit-transform', 'translateX(-50%)')
+          $('#mobile-contact-bar-toggle').css('-ms-transform', 'translateX(-50%)')
+          $('#mobile-contact-bar-toggle').css('transform', 'translateX(-50%)')
+          break
+
+        case 'right':
+          $('#mobile-contact-bar-toggle').css('left', '100%')
+          $('#mobile-contact-bar-toggle').css('-webkit-transform', 'translateX(-100%)')
+          $('#mobile-contact-bar-toggle').css('-ms-transform', 'translateX(-100%)')
+          $('#mobile-contact-bar-toggle').css('transform', 'translateX(-100%)')
+          break
+      }
+    },
+
+    update_toggle_shape: function () {
+      var vp = $('#mcb-bar-vertical_position input:checked').val()
+      var s = $('#mcb-toggle-shape input:checked').val()
+
+      if (vp === 'top') {
+        switch (s) {
+          case 'rounded':
+            $('#mobile-contact-bar-toggle svg').empty().html('<path d="M 550 0 L 496.9 137.2 C 490.4 156.8 474.1 170 451.4 170 H 98.6 C 77.9 170 59.6 156.8 53.1 137.2 L 0 0 z">')
+            break
+
+          case 'sharp':
+            $('#mobile-contact-bar-toggle svg').empty().html('<path d="M 550 0 L 494.206 170 H 65.794 L 0 0 z">')
+            break
+
+          default:
+            $('#mobile-contact-bar-toggle svg').empty().html('<path d="M 550 0 L 494.206 170 H 65.794 L 0 0 z">')
+        }
+      } else if (vp === 'bottom') {
+        switch (s) {
+          case 'rounded':
+            $('#mobile-contact-bar-toggle svg').empty().html('<path d="M 550 170 L 496.9 32.8 C 490.4 13.2 474.1 0 451.4 0 H 98.6 C 77.9 0 59.6 13.2 53.1 32.8 L 0 170 z">')
+            break
+
+          case 'sharp':
+            $('#mobile-contact-bar-toggle svg').empty().html('<path d="M 550 170 L 494.206 0 H 65.794 L 0 170 z">')
+            break
+
+          default:
+            $('#mobile-contact-bar-toggle svg').empty().html('<path d="M 550 170 L 494.206 0 H 65.794 L 0 170 z">')
+        }
+      }
+    }
   }
 
   $(document).ready(model.init)

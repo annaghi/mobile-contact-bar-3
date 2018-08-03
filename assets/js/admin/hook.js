@@ -21,5 +21,6 @@
     }
   }
 
-  window.hook = window.hook || hook
+  window.mcb = window.mcb || {}
+  window.mcb.hook = window.mcb.hook || hook
 })(window)
