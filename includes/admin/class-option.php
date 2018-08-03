@@ -1083,6 +1083,8 @@ final class Mobile_Contact_Bar_Option {
 			$styles .= '}';
 		}
 
+		$styles .= '/*no-admin)*/';
+
 		if ( $bar['width'] < 100 ) {
 			switch ( $bar['horizontal_position'] ) {
 				case 'center':
@@ -1103,8 +1105,6 @@ final class Mobile_Contact_Bar_Option {
 					break;
 			}
 		}
-
-		$styles .= '/*no-admin)*/';
 
 		// Add @media query.
 		if ( 'css' === $general['device_detection'] ) {

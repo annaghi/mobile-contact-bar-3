@@ -442,7 +442,7 @@ final class Mobile_Contact_Bar_Page {
 				);
 				wp_enqueue_script(
 					'mcb-admin-model',
-					plugins_url( 'assets/js/admin/model-new.js', MOBILE_CONTACT_BAR__PATH ),
+					plugins_url( 'assets/js/admin/model.js', MOBILE_CONTACT_BAR__PATH ),
 					array( 'jquery', 'mcb-admin-hook' ),
 					MOBILE_CONTACT_BAR__VERSION,
 					false
@@ -482,9 +482,8 @@ final class Mobile_Contact_Bar_Page {
 
 			$option = get_option( MOBILE_CONTACT_BAR__NAME );
 			$styles = wp_kses( $option['styles'], array( "\'", '\"' ) );
+			$styles = preg_replace( '/\/\*\(no-admin\*\/(.*)\/\*no-admin\)\*\//', '', $styles );
 
-			$styles = preg_replace( '/\*\(no-admin\*\/(.*)\/\*no-admin\)\*/', '', $styles );
-			$styles = preg_replace( '/z-index:9998/', 'z-index:1', $styles );
 			wp_add_inline_style( 'mcb-admin', $styles );
 		}
 	}

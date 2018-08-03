@@ -31,6 +31,9 @@ final class Mobile_Contact_Bar_Model {
 	public static function callback_render_model() {
 		self::$option = get_option( MOBILE_CONTACT_BAR__NAME );
 
+		$settings = self::$option['settings'];
+		$contacts = self::$option['contacts'];
+
 		$plugin_data = get_file_data(
 			MOBILE_CONTACT_BAR__PATH,
 			array(
@@ -50,38 +53,38 @@ final class Mobile_Contact_Bar_Model {
 					x="50"
 					y="0" />
 				<rect
-					fill="#dddddd"
+					fill="#f1dddd"
 					width="520"
 					height="1200"
 					x="50"
 					y="150" />
 				<g id="mcb-model-content-group">
 					<rect
-						fill="#fdfdfd"
+						fill="#ebcfcf"
 						width="400"
 						height="240"
 						x="110"
 						y="210" />
 					<rect
-						fill="#fdfdfd"
+						fill="#ebcfcf"
 						width="180"
 						height="180"
 						x="110"
 						y="490" />
 					<rect
-						fill="#fdfdfd"
+						fill="#ebcfcf"
 						width="180"
 						height="180"
 						x="330"
 						y="490" />
 					<rect
-						fill="#fdfdfd"
+						fill="#ebcfcf"
 						width="400"
 						height="380"
 						x="110"
 						y="710" />
 					<rect
-						fill="#fdfdfd"
+						fill="#ebcfcf"
 						width="400"
 						height="160"
 						x="110"
@@ -95,20 +98,26 @@ final class Mobile_Contact_Bar_Model {
 				?>
 				<g id="mcb-model-mobile-group" transform="translate(0,360)">
 					<?php
+					if ( 'bottom' === $settings['bar']['vertical_position'] ) :
+						self::render_toggle();
+					endif;
 					if ( self::$option['settings']['bar']['is_fixed'] ) :
 						self::render_bar();
+					endif;
+					if ( 'top' === $settings['bar']['vertical_position'] ) :
+						self::render_toggle();
 					endif;
 					?>
 					<path
 						id="mcb-model-mobile"
 						fill="#333333"
 						d="M550 0h-480c-38 0-66 30-70 70v730c0 38 30 66 70 70h480c38 0 66-30 70-70v-730c0-38-30-66-70-70zM570 750h-520v-700h520zM310 840c-19.032 0-34.34-14.676-34.34-32.708 0-18.032 15.408-32.708 34.34-32.708 18.832 0 34.238 14.772 34.238 32.708-.1 18.128-15.408 32.708-34.238 32.708z" />
-				<rect
-					id="mcb-model-mobile-draggable"
-					fill="#000000"
-					fill-opacity="0"
-					width="620"
-					height="870" />
+					<rect
+						id="mcb-model-mobile-draggable"
+						fill="#000000"
+						fill-opacity="0"
+						width="620"
+						height="870" />
 				</g>
 			</svg>
 			<footer><em><sup>*</sup> <?php esc_html_e( 'The model is an approximation. A lot depends on your active theme"s styles.', 'mobile-contact-bar' ); ?></em></footer>
@@ -173,31 +182,6 @@ final class Mobile_Contact_Bar_Model {
 		?>
 		<foreignobject id="mcb-model-bar" x="50" y="<?php echo esc_attr( $y ); ?>" height="<?php echo esc_attr( $settings['bar']['height'] ); ?>" width="520">
 			<div id="mobile-contact-bar">
-				<?php
-				if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] ) :
-					$checked = 'closed' === $settings['toggle']['state'];
-					?>
-					<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox" <?php checked( true, $checked, true ); ?>>
-
-					<label for="mobile-contact-bar-toggle-checkbox" id="mobile-contact-bar-toggle">
-						<?php if ( $settings['toggle']['label'] ) : ?>
-							<span><?php echo esc_attr( $settings['toggle']['label'] ); ?></span>
-						<?php endif; ?>
-
-						<svg viewBox="0 0 550 170" width="110" height="34">
-							<?php if ( 'bottom' === $settings['bar']['vertical_position'] && 'rounded' === $settings['toggle']['shape'] ) : ?>
-								<path d="M 550 170 L 496.9 32.8 C 490.4 13.2 474.1 0 451.4 0 H 98.6 C 77.9 0 59.6 13.2 53.1 32.8 L 0 170 z">
-							<?php elseif ( 'bottom' === $settings['bar']['vertical_position'] && 'sharp' === $settings['toggle']['shape'] ) : ?>
-								<path d="M 550 170 L 494.206 0 H 65.794 L 0 170 z">
-							<?php elseif ( 'top' === $settings['bar']['vertical_position'] && 'rounded' === $settings['toggle']['shape'] ) : ?>
-								<path d="M 550 0 L 496.9 137.2 C 490.4 156.8 474.1 170 451.4 170 H 98.6 C 77.9 170 59.6 156.8 53.1 137.2 L 0 0 z">
-							<?php elseif ( 'top' === $settings['bar']['vertical_position'] && 'sharp' === $settings['toggle']['shape'] ) : ?>
-								<path d="M 550 0 L 494.206 170 H 65.794 L 0 0 z">
-							<?php endif; ?>
-						</svg>
-
-					</label>
-				<?php endif; ?>
 
 				<div id="mobile-contact-bar-outer">
 					<ul>
@@ -216,6 +200,7 @@ final class Mobile_Contact_Bar_Model {
 						?>
 					</ul>
 				</div>
+
 			</div>
 		</foreignobject>
 		<?php
@@ -248,6 +233,49 @@ final class Mobile_Contact_Bar_Model {
 			height="<?php echo esc_attr( $settings['bar']['placeholder_height'] ); ?>"
 			x="50"
 			y="<?php echo esc_attr( $y ); ?>" />
+		<?php
+	}
+
+
+
+	/**
+	 * Renders toggle
+	 *
+	 * @since 2.1.0
+	 */
+	public static function render_toggle() {
+		$settings = self::$option['settings'];
+		$contacts = self::$option['contacts'];
+
+		$display = ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] ) ? 'display:block;' : 'display:none;';
+
+		$y = 50;
+
+		if ( 'top' === $settings['bar']['vertical_position'] ) :
+			$y = 50 + $settings['bar']['space_height'] + $settings['bar']['height'];
+		elseif ( 'bottom' === $settings['bar']['vertical_position'] ) :
+			$y = 750 - $settings['bar']['height'] - $settings['bar']['space_height'] - 34;
+		endif;
+
+		?>
+		<foreignobject id="mcb-model-toggle" x="50" y="<?php echo esc_attr( $y ); ?>" height="34" width="520" style="<?php esc_attr( $display ); ?>">
+			<label id="mobile-contact-bar-toggle">
+				<span><?php echo esc_attr( $settings['toggle']['label'] ); ?></span>
+
+				<svg viewBox="0 0 550 170" width="110" height="34">
+					<?php if ( 'bottom' === $settings['bar']['vertical_position'] && 'rounded' === $settings['toggle']['shape'] ) : ?>
+						<path d="M 550 170 L 496.9 32.8 C 490.4 13.2 474.1 0 451.4 0 H 98.6 C 77.9 0 59.6 13.2 53.1 32.8 L 0 170 z">
+					<?php elseif ( 'bottom' === $settings['bar']['vertical_position'] && 'sharp' === $settings['toggle']['shape'] ) : ?>
+						<path d="M 550 170 L 494.206 0 H 65.794 L 0 170 z">
+					<?php elseif ( 'top' === $settings['bar']['vertical_position'] && 'rounded' === $settings['toggle']['shape'] ) : ?>
+						<path d="M 550 0 L 496.9 137.2 C 490.4 156.8 474.1 170 451.4 170 H 98.6 C 77.9 170 59.6 156.8 53.1 137.2 L 0 0 z">
+					<?php elseif ( 'top' === $settings['bar']['vertical_position'] && 'sharp' === $settings['toggle']['shape'] ) : ?>
+						<path d="M 550 0 L 494.206 170 H 65.794 L 0 0 z">
+					<?php endif; ?>
+				</svg>
+
+			</label>
+		</foreignobject>
 		<?php
 	}
 }
