@@ -185,8 +185,8 @@ final class Mobile_Contact_Bar_Page {
 	 */
 	public static function plugin_action_links( $links ) {
 		return array_merge(
-			$links,
-			array( 'settings' => '<a href="' . admin_url( 'options-general.php?page=' . MOBILE_CONTACT_BAR__SLUG ) . '">' . esc_html__( 'Settings', 'mobile-contact-bar' ) . '</a>' )
+			array( 'settings' => '<a href="' . admin_url( 'options-general.php?page=' . MOBILE_CONTACT_BAR__SLUG ) . '">' . esc_html__( 'Settings', 'mobile-contact-bar' ) . '</a>' ),
+			$links
 		);
 	}
 
