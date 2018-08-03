@@ -6,7 +6,6 @@
   var model = {
 
     init: function () {
-
       model.update_toggle_x()
 
       model.canvas = {
