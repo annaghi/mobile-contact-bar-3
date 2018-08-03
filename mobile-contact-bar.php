@@ -46,6 +46,7 @@ if ( is_admin() ) {
 	include_once $mobile_contact_bar_dir . 'includes/admin/class-page.php';
 	include_once $mobile_contact_bar_dir . 'includes/admin/class-option.php';
 	include_once $mobile_contact_bar_dir . 'includes/admin/class-settings.php';
+	include_once $mobile_contact_bar_dir . 'includes/admin/class-model.php';
 
 	register_activation_hook( __FILE__, array( 'Mobile_Contact_Bar_Page', 'on_activation' ) );
 

@@ -1,4 +1,4 @@
-/* global ajaxurl, pagenow, postboxes, mobile_contact_bar */
+/* global ajaxurl, pagenow, postboxes, mobile_contact_bar, mcb */
 
 (function ($, document) {
   'use strict'
@@ -127,6 +127,8 @@
 
         allParameters = null
         $(this).children('.mcb-contact').addClassOdd('mcb-odd')
+
+        mcb.hook.call('onStopSortingContactList')
       }
     })
     return this
@@ -239,10 +241,7 @@
       }, '.mcb-action')
 
       // Highlight checked contact
-      option.tbody.on('change', '.mcb-contact-checkbox input', function (event) {
-        event.preventDefault()
-        event.stopPropagation()
-
+      option.tbody.on('change', '.mcb-contact-checkbox input', function () {
         $(this).setActiveContact(this.checked)
       })
 
@@ -276,6 +275,12 @@
         event.stopPropagation()
 
         var contactId = $(this).closest('tr').attr('data-contact-id')
+        var checkbox = $(this).closest('tr').find('.mcb-contact-checkbox input')
+
+        if (checkbox.prop('checked')) {
+          var index = $('.mcb-contact-checkbox input:checked').index(checkbox)
+          mcb.hook.call('onDeleteContact', index)
+        }
 
         option.tbody.children('[data-contact-id="' + contactId + '"]').remove()
         option.tbody.children('.mcb-contact').addClassOdd('mcb-odd')
@@ -360,6 +365,7 @@
           event.stopPropagation()
 
           var icon = $(this).children().attr('class')
+          var checkbox = contact.find('.mcb-contact-checkbox input')
 
           contact
             .find('.mcb-contact-icon i').removeClass().addClass(icon + ' fa-lg')
@@ -370,6 +376,11 @@
 
           $('#mcb-icon-picker-container').remove()
           contact.removeClass('mcb-warning') // this should be in the updater.js
+
+          if (checkbox.prop('checked')) {
+            var index = $('.mcb-contact-checkbox input:checked').index(checkbox)
+            mcb.hook.call('onSelectIcon', {index: index, icon: icon})
+          }
         })
 
         // Browse icons
