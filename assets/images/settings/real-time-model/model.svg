@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 830" width="186" height="498">
+    <rect
+        fill="#000000"
+        fill-opacity="0"
+        id="mcb-model-canvas"
+        width="260"
+        height="830"
+        x="25"
+        y="0" />
+    <rect
+        fill="#dddddd"
+        id="mcb-model-page"
+        width="260"
+        height="610"
+        x="25"
+        y="80" />
+    <g id="mcb-model-content-group">
+        <rect
+            fill="#fdfdfd"
+            id="mcb-model-header"
+            width="200"
+            height="120"
+            x="55"
+            y="110" />
+        <rect
+            fill="#fdfdfd"
+            id="mcb-model-header-left"
+            width="90"
+            height="90"
+            x="55"
+            y="250" />
+        <rect
+            fill="#fdfdfd"
+            id="mcb-model-header-right"
+            width="90"
+            height="90"
+            x="165"
+            y="250" />
+        <rect
+            fill="#fdfdfd"
+            id="mcb-model-article"
+            width="200"
+            height="200"
+            x="55"
+            y="360" />
+        <rect
+            fill="#fdfdfd"
+            id="mcb-model-footer"
+            width="200"
+            height="80"
+            x="55"
+            y="580" />
+    </g>
+    <rect
+        fill="#ff637d"
+        id="mcb-model-placeholder"
+        width="260"
+        height="0"
+        x="25"
+        y="700" />
+    <g id="mcb-model-bar-group" transform="translate(25,530)">
+        <rect
+            fill="#3bc492"
+            id="mcb-model-bar"
+            width="260"
+            height="25" />
+        <rect
+            fill="#0e2d22"
+            id="mcb-model-border-top"
+            width="260"
+            height="0" />
+        <rect
+            fill="#0e2d22"
+            id="mcb-model-border-bottom"
+            width="260"
+            height="0"
+            y="25" />
+    </g>
+    <g id="mcb-model-mobile-group" transform="translate(0,180)">
+        <path
+            d="M275 0 35 0C16 0 2 15 0 35l0 365c0 19 15 33 35 35l240 0c19 0 33-15 35-35L310 35C310 16 295 2 275 0Zm10 375-260 0 0-350 260 0zM155 420c-9.516 0-17.17-7.338-17.17-16.354 0-9.016 7.704-16.354 17.17-16.354 9.416 0 17.119 7.386 17.119 16.354-.05 9.064-7.704 16.354-17.119 16.354z"
+            id="mcb-model-mobile"
+            fill="#333333" />
+        <rect
+            fill="#000000"
+            fill-opacity="0"
+            id="mcb-model-mobile-draggable"
+            width="310"
+            height="435" />
+    </g>
+</svg>

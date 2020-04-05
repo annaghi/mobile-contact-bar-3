@@ -3,6 +3,7 @@
  * Copyright 2015 Codestar <info@codestarthemes.com> - GNU GENERAL PUBLIC LICENSE (http://www.gnu.org/licenses/gpl-2.0.txt)
  */
 
+
 .cs-alpha-wrap {
   display: none;
   position: relative;
@@ -39,7 +40,7 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.cs-alpha-slider .ui-slider-handle::before {
+.cs-alpha-slider .ui-slider-handle:before {
   content: " ";
   position: absolute;
   left: -2px;

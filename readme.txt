@@ -5,9 +5,9 @@ Contributors: anna.bansaghi
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YXJAZ7Q5EJFUA
 Tags: social media, icon, contact, mobile, woocommerce cart
 Requires at least: 4.2
-Tested up to: 4.9
+Tested up to: 5.4
 Requires PHP: 5.3
-Stable tag: 2.1.0
+Stable tag: 2.0.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
 
@@ -54,6 +54,8 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 
 = Tested with =
 
+* Twenty Twenty
+* Twenty Nineteen
 * Twenty Seventeen
 * Twenty Sixteen
 * Twenty Fifteen
@@ -78,7 +80,7 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 = First time Mobile Contact Bar user =
 
 Thank you for choosing Mobile Contact Bar! In order to create your bar, simply activate the plugin and visit the plugin's settings page by clicking on *Settings &rarr; Mobile Contact Bar* in your left navigation menu.
-Once the plugin page loads, open the *General* box, choose the *Display on Devices* option, select the device type to enable the bar and then press the *Save Changes* button at the bottom of the page.
+Once the plugin page loads, open the *Bar* box, choose the *Display on Devices* option, select the device type to enable the bar and then press the *Save Changes* button at the bottom of the page.
 Mobile Contact Bar will automatically create a default bar with an envelope icon, which uses the email address of your site's admin.
 
 = Adding icons to your bar =
@@ -117,6 +119,13 @@ You have full control over your single cookie.
 
 
 == Changelog ==
+
+
+= 2.0.3 =
+
+* [Updated] Font Awesome 5.13.0
+* [Fixed] Add margin and padding to list items
+
 
 = 2.0.2 =
 
