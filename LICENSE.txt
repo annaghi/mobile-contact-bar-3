@@ -1,6 +1,6 @@
 Mobile Contact Bar - social media icons and custom links for WordPress
 
-Copyright (C) 2018 by Anna Bansaghi
+Copyright (C) 2020 by Anna Bansaghi
 
 Mobile Contact Bar is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
