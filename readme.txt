@@ -5,9 +5,9 @@ Contributors: anna.bansaghi
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YXJAZ7Q5EJFUA
 Tags: social media, icon, contact, mobile, woocommerce cart
 Requires at least: 4.2
-Tested up to: 5.4
+Tested up to: 5.6
 Requires PHP: 5.3
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
 
@@ -54,6 +54,7 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 
 = Tested with =
 
+* Twenty Twenty-One
 * Twenty Twenty
 * Twenty Nineteen
 * Twenty Seventeen
@@ -119,12 +120,14 @@ You have full control over your single cookie.
 
 == Changelog ==
 
+= 2.0.4 =
+
+* [Fixed] Add padding zero to toggle
 
 = 2.0.3 =
 
 * [Updated] Font Awesome 5.13.0
 * [Fixed] Add margin and padding to list items
-
 
 = 2.0.2 =
 

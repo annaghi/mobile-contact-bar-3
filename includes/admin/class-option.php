@@ -951,6 +951,7 @@ final class Mobile_Contact_Bar_Option {
 			$styles .= 'display:table;';
 			$styles .= 'line-height:0;';
 			$styles .= 'margin:0 auto;';
+			$styles .= 'padding:0;';
 			$styles .= 'position:relative;';
 			$styles .= 'z-index:2;';
 			$styles .= '}';
