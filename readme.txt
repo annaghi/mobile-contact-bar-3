@@ -7,7 +7,7 @@ Tags: social media, icon, contact, mobile, woocommerce cart
 Requires at least: 4.6
 Tested up to: 5.6
 Requires PHP: 5.3
-Stable tag: 2.0.5
+Stable tag: 2.0.6
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.en.html
 
@@ -119,6 +119,15 @@ You have full control over your single cookie.
 
 
 == Changelog ==
+
+= 2.0.6 =
+
+* [Fixed] Domain Path
+
+= 2.0.5 =
+
+* [Fixed] License version
+* [Fixed] Requires at least change to 4.6
 
 = 2.0.4 =
 
