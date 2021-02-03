@@ -4,12 +4,12 @@
 Contributors: anna.bansaghi
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YXJAZ7Q5EJFUA
 Tags: social media, icon, contact, mobile, woocommerce cart
-Requires at least: 4.2
+Requires at least: 4.6
 Tested up to: 5.6
 Requires PHP: 5.3
-Stable tag: 2.0.4
-License: GPLv3
-License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
+Stable tag: 2.0.5
+License: GPLv2
+License URI: https://www.gnu.org/licenses/gpl-2.0.en.html
 
 Allow your visitors to contact you via mobile phones, or access your site's pages instantly.
 
