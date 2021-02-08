@@ -71,7 +71,6 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 = Credits =
 
 * [Font Awesome](https://fontawesome.com/) SVG, font, and CSS framework by Dave Gandy
-* [Icon Picker](https://github.com/kmhcreative/icon-picker/) jQuery plugin for selecting icon fonts by KMH Creative
 
 
 
