@@ -70,7 +70,8 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 
 = Credits =
 
-* [Font Awesome](https://fontawesome.com/) SVG, font, and CSS framework by Dave Gandy
+* [Font Awesome](https://fontawesome.com) SVG, font, and CSS framework
+* [Codestar Color Picker](https://github.com/bhaskarkc/codestar-wp-color-picker) with alpha channel
 
 
 
