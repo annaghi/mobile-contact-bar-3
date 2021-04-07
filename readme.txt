@@ -5,9 +5,9 @@ Contributors: anna.bansaghi
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YXJAZ7Q5EJFUA
 Tags: social media, icon, contact, mobile, woocommerce cart
 Requires at least: 4.6
-Tested up to: 5.6
+Tested up to: 5.7
 Requires PHP: 5.3
-Stable tag: 2.0.6
+Stable tag: 2.0.7
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.en.html
 
@@ -111,14 +111,18 @@ You have full control over your single cookie.
 
 == Screenshots ==
 
-1. Settings &rarr; Mobile Contact Bar
-2. Bar box
-3. Icons box, Toggle box
-4. Contact List box
+1. Contact List box
+2. Icons box, Toggle box
+3. Bar box
+4. Settings &rarr; Mobile Contact Bar
 
 
 
 == Changelog ==
+
+= 2.0.7 =
+
+* [Fixed] Do not show meta boxes on foreign pages - [menu-bar-settings-appearing-for-ohter-users-than-admin](https://wordpress.org/support/topic/menu-bar-settings-appearing-for-ohter-users-than-admin/)
 
 = 2.0.6 =
 

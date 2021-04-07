@@ -299,6 +299,12 @@ final class Mobile_Contact_Bar_Page
      */
     public static function add_meta_boxes()
     {
+        $screen = get_current_screen();
+        if ( $screen->base !== self::$page )
+        {
+            return;
+        }
+
         global $wp_settings_sections;
 
         add_meta_box(
