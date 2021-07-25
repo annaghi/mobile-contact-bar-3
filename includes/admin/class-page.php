@@ -404,9 +404,9 @@ final class Mobile_Contact_Bar_Page
             <h2><?php _e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?> <?php echo MOBILE_CONTACT_BAR__VERSION; ?></h2>
             <p><?php _e( $plugin_data['Description'], 'mobile-contact-bar' ); ?></p>
             <ul>
-                <li><a href="<?php echo esc_url( $plugin_data['Plugin URI'] . '#developers' ); ?>" target="_blank"><?php _e( 'Changelog', 'mobile-contact-bar' ); ?></a></li>
-                <li><a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/mobile-contact-bar' ); ?>" target="_blank"><?php _e( 'Forum', 'mobile-contact-bar' ); ?></a></li>
-                <li><a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/mobile-contact-bar' ); ?>" target="_blank"><?php _e( 'Requests', 'mobile-contact-bar' ); ?></a></li>
+                <li><a href="<?php echo esc_url( $plugin_data['Plugin URI'] . '#developers' ); ?>" target="_blank" rel="noopener"><?php _e( 'Changelog', 'mobile-contact-bar' ); ?></a></li>
+                <li><a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/mobile-contact-bar' ); ?>" target="_blank" rel="noopener"><?php _e( 'Forum', 'mobile-contact-bar' ); ?></a></li>
+                <li><a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/mobile-contact-bar' ); ?>" target="_blank" rel="noopener"><?php _e( 'Requests', 'mobile-contact-bar' ); ?></a></li>
             </ul>
             <footer>
                 <?php printf( __( 'Thank you for networking with <a href="%s">MCB</a>.', 'mobile-contact-bar' ), esc_url( $plugin_data['Plugin URI'] )); ?>
@@ -585,7 +585,7 @@ final class Mobile_Contact_Bar_Page
     {
         $out  = '';
         $out .= '<h4>' . __( 'More info', 'mobile-contact-bar' ) . '</h4>';
-        $out .= '<p><a href="'. esc_url( 'https://en.wikipedia.org/wiki/Uniform_Resource_Identifier' ) . '" target="_blank">' . __( 'Uniform Resource Identifier', 'mobile-contact-bar' ) . '</a></p>';
+        $out .= '<p><a href="'. esc_url( 'https://en.wikipedia.org/wiki/Uniform_Resource_Identifier' ) . '" target="_blank" rel="noopener">' . __( 'Uniform Resource Identifier', 'mobile-contact-bar' ) . '</a></p>';
 
         return $out;
     }

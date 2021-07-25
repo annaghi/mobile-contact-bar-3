@@ -126,7 +126,7 @@ final class Mobile_Contact_Bar_Renderer
                         case 'http':
                         case 'https':
                           $url = esc_url( $contact['resource'] );
-                          $new_tab = ( $settings['bar_is_new_tab'] ) ? ' target="_blank"' : '';
+                          $new_tab = ( $settings['bar_is_new_tab'] ) ? ' target="_blank" rel="noopener"' : '';
                           break;
                     }
 

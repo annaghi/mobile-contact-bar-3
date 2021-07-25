@@ -146,7 +146,7 @@ final class Mobile_Contact_Bar_Renderer {
 
 				$html           .= '<div id="mobile-contact-bar-outer">';
 					$html       .= '<ul>';
-						$new_tab = ( $settings['bar']['is_new_tab'] ) ? ' target="_blank"' : '';
+						$new_tab = ( $settings['bar']['is_new_tab'] ) ? ' target="_blank" rel="noopener"' : '';
 
 			foreach ( $contacts as $contact ) {
 				$class = 'Mobile_Contact_Bar_Contact_' . $contact['type'];

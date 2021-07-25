@@ -4,7 +4,7 @@
  * Plugin Name: Mobile Contact Bar
  * Plugin URI:  https://wordpress.org/plugins/mobile-contact-bar/
  * Description: Allow your visitors to contact you via mobile phones, or access your site's pages instantly.
- * Version:     2.0.7
+ * Version:     2.0.8
  * Author:      Anna Bansaghi
  * Author URI:  https://github.com/annaghi/mobile-contact-bar
  *
