@@ -120,6 +120,10 @@ You have full control over your single cookie.
 
 == Changelog ==
 
+= 2.0.8 =
+
+* [Fixed] Add rel="noopener" for links opening in new tab [links-to-cross-origin-destinations-are-unsafe](https://wordpress.org/support/topic/links-to-cross-origin-destinations-are-unsafe-7/)
+
 = 2.0.7 =
 
 * [Fixed] Do not show meta boxes on foreign pages - [menu-bar-settings-appearing-for-ohter-users-than-admin](https://wordpress.org/support/topic/menu-bar-settings-appearing-for-ohter-users-than-admin/)
