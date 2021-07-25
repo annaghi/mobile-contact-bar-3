@@ -647,6 +647,10 @@ final class Mobile_Contact_Bar_Option {
 
 		// sanitize settings
 		foreach ( self::$settings as $section_id => $section ) {
+			if ( 'badges' == $section_id && ! class_exists( 'WooCommerce' ) ) {
+				continue;
+			}
+
 			foreach ( $section as $setting_id => $setting ) {
 				$value = $settings[ $section_id ][ $setting_id ];
 
@@ -726,7 +730,7 @@ final class Mobile_Contact_Bar_Option {
 			$sanitized_contact = array();
 
 			// sanitize 'checked'
-			$sanitized_contact['checked'] = (int) $contact['checked'];
+			$sanitized_contact['checked'] = isset( $contact['checked'] ) ? (int) $contact['checked'] : 0;
 
 			// 'type' is already sanitized
 			$sanitized_contact['type'] = $contact['type'];
