@@ -7,7 +7,7 @@ Tags: social media, icon, contact, mobile, woocommerce cart
 Requires at least: 4.6
 Tested up to: 5.8
 Requires PHP: 5.3
-Stable tag: 2.0.8
+Stable tag: 2.0.9
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.en.html
 
@@ -119,6 +119,10 @@ You have full control over your single cookie.
 
 
 == Changelog ==
+
+= 2.0.9 =
+
+* [Fixed] Missing contact field "checked" notice
 
 = 2.0.8 =
 
