@@ -3,29 +3,27 @@
  * Copyright 2015 Codestar <info@codestarthemes.com> - GNU GENERAL PUBLIC LICENSE (http://www.gnu.org/licenses/gpl-2.0.txt)
  */
 
-
 /* global Color */
 
-(function ( $, document, undefined ) {
+(function ($, document, undefined) {
     'use strict';
 
-
     // adding alpha support for Automattic Color.js toString function.
-    if( typeof Color.fn.toString !== undefined ) {
-
+    if (typeof Color.fn.toString !== undefined) {
         Color.fn.toString = function () {
-
             // check for alpha
-            if ( this._alpha < 1 ) {
+            if (this._alpha < 1) {
                 return this.toCSS('rgba', this._alpha).replace(/\s+/g, '');
             }
 
-            var hex = parseInt( this._color, 10 ).toString( 16 );
+            var hex = parseInt(this._color, 10).toString(16);
 
-            if ( this.error ) { return ''; }
+            if (this.error) {
+                return '';
+            }
 
             // maybe left pad it
-            if ( hex.length < 6 ) {
+            if (hex.length < 6) {
                 for (var i = 6 - hex.length - 1; i >= 0; i--) {
                     hex = '0' + hex;
                 }
@@ -35,40 +33,32 @@
         };
     }
 
-
-    $.cs_ParseColorValue = function( val ) {
-
+    $.cs_ParseColorValue = function (val) {
         var value = val.replace(/\s+/g, ''),
-            alpha = ( value.indexOf('rgba') !== -1 ) ? parseFloat( value.replace(/^.*,(.+)\)/, '$1') * 100 ) : 100,
-            rgba  = ( alpha < 100 ) ? true : false;
+            alpha = value.indexOf('rgba') !== -1 ? parseFloat(value.replace(/^.*,(.+)\)/, '$1') * 100) : 100,
+            rgba = alpha < 100 ? true : false;
 
         return { value: value, alpha: alpha, rgba: rgba };
     };
 
-
-    $.fn.cs_wpColorPicker = function() {
-
-        return this.each(function() {
-
+    $.fn.cs_wpColorPicker = function () {
+        return this.each(function () {
             var $this = $(this);
 
             // check for rgba enabled/disable
-            if( $this.data('rgba') !== false ) {
-
+            if ($this.data('rgba') !== false) {
                 // parse value
-                var picker = $.cs_ParseColorValue( $this.val() );
+                var picker = $.cs_ParseColorValue($this.val());
 
                 // wpColorPicker core
                 $this.wpColorPicker({
-
                     // wpColorPicker: clear
-                    clear: function() {
+                    clear: function () {
                         $this.trigger('keyup');
                     },
 
                     // wpColorPicker: change
-                    change: function( event, ui ) {
-
+                    change: function (event, ui) {
                         var ui_color_value = ui.color.toString();
 
                         $this.closest('.wp-picker-container').find('.cs-alpha-slider-offset').css('background-color', ui_color_value);
@@ -76,41 +66,37 @@
                     },
 
                     // wpColorPicker: create
-                    create: function() {
-
+                    create: function () {
                         // set variables for alpha slider
-                        var a8cIris       = $this.data('a8cIris'),
-                            $container    = $this.closest('.wp-picker-container'),
-
+                        var a8cIris = $this.data('a8cIris'),
+                            $container = $this.closest('.wp-picker-container'),
                             // appending alpha wrapper
-                            $alpha_wrap   = $('<div class="cs-alpha-wrap">' +
-                                            '<div class="cs-alpha-slider"></div>' +
-                                            '<div class="cs-alpha-slider-offset"></div>' +
-                                            '<div class="cs-alpha-text"></div>' +
-                                            '</div>').appendTo( $container.find('.wp-picker-holder') ),
-
+                            $alpha_wrap = $(
+                                '<div class="cs-alpha-wrap">' +
+                                    '<div class="cs-alpha-slider"></div>' +
+                                    '<div class="cs-alpha-slider-offset"></div>' +
+                                    '<div class="cs-alpha-text"></div>' +
+                                    '</div>'
+                            ).appendTo($container.find('.wp-picker-holder')),
                             $alpha_slider = $alpha_wrap.find('.cs-alpha-slider'),
-                            $alpha_text   = $alpha_wrap.find('.cs-alpha-text'),
+                            $alpha_text = $alpha_wrap.find('.cs-alpha-text'),
                             $alpha_offset = $alpha_wrap.find('.cs-alpha-slider-offset');
 
                         // alpha slider
                         $alpha_slider.slider({
-
                             // slider: slide
-                            slide: function( event, ui ) {
-
-                                var slide_value = parseFloat( ui.value / 100 );
+                            slide: function (event, ui) {
+                                var slide_value = parseFloat(ui.value / 100);
 
                                 // update iris data alpha && wpColorPicker color option && alpha text
                                 a8cIris._color._alpha = slide_value;
-                                $this.wpColorPicker( 'color', a8cIris._color.toString() );
-                                $alpha_text.text( ( slide_value < 1 ? slide_value : '' ) );
+                                $this.wpColorPicker('color', a8cIris._color.toString());
+                                $alpha_text.text(slide_value < 1 ? slide_value : '');
                             },
 
                             // slider: create
-                            create: function() {
-
-                                var slide_value = parseFloat( picker.alpha / 100 ),
+                            create: function () {
+                                var slide_value = parseFloat(picker.alpha / 100),
                                     alpha_text_value = slide_value < 1 ? slide_value : '';
 
                                 // update alpha text && checkerboard background color
@@ -118,19 +104,17 @@
                                 $alpha_offset.css('background-color', picker.value);
 
                                 // wpColorPicker clear for update iris data alpha && alpha text && slider color option
-                                $container.on('click', '.wp-picker-clear', function() {
-
+                                $container.on('click', '.wp-picker-clear', function () {
                                     a8cIris._color._alpha = 1;
                                     $alpha_text.text('');
                                     $alpha_slider.slider('option', 'value', 100).trigger('slide');
                                 });
 
                                 // wpColorPicker default button for update iris data alpha && alpha text && slider color option
-                                $container.on('click', '.wp-picker-default', function() {
-
-                                    var default_picker = $.cs_ParseColorValue( $this.data('default-color') ),
-                                        default_value  = parseFloat( default_picker.alpha / 100 ),
-                                        default_text   = default_value < 1 ? default_value : '';
+                                $container.on('click', '.wp-picker-default', function () {
+                                    var default_picker = $.cs_ParseColorValue($this.data('default-color')),
+                                        default_value = parseFloat(default_picker.alpha / 100),
+                                        default_text = default_value < 1 ? default_value : '';
 
                                     a8cIris._color._alpha = default_value;
                                     $alpha_text.text(default_text);
@@ -138,12 +122,12 @@
                                 });
 
                                 // show alpha wrapper on click color picker button
-                                $container.on('click', '.wp-color-result', function() {
+                                $container.on('click', '.wp-color-result', function () {
                                     $alpha_wrap.toggle();
                                 });
 
                                 // hide alpha wrapper on click body
-                                $('body').on( 'click.wpcolorpicker', function() {
+                                $('body').on('click.wpcolorpicker', function () {
                                     $alpha_wrap.hide();
                                 });
                             },
@@ -156,15 +140,13 @@
                         });
                     }
                 });
-
             } else {
-
                 // wpColorPicker default picker
                 $this.wpColorPicker({
-                    clear: function() {
+                    clear: function () {
                         $this.trigger('keyup');
                     },
-                    change: function( event, ui ) {
+                    change: function (event, ui) {
                         $this.val(ui.color.toString()).trigger('change');
                     }
                 });
@@ -172,9 +154,7 @@
         });
     };
 
-
-    $(document).ready( function(){
+    $(document).ready(function () {
         $('.cs-wp-color-picker').cs_wpColorPicker();
     });
-
-})( jQuery, document );
+})(jQuery, document);

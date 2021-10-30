@@ -251,9 +251,15 @@ final class Mobile_Contact_Bar_Settings
                 'is_render' => array(
                     'type'     => 'checkbox',
                     'default'  => 0,
-                    'title'    => __( 'Show / Hide Toggle', 'mobile-contact-bar' ),
-                    'label'    => __( 'Show toggle', 'mobile-contact-bar' ),
+                    'title'    => __( 'Render Toggle', 'mobile-contact-bar' ),
+                    'label'    => __( 'Render toggle for the bar', 'mobile-contact-bar' ),
                     'desc'     => __( 'The toggle will be displayed only if the bar is fixed at its position.', 'mobile-contact-bar' ),
+                ),
+                'is_closed' => array(
+                    'type'     => 'checkbox',
+                    'default'  => 0,
+                    'title'    => __( 'Closed Toggle', 'mobile-contact-bar' ),
+                    'label'    => __( 'Set toggle state to be closed as default', 'mobile-contact-bar' ),
                 ),
                 'is_cookie' => array(
                     'type'     => 'checkbox',

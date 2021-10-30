@@ -24,14 +24,14 @@ final class Mobile_Contact_Bar_Renderer {
 				}
 			);
 
-			$is_moble = wp_is_mobile();
+			$is_mobile = wp_is_mobile();
 			$device   = self::$option['settings']['bar']['device'];
 
 			if ( self::$option['contacts'] ) {
 				if (
-					( $is_moble && 'mobile' == $device )
+					( $is_mobile && 'mobile' == $device )
 					||
-					( ! $is_moble && 'desktop' == $device )
+					( ! $is_mobile && 'desktop' == $device )
 					||
 					( 'both' == $device )
 				) {
@@ -122,7 +122,8 @@ final class Mobile_Contact_Bar_Renderer {
 			$html .= '<div id="mobile-contact-bar">';
 
 			if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] ) {
-				$html     .= '<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox">';
+				$checked = isset( $settings['toggle']['is_closed'] ) && $settings['toggle']['is_closed'] ? 'checked' : '';
+				$html     .= '<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox"' . $checked . '>';
 				$html     .= '<label for="mobile-contact-bar-toggle-checkbox" id="mobile-contact-bar-toggle">';
 					$html .= ( $settings['toggle']['label'] ) ? '<span>' . esc_attr( $settings['toggle']['label'] ) . '</span>' : '';
 

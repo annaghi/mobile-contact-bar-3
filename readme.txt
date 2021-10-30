@@ -7,7 +7,7 @@ Tags: social media, icon, contact, mobile, woocommerce cart
 Requires at least: 4.6
 Tested up to: 5.8
 Requires PHP: 5.3
-Stable tag: 2.0.9
+Stable tag: 2.1.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.en.html
 
@@ -120,6 +120,12 @@ You have full control over your single cookie.
 
 == Changelog ==
 
+= 2.1.0 =
+
+* [Added] New Toggle option for setting Bar to be closed as default [toggle-state](https://wordpress.org/support/topic/toggle-state-4/) and [default-toggle-state](https://wordpress.org/support/topic/default-toggle-state/)
+* [Added] Remove + sign from tel and sms protocols [telephone-remove](https://wordpress.org/support/topic/telephone-remove/)
+* [Updated] Font Awesome 5.15.4
+
 = 2.0.9 =
 
 * [Fixed] Missing contact field "checked" notice
@@ -195,10 +201,10 @@ You have full control over your single cookie.
 * [Fixed] Empty arrays issues
 
 = 1.2.0 =
-* [Updated] Font Awesome 4.7.0
 * [Added] UI for sorting contacts
 * [Added] Option for setting subject, body, cc, bcc of email - [add-subject-and-body-to-email](https://wordpress.org/support/topic/add-subject-and-body-to-email/)
 * [Added] Refreshed option page UI using meta boxes
+* [Updated] Font Awesome 4.7.0
 * [Fixed] Prepared plugin for localization
 * [Fixed] Sanitized phone number and add a plus sign (+) prefix
 

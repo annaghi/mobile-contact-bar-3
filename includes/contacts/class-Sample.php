@@ -30,7 +30,7 @@ final class Mobile_Contact_Bar_Contact_Sample
                 'type'        => self::$type,
                 'icon'        => 'fas fa-phone',
                 'title'       => __( 'Phone Number for calling', 'mobile-contact-bar' ),
-                'placeholder' => 'tel:+15417543010',
+                'placeholder' => 'tel:15417543010 or tel:+15417543010',
                 'uri'         => '',
             ),
             array(
@@ -38,7 +38,7 @@ final class Mobile_Contact_Bar_Contact_Sample
                 'type'        => self::$type,
                 'icon'        => 'far fa-comment',
                 'title'       => __( 'Phone Number for texting', 'mobile-contact-bar' ),
-                'placeholder' => 'sms:+15417543010',
+                'placeholder' => 'sms:15417543010 or sms:+15417543010',
                 'uri'         => '',
                 'parameters'  => array(
                     array(

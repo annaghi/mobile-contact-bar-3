@@ -42,7 +42,7 @@ final class Mobile_Contact_Bar_Contact_Text
             'type'        => self::$type,
             'icon'        => self::$icon,
             'title'       => __( 'Phone Number for texting', 'mobile-contact-bar' ),
-            'placeholder' => 'sms:+15417543010',
+            'placeholder' => 'sms:15417543010 or sms:+15417543010',
             'uri'         => '',
             'parameters'  => array(
                 array(
