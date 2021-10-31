@@ -262,14 +262,14 @@ final class Mobile_Contact_Bar_Updater
                         $new_contact['type']        = 'Sample';
                         $new_contact['icon']        = 'fas fa-phone';
                         $new_contact['title']       = 'Phone Number for calling';
-                        $new_contact['placeholder'] = 'tel:15417543010';
+                        $new_contact['placeholder'] = 'tel:15417543010 or tel:+15417543010';
                         break;
 
                     case 'text':
                         $new_contact['type']        = 'Sample';
                         $new_contact['icon']        = 'far fa-comment';
                         $new_contact['title']       = 'Phone Number for texting';
-                        $new_contact['placeholder'] = 'sms:15417543010';
+                        $new_contact['placeholder'] = 'sms:15417543010 or sms:+15417543010';
                         $new_contact['parameters']  = array(
                             array(
                                 'key'         => 'body',
