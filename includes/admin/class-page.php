@@ -1,16 +1,16 @@
 <?php
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit();
 
 
 final class Mobile_Contact_Bar_Page
 {
 
     /**
-     * Option page's hook.
+     * Option page's hook_suffix.
      * @var string
      */
-    public static $page = null;
+    public static $page_suffix = null;
 
 
 
@@ -56,8 +56,6 @@ final class Mobile_Contact_Bar_Page
         }
         else
         {
-            $default_option = self::default_option();
-
             if( $network_wide )
             {
                 global $wpdb;
@@ -68,14 +66,14 @@ final class Mobile_Contact_Bar_Page
                 {
                     switch_to_blog( $blog_id );
 
-                    self::update_plugin_options( $default_option );
+                    self::update_plugin_options();
 
                     restore_current_blog();
                 }
             }
             else
             {
-                self::update_plugin_options( $default_option );
+                self::update_plugin_options();
             }
         }
     }
@@ -93,11 +91,11 @@ final class Mobile_Contact_Bar_Page
 
         load_plugin_textdomain( 'mobile-contact-bar', false, dirname( $basename ) . '/languages' );
 
-        add_action( 'init'                  , array( __CLASS__, 'init' ));
-        add_action( 'wpmu_new_blog'         , array( __CLASS__, 'wpmu_new_blog' ));
-        add_action( 'admin_menu'            , array( __CLASS__, 'admin_menu' ));
-        add_action( 'add_meta_boxes'        , array( __CLASS__, 'add_meta_boxes' ));
-        add_action( 'admin_enqueue_scripts' , array( __CLASS__, 'admin_enqueue_scripts' ));
+        add_action( 'init', array( __CLASS__, 'init' ));
+        add_action( 'wpmu_new_blog', array( __CLASS__, 'wpmu_new_blog' ));
+        add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ));
+        add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_boxes' ));
+        add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_enqueue_scripts' ));
 
         add_filter( 'plugin_action_links_' . $basename, array( __CLASS__, 'plugin_action_links' ));
     }
@@ -116,8 +114,7 @@ final class Mobile_Contact_Bar_Page
 
         if( version_compare( $version, MOBILE_CONTACT_BAR__VERSION, '<' ))
         {
-            $default_option = self::default_option();
-            self::update_plugin_options( $default_option );
+            self::update_plugin_options();
         }
     }
 
@@ -133,7 +130,7 @@ final class Mobile_Contact_Bar_Page
     public static function wpmu_new_blog( $blog_id )
     {
         add_blog_option( $blog_id, MOBILE_CONTACT_BAR__NAME . '_version', MOBILE_CONTACT_BAR__VERSION );
-        add_blog_option( $blog_id, MOBILE_CONTACT_BAR__NAME, self::default_option() );
+        add_blog_option( $blog_id, MOBILE_CONTACT_BAR__NAME, self::default_bar() );
     }
 
 
@@ -148,6 +145,7 @@ final class Mobile_Contact_Bar_Page
      */
     public static function plugin_action_links( $links )
     {
+        // TODO Why esc_html__ ?
         return array_merge(
             $links,
             array( 'settings' => '<a href="' . admin_url( 'options-general.php?page=' . MOBILE_CONTACT_BAR__SLUG ) . '">' . esc_html__( 'Settings' ) . '</a>' )
@@ -164,7 +162,7 @@ final class Mobile_Contact_Bar_Page
      */
     public static function admin_menu()
     {
-        self::$page = add_options_page(
+        self::$page_suffix = add_options_page(
             __( 'Mobile Contact Bar', 'mobile-contact-bar' ),
             __( 'Mobile Contact Bar', 'mobile-contact-bar' ),
             'manage_options',
@@ -172,8 +170,8 @@ final class Mobile_Contact_Bar_Page
             array( __CLASS__, 'callback_render_page' )
         );
 
-        add_action( 'load-' . self::$page, array( __CLASS__, 'load_screen_options' ));
-        add_action( 'load-' . self::$page, array( __CLASS__, 'load_help' ));
+        add_action( 'load-' . self::$page_suffix, array( __CLASS__, 'load_screen_options' ));
+        add_action( 'load-' . self::$page_suffix, array( __CLASS__, 'load_help' ));
     }
 
 
@@ -200,11 +198,11 @@ final class Mobile_Contact_Bar_Page
                     <div id="post-body" class="metabox-holder columns-<?php echo ( 1 == get_current_screen()->get_columns() ) ? '1' : '2'; ?>">
 
                         <div id="postbox-container-2" class="postbox-container">
-                            <?php do_meta_boxes( self::$page, 'advanced', null ); ?>
+                            <?php do_meta_boxes( self::$page_suffix, 'advanced', null ); ?>
                         </div><!-- #postbox-container-2 -->
 
                         <div id="postbox-container-1" class="postbox-container">
-                            <?php do_meta_boxes( self::$page, 'side', null ); ?>
+                            <?php do_meta_boxes( self::$page_suffix, 'side', null ); ?>
                         </div><!-- #postbox-container-1 -->
 
                         <div id="post-body-content">
@@ -228,15 +226,14 @@ final class Mobile_Contact_Bar_Page
 
 
     /**
-     * Triggers the 'add_meta_boxes' hooks.
+     * Triggers the 'add_meta_boxes' hook_suffixs.
      * Adds screen options.
      *
      * @since 2.0.0
      */
     public static function load_screen_options()
     {
-        //do_action( 'add_meta_boxes_' . self::$page, null );
-        do_action( 'add_meta_boxes', self::$page, null );
+        do_action( 'add_meta_boxes', self::$page_suffix, null );
         add_screen_option( 'layout_columns', array( 'max' => 2, 'default' => 2 ));
     }
 
@@ -300,7 +297,7 @@ final class Mobile_Contact_Bar_Page
     public static function add_meta_boxes()
     {
         $screen = get_current_screen();
-        if ( $screen->base !== self::$page )
+        if ( $screen->base !== self::$page_suffix )
         {
             return;
         }
@@ -309,9 +306,9 @@ final class Mobile_Contact_Bar_Page
 
         add_meta_box(
             'mcb-section-model',
-            __( 'Real-time Model <sup>*</sup>', 'mobile-contact-bar' ),
+            __( 'Real-time Model', 'mobile-contact-bar' ),
             array( __CLASS__, 'callback_render_model' ),
-            self::$page,
+            self::$page_suffix,
             'side',
             'default'
         );
@@ -322,7 +319,7 @@ final class Mobile_Contact_Bar_Page
                 $section['id'],
                 $section['title'],
                 array( 'Mobile_Contact_Bar_Option', 'callback_render_section' ),
-                self::$page,
+                self::$page_suffix,
                 'advanced',
                 'default'
             );
@@ -330,35 +327,19 @@ final class Mobile_Contact_Bar_Page
             // add 'mcb-settings' class to meta boxes except Contact List
             if( 'mcb-section-contacts' != $section['id'] )
             {
-                add_filter( 'postbox_classes_' . self::$page . '_' . $section['id'], array( __CLASS__, 'metabox_classes_mcb_settings' ));
+                add_filter( 'postbox_classes_' . self::$page_suffix . '_' . $section['id'], array( __CLASS__, 'metabox_classes_mcb_settings' ));
             }
         }
 
         $user = wp_get_current_user();
-        $closed_meta_boxes = get_user_option( 'closedpostboxes_' . self::$page, $user->ID );
+        $closed_meta_boxes = get_user_option( 'closedpostboxes_' . self::$page_suffix, $user->ID );
 
         // close meta boxes for the first time
         if( ! $closed_meta_boxes )
         {
             $meta_boxes = array_keys( $wp_settings_sections[MOBILE_CONTACT_BAR__NAME] );
-            update_user_option( $user->ID, 'closedpostboxes_' . self::$page, $meta_boxes, true );
+            update_user_option( $user->ID, 'closedpostboxes_' . self::$page_suffix, $meta_boxes, true );
         }
-    }
-
-
-
-    /**
-     * Adds classes to meta boxes.
-     *
-     * @since 2.0.0
-     *
-     * @param  array $classes Array of classes.
-     * @return array          Updated array of classes.
-     */
-    public static function metabox_classes_close( $classes )
-    {
-        $classes[] = 'closed';
-        return $classes;
     }
 
 
@@ -397,7 +378,7 @@ final class Mobile_Contact_Bar_Page
         ?>
         <div id="mcb-model">
             <?php include_once plugin_dir_path( MOBILE_CONTACT_BAR__PATH ) . 'assets/images/settings/real-time-model/model.svg'; ?>
-            <footer><em><sup>*</sup> <?php _e( 'The model is an approximation. A lot depends on your active theme"s styles.', 'mobile-contact-bar' ); ?></em></footer>
+            <footer><em><?php _e( 'The model is an approximation. A lot depends on your active theme"s styles.', 'mobile-contact-bar' ); ?></em></footer>
         </div>
 
         <div id="mcb-about">
@@ -406,7 +387,6 @@ final class Mobile_Contact_Bar_Page
             <ul>
                 <li><a href="<?php echo esc_url( $plugin_data['Plugin URI'] . '#developers' ); ?>" target="_blank" rel="noopener"><?php _e( 'Changelog', 'mobile-contact-bar' ); ?></a></li>
                 <li><a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/mobile-contact-bar' ); ?>" target="_blank" rel="noopener"><?php _e( 'Forum', 'mobile-contact-bar' ); ?></a></li>
-                <li><a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/mobile-contact-bar' ); ?>" target="_blank" rel="noopener"><?php _e( 'Requests', 'mobile-contact-bar' ); ?></a></li>
             </ul>
             <footer>
                 <?php printf( __( 'Thank you for networking with <a href="%s">MCB</a>.', 'mobile-contact-bar' ), esc_url( $plugin_data['Plugin URI'] )); ?>
@@ -422,11 +402,11 @@ final class Mobile_Contact_Bar_Page
      *
      * @since 0.1.0
      *
-     * @param string $hook The specific admin page.
+     * @param string $hook_suffix The specific admin page.
      */
-    public static function admin_enqueue_scripts( $hook )
+    public static function admin_enqueue_scripts( $hook_suffix )
     {
-        if( self::$page == $hook )
+        if( self::$page_suffix == $hook_suffix )
         {
             // WordPress's postboxes logic
             wp_enqueue_script( 'postbox' );
@@ -649,64 +629,60 @@ final class Mobile_Contact_Bar_Page
      *
      * @return array Option initialized with version number, default settings, and contacts.
      */
-    public static function default_option()
+    public static function default_bar()
     {
-       $option = array();
-
-       $option['settings'] = Mobile_Contact_Bar_Settings::get_defaults();
-       $option['contacts'] = Mobile_Contact_Bar_Contact_Sample::mcb_admin_add_contact();
-       $option/* styles */ = Mobile_Contact_Bar_Option::pre_update_option( $option );
+       $settings = Mobile_Contact_Bar_Settings::defaults();
+       $contacts = Mobile_Contact_Bar_Contact_Sample::mcb_admin_add_contact();
+       $styles   = Mobile_Contact_Bar_Option::styles( $settings, $contacts );
 
        return array(
-           'settings' => $option['settings'],
-           'contacts' => $option['contacts'],
-           'styles'   => $option['styles'],
+           'settings' => $settings,
+           'contacts' => $contacts,
+           'styles'   => $styles,
        );
     }
 
 
 
     /**
-     * Updates version, repairs or creates plugin option.
+     * Updates version-option, repairs or creates bar-option.
      *
      * @since 2.0.0
-     *
-     * @param array $default_option Default option.
      */
-    private static function update_plugin_options( $default_option )
+    private static function update_plugin_options()
     {
-        $option = get_option( MOBILE_CONTACT_BAR__NAME );
+        $default_bar = self::default_bar();
+        $bar = get_option( MOBILE_CONTACT_BAR__NAME );
 
-        if( $option )
+        if( $bar )
         {
             $has_new_setting = false;
 
-            // repair 'settings'
-            foreach( $default_option['settings'] as $section_id => $section )
+            // update 'settings'
+            foreach( $default_bar['settings'] as $section_id => $section )
             {
                 foreach( $section as $setting_id => $setting )
                 {
-                    if( ! isset( $option['settings'][$section_id][$setting_id] ))
+                    if( ! isset( $bar['settings'][$section_id][$setting_id] ))
                     {
-                        $option['settings'][$section_id][$setting_id] = $setting;
+                        $bar['settings'][$section_id][$setting_id] = $setting;
                         $has_new_setting = true;
                     }
                 }
             }
 
-            // repair 'styles'
-            if( ! isset( $option['styles'] ) || ! $option['styles'] || $has_new_setting )
+            // generate 'styles'
+            if( ! isset( $bar['styles'] ) || ! $bar['styles'] || $has_new_setting )
             {
-                $option = Mobile_Contact_Bar_Option::pre_update_option( $option );
+                $bar = Mobile_Contact_Bar_Option::pre_update_option( $bar );
             }
-            update_option( MOBILE_CONTACT_BAR__NAME, $option );
+            update_option( MOBILE_CONTACT_BAR__NAME, $bar );
         }
         else
         {
-            add_option( MOBILE_CONTACT_BAR__NAME, $default_option );
+            add_option( MOBILE_CONTACT_BAR__NAME, $default_bar );
         }
 
         update_option( MOBILE_CONTACT_BAR__NAME . '_version', MOBILE_CONTACT_BAR__VERSION );
     }
-
 }

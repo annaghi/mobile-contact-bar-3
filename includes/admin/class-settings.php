@@ -1,6 +1,6 @@
 <?php
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit();
 
 
 final class Mobile_Contact_Bar_Settings
@@ -12,9 +12,9 @@ final class Mobile_Contact_Bar_Settings
      *
      * @since 0.1.0
      *
-     * @return array Multidimensional array of settings, divided into sections
+     * @return array Multidimensional array of settings fields, divided into sections
      */
-    public static function settings()
+    public static function fields()
     {
         return array(
 
@@ -314,9 +314,9 @@ final class Mobile_Contact_Bar_Settings
      *
      * @return array Default settings
      */
-    public static function get_defaults()
+    public static function defaults()
     {
-        $settings         = self::settings();
+        $settings         = self::fields();
         $default_settings = array();
 
         foreach( $settings as $section => $fields )

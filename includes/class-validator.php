@@ -1,6 +1,6 @@
 <?php
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit();
 
 
 final class Mobile_Contact_Bar_Validator
@@ -91,7 +91,7 @@ final class Mobile_Contact_Bar_Validator
                 case 'tel':
                 case 'sms':
                     $path    = self::sanitize_phone_number( $parsed_uri['path'] );
-                    $new_uri = ( '' != $path ) ? $parsed_uri['scheme'] . ':+' . $path : '';
+                    $new_uri = ( '' != $path ) ? $parsed_uri['scheme'] . ':' . $path : '';
                     break;
 
                 case 'skype':

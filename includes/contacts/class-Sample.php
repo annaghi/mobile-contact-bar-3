@@ -1,6 +1,6 @@
 <?php
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit();
 
 
 final class Mobile_Contact_Bar_Contact_Sample

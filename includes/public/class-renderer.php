@@ -1,6 +1,6 @@
 <?php
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit();
 
 
 final class Mobile_Contact_Bar_Renderer {
@@ -16,7 +16,8 @@ final class Mobile_Contact_Bar_Renderer {
 	public static function plugins_loaded() {
 		self::$option = get_option( MOBILE_CONTACT_BAR__NAME );
 
-		if ( self::$option && isset( self::$option['contacts'] ) && isset( self::$option['styles'] ) ) {
+		if ( self::$option && isset( self::$option['contacts'] ) && isset( self::$option['styles'] ))
+		{
 			self::$option['contacts'] = array_filter(
 				self::$option['contacts'],
 				function( $contact ) {
@@ -27,14 +28,16 @@ final class Mobile_Contact_Bar_Renderer {
 			$is_mobile = wp_is_mobile();
 			$device   = self::$option['settings']['bar']['device'];
 
-			if ( self::$option['contacts'] ) {
+			if ( self::$option['contacts'] )
+			{
 				if (
 					( $is_mobile && 'mobile' == $device )
 					||
 					( ! $is_mobile && 'desktop' == $device )
 					||
 					( 'both' == $device )
-				) {
+				)
+				{
 					add_action( 'wp_head', array( __CLASS__, 'wp_head' ), 7 );
 					add_action( 'wp_enqueue_scripts', array( __CLASS__, 'wp_enqueue_scripts' ) );
 					add_action( 'wp_footer', array( __CLASS__, 'wp_footer' ) );
@@ -59,7 +62,8 @@ final class Mobile_Contact_Bar_Renderer {
 			'all'
 		);
 
-		if ( self::$option['settings']['toggle']['is_render'] && self::$option['settings']['toggle']['is_cookie'] ) {
+		if ( self::$option['settings']['toggle']['is_render'] && self::$option['settings']['toggle']['is_cookie'] )
+		{
 			wp_enqueue_script(
 				'mobile-contact-bar',
 				plugins_url( 'assets/js/public.min.js', MOBILE_CONTACT_BAR__PATH ),
@@ -77,7 +81,8 @@ final class Mobile_Contact_Bar_Renderer {
 	 *
 	 * @since 0.1.0
 	 */
-	public static function wp_head() {
+	public static function wp_head()
+	{
 		?>
 		<style id="mobile-contact-bar-css" type="text/css" media="screen"><?php echo str_replace( '&quot;', '"', esc_html__( self::$option['styles'] ) ); ?></style>
 		<?php
@@ -90,8 +95,10 @@ final class Mobile_Contact_Bar_Renderer {
 	 *
 	 * @since 0.1.0
 	 */
-	public static function wp_footer() {
-		if ( ! has_action( 'mcb_public_render_html' ) ) {
+	public static function wp_footer()
+	{
+		if ( ! has_action( 'mcb_public_render_html' ))
+		{
 			add_action( 'mcb_public_render_html', array( __CLASS__, 'render_html' ), 10, 2 );
 		}
 
@@ -108,8 +115,10 @@ final class Mobile_Contact_Bar_Renderer {
 	 * @param array $contacts Associative array of displayable contacts
 	 * @param array $settings Associative array of settings
 	 */
-	public static function render_html( $contacts, $settings ) {
-		if ( 1 === did_action( 'mcb_public_render_html' ) ) {
+	public static function render_html( $contacts, $settings )
+	{
+		if ( 1 === did_action( 'mcb_public_render_html' ))
+		{
 			$html = '';
 
 			$paths = array(
@@ -121,45 +130,58 @@ final class Mobile_Contact_Bar_Renderer {
 
 			$html .= '<div id="mobile-contact-bar">';
 
-			if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] ) {
+			if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] )
+			{
 				$checked = isset( $settings['toggle']['is_closed'] ) && $settings['toggle']['is_closed'] ? 'checked' : '';
-				$html     .= '<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox"' . $checked . '>';
-				$html     .= '<label for="mobile-contact-bar-toggle-checkbox" id="mobile-contact-bar-toggle">';
-					$html .= ( $settings['toggle']['label'] ) ? '<span>' . esc_attr( $settings['toggle']['label'] ) . '</span>' : '';
+				$html .= '<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox"' . $checked . '>';
+				$html .= '<label for="mobile-contact-bar-toggle-checkbox" id="mobile-contact-bar-toggle">';
+				$html .= ( $settings['toggle']['label'] ) ? '<span>' . esc_attr( $settings['toggle']['label'] ) . '</span>' : '';
 
-					$html .= '<svg viewBox="0 0 550 170" width="110" height="34">';
-				if ( 'bottom' == $settings['bar']['vertical_position'] ) {
-					if ( 'rounded' == $settings['toggle']['shape'] ) {
-								$html .= $paths['bottom_rounded'];
-					} else {
-							$html .= $paths['bottom_sharp'];
+				$html .= '<svg viewBox="0 0 550 170" width="110" height="34">';
+				if ( 'bottom' == $settings['bar']['vertical_position'] )
+				{
+					if ( 'rounded' == $settings['toggle']['shape'] )
+					{
+						$html .= $paths['bottom_rounded'];
 					}
-				} elseif ( 'top' == $settings['bar']['vertical_position'] ) {
-					if ( 'rounded' == $settings['toggle']['shape'] ) {
+					else
+					{
+						$html .= $paths['bottom_sharp'];
+					}
+				}
+				elseif ( 'top' == $settings['bar']['vertical_position'] )
+				{
+					if ( 'rounded' == $settings['toggle']['shape'] )
+					{
 						$html .= $paths['top_rounded'];
-					} else {
+					}
+					else
+					{
 						$html .= $paths['top_sharp'];
 					}
 				}
-						$html .= '</svg>';
-						$html .= '</label>';
+				$html .= '</svg>';
+				$html .= '</label>';
 			}
 
-				$html           .= '<div id="mobile-contact-bar-outer">';
-					$html       .= '<ul>';
-						$new_tab = ( $settings['bar']['is_new_tab'] ) ? ' target="_blank" rel="noopener"' : '';
+			$html .= '<div id="mobile-contact-bar-outer">';
+			$html .= '<ul>';
+			$new_tab = ( $settings['bar']['is_new_tab'] ) ? ' target="_blank" rel="noopener"' : '';
 
-			foreach ( $contacts as $contact ) {
+			foreach ( $contacts as $contact )
+			{
 				$class = 'Mobile_Contact_Bar_Contact_' . $contact['type'];
 				$url   = Mobile_Contact_Bar_Validator::escape_contact_uri( $contact['uri'] );
 
-				if ( isset( $contact['parameters'] ) ) {
+				if ( isset( $contact['parameters'] ))
+				{
 					$query_arg = array();
 
-					foreach ( $contact['parameters'] as $parameter ) {
+					foreach ( $contact['parameters'] as $parameter )
+					{
 						if ( $parameter['value'] ) {
-							$key               = sanitize_key( $parameter['key'] );
-							$query_arg[ $key ] = urlencode( $parameter['value'] );
+							$key             = sanitize_key( $parameter['key'] );
+							$query_arg[$key] = urlencode( $parameter['value'] );
 						}
 					}
 					$url = add_query_arg( $query_arg, $url );
@@ -167,17 +189,18 @@ final class Mobile_Contact_Bar_Renderer {
 
 				$counter = ( method_exists( $class, 'output_badge' ) ) ? $class::output_badge() : '';
 
-				$html     .= '<li>';
-					$html .= sprintf(
-						'<a data-rel="external" href="%s"%s><span class="fa-stack fa-%s"><i class="fa-fw %s"></i>%s<span class="screen-reader-text">%s</span></span></a>',
-						$url,
-						$new_tab,
-						esc_attr( $settings['icons']['size'] ),
-						esc_attr( $contact['icon'] ),
-						$counter,
-						esc_html( $contact['title'] )
-					);
-				if ( method_exists( $class, 'public_scripts' ) ) {
+				$html .= '<li>';
+				$html .= sprintf(
+					'<a data-rel="external" href="%s"%s><span class="fa-stack fa-%s"><i class="fa-fw %s"></i>%s<span class="screen-reader-text">%s</span></span></a>',
+					$url,
+					$new_tab,
+					esc_attr( $settings['icons']['size'] ),
+					esc_attr( $contact['icon'] ),
+					$counter,
+					esc_html( $contact['title'] )
+				);
+				if ( method_exists( $class, 'public_scripts' ))
+				{
 					ob_start();
 					$class::public_scripts();
 					$html .= ob_get_contents();
@@ -186,8 +209,8 @@ final class Mobile_Contact_Bar_Renderer {
 				$html .= '</li>';
 			}
 
-					$html .= '</ul>';
-				$html     .= '</div>'; // mobile-contact-bar-outer
+			$html .= '</ul>';
+			$html .= '</div>'; // mobile-contact-bar-outer
 
 			$html .= '</div>'; // <div id="mobile-contact-bar
 

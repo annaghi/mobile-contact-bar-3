@@ -1,6 +1,6 @@
 <?php
 
-defined( 'ABSPATH' ) and defined( 'WP_UNINSTALL_PLUGIN' ) or exit;
+defined( 'ABSPATH' ) and defined( 'WP_UNINSTALL_PLUGIN' ) || exit();
 
 
 /**

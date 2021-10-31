@@ -40,7 +40,7 @@
  */
 
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit();
 
 
 $plugin_data = get_file_data( __FILE__, array( 'Version' => 'Version' ));
