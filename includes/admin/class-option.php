@@ -872,7 +872,7 @@ final class Mobile_Contact_Bar_Option
 				return $contact['checked'];
 			}
 		);
-		$contacts_count = count( $checked_contacts );
+		$checked_contacts_count = count( $checked_contacts );
 
 		$styles = '';
 
@@ -964,7 +964,7 @@ final class Mobile_Contact_Bar_Option
 				break;
 
 			case 'justified':
-				$styles .= 'width:' . ( 100 / $contacts_count ) . '%;';
+				$styles .= ( $checked_contacts_count > 0 ) ? 'width:' . ( 100 / $checked_contacts_count ) . '%;' : 'width:100%;';
 				break;
 		}
 		$styles .= '}';
