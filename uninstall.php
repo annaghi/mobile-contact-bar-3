@@ -6,8 +6,6 @@ defined( 'ABSPATH' ) and defined( 'WP_UNINSTALL_PLUGIN' ) || exit();
 /**
  * Database cleaning process
  *
- * @since 0.1.0
- *
  * @global $wpdb
  */
 
@@ -20,30 +18,22 @@ if( is_multisite() )
     {
         switch_to_blog( $blog_id );
 
-        $plugin_options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'mobile_contact_bar%'" );
+        $plugin_options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE '%mobile_contact_bar%'" );
         foreach( $plugin_options as $option )
         {
             delete_option( $option->option_name );
         }
+        $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE '%mobile_contact_bar%'" );
 
         restore_current_blog();
     }
 }
 else
 {
-    $plugin_options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'mobile_contact_bar%'" );
+    $plugin_options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE '%mobile_contact_bar%'" );
     foreach( $plugin_options as $option )
     {
         delete_option( $option->option_name );
+        $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE '%mobile_contact_bar%'" );
     }
-}
-
-if( ! $user = wp_get_current_user() )
-{
-    wp_die( -1 );
-}
-$user_options = $wpdb->get_results( "SELECT meta_key FROM $wpdb->usermeta WHERE meta_key LIKE '%mobile-contact-bar%'" );
-foreach( $user_options as $option )
-{
-    delete_user_option( $user->ID, $option->meta_key, true );
 }

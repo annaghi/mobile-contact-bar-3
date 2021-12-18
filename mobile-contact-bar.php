@@ -1,17 +1,18 @@
 <?php
 
 /**
- * Plugin Name: Mobile Contact Bar
- * Plugin URI:  https://wordpress.org/plugins/mobile-contact-bar/
- * Description: Allow your visitors to contact you via mobile phones, or access your site's pages instantly.
- * Version:     2.1.0
- * Author:      Anna Bansaghi
- * Author URI:  https://github.com/annaghi/mobile-contact-bar
- *
- * License:     GPLv2
- * License URI: https://www.gnu.org/licenses/gpl-2.0.en.html
- *
- * Text Domain: mobile-contact-bar
+ * Plugin Name:       Mobile Contact Bar
+ * Plugin URI:        https://wordpress.org/plugins/mobile-contact-bar/
+ * Description:       Allow your visitors to contact you via mobile phones, or access your site's pages instantly.
+ * Version:           3.0.0
+ * Author:            Anna Bansaghi
+ * Author URI:        https://github.com/annaghi/mobile-contact-bar
+ * License:           GPLv2
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.en.html
+ * Requires at least: 4.9
+ * Requires PHP:      5.6.20
+ * Text Domain:       mobile-contact-bar
+ * Domain Path:       languages
  *
  *
  * Mobile Contact Bar - Call-to-Actions on your site
@@ -32,85 +33,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
-/**
- * Main plugin file
- *
- * @since 0.1.0
- */
-
-
 defined( 'ABSPATH' ) || exit();
 
 
-$plugin_data = get_file_data( __FILE__, array( 'Version' => 'Version' ));
-
-define( 'MOBILE_CONTACT_BAR__PATH'    , __FILE__ );
-define( 'MOBILE_CONTACT_BAR__SLUG'    , basename( __FILE__, '.php' ));
-define( 'MOBILE_CONTACT_BAR__NAME'    , str_replace( '-', '_', MOBILE_CONTACT_BAR__SLUG ));
-define( 'MOBILE_CONTACT_BAR__VERSION' , $plugin_data['Version'] );
-
-
-// Admin functionality
-if( is_admin() )
+if ( ! class_exists( 'MobileContactBar_Plugin_Check' ))
 {
-    $dir = plugin_dir_path( __FILE__ );
-
-
-    // update
-    if( get_option( 'mcb_option' ))
-    {
-        update_option( MOBILE_CONTACT_BAR__NAME . '_update', 1 );
-    }
-    if( get_option( MOBILE_CONTACT_BAR__NAME . '_update' ))
-    {
-        include_once $dir . 'includes/admin/class-updater.php';
-        add_action( 'plugins_loaded', array( 'Mobile_Contact_Bar_Updater', 'plugins_loaded' ));
-    }
-
-
-    // activate
-    include_once $dir . 'includes/admin/class-page.php';
-    include_once $dir . 'includes/admin/class-option.php';
-    include_once $dir . 'includes/admin/class-settings.php';
-
-    register_activation_hook( __FILE__, array( 'Mobile_Contact_Bar_Page', 'on_activation' ));
-
-    add_action( 'plugins_loaded', array( 'Mobile_Contact_Bar_Page'   , 'plugins_loaded' ));
-    add_action( 'plugins_loaded', array( 'Mobile_Contact_Bar_Option' , 'plugins_loaded' ));
+    include_once __DIR__ . '/activate.php';
 }
 
-// Public functionality
-else
+if (( new MobileContactBar_Plugin_Check( __FILE__ ))->can_proceed())
 {
-    if( get_option( 'mcb_option' ))
+    require_once __DIR__ . '/autoload.php';
+
+    function abmcb( $class = null )
     {
-        include_once plugin_dir_path( __FILE__ ) . 'includes/public/class-renderer-v1.php';
+        $plugin = MobileContactBar\Plugin::load( __FILE__ );
+        return ( is_null( $class )) ? $plugin : $plugin->make( $class );
     }
-    else
-    {
-        include_once plugin_dir_path( __FILE__ ) . 'includes/public/class-renderer.php';
-    }
-    add_action( 'plugins_loaded', array( 'Mobile_Contact_Bar_Renderer', 'plugins_loaded' ));
-}
 
-
-
-// Both admin and public functionality
-// Validation and Contacts
-if( class_exists( 'Mobile_Contact_Bar_Page' ) || class_exists( 'Mobile_Contact_Bar_Renderer' ))
-{
-    $dir = plugin_dir_path( __FILE__ );
-
-    include_once $dir . 'includes/class-validator.php';
-
-    foreach( glob( $dir . 'includes/contacts/class-*.php' ) as $path )
-    {
-        include_once $path;
-
-        $name = substr( basename( $path, '.php' ), 6 );
-        $class_name = 'Mobile_Contact_Bar_Contact_' . $name;
-
-        add_action( 'plugins_loaded', array( $class_name, 'plugins_loaded' ));
-    }
+    $mobile_contact_bar_plugin = MobileContactBar\Plugin::load( __FILE__ );
+    register_activation_hook( __FILE__, [$mobile_contact_bar_plugin, 'activate'] );   
+    add_action( 'plugins_loaded', [$mobile_contact_bar_plugin, 'plugins_loaded'] );
 }

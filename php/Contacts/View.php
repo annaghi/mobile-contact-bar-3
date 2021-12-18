@@ -1,0 +1,771 @@
+<?php
+
+namespace MobileContactBar\Contacts;
+
+use MobileContactBar\Renderer;
+use MobileContactBar\Helper;
+
+final class View
+{
+    public $option_bar = [];
+
+    /**
+     * Adds Contact List metabox to the options page.
+     * 
+     * @param array $option_bar
+     */
+    public function add( $option_bar = [] )
+    {
+        $this->option_bar = $option_bar;
+
+        add_settings_section(
+            'mcb-section-contacts',
+            __( 'Contact List', 'mobile-contact-bar' ),
+            false,
+            abmcb()->id
+        );
+    }
+
+
+    /**
+     * Renders template HTML elements for the Icon Picker and the Contact Parameter.
+     */
+    public function icon_picker_html_template()
+    {
+        ?>
+        <script type="text/html" id="mcb-tmpl-icon-picker">
+            <div id="mcb-icon-picker-container">
+                <div class="icon-picker-control">
+                    <a data-direction="back" href="#">
+                        <i class="fas fa-angle-left fa-lg"></i>
+                    </a>
+                    <input type="text" class="" placeholder="<?php esc_attr_e( 'Search', 'mobile-contact-bar' ); ?>">
+                    <a data-direction="forward" href="#">
+                        <i class="fas fa-angle-right fa-lg"></i>
+                    </a>
+                </div>
+                <ul class="icon-picker-list">
+                    <?php
+                    $icons = Input::icons();
+                    foreach ( $icons as $icon_id => $section ) :
+                        foreach ( $section as $icon ) :
+                            $title = $icon_id . ' fa-' . $icon;
+                            ?>
+                            <li data-icon="<?php echo $icon; ?>">
+                                <a href="#" title="<?php echo $icon; ?>">
+                                    <i class="<?php echo $title; ?>"></i>
+                                </a>
+                            </li>
+                            <?php
+                        endforeach;
+                    endforeach;
+                    ?>
+                </ul>
+            </div>
+        </script>
+        <?php
+    }
+
+
+    /**
+     * Renders the contact list.
+     */
+    public function output_contact_list()
+    {
+        $settings = $this->option_bar['settings'];
+        $contacts = $this->option_bar['contacts'];
+
+        ?>
+        <div id="mcb-table-contacts">
+            <div id="mcb-contacts">
+            <?php
+            foreach ( $this->option_bar['contacts'] as $contact_id => $contact )
+            {
+                ?>
+                <div class="mcb-contact" data-contact-id="<?php echo $contact_id; ?>"><?php
+                    echo $this->output_summary( ['contact_id' => $contact_id, 'contact' => $contact] );
+                    echo $this->output_details( ['contact_id' => $contact_id, 'contact' => $contact] );
+                ?>
+                </div><?php
+            }
+            ?>
+            </div>
+            <div id="mcb-footer-contacts">
+                <button type="button" id="mcb-add-contact" title="<?php echo esc_attr__( 'Add New Contact', 'mobile-contact-bar' ); ?>">
+                    <i class="fas fa-plus fa-fw" aria-hidden="true"></i>
+                    <span class="mcb-add-contact-label"><?php echo esc_attr__( 'New Contact', 'mobile-contact-bar' ); ?></span>
+                </button>
+            </div>
+        </div>
+        <?php
+    }
+
+
+    /**
+     * TODO: Milestone 3.2
+     */
+    public function output_real_contacts( $settings, $contacts, $checked_contacts )
+    {
+        // $has_css_id = $contact['palette']['id'] !== '';
+        // $background_color = 'background-color:' .
+        // 	(( $has_css_id && $contact['palette']['background_color'] !== '' )
+        // 	? $contact['palette']['background_color']
+        // 	: $settings['bar']['color'] )
+        // 	. ';';
+        // $icon_color = 'color:' .
+        // 	(( $has_css_id && $contact['palette']['icon_color'] !== '' )
+        // 	? $contact['palette']['icon_color']
+        // 	: $settings['icons_labels']['icon_color'] )
+        // 	. ';';
+
+        // $border_color =
+        // 	( $has_css_id && $contact['palette']['border_color'] !== '' )
+        // 	? $contact['palette']['border_color']
+        // 	: $settings['icons_labels']['border_color'];
+        // $border_top =
+        // 	( $settings['icons_labels']['borders']['top'] === 1 )
+        // 	? 'border-top:' . $settings['icons_labels']['border_width'] . 'px solid ' . $border_color . ';'
+        // 	: '';
+        // $border_bottom =
+        // 	( $settings['icons_labels']['borders']['bottom'] === 1 )
+        // 	? 'border-bottom:' . $settings['icons_labels']['border_width'] . 'px solid ' . $border_color . ';'
+        // 	: '';
+    }
+
+
+    /**
+     * Outputs contact summary.
+     *
+     * @param  array  $args
+     * 	       string $contact_id
+     * 	       array  $contact
+     * @return string             HTML
+     */
+    private function output_summary( $args )
+    {
+        extract( $args );
+
+        $out = '';
+
+        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_id ) . ']';
+        $icon   = esc_attr( $contact['icon'] );
+
+        $out .= sprintf(
+            '<div class="mcb-summary%s">',
+            ( $contact['checked'] ) ? ' mcb-checked' : ''
+        );
+        
+        $out .= '<div class="mcb-left-actions">';
+
+        // draggable
+        $out .= sprintf(
+            '<div class="mcb-sortable-draggable ui-sortable-handle" title="%s">
+                <i class="fas fa-grip-vertical"></i>
+            </div>',
+            esc_attr__( 'Drag and drop to reorder', 'mobile-contact-bar' )
+        );
+
+        // 'checkbox' input
+        $out .= sprintf(
+            '<div class="mcb-summary-checkbox">
+                <input type="checkbox" name="' . $prefix . '[checked]" value="1" %s>
+            </div>',
+            ( $contact['checked'] ) ? checked( $contact['checked'], 1, false ) : ''
+        );
+
+        $out .= '</div>';
+
+        $out .= '<div class="mcb-summary-icon-label">';
+
+        // 'icon'
+        $out .= ( empty( $icon ))
+            ? '<div class="mcb-summary-icon"><i class="mcb-blank-icon">---</i></div>'
+            : '<div class="mcb-summary-icon"><i class="' . $icon . '"></i></div>';
+
+        // 'label'
+        $out .= sprintf( '<div class="mcb-summary-label">%s</div>', esc_attr( $contact['label'] ));
+
+        $out .= '</div>';
+
+        // 'URI'
+        $out .= sprintf(
+            '<div class="mcb-summary-uri">%s</div>',
+            Validator::escape_contact_uri( $contact['uri'] )
+        );
+
+        $out .= '<div class="mcb-right-actions">';
+
+        $out .= sprintf(
+            '<button type="button" class="mcb-action-icon mcb-action-toggle-details" title="%1$s">
+                <i class="fas fa-edit" aria-expanded="false" aria-hidden="true"></i>
+                <span class="screen-reader-text">%1$s</span>
+            </button>',
+            esc_attr__( 'Edit contact details', 'mobile-contact-bar' )
+        );
+
+        $out .= sprintf(
+            '<button type="button" class="mcb-action-icon mcb-action-delete-contact" title="%1$s">
+                <i class="fas fa-times" aria-hidden="true"></i>
+                <span class="screen-reader-text">%1$s</span>
+            </button>',
+            esc_attr__( 'Delete this contact', 'mobile-contact-bar' )
+        );
+
+        $out .= sprintf(
+            '<button type="button" class="mcb-action-icon mcb-action-order-higher" title="%1$s">
+                <i class="fas fa-angle-up" aria-hidden="true"></i>
+                <span class="screen-reader-text">%1$s</span>
+            </button>',
+            esc_attr__( 'Order contact higher', 'mobile-contact-bar' )
+        );
+
+        $out .= sprintf(
+            '<button type="button" class="mcb-action-icon mcb-action-order-lower" title="%1$s">
+                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                <span class="screen-reader-text">%1$s</span>
+            </button>',
+            esc_attr__( 'Order contact lower', 'mobile-contact-bar' )
+        );
+
+        $out .= '</div>';
+        $out .= '</div>';
+
+        return $out;
+    }
+
+
+    /**
+     * Outputs editable contact details.
+     *
+     * @param  array  $args
+     * 	       string $contact_id
+     * 	       array  $contact
+     * @return string             HTML
+     */
+    private function output_details( $args )
+    {
+        extract( $args );
+
+        $out = '';
+
+        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_id ) . ']';
+        $icon   = esc_attr( $contact['icon'] );
+
+        $contact_types = apply_filters( 'mcb_admin_contact_types', [] );
+        $contact_type  = $contact_types[$contact['type']];
+
+        $out .= '<div class="mcb-details">';
+
+        // 'icon' hidden
+        $out .= '<input type="hidden" name="' . $prefix . '[icon]" value="' . $icon . '">';
+
+        // 'icon' visible
+        $icon = ( empty( $icon ))
+            ? '<i class="mcb-blank-icon">---</i>'
+            : '<i class="' . $icon . '"></i>';
+
+        // select & clear 'icon' button
+        $out .= sprintf(
+            '<div class="mcb-row mcb-details-icon">
+                <div class="mcb-label">
+                    <label>%1$s</label>
+                </div>
+                <div class="mcb-input">
+                    <button type="button" class="button action mcb-action-pick-icon" title="%2$s">%2$s</button>
+                    <button type="button" class="button action mcb-action-clear-icon" title="%3$s">%3$s</button>
+                    %4$s
+                </div>
+            </div>',
+            esc_attr__( 'Contact Icon', 'mobile-contact-bar' ),
+            esc_attr__( 'Select Icon', 'mobile-contact-bar' ),
+            esc_attr__( 'Clear Icon', 'mobile-contact-bar' ),
+            $icon
+        );
+
+        // 'label' input
+        $out .= sprintf(
+            '<div class="mcb-row mcb-details-label">
+                <div class="mcb-label">
+                    <label for="' . $prefix . '[label]">%s</label>
+                    <p class="mcb-description">%s</p>
+                </div>
+                <div class="mcb-input">
+                    <input type="text" name="' . $prefix . '[label]" id="' . $prefix . '[label]" value="%s">
+                </div>
+            </div>',
+            esc_attr__( 'Contact Label', 'mobile-contact-bar' ),
+            esc_attr( $contact_type['long_desc'] ),
+            esc_html( $contact['label'] )
+        );
+
+        // 'type' input
+        $select = '<select name="' . $prefix . '[type]" id="' . $prefix . '[type]">';
+        
+        foreach ( $contact_types as $contact_type_id => $contact_types )
+        {
+            $select .= sprintf(
+                '<option value="%s" %s>%s</option>',
+                esc_attr( $contact_type_id ),
+                selected( $contact_type_id, $contact['type'], false ),
+                esc_attr( $contact_types['title'] )
+            );
+        }
+        $select .= '</select>';
+        
+        $out .= sprintf(
+            '<div class="mcb-row mcb-details-type">
+                <div class="mcb-label">
+                    <label for="' . $prefix . '[type]">%s</label>
+                    <p class="mcb-description">%s</p>
+                </div>
+                <div class="mcb-input">%s</div>
+            </div>',
+            esc_attr__( 'Contact Type', 'mobile-contact-bar' ),
+            esc_attr( $contact_type['long_desc'] ),
+            $select,
+            esc_attr( $contact['type'] )
+        );
+
+        $out .= $this->output_details_uri( ['contact_id' => $contact_id, 'contact' => $contact, 'contact_type' => $contact_type] );
+        $out .= $this->output_parameters( ['contact_id' => $contact_id, 'contact' => $contact, 'contact_type' => $contact_type] );
+        $out .= $this->output_palette( ['contact_id' => $contact_id, 'contact' => $contact, 'contact_type' => $contact_type] );
+
+        $out .= '</div>';
+
+        return $out;
+    }
+
+
+
+    private function output_details_uri( $args )
+    {
+        extract( $args );
+
+        $out = '';
+
+        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_id ) . ']';
+
+        if ( 'scrolltotop' === $contact['type'] )
+        {
+            // 'URI' hidden
+            $out .= sprintf(
+                '<input type="hidden" name="' . $prefix . '[uri]" value="%1$s">',
+                Validator::escape_contact_uri( $contact['uri'] )
+            );
+
+            // 'URI' visible
+            $out .= sprintf(
+                '<div class="mcb-row mcb-details-uri">
+                    <div class="mcb-label">
+                        <label>%s</label>
+                        <p class="mcb-description">%s</p>
+                    </div>
+                    <div class="mcb-input">#</div>
+                </div>',
+                esc_attr__( 'Contact URI', 'mobile-contact-bar' ),
+                esc_attr( $contact_type['long_desc'] )
+            );
+        }
+        else
+        {
+            // 'URI' input
+            $out .= sprintf(
+                '<div class="mcb-row mcb-details-uri">
+                    <div class="mcb-label">
+                        <label for="' . $prefix . '[uri]">%s</label>
+                        <p class="mcb-description">%s</p>
+                    </div>
+                    <div class="mcb-input">
+                        <input type="text" name="' . $prefix . '[uri]" id="' . $prefix . '[uri]" placeholder="%s" value="%s">
+                    </div>
+                </div>',
+                esc_attr__( 'Contact URI', 'mobile-contact-bar' ),
+                esc_attr( $contact_type['long_desc'] ),
+                esc_attr( $contact_type['placeholder'] ),
+                Validator::escape_contact_uri( $contact['uri'] )
+            );
+        }
+
+        return $out;
+    }
+
+
+    /**
+     * Outputs parameters head row.
+     *
+     * @param  array  $args
+     * 	       string $contact_id
+     * 	       array  $contact
+     * @return string             HTML
+     */
+    private function output_parameters( $args )
+    {
+        extract( $args );
+
+        $out = '';
+
+        if ( 'link' === $contact['type'] && isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
+        {
+            $out .= sprintf(
+                '<div class="mcb-row mcb-custom-parameters">
+                    <div class="mcb-label">
+                        <label>%s</label>
+                    </div>
+                    <div class="mcb-input">
+                        <button type="button" class="button action mcb-add-parameter" title="%2$s">%2$s</button>
+                    </div>
+                </div>',
+                esc_attr__( 'Query String Parameters', 'mobile-contact-bar' ),
+                esc_attr__( 'Add Parameter', 'mobile-contact-bar' )
+            );
+            
+            foreach ( $contact['parameters'] as $parameter_id => $parameter )
+            {
+                $out .= $this->output_custom_parameter(
+                    [
+                        'contact_id'     => $contact_id,
+                        'parameter_type' => ['field' => 'text'],
+                        'parameter_id'   => $parameter_id,
+                        'parameter'      => $parameter
+                    ]
+                );
+            }
+        }
+        elseif ( isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
+        {
+            $out .= sprintf(
+                '<div class="mcb-row mcb-builtin-parameters">
+                    <div class="mcb-label">
+                        <label>%s</label>
+                    </div>
+                    <div class="mcb-input"></div>
+                </div>',
+                esc_attr__( 'Query String Parameters', 'mobile-contact-bar' )
+            );
+
+            foreach ( $contact['parameters'] as $parameter_id => $parameter )
+            {
+                $parameter_index = array_search( $parameter['key'], array_column( $contact_type['parameters'], 'key' ));
+                $parameter_type = $contact_type['parameters'][$parameter_index];
+                $out .= $this->output_builtin_parameter(
+                    [
+                        'contact_id'     => $contact_id,
+                        'parameter_type' => $parameter_type,
+                        'parameter_id'   => $parameter_id,
+                        'parameter'      => $parameter
+                    ]
+                );
+            }
+        }
+
+        return $out;
+    }
+
+    
+    /**
+     * Outputs parameter with editable key-value.
+     *
+     * @param  array  $args
+     *         string $contact_id
+     * 	       string $parameter_id
+     * 	       array  $parameter_key
+     * @return string                HTML
+     */
+    private function output_custom_parameter( $args )
+    {
+        extract( $args );
+
+        $out = '';
+
+        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_id ) . '][parameters][' . esc_attr( $parameter_id ) . ']';
+
+        $out .= sprintf(
+            '<div class="mcb-custom-parameter" data-parameter-id="%d">',
+            esc_attr( $parameter_id )
+        );
+    
+        // 'key' input
+        $out .= sprintf(
+            '<div class="mcb-row mcb-parameter-key">
+                <div class="mcb-label">
+                    <label for="' . $prefix . '[key]">%s</label>
+                    <p class="mcb-description">%s</p>
+                </div>
+                <div class="mcb-input">
+                    <input type="text" name="' . $prefix . '[key]" id="' . $prefix . '[key]" placeholder="%s" value="%s">
+                    <button type="button" class="mcb-action-icon mcb-action-delete-parameter" title="%5$s">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                        <span class="screen-reader-text">%5$s</span>
+                    </button>
+                </div>
+            </div>',
+            esc_attr__( 'Query String Key', 'mobile-contact-bar' ),
+            esc_attr__( 'Query String Key', 'mobile-contact-bar' ),
+            esc_attr__( 'key', 'mobile-contact-bar' ),
+            esc_attr( $parameter['key'] ),
+            esc_attr__( 'Delete this parameter', 'mobile-contact-bar' )
+        );
+
+        // 'value' input
+        switch ( $parameter_type['field'] )
+        {
+            case 'text':
+            case 'email':
+                $out .= sprintf(
+                    '<div class="mcb-row mcb-parameter-value">
+                        <div class="mcb-label">
+                            <label for="' . $prefix . '[value]">%s</label>
+                            <p class="mcb-description">%s</p>
+                        </div>
+                        <div class="mcb-input">
+                            <input type="text" name="' . $prefix . '[value]" id="' . $prefix . '[value]" placeholder="%s" value="%s">
+                        </div>
+                    </div>',
+                    esc_attr__( 'Query String Value', 'mobile-contact-bar' ),
+                    esc_attr__( 'Query String Value', 'mobile-contact-bar' ),
+                    esc_attr__( 'value', 'mobile-contact-bar' ),
+                    esc_attr( $parameter['value'] )
+                );
+                break;
+
+            case 'textarea':
+                $out .= sprintf(
+                    '<div class="mcb-row mcb-parameter-value">
+                        <div class="mcb-label">
+                            <label for="' . $prefix . '[value]">%s</label>
+                            <p class="mcb-description">%s</p>
+                        </div>
+                        <div class="mcb-input">
+                            <textarea name="' . $prefix . '[value]" id="' . $prefix . '[value]" placeholder="%s">%s</textarea>
+                        </div>
+                    </div>',
+                    esc_attr__( 'Query String Value', 'mobile-contact-bar' ),
+                    esc_attr__( 'Query String Value', 'mobile-contact-bar' ),
+                    esc_attr__( 'value', 'mobile-contact-bar' ),
+                    esc_textarea( $parameter['value'] )
+                );
+                break;
+        }
+
+        $out .= '</div>';
+
+        return $out;
+    }
+
+
+    /**
+     * Outputs parameter with editable value.
+     *
+     * @param  array  $args
+     *         string $contact_id
+     * 	       string $parameter_id
+     * 	       array  $parameter_key
+     * @return string                HTML
+     */
+    private function output_builtin_parameter( $args )
+    {
+        extract( $args );
+
+        $out = '';
+
+        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_id ) . '][parameters][' . esc_attr( $parameter_id ) . ']';
+
+        $out .= '<div class="mcb-builtin-parameter">';
+
+        // 'key' hidden
+        $out .= sprintf(
+            '<input type="hidden" name="' . $prefix . '[key]" value="%s">',
+            esc_attr( $parameter['key'] )
+        );
+
+        // 'value' input
+        switch ( $parameter_type['field'] )
+        {
+            case 'text':
+            case 'email':
+                $out .= sprintf(
+                    '<div class="mcb-row mcb-parameter-value">
+                        <div class="mcb-label">
+                            <label for="' . $prefix . '[value]">%s</label>
+                            <p class="mcb-description">%s</p>
+                        </div>
+                        <div class="mcb-input">
+                            <span>%s</span>
+                            <input type="text" name="' . $prefix . '[value]" id="' . $prefix . '[value]" placeholder="%s" value="%s">
+                        </div>
+                    </div> ',
+                    esc_attr__( 'Query String Value', 'mobile-contact-bar' ),
+                    esc_attr__( 'Query String Value', 'mobile-contact-bar' ),
+                    esc_attr( $parameter['key'] ),
+                    esc_attr( $parameter_type['placeholder'] ),
+                    esc_attr( $parameter['value'] )
+                );
+                break;
+
+            case 'textarea':
+                $out .= sprintf(
+                    '<div class="mcb-row mcb-parameter-value">
+                        <div class="mcb-label">
+                            <label for="' . $prefix . '[value]">%s</label>
+                            <p class="mcb-description">%s</p>
+                        </div>
+                        <div class="mcb-input">
+                            <span>%s</span>
+                            <textarea name="' . $prefix . '[value]" id="' . $prefix . '[value]" placeholder="%s">%s</textarea>
+                        </div>
+                    </div>',
+                    esc_attr__( 'Query String Value', 'mobile-contact-bar' ),
+                    esc_attr__( 'Query String Value', 'mobile-contact-bar' ),
+                    esc_attr( $parameter['key'] ),
+                    esc_attr( $parameter_type['placeholder'] ),
+                    esc_textarea( $parameter['value'] )
+                );
+                break;
+        }
+
+        $out .= '</div>';
+
+        return $out;
+    }
+
+
+    /**
+     * Outputs the CSS ID selector input and custom colors of the contact.
+     *
+     * @param  array  $args
+     * 	       string $contact_id
+     * 	       array  $contact
+     * @return string             HTML
+     */
+    private function output_palette( $args )
+    {
+        extract( $args );
+
+        $out = '';
+
+        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_id ) . ']';
+        $palette_fields = abmcb( Input::class )->palette();
+
+        // 'id' input
+        $out .= sprintf(
+            '<div class="mcb-row mcb-details-id">
+                <div class="mcb-label">
+                    <label for="' . $prefix . '[id]">%s</label>
+                    <p class="mcb-description">%s</p>
+                </div>
+                <div class="mcb-input">
+                    <input type="text" name="' . $prefix . '[id]" id="' . $prefix . '[id]" value="%s">
+                </div>
+            </div>',
+            esc_attr__( 'CSS ID selector', 'mobile-contact-bar' ),
+            preg_match( '/^mcb-sample-id-[0-9]+/', $contact['id'] )
+                ? esc_attr__( 'This is a generated ID, do not rely on unique numbers. Change it to your needs.', 'mobile-contact-bar' )
+                : esc_attr__( 'Unique identifier. Used when colors are specified.', 'mobile-contact-bar' ),
+            esc_attr( $contact['id'] )
+        );
+
+        // 'color' inputs
+        foreach( $palette_fields as $section_id => $section )
+        {
+            $out .= sprintf(
+                '<div class="mcb-row mcb-palette mcb-palette-%4$s">
+                    <div class="mcb-label">
+                        <label>%1$s</label>
+                        <p class="mcb-description">%2$s</p>
+                    </div>
+                    <div class="mcb-input">
+                        <div class="mcb-palette-colors">
+                            <span>%3$s</span>
+                            <input type="text" class="color-picker" name="' . $prefix . '[palette][%4$s][primary]" data-alpha-enabled="true" value="%5$s">
+                        </div>
+                        <div class="mcb-palette-colors">
+                            <span>%6$s</span>
+                            <input type="text" class="color-picker" name="' . $prefix . '[palette][%4$s][secondary]" data-alpha-enabled="true" value="%7$s">
+                        </div>
+                    </div>
+                </div>',
+                esc_attr( $section['title'] ),
+                esc_attr__( 'Long', 'mobile-contact-bar' ),
+                esc_attr__( 'primary', 'mobile-contact-bar' ),
+                esc_attr( $section_id ),
+                esc_attr( $contact['palette'][$section_id]['primary'] ),
+                esc_attr__( 'secondary', 'mobile-contact-bar' ),
+                esc_attr( $contact['palette'][$section_id]['secondary'] )
+            );
+        }
+
+        return $out;
+    }
+
+
+    /**
+     * Renders a contact.
+     *
+     * @uses $_POST
+     */
+    public function ajax_add_contact()
+    {
+        if ( isset( $_POST['contact_id'] ) && (int) $_POST['contact_id'] >= 0 )
+        {
+            $data = [];
+
+            $contact_types = apply_filters( 'mcb_admin_contact_types', [] );
+            $contact = $contact_types['link'];
+    
+            $data['summary'] = $this->output_summary( ['contact_id' => $_POST['contact_id'], 'contact' => $contact] );
+            $data['details'] = $this->output_details( ['contact_id' => $_POST['contact_id'], 'contact' => $contact] );
+    
+            return $data;	
+        }
+
+        wp_die();
+    }
+
+
+    /**
+     * Renders a parameter.
+     *
+     * @uses $_POST
+     */
+    public function ajax_add_parameter()
+    {
+        if ( isset( $_POST['contact_id'], $_POST['parameter_id'] ) && (int) $_POST['contact_id'] >= 0 && (int) $_POST['parameter_id'] >= 0 )
+        {
+            return $this->output_custom_parameter(
+                [
+                    'contact_id'     => $_POST['contact_id'],
+                    'parameter_type' => ['field' => 'text'],
+                    'parameter_id'   => $_POST['parameter_id'],
+                    'parameter'      => ['key' => '', 'value' => '']
+                ]
+            );
+        }
+
+        wp_die();		
+    }
+
+
+    /**
+     * Renders contact type related parameters.
+     *
+     * @uses $_POST
+     */
+    public function ajax_change_contact_type()
+    {
+        $contact_types = array_keys( abmcb()->contact_types );
+
+        if ( isset( $_POST['contact_id'], $_POST['contact_type'] ) && (int) $_POST['contact_id'] >= 0 && in_array( $_POST['contact_type'], $contact_types ))
+        {
+            $data = [];
+
+            $contact_type = abmcb()->contact_types[$_POST['contact_type']]->contact();
+
+            $data['contact'] = $this->output_details_uri( ['contact_id' => $_POST['contact_id'], 'contact' => $contact_type, 'contact_type' => $contact_type] );
+            $data['parameters'] = $this->output_parameters( ['contact_id' => $_POST['contact_id'], 'contact' => $contact_type, 'contact_type' => $contact_type] );
+
+            return $data;
+        }
+
+        wp_die();
+    }
+}
