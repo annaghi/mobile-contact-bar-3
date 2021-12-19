@@ -21,7 +21,7 @@ final class Input
                     'options'  => [
                         'mobile'  => __( 'mobile', 'mobile-contact-bar' ),
                         'desktop' => __( 'desktop', 'mobile-contact-bar' ),
-                        'both'    => __( 'both', 'mobile-contact-bar' ),
+                        'both'    => __( 'mobile and desktop', 'mobile-contact-bar' ),
                         'none'    => __( 'disabled', 'mobile-contact-bar' ),
                     ],
                 ],
@@ -82,22 +82,28 @@ final class Input
                     'step'     => 0.05,
                     'title'    => __( 'Bar Opacity', 'mobile-contact-bar' ),
                 ],
-                'is_border' => [
-                    'type'     => 'radio',
-                    'default'  => 'none',
-                    'title'    => __( 'Border', 'mobile-contact-bar' ),
+                'is_borders' => [
+                    'type'     => 'checkbox-group',
+                    'title'    => __( 'Borders', 'mobile-contact-bar' ),
                     'options'  => [
-                        'one'  => __( 'top or bottom', 'mobile-contact-bar' ),
-                        'two'  => __( 'top and bottom', 'mobile-contact-bar' ),
-                        'none' => __( 'no border', 'mobile-contact-bar' ),
+                        'top' => [
+                            'type'     => 'checkbox',
+                            'default'  => 0,
+                            'label'    => __( 'top', 'mobile-contact-bar' ),
+                        ],
+                        'bottom' => [
+                            'type'     => 'checkbox',
+                            'default'  => 0,
+                            'label'    => __( 'bottom', 'mobile-contact-bar' ),
+                        ],
                     ],
-                    'trigger'  => '!=none',
+                    'trigger'  => '==true',
                 ],
                 'border_color' => [
                     'type'     => 'color-picker',
                     'default'  => '#174b38',
                     'title'    => __( 'Border Color', 'mobile-contact-bar' ),
-                    'parent'   => 'is_border',
+                    'parent'   => 'is_borders',
                 ],
                 'border_width' => [
                     'type'     => 'number',
@@ -106,7 +112,7 @@ final class Input
                     'max'      => 100,
                     'title'    => __( 'Border Width', 'mobile-contact-bar' ),
                     'postfix'  => 'px',
-                    'parent'   => 'is_border',
+                    'parent'   => 'is_borders',
                 ],
                 'space_height' => [
                     'type'     => 'number',
@@ -128,7 +134,6 @@ final class Input
                     'title'    => __( 'Placeholder Color', 'mobile-contact-bar' ),
                 ],
             ],
-
 
             'icons_labels' => [
                 'alignment' => [
@@ -200,7 +205,7 @@ final class Input
                     'default'  => '#f1f4f8',
                     'title'    => __( 'Label Font Color', 'mobile-contact-bar' ),
                 ],
-                'borders' => [
+                'is_borders' => [
                     'type'     => 'checkbox-group',
                     'title'    => __( 'Borders', 'mobile-contact-bar' ),
                     'options'  => [
@@ -231,7 +236,7 @@ final class Input
                     'type'     => 'color-picker',
                     'default'  => '#ffffff',
                     'title'    => __( 'Border Color', 'mobile-contact-bar' ),
-                    'parent'   => 'borders',
+                    'parent'   => 'is_borders',
                 ],
                 'border_width' => [
                     'type'     => 'number',
@@ -240,7 +245,7 @@ final class Input
                     'max'      => 100,
                     'title'    => __( 'Border Width', 'mobile-contact-bar' ),
                     'postfix'  => 'px',
-                    'parent'   => 'borders',
+                    'parent'   => 'is_borders',
                 ],
                 'secondary_colors' => [
                     'type'     => 'checkbox-group',
@@ -258,7 +263,7 @@ final class Input
                         ],
                         'active' => [
                             'type'     => 'checkbox',
-                            'default'  => 0,
+                            'default'  => 1,
                             'label'    => __( 'active', 'mobile-contact-bar' ),
                         ],
                     ],
@@ -309,7 +314,6 @@ final class Input
                 //     ],
                 // ],
             ],
-
 
             'toggle' => [
                 'is_render' => [
@@ -375,7 +379,6 @@ final class Input
                     'parent'   => 'label',
                 ],
             ],
-
 
             'badges' => [
                 'position' => [
@@ -533,7 +536,6 @@ final class Input
                             : $field['default'];
                         break;
                 }
-                
             }
         }
 
@@ -588,7 +590,7 @@ final class Input
      */
     private function sanitize_hex_color( $hex_color )
     {
-        if ( preg_match( '|^#([A-Fa-f0-9]{3}){1,2}$|', $hex_color ))
+        if ( preg_match( '/^#([A-Fa-f0-9]{3}){1,2}$/', $hex_color ))
         {
             return $hex_color;
         }

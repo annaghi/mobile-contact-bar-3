@@ -70,25 +70,13 @@ final class CSS
         $styles .= 'height:100%;';
         $styles .= 'display:flex;';
         $styles .= 'flex-flow: row nowrap;';
-        switch ( $bar['is_border'] )
+        if ( $bar['is_borders']['top'] )
         {
-            case 'one':
-                switch ( $bar['vertical_alignment'] )
-                {
-                    case 'top':
-                        $styles .= 'border-bottom:' . $bar['border_width'] . 'px solid ' . $bar['border_color'] . ';';
-                        break;
-
-                    case 'bottom':
-                        $styles .= 'border-top:' . $bar['border_width'] . 'px solid ' . $bar['border_color'] . ';';
-                        break;
-                }
-                break;
-
-            case 'two':
-                $styles .= 'border-top:' . $bar['border_width'] . 'px solid ' . $bar['border_color'] . ';';
-                $styles .= 'border-bottom:' . $bar['border_width'] . 'px solid ' . $bar['border_color'] . ';';
-                break;
+            $styles .= 'border-top:' . $bar['border_width'] . 'px solid ' . $bar['border_color'] . ';';
+        }
+        if ( $bar['is_borders']['bottom'] )
+        {
+            $styles .= 'border-bottom:' . $bar['border_width'] . 'px solid ' . $bar['border_color'] . ';';
         }
         $styles .= '}';
 
@@ -110,35 +98,35 @@ final class CSS
                 $styles .= ( $checked_contacts_count > 0 ) ? 'width:' . ( 100 / $checked_contacts_count ) . '%;' : 'width:100%;';
                 break;
         }
-        switch ( $bar['is_border'] )
-        {
-            case 'one':
-                // $styles .= 'height:' . ( $bar['height'] - $bar['border_width'] ) . 'px;';				
-                break;
+        // switch ( $bar['is_border'] )
+        // {
+        //     case 'one':
+        //         // $styles .= 'height:' . ( $bar['height'] - $bar['border_width'] ) . 'px;';				
+        //         break;
 
-            case 'two':
-                // $styles .= 'height:' . ( $bar['height'] - 2 * $bar['border_width'] ) . 'px;';
-                break;
-        // 	case 'none':
-        // 		$styles .= 'height:' . $bar['height'] . 'px;';
-        // 		break;
+        //     case 'two':
+        //         // $styles .= 'height:' . ( $bar['height'] - 2 * $bar['border_width'] ) . 'px;';
+        //         break;
+        // // 	case 'none':
+        // // 		$styles .= 'height:' . $bar['height'] . 'px;';
+        // // 		break;
+        // // }
         // }
-        }
         $styles .= '}';
 
-        if ( $items['borders']['top'] )
+        if ( $items['is_borders']['top'] )
         {
             $styles .= '.mobile-contact-bar-item{';
             $styles .= 'border-top:' . $items['border_width'] . 'px solid ' . $items['border_color'] . ';';
             $styles .= '}';
         }
-        if ( $items['borders']['bottom'] )
+        if ( $items['is_borders']['bottom'] )
         {
             $styles .= '.mobile-contact-bar-item{';
             $styles .= 'border-bottom:' . $items['border_width'] . 'px solid ' . $items['border_color'] . ';';
             $styles .= '}';
         }
-        if ( $items['borders']['left'] && $items['borders']['right'] )
+        if ( $items['is_borders']['left'] && $items['is_borders']['right'] )
         {
             $styles .= '.mobile-contact-bar-item{';
             $styles .= 'border-left:' . $items['border_width'] . 'px solid ' . $items['border_color'] . ';';
@@ -148,7 +136,7 @@ final class CSS
             $styles .= 'border-right:' . $items['border_width'] . 'px solid ' . $items['border_color'] . ';';
             $styles .= '}';
         }
-        if (( $items['borders']['left'] && ! $items['borders']['right'] ) || ( ! $items['borders']['left'] && $items['borders']['right'] ))
+        if (( $items['is_borders']['left'] && ! $items['is_borders']['right'] ) || ( ! $items['is_borders']['left'] && $items['is_borders']['right'] ))
         {
             $styles .= '.mobile-contact-bar-item{';
             $styles .= 'border-left:' . $items['border_width'] . 'px solid ' . $items['border_color'] . ';';
@@ -489,13 +477,13 @@ final class CSS
                 $styles .= 'color:' . $contact['palette']['font_color'] . ';';
                 $styles .= '}';
 
-                if ( $items['borders']['top'] )
+                if ( $items['is_borders']['top'] )
                 {
                     $styles .= '#' . $contact['id'] . '.mobile-contact-bar-item{';
                     $styles .= 'border-top-color:' . $contact['palette']['border_color'] . ';';
                     $styles .= '}';
                 }
-                if ( $items['borders']['bottom'] )
+                if ( $items['is_borders']['bottom'] )
                 {
                     $styles .= '#' . $contact['id'] . '.mobile-contact-bar-item{';
                     $styles .= 'border-bottom-color:' . $contact['palette']['border_color'] . ';';

@@ -64,7 +64,6 @@ final class View
 
                 add_settings_field(
                     $setting_id,
-                    // $setting['title'],
                     $this->output_setting_th( $section_id, $setting_id, $setting ),
                     [$this, 'callback_output_setting_td'],
                     abmcb()->id,

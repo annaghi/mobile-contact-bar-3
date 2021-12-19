@@ -5,129 +5,8 @@
 
 /* global ajaxurl, pagenow, postboxes, mobile_contact_bar */
 
-(function ($, document) {
+(function ($, window, document) {
     'use strict';
-
-    /*** JQuery addClass & removeClass extensions ***/
-
-    (function (func) {
-        $.fn.addClass = function (n) {
-            // replace the existing function on $.fn
-            this.each(function (i) {
-                // for each element in the collection
-                var $this = $(this); // 'this' is DOM element in this context
-                var prevClasses = this.getAttribute('class'); // note its original classes
-                var classNames = $.isFunction(n) ? n(i, prevClasses) : n.toString(); // retain function-type argument support
-                $.each(classNames.split(/\s+/), function (index, className) {
-                    // allow for multiple classes being added
-                    if (!$this.hasClass(className)) {
-                        // only when the class is not already present
-                        func.call($this, className); // invoke the original function to add the class
-                        $this.trigger('classAdded', className); // trigger a classAdded event
-                    }
-                });
-                if (prevClasses != this.getAttribute('class')) {
-                    // trigger the classChanged event
-                    $this.trigger('classChanged');
-                }
-            });
-            return this; // retain jQuery chainability
-        };
-    })($.fn.addClass);
-
-    (function (func) {
-        $.fn.removeClass = function (n) {
-            this.each(function (i) {
-                var $this = $(this);
-                var prevClasses = this.getAttribute('class');
-                if (n === undefined) {
-                    func.call($this);
-                } else {
-                    var classNames = $.isFunction(n) ? n(i, prevClasses) : n.toString();
-                    $.each(classNames.split(/\s+/), function (index, className) {
-                        if ($this.hasClass(className)) {
-                            func.call($this, className);
-                            $this.trigger('classRemoved', className);
-                        }
-                    });
-                }
-
-                if (prevClasses != this.getAttribute('class')) {
-                    $this.trigger('classChanged');
-                }
-            });
-
-            return this;
-        };
-    })($.fn.removeClass);
-
-    $.fn.setIconColors = function (value) {
-        var icon = $(this).closest('.mcb-palette').prev().find('.mcb-summary-icon-inner');
-        var palette = $(this).closest('.mcb-palette');
-
-        var settingsColors = {
-            background_color: !!$('.mcb-setting-bar-color').find('.wp-color-result').attr('style')
-                ? $('.mcb-setting-bar-color').find('.wp-color-result').css('background-color')
-                : '',
-            icon_color: !!$('.mcb-setting-icons_labels-icon_color').find('.wp-color-result').attr('style')
-                ? $('.mcb-setting-icons_labels-icon_color').find('.wp-color-result').css('background-color')
-                : '',
-            label_color: !!$('.mcb-setting-icons_labels-label_color').find('.wp-color-result').attr('style')
-                ? $('.mcb-setting-icons_labels-label_color').find('.wp-color-result').css('background-color')
-                : '',
-            border_color: !!$('.mcb-setting-icons_labels-border_color').find('.wp-color-result').attr('style')
-                ? $('.mcb-setting-icons_labels-border_color').find('.wp-color-result').css('background-color')
-                : ''
-        };
-
-        var paletteColors = {
-            background_color: !!palette.find('[data-color="background_color"]').find('.wp-color-result').attr('style')
-                ? palette.find('[data-color="background_color"]').find('.wp-color-result').css('background-color')
-                : '',
-            icon_color: !!palette.find('[data-color="icon_color"]').find('.wp-color-result').attr('style')
-                ? palette.find('[data-color="icon_color"]').find('.wp-color-result').css('background-color')
-                : '',
-            label_color: !!palette.find('[data-color="label_color"]').find('.wp-color-result').attr('style')
-                ? palette.find('[data-color="label_color"]').find('.wp-color-result').css('background-color')
-                : '',
-            border_color: !!palette.find('[data-color="border_color"]').find('.wp-color-result').attr('style')
-                ? palette.find('[data-color="border_color"]').find('.wp-color-result').css('background-color')
-                : ''
-        };
-
-        var currentColors = {
-            background_color: !!paletteColors.background_color ? paletteColors.background_color : settingsColors.background_color,
-            icon_color: !!paletteColors.icon_color ? paletteColors.icon_color : settingsColors.icon_color,
-            label_color: !!paletteColors.label_color ? paletteColors.label_color : settingsColors.label_color,
-            border_color: !!paletteColors.border_color ? paletteColors.border_color : settingsColors.border_color
-        };
-
-        if (!value) {
-            icon.css({
-                'background-color': settingsColors.background_color,
-                color: settingsColors.icon_color,
-                'border-top': $('#mcb-icons_labels-borders--top').prop('checked')
-                    ? $('#mcb-icons_labels-border_width').val() + 'px solid ' + settingsColors.border_color
-                    : '',
-                'border-bottom': $('#mcb-icons_labels-borders--bottom').prop('checked')
-                    ? $('#mcb-icons_labels-border_width').val() + 'px solid ' + settingsColors.border_color
-                    : ''
-            });
-        } else {
-            icon.css({
-                'background-color': currentColors.background_color,
-                color: currentColors.icon_color,
-                'border-top': $('#mcb-icons_labels-borders--top').prop('checked')
-                    ? $('#mcb-icons_labels-border_width').val() + 'px solid ' + currentColors.border_color
-                    : '',
-                'border-bottom': $('#mcb-icons_labels-borders--bottom').prop('checked')
-                    ? $('#mcb-icons_labels-border_width').val() + 'px solid ' + currentColors.border_color
-                    : ''
-            });
-        }
-
-        return this;
-    };
 
     $.fn.toggleAriaExpanded = function () {
         this.attr('aria-expanded', function (index, attr) {
@@ -300,8 +179,7 @@
             // bind toggle postbox event
             postboxes.add_postbox_toggles(pagenow);
 
-            // init row classes
-            // bind toggle children settings
+            // bind toggle child-settings
             $('#mcb-table-bar tbody, #mcb-table-icons_labels tbody, #mcb-table-toggle tbody').initSettings();
 
             // init contact list
@@ -464,11 +342,33 @@
                     );
 
                 picker
-                    .css({ top: offset.top - 25, left: offset.left - 13 })
+                    .css({ top: offset.top - 15, left: offset.left })
                     .appendTo('body')
                     .show();
 
-                iconList = $('#mcb-icon-picker-container ul');
+                iconList = $('#mcb-icon-picker-container ul[data-brand="fa"]');
+
+                // Change brand
+                $('body')
+                    .off('click', '#mcb-icon-picker-container button')
+                    .on('click', '#mcb-icon-picker-container button', function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        if ('ti' === $(this).attr('data-brand')) {
+                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
+                            $(this).addClass('mcb-icon-brand-active');
+                            $('#mcb-icon-picker-container ul[data-brand="fa"]').addClass('mcb-hidden');
+                            iconList = $('#mcb-icon-picker-container ul[data-brand="ti"]');
+                            iconList.removeClass('mcb-hidden');
+                        } else {
+                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
+                            $(this).addClass('mcb-icon-brand-active');
+                            $('#mcb-icon-picker-container ul[data-brand="ti"]').addClass('mcb-hidden');
+                            iconList = $('#mcb-icon-picker-container ul[data-brand="fa"]');
+                            iconList.removeClass('mcb-hidden');
+                        }
+                    });
 
                 // Select an icon
                 $('body')
@@ -544,6 +444,16 @@
                             $('#mcb-icon-picker-container').remove();
                         }
                     });
+
+                // Close icon picker on document resize
+                $(window).resize(function () {
+                    if (
+                        !$('#mcb-icon-picker-container').is(event.target) &&
+                        0 === $('#mcb-icon-picker-container').has(event.target).length
+                    ) {
+                        $('#mcb-icon-picker-container').remove();
+                    }
+                });
             });
 
             // Clear icon
@@ -630,7 +540,7 @@
     };
 
     $(document).ready(option.init);
-})(jQuery, document);
+})(jQuery, window, document);
 
 // Colect icon names from FontAwesome cheatsheet
 //

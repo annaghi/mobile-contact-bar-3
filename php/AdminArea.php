@@ -413,7 +413,7 @@ final class AdminArea
 
 
     /**
-     * Renders 'http' help tab.
+     * Renders 'links' help tab.
      */
     public function render_help_tab_link()
     {
@@ -458,6 +458,8 @@ final class AdminArea
 
     /**
      * Outputs help sidebar.
+     * 
+     * @return string HTML
      */
     public function output_help_sidebar()
     {

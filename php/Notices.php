@@ -71,7 +71,7 @@ final class Notices
             if ( ! $user_meta || ! isset( $user_meta['major'] ))
             {
                 $message = sprintf(
-                    _x( 'Thanks for installing Mobile Contact Bar v%s, we hope you love it!', 'admin-text', 'mobile-contact-bar'),
+                    _x( 'Thanks for installing Mobile Contact Bar v%s, we hope you love it!', 'admin-text', 'mobile-contact-bar' ),
                     abmcb()->version
                 );
                 $this->view_major_notice( $message );
@@ -79,7 +79,7 @@ final class Notices
             elseif ( isset( $user_meta['major'] ) && ! $this->is_dismissed_notice( 'major' ))
             {
                 $message = sprintf(
-                    _x( 'Thanks for updating to Mobile Contact Bar v%s, we hope you love the changes!', 'admin-text', 'mobile-contact-bar'),
+                    _x( 'Thanks for updating to Mobile Contact Bar v%s, we hope you love the changes!', 'admin-text', 'mobile-contact-bar' ),
                     abmcb()->version
                 );
                 $this->view_major_notice( $message );
@@ -99,12 +99,12 @@ final class Notices
             {
                 $this->update_user_meta( 'minor', abmcb()->version );
             }
-            elseif  ( isset( $user_meta['minor'] ) && ! $this->is_dismissed_notice( 'minor' ))
+            elseif ( isset( $user_meta['minor'] ) && ! $this->is_dismissed_notice( 'minor' ))
             {
                 $this->update_user_meta( 'minor', abmcb()->version );
 
                 $message = sprintf(
-                    _x( 'Your Mobile Contact Bar settings have been updated successfully.', 'admin-text', 'mobile-contact-bar'),
+                    _x( 'Your Mobile Contact Bar settings have been updated successfully.', 'admin-text', 'mobile-contact-bar' ),
                     abmcb()->version
                 );
 

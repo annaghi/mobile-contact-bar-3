@@ -28,13 +28,17 @@ final class View
 
 
     /**
-     * Renders template HTML elements for the Icon Picker and the Contact Parameter.
+     * Renders template HTML elements for the Icon Picker.
      */
     public function icon_picker_html_template()
     {
         ?>
         <script type="text/html" id="mcb-tmpl-icon-picker">
             <div id="mcb-icon-picker-container">
+                <div class="mcb-icon-picker-brands">
+                    <button type="button" data-brand="fa" class="button mcb-icon-brand-active">Font Awesome</button>
+                    <button type="button" data-brand="ti" class="button">Tabler Icons</button>
+                </div>
                 <div class="icon-picker-control">
                     <a data-direction="back" href="#">
                         <i class="fas fa-angle-left fa-lg"></i>
@@ -44,12 +48,12 @@ final class View
                         <i class="fas fa-angle-right fa-lg"></i>
                     </a>
                 </div>
-                <ul class="icon-picker-list">
+                <ul data-brand="fa">
                     <?php
-                    $icons = Input::icons();
-                    foreach ( $icons as $icon_id => $section ) :
+                    $icons = Input::fa_icons();
+                    foreach ( $icons as $section_id => $section ) :
                         foreach ( $section as $icon ) :
-                            $title = $icon_id . ' fa-' . $icon;
+                            $title = $section_id . ' fa-' . $icon;
                             ?>
                             <li data-icon="<?php echo $icon; ?>">
                                 <a href="#" title="<?php echo $icon; ?>">
@@ -58,6 +62,21 @@ final class View
                             </li>
                             <?php
                         endforeach;
+                    endforeach;
+                    ?>
+                </ul>
+                <ul class="mcb-hidden" data-brand="ti">
+                    <?php
+                    $icons = Input::ti_icons();
+                    foreach ( $icons as $icon ) :
+                        $title = 'ti ti-' . $icon;
+                        ?>
+                        <li data-icon="<?php echo $icon; ?>">
+                            <a href="#" title="<?php echo $icon; ?>">
+                                <i class="<?php echo $title; ?>"></i>
+                            </a>
+                        </li>
+                        <?php
                     endforeach;
                     ?>
                 </ul>
@@ -78,17 +97,14 @@ final class View
         ?>
         <div id="mcb-table-contacts">
             <div id="mcb-contacts">
-            <?php
-            foreach ( $this->option_bar['contacts'] as $contact_id => $contact )
-            {
-                ?>
-                <div class="mcb-contact" data-contact-id="<?php echo $contact_id; ?>"><?php
+            <?php foreach ( $this->option_bar['contacts'] as $contact_id => $contact ) { ?>
+                <div class="mcb-contact" data-contact-id="<?php echo $contact_id; ?>">
+                <?php
                     echo $this->output_summary( ['contact_id' => $contact_id, 'contact' => $contact] );
                     echo $this->output_details( ['contact_id' => $contact_id, 'contact' => $contact] );
                 ?>
-                </div><?php
-            }
-            ?>
+                </div>
+            <?php } ?>
             </div>
             <div id="mcb-footer-contacts">
                 <button type="button" id="mcb-add-contact" title="<?php echo esc_attr__( 'Add New Contact', 'mobile-contact-bar' ); ?>">
@@ -98,38 +114,6 @@ final class View
             </div>
         </div>
         <?php
-    }
-
-
-    /**
-     * TODO: Milestone 3.2
-     */
-    public function output_real_contacts( $settings, $contacts, $checked_contacts )
-    {
-        // $has_css_id = $contact['palette']['id'] !== '';
-        // $background_color = 'background-color:' .
-        // 	(( $has_css_id && $contact['palette']['background_color'] !== '' )
-        // 	? $contact['palette']['background_color']
-        // 	: $settings['bar']['color'] )
-        // 	. ';';
-        // $icon_color = 'color:' .
-        // 	(( $has_css_id && $contact['palette']['icon_color'] !== '' )
-        // 	? $contact['palette']['icon_color']
-        // 	: $settings['icons_labels']['icon_color'] )
-        // 	. ';';
-
-        // $border_color =
-        // 	( $has_css_id && $contact['palette']['border_color'] !== '' )
-        // 	? $contact['palette']['border_color']
-        // 	: $settings['icons_labels']['border_color'];
-        // $border_top =
-        // 	( $settings['icons_labels']['borders']['top'] === 1 )
-        // 	? 'border-top:' . $settings['icons_labels']['border_width'] . 'px solid ' . $border_color . ';'
-        // 	: '';
-        // $border_bottom =
-        // 	( $settings['icons_labels']['borders']['bottom'] === 1 )
-        // 	? 'border-bottom:' . $settings['icons_labels']['border_width'] . 'px solid ' . $border_color . ';'
-        // 	: '';
     }
 
 
@@ -259,48 +243,8 @@ final class View
         // 'icon' hidden
         $out .= '<input type="hidden" name="' . $prefix . '[icon]" value="' . $icon . '">';
 
-        // 'icon' visible
-        $icon = ( empty( $icon ))
-            ? '<i class="mcb-blank-icon">---</i>'
-            : '<i class="' . $icon . '"></i>';
-
-        // select & clear 'icon' button
-        $out .= sprintf(
-            '<div class="mcb-row mcb-details-icon">
-                <div class="mcb-label">
-                    <label>%1$s</label>
-                </div>
-                <div class="mcb-input">
-                    <button type="button" class="button action mcb-action-pick-icon" title="%2$s">%2$s</button>
-                    <button type="button" class="button action mcb-action-clear-icon" title="%3$s">%3$s</button>
-                    %4$s
-                </div>
-            </div>',
-            esc_attr__( 'Contact Icon', 'mobile-contact-bar' ),
-            esc_attr__( 'Select Icon', 'mobile-contact-bar' ),
-            esc_attr__( 'Clear Icon', 'mobile-contact-bar' ),
-            $icon
-        );
-
-        // 'label' input
-        $out .= sprintf(
-            '<div class="mcb-row mcb-details-label">
-                <div class="mcb-label">
-                    <label for="' . $prefix . '[label]">%s</label>
-                    <p class="mcb-description">%s</p>
-                </div>
-                <div class="mcb-input">
-                    <input type="text" name="' . $prefix . '[label]" id="' . $prefix . '[label]" value="%s">
-                </div>
-            </div>',
-            esc_attr__( 'Contact Label', 'mobile-contact-bar' ),
-            esc_attr( $contact_type['long_desc'] ),
-            esc_html( $contact['label'] )
-        );
-
         // 'type' input
         $select = '<select name="' . $prefix . '[type]" id="' . $prefix . '[type]">';
-        
         foreach ( $contact_types as $contact_type_id => $contact_types )
         {
             $select .= sprintf(
@@ -321,9 +265,49 @@ final class View
                 <div class="mcb-input">%s</div>
             </div>',
             esc_attr__( 'Contact Type', 'mobile-contact-bar' ),
-            esc_attr( $contact_type['long_desc'] ),
+            esc_attr( $contact_type['desc_type'] ),
             $select,
             esc_attr( $contact['type'] )
+        );
+
+        // 'icon' visible
+        $icon = ( empty( $icon ))
+            ? '<i class="mcb-blank-icon">---</i>'
+            : '<i class="' . $icon . '"></i>';
+
+        // select & clear 'icon' button
+        $out .= sprintf(
+            '<div class="mcb-row mcb-details-icon">
+                <div class="mcb-label">
+                    <label>%1$s</label>
+                </div>
+                <div class="mcb-input">
+                    %2$s
+                    <button type="button" class="button action mcb-action-pick-icon" title="%3$s">%3$s</button>
+                    <button type="button" class="button action mcb-action-clear-icon" title="%4$s">%4$s</button>
+                    
+                </div>
+            </div>',
+            esc_attr__( 'Contact Icon', 'mobile-contact-bar' ),
+            $icon,
+            esc_attr__( 'Select Icon', 'mobile-contact-bar' ),
+            esc_attr__( 'Clear Icon', 'mobile-contact-bar' )
+        );
+
+        // 'label' input
+        $out .= sprintf(
+            '<div class="mcb-row mcb-details-label">
+                <div class="mcb-label">
+                    <label for="' . $prefix . '[label]">%s</label>
+                    <p class="mcb-description">%s</p>
+                </div>
+                <div class="mcb-input">
+                    <input type="text" name="' . $prefix . '[label]" id="' . $prefix . '[label]" value="%s">
+                </div>
+            </div>',
+            esc_attr__( 'Contact Label', 'mobile-contact-bar' ),
+            esc_attr__( 'Use \n for new lines' ),
+            esc_html( $contact['label'] )
         );
 
         $out .= $this->output_details_uri( ['contact_id' => $contact_id, 'contact' => $contact, 'contact_type' => $contact_type] );
@@ -363,7 +347,7 @@ final class View
                     <div class="mcb-input">#</div>
                 </div>',
                 esc_attr__( 'Contact URI', 'mobile-contact-bar' ),
-                esc_attr( $contact_type['long_desc'] )
+                esc_attr( $contact_type['desc_uri'] )
             );
         }
         else
@@ -380,7 +364,7 @@ final class View
                     </div>
                 </div>',
                 esc_attr__( 'Contact URI', 'mobile-contact-bar' ),
-                esc_attr( $contact_type['long_desc'] ),
+                esc_attr( $contact_type['desc_uri'] ),
                 esc_attr( $contact_type['placeholder'] ),
                 Validator::escape_contact_uri( $contact['uri'] )
             );
@@ -421,7 +405,7 @@ final class View
             
             foreach ( $contact['parameters'] as $parameter_id => $parameter )
             {
-                $out .= $this->output_custom_parameter(
+                $out .= $this->output_link_parameter(
                     [
                         'contact_id'     => $contact_id,
                         'parameter_type' => ['field' => 'text'],
@@ -471,7 +455,7 @@ final class View
      * 	       array  $parameter_key
      * @return string                HTML
      */
-    private function output_custom_parameter( $args )
+    private function output_link_parameter( $args )
     {
         extract( $args );
 
@@ -731,7 +715,7 @@ final class View
     {
         if ( isset( $_POST['contact_id'], $_POST['parameter_id'] ) && (int) $_POST['contact_id'] >= 0 && (int) $_POST['parameter_id'] >= 0 )
         {
-            return $this->output_custom_parameter(
+            return $this->output_link_parameter(
                 [
                     'contact_id'     => $_POST['contact_id'],
                     'parameter_type' => ['field' => 'text'],

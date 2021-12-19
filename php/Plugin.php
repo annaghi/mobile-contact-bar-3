@@ -237,7 +237,7 @@ final class Plugin extends Container
         }
         elseif ( ! $version )
         {
-            update_option( self::ID, abmcb( Options::class )->default_option_bar_with_samples() );
+            update_option( self::ID, abmcb( Options::class )->default_option_bar() );
             update_option( self::ID . '_version', $this->version );
         }
         elseif ( !! $version && version_compare( $version, $this->version, '<' ))

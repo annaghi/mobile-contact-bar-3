@@ -1,6 +1,6 @@
 /*!
  * Mobile Contact Bar 3.0.0 by Anna Bansaghi - http://mobilecontactbar.com
- * License GPL-3.0 - https://www.gnu.org/licenses/gpl-3.0.en.html
+ * License GPL-2.0 - https://www.gnu.org/licenses/gpl-2.0.en.html
  */
 
 /* HELP TABS */
@@ -262,18 +262,23 @@
 .mcb-action-delete-parameter {
     color: #dc3232;
 }
-.mcb-action-delete-contact:hover,
-.mcb-action-delete-contact:active,
-.mcb-action-delete-contact:focus,
-.mcb-action-delete-contact:visited,
-.mcb-action-delete-parameter:hover,
-.mcb-action-delete-parameter:active,
-.mcb-action-delete-parameter:focus,
-.mcb-action-delete-parameter:visited {
-    background: #dc3231;
+.mcb-action-icon.mcb-action-delete-contact:hover,
+.mcb-action-icon.mcb-action-delete-parameter:hover {
+    background-color: #dc3231;
     border-color: #dc3231;
-    color: #fff;
-    box-shadow: 0 0 0 1px #fff, 0 0 0 3px #dc3232;
+    color: #ffffff;
+}
+
+.mcb-action-icon.mcb-action-delete-contact:active,
+.mcb-action-icon.mcb-action-delete-contact:focus,
+.mcb-action-icon.mcb-action-delete-contact:visited,
+.mcb-action-icon.mcb-action-delete-parameter:active,
+.mcb-action-icon.mcb-action-delete-parameter:focus,
+.mcb-action-icon.mcb-action-delete-parameter:visited {
+    background-color: #dc3231 !important;
+    border-color: #dc3231 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #dc3232;
     outline: 2px solid transparent;
     outline-offset: 0;
 }
@@ -293,12 +298,17 @@
     pointer-events: none;
 }
 
+.mcb-action-icon:hover {
+    background-color: #135e96;
+    border-color: #135e96;
+    color: #ffffff;
+}
+
 .mcb-opened .mcb-action-toggle-details,
-.mcb-action-icon:hover,
 .mcb-action-icon:active,
 .mcb-action-icon:focus,
 .mcb-action-icon:visited {
-    background: #135e96 !important;
+    background-color: #135e96 !important;
     border-color: #135e96 !important;
     color: #ffffff !important;
     box-shadow: 0 0 0 1px #fff, 0 0 0 3px #2271b1;
@@ -342,6 +352,15 @@
 .mcb-input input,
 .mcb-input textarea {
     width: 100%;
+}
+
+.mcb-input i {
+    min-width: 2em;
+}
+
+.mcb-blank-icon {
+    font-size: 1.3em !important;
+    font-style: normal;
 }
 
 /* Contact Palette */
@@ -418,11 +437,6 @@
     display: none;
 }
 
-.mcb-blank-icon {
-    font-size: 14px !important;
-    font-style: normal;
-}
-
 .mcb-checked {
     box-shadow: inset 4px 0 #72aee6;
     background-color: #f0f6fc;
@@ -486,6 +500,9 @@
     .mcb-summary-icon i,
     .mcb-details-icon i {
         font-size: 1.8em;
+    }
+    .mcb-blank-icon {
+        font-size: 1.8em !important;
     }
 
     .mcb-details {
@@ -553,7 +570,7 @@
     border: 1px solid #cccccc;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
     box-sizing: border-box;
-    height: 333px;
+    height: 363px;
     overflow: hidden;
     padding: 5px;
     position: absolute;
@@ -613,9 +630,20 @@
     width: 100%;
 }
 
+#mcb-icon-picker-container .mcb-icon-picker-brands {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+#mcb-icon-picker-container .mcb-icon-brand-active {
+    color: #ffffff;
+    background-color: #2271b1;
+}
+
 @media only screen and (max-width: 782px) {
     #mcb-icon-picker-container {
-        height: 343px;
+        height: 393px;
     }
 }
 
@@ -637,28 +665,14 @@
     width: auto;
 }
 
+#mcb-form .wp-picker-container .wp-color-result-text {
+    min-width: 6.6em;
+}
+
 @media only screen and (max-width: 782px) {
     #mcb-form span.color-alpha {
         width: 40px !important;
     }
-}
-
-/* Color Picker */
-
-.wp-picker-container,
-.wp-picker-holder {
-    display: inline;
-}
-
-.wp-picker-container .wp-color-result.button {
-    margin: 0;
-}
-.wp-picker-container .wp-color-result-text {
-    min-width: 6.6em;
-}
-.wp-picker-container input[type='text'].cs-wp-color-picker {
-    margin-left: 13px;
-    margin-right: 10px;
 }
 
 /* SETTINGS */

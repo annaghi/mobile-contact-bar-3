@@ -76,13 +76,13 @@ abstract class Container
             return $parameter->getDefaultValue();
         }
 
-        throw new Exception( 'Erm.. Cannot resolve the unknown!?' );
+        throw new Exception( 'Cannot resolve the unknown!?' );
     }
 
     
     private function get_class( $parameter )
     {
-        if (version_compare( phpversion(), '8', '<' ))
+        if ( version_compare( phpversion(), '8', '<' ))
         {
             return $parameter->getClass(); // @compat PHP < 8
         }

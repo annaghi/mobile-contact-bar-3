@@ -40,8 +40,8 @@ final class Viber extends TypeAbstract
                 ],
             ],
             'palette'     => abmcb( Input::class )->palette_defaults(),
-            'short_desc'  => __( 'short desc', 'mobile-contact-bar' ),
-            'long_desc'   => __( 'long desc', 'mobile-contact-bar' ),
+            'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
+            'desc_uri'    => __( 'URI desc', 'mobile-contact-bar' ),
         ];
     }
 }

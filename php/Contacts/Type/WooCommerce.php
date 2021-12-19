@@ -39,8 +39,8 @@ final class WooCommerce extends TypeAbstract
             'uri'         => get_site_url() . '/cart',
             'placeholder' => is_ssl() ? 'https://mysite.com/cart' : 'http://mysite.com/cart',
             'palette'     => abmcb( Input::class )->palette_defaults(),
-            'short_desc'  => __( 'short desc', 'mobile-contact-bar' ),
-            'long_desc'   => __( 'long desc', 'mobile-contact-bar' ),
+            'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
+            'desc_uri'    => __( 'URI desc', 'mobile-contact-bar' ),
         ];
     }
 
@@ -65,10 +65,12 @@ final class WooCommerce extends TypeAbstract
 
     private function badge()
     {
-        $count = ( empty ( WC()->cart )) ? 0 : wp_kses_data( WC()->cart->get_cart_contents_count() );
+        if ( class_exists( 'WooCommerce' ))
+        {
+            $count = ( empty ( WC()->cart )) ? 0 : wp_kses_data( WC()->cart->get_cart_contents_count() );
+            return sprintf( '<span class="mobile-contact-bar-badge">%d</span>', $count );
+        }
 
-        return class_exists( 'WooCommerce' )
-            ? sprintf( '<span class="mobile-contact-bar-badge">%d</span>', $count )
-            : '';
+        return '';
     }
 }

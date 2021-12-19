@@ -52,29 +52,49 @@ logg(__METHOD__);
 
             $settings['bar']['horizontal_alignment']                = $old_settings['bar']['horizontal_position'];
             $settings['bar']['vertical_alignment']                  = $old_settings['bar']['vertical_position'];
+            if ( $old_settings['bar']['vertical_alignment'] === 'top' && $bar['is_border'] === 'one' )
+            {
+                $settings['bar']['is_borders']['top']               = 0;
+                $settings['bar']['is_borders']['bottom']            = 1;
+            }
+            elseif ( $old_settings['bar']['vertical_alignment'] === 'bottom' && $bar['is_border'] === 'one' )
+            {
+                $settings['bar']['is_borders']['top']               = 1;
+                $settings['bar']['is_borders']['bottom']            = 0;
+            }
+            elseif ( $bar['is_border'] === 'two' )
+            {
+                $settings['bar']['is_borders']['top']               = 1;
+                $settings['bar']['is_borders']['bottom']            = 1;
+            }
+            else
+            {
+                $settings['bar']['is_borders']['top']               = 0;
+                $settings['bar']['is_borders']['bottom']            = 0;
+            }
 
             $settings['icons_labels']['alignment']                  = $old_settings['icons']['alignment'];
             $settings['icons_labels']['width']                      = $old_settings['icons']['width'];
-            if ( $old_settings['icons']['is_border'] === 'none' )
+            if ( $old_settings['icons']['is_border'] === 'two' )
             {
-                $settings['icons_labels']['borders']['top']         = 0;
-                $settings['icons_labels']['borders']['right']       = 0;
-                $settings['icons_labels']['borders']['bottom']      = 0;
-                $settings['icons_labels']['borders']['left']        = 0;
-            }
-            elseif ( $old_settings['icons']['is_border'] === 'two' )
-            {
-                $settings['icons_labels']['borders']['top']         = 0;
-                $settings['icons_labels']['borders']['right']       = 1;
-                $settings['icons_labels']['borders']['bottom']      = 0;
-                $settings['icons_labels']['borders']['left']        = 1;
+                $settings['icons_labels']['is_borders']['top']         = 0;
+                $settings['icons_labels']['is_borders']['right']       = 1;
+                $settings['icons_labels']['is_borders']['bottom']      = 0;
+                $settings['icons_labels']['is_borders']['left']        = 1;
             }
             elseif ( $old_settings['icons']['is_border'] === 'four' )
             {
-                $settings['icons_labels']['borders']['top']         = 1;
-                $settings['icons_labels']['borders']['right']       = 1;
-                $settings['icons_labels']['borders']['bottom']      = 1;
-                $settings['icons_labels']['borders']['left']        = 1;
+                $settings['icons_labels']['is_borders']['top']         = 1;
+                $settings['icons_labels']['is_borders']['right']       = 1;
+                $settings['icons_labels']['is_borders']['bottom']      = 1;
+                $settings['icons_labels']['is_borders']['left']        = 1;
+            }
+            else
+            {
+                $settings['icons_labels']['is_borders']['top']         = 0;
+                $settings['icons_labels']['is_borders']['right']       = 0;
+                $settings['icons_labels']['is_borders']['bottom']      = 0;
+                $settings['icons_labels']['is_borders']['left']        = 0;
             }
             $settings['icons_labels']['border_color']               = $old_settings['icons']['border_color'];
             $settings['icons_labels']['border_width']               = $old_settings['icons']['border_width'];
@@ -119,14 +139,49 @@ logg(__METHOD__);
         {
             $palette = abmcb( ContactsInput::class )->palette_defaults();
 
-            $contacts = array_map( function( $old_contact ) {
+            foreach ( $old_contacts as $old_contact )
+            {
                 $contact = $old_contact;
-                $contact['label'] = '';
-                $contact['palette'] = $palette;
                 unset( $contact['title'] );
                 unset( $contact['placeholder'] );
-                return $contact;
-            }, $old_contacts );
+                $contact['id'] = '';
+                $contact['label'] = '';
+                $contact['palette'] = $palette;
+                $contact['type'] = strtolower( $old_contact['type'] );
+                switch ( $contact['type'] )
+                {
+                    case 'custom':
+                        $contact['type'] = 'link';
+                        break;
+                    case 'text':
+                        $contact['type'] = 'sms';
+                        break;
+                    case 'sample':
+                        $contact['type'] = $this->determine_contact_type( $old_contact['uri'], $old_contact['placeholder'] );
+                        break;
+                }
+
+                if ( 'link' === $contact['type'] && ! isset( $contact['parameters'] ))
+                {
+                    $contact['parameters'] = [];
+                }
+
+                if ( isset( $old_contact['parameters'] ) && is_array( $old_contact['parameters'] ))
+                {
+                    $contact['parameters'] = [];
+
+                    foreach ( $old_contact['parameters'] as $old_parameter )
+                    {
+                        $parameter = [];
+                        $parameter = $old_parameter;
+                        unset( $parameter['type'] );
+
+                        $contact['parameters'][] = $parameter;
+                    }
+                }
+
+                $contacts[] = $contact;
+            }
 
             return $contacts;
         }
@@ -136,5 +191,53 @@ logg(__METHOD__);
         }
         
         return $contacts;
+    }
+
+
+    private function determine_contact_type( $uri, $placeholder )
+    {
+        $contact_type = '';
+
+        if ( $placeholder === '' && $uri === 'https://api.whatsapp.com/send' )
+        {
+            $contact_type = 'whatsapp';
+            return $contact_type;
+        }
+
+        $schemes = ['tel', 'sms', 'skype', 'mailto', 'https', 'http'];
+
+        $scheme = array_reduce(
+            $schemes,
+            function( $acc, $scheme ) use( $placeholder ) { return ( strpos( $placeholder, $scheme ) > -1 ) ? $scheme : $acc; },
+            ''
+        );
+
+        switch( $scheme )
+        {
+            case 'tel':
+                $contact_type = 'tel';
+                break;
+            case 'sms':
+                $contact_type = 'sms';
+                break;
+
+            case 'skype':
+                $contact_type = 'skype';
+                break;
+
+            case 'mailto':
+                $contact_type = 'email';
+                break;
+
+            case 'http':
+            case 'https':
+                $contact_type = 'link';
+                break;
+            
+            default:
+                $contact_type = 'link';
+        }
+
+        return $contact_type;
     }
 }

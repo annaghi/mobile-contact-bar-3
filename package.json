@@ -43,7 +43,7 @@
         "uglify:js:admin": "run-for-every-file --src \"./js/admin/\" --dest \"./js/admin/\" --file \"**/*.js\" --not-file \"**/*.min.js\" --not-file \"**/*/\" --run \"uglifyjs {{src-file}} -o {{dest}}{{file-name}}.min.js --compress loops=false,typeofs=false --comments /^/*!/\"",
         "uglify:js:notices": "run-for-every-file --src \"./js/notices/\" --dest \"./js/notices/\" --file \"**/*.js\" --not-file \"**/*.min.js\" --not-file \"**/*/\" --run \"uglifyjs {{src-file}} -o {{dest}}{{file-name}}.min.js --compress loops=false,typeofs=false --comments /^/*!/\"",
         "uglify:js:public": "run-for-every-file --src \"./js/public/\" --dest \"./js/public/\" --file \"**/*.js\" --not-file \"**/*.min.js\" --not-file \"**/*/\" --run \"uglifyjs {{src-file}} -o {{dest}}{{file-name}}.min.js --compress loops=false,typeofs=false --comments /^/*!/\"",
-        "clean:js": "shx rm -f ./js/*.min.js",
+        "clean:js": "shx rm -f ./dist/js/*.min.js",
         "clean:js:admin": "shx rm -f \"./dist/js/admin.min.js\"",
         "clean:js:notices": "shx rm -f \"./dist/js/notices.min.js\"",
         "clean:js:public": "shx rm -f \"./dist/js/public.min.js\"",

@@ -64,7 +64,6 @@ final class Validator
 
             default:
                 $new_uri = '';
-                break;
         }
         return $new_uri;
     }
@@ -127,7 +126,6 @@ final class Validator
 
             default:
                 $new_uri = '';
-                break;
         }
 
         return $new_uri;
@@ -161,7 +159,6 @@ final class Validator
 
             default:
                 $sanitized_value = '';
-                break;
         }
 
         return $sanitized_value;

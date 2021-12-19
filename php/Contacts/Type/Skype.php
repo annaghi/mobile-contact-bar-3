@@ -23,11 +23,11 @@ final class Skype extends TypeAbstract
             'checked'     => 0,
             'icon'        => $this->icon,
             'label'       => 'Skype',
-            'uri'         => 'https://api.whatsapp.com/send',
+            'uri'         => '',
             'placeholder' => 'skype:username?chat or skype:username?call',
             'palette'     => abmcb( Input::class )->palette_defaults(),
-            'short_desc'  => __( 'short desc', 'mobile-contact-bar' ),
-            'long_desc'   => __( 'Use skype:username?call or skype:username?chat', 'mobile-contact-bar' ),
+            'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
+            'desc_uri'    => __( 'Use skype:username?call or skype:username?chat', 'mobile-contact-bar' ),
         ];
     }
 }

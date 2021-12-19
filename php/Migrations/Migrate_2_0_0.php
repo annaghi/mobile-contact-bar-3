@@ -67,7 +67,7 @@ logg(__METHOD__);
             $settings['bar']['opacity']                             = $old_settings['bar_opacity'];
             $settings['bar']['placeholder_height']                  = 0;
 
-            $settings['icons_labels']['is_border']                  = ! $old_settings['icon_is_border'] ? 'none' : 'around';
+            $settings['icons_labels']['is_borders']                 = ! $old_settings['icon_is_border'] ? 'none' : 'around';
             $settings['icons_labels']['border_color']               = $old_settings['icon_border_color'];
             $settings['icons_labels']['border_width']               = $old_settings['icon_border_width'];
             $settings['icons_labels']['icon_size']                  = $old_settings['icon_size'];
@@ -163,13 +163,22 @@ logg(__METHOD__);
                         foreach( $contact['parameters'] as $parameter_id => &$parameter )
                         {
                             $key = $parameter['key'];
-                            $parameter_index = array_search( $key, array_column( $contact_type['parameters'], 'key' ));
-                            $parameter_type = $contact_type['parameters'][$parameter_index];
+
+                            if ( 'link' === $contact['type'] )
+                            {
+                                $field = 'text';
+                            }
+                            else
+                            {
+                                $parameter_index = array_search( $key, array_column( $contact_type['parameters'], 'key' ));
+                                $parameter_type = $contact_type['parameters'][$parameter_index];
+                                $field = $parameter_type['field'];
+                            }
 
                             if( isset( $old_contact['parameters'], $old_contact['parameters'][$key] ))
                             {
                                 $value = urldecode( $old_contact['parameters'][$key] );
-                                $parameter['value'] = ContactsValidator::sanitize_parameter_value( $value, $parameter_type['field'] );
+                                $parameter['value'] = ContactsValidator::sanitize_parameter_value( $value, $field );
                             }
                         }
                         unset( $parameter );

@@ -45,7 +45,6 @@ final class Options
 
         $settings = ( isset( $option_bar['settings'] ) && is_array( $option_bar['settings'] )) ? $option_bar['settings'] : [];
         $contacts = ( isset( $option_bar['contacts'] ) && is_array( $option_bar['contacts'] )) ? $option_bar['contacts'] : [];
-        $styles   = ( isset( $option_bar['styles'] )   && is_string( $option_bar['styles'] ))  ? $option_bar['styles']   : '';
 
         return $this->is_valid_settings( $settings ) && $this->is_valid_contacts( $contacts );
     }
@@ -104,25 +103,6 @@ final class Options
      * @return array Option initialized with default settings, contacts, and generated styles
      */
     public function default_option_bar()
-    {
-       $settings = abmcb( Settings\Input::class )->fields_defaults();
-       $contacts = abmcb( Contacts\Input::class )->fields_samples();
-       $styles = Styles\CSS::generate( $settings, $contacts );
-
-       return [
-           'settings' => $settings,
-           'contacts' => $contacts,
-           'styles'   => $styles,
-       ];
-    }
-
-
-    /**
-     * Returns the default bar-option.
-     *
-     * @return array Option initialized with default settings, contacts, and generated styles
-     */
-    public function default_option_bar_with_samples()
     {
        $settings = abmcb( Settings\Input::class )->fields_defaults();
        $contacts = abmcb( Contacts\Input::class )->fields_samples();
