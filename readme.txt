@@ -36,6 +36,7 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 
 = Special Icons =
 
+* Browser History Back Button
 * Scroll to Top
 * WooCommerce Cart with Item Counter
 
@@ -127,6 +128,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Upgrade] Reimplement plugin
 * [Rename] `#mobile-contact-bar-outer` to `#mobile-contact-bar-nav`
 * [Add] Introduce Tabler Icons 1.48.0
+* [Add] Browser history back button
 + [Add] viber [viber-chat](https://wordpress.org/support/topic/problem-whit-link/)
 * [Add] Contact colors customization
 * [Add] Display label above / below and instead of the icon - [text-below-icon](https://wordpress.org/support/topic/text-below-icon/), [add-label-under-icons](https://wordpress.org/support/topic/add-label-under-icons/)

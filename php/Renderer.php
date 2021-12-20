@@ -66,7 +66,7 @@ final class Renderer
 
             $uri = Validator::escape_contact_uri( $contact['uri'] );
 
-            if ( isset( $contact['parameters'] ))
+            if ( ! empty( $uri ) && isset( $contact['parameters'] ))
             {
                 $query_arg = [];
 
@@ -107,8 +107,8 @@ final class Renderer
             }
 
             $out .= sprintf( '<li class="mobile-contact-bar-item" %s>', $id );
-            // $out .= sprintf( '<a href="%s" %s>', $uri, $new_tab );
-            $out .= sprintf( '<a href="%s" %s>', '#', $new_tab );
+            // $out .= sprintf( '<a href="%s" %s>', esc_url( $uri ), $new_tab );
+            $out .= sprintf( '<a href="%s" %s>', '', $new_tab );
             if ( $settings['icons_labels']['label_position'] === 'below' )
             {
                 $out .= $icon;

@@ -366,7 +366,7 @@ final class View
 
         $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_id ) . ']';
 
-        if ( 'scrolltotop' === $contact['type'] )
+        if ( in_array( $contact['type'], ['historyback', 'scrolltotop'] ))
         {
             // 'URI' hidden
             $out .= sprintf(
@@ -381,7 +381,7 @@ final class View
                         <label>%s</label>
                         <p class="mcb-description">%s</p>
                     </div>
-                    <div class="mcb-input">#</div>
+                    <div class="mcb-input">---</div>
                 </div>',
                 esc_attr__( 'Contact URI', 'mobile-contact-bar' ),
                 esc_attr( $contact_type['desc_uri'] )

@@ -16,7 +16,7 @@ final class Validator
      */
     public static function escape_contact_uri( $uri )
     {
-        if ( '' === $uri || '#' === $uri )
+        if ( '' === $uri )
         {
             return $uri;
         }
@@ -78,7 +78,7 @@ final class Validator
      */
     public static function sanitize_contact_uri( $uri )
     {
-        if ( '' === $uri || '#' === $uri )
+        if ( '' === $uri )
         {
             return $uri;
         }

@@ -23,11 +23,11 @@ final class ScrollToTop extends TypeAbstract
             'brand'       => 'fa',
             'icon'        => 'solid chevron-up',
             'label'       => __( 'Scroll To Top', 'mobile-contact-bar' ),
-            'uri'         => '#',
+            'uri'         => '',
             'placeholder' => 'some placeholder',
             'palette'     => abmcb( Input::class )->palette_defaults(),
-            'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
-            'desc_uri'    => __( 'URI desc', 'mobile-contact-bar' ),
+            'desc_type'   => __( 'Inline JavaScript handles the scrolling.', 'mobile-contact-bar' ),
+            'desc_uri'    => '',
         ];
     }
 
@@ -40,7 +40,7 @@ final class ScrollToTop extends TypeAbstract
         }
 
         ?>
-        <script id="mobile-contact-bar-scroll-to-top">
+        <script id="mobile-contact-bar-<?php echo esc_attr( $this->type ); ?>">
         (function() {
             function scrollTo(to = 0, duration = 1000) {
                 var start       = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0,
@@ -71,7 +71,7 @@ final class ScrollToTop extends TypeAbstract
             };
 
             document.addEventListener('DOMContentLoaded', function() {
-                document.scripts['mobile-contact-bar-scroll-to-top'].parentElement.firstChild.onclick = function( event ) {
+                document.scripts['mobile-contact-bar-<?php echo esc_attr( $this->type ); ?>'].parentElement.firstChild.onclick = function( event ) {
                     event.preventDefault();
                     scrollTo(0, 300);
                 }

@@ -89,7 +89,7 @@ final class Input
                 'brand'       => 'fa',
                 'icon'        => 'solid chevron-up',
                 'label'       => '',
-                'uri'         => '#',
+                'uri'         => '',
             ],
         ];
     }
