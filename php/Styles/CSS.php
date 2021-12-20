@@ -172,6 +172,10 @@ final class CSS
         $styles .= 'line-height: 50%;';
         $styles .= '}';
 
+        $styles .= '.mobile-contact-bar-fa svg{';
+        $styles .= 'fill:currentColor;';
+        $styles .= '}';
+
         $styles .= '.mobile-contact-bar-icon svg{';
         $styles .= 'color:' . $items['icon_color'] . ';';
         // $styles .= 'font-size:' . $items['icon_size'] . 'em;';

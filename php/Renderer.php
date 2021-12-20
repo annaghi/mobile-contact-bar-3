@@ -90,9 +90,8 @@ final class Renderer
                 $meta = explode( ' ', $contact['icon'] );
                 $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/fa/svgs/' . $meta[0] . '/' . $meta[1] . '.svg';
                 $svg = file_get_contents( $path );
-                $sanititzed_svg = preg_replace( '/<!--[^>]*-->/', '', $svg );
 
-                $icon = sprintf( '<span class="mobile-contact-bar-icon">%s%s</span>', $sanititzed_svg, $badge );
+                $icon = sprintf( '<span class="mobile-contact-bar-icon mobile-contact-bar-fa">%s%s</span>', $svg, $badge );
             }
             elseif ( 'ti' === $contact['brand'] )
             {

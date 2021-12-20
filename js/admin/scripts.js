@@ -119,7 +119,7 @@
                     .find('.mcb-contact')
                     .removeClass('mcb-opened')
                     .end()
-                    .find('.mcb-action-toggle-details i')
+                    .find('.mcb-action-toggle-details')
                     .attr('aria-expanded', 'false');
 
                 ui.placeholder.height(ui.item.children('.mcb-summary').outerHeight());
@@ -258,8 +258,7 @@
                 event.preventDefault();
                 event.stopPropagation();
 
-                $(this).closest('.mcb-contact').toggleClass('mcb-opened');
-                $(this).children('i').toggleAriaExpanded();
+                $(this).toggleAriaExpanded().closest('.mcb-contact').toggleClass('mcb-opened');
             });
 
             // Order higher

@@ -78,7 +78,7 @@ final class Input
                 'checked'     => 1,
                 'brand'       => 'fa',
                 'icon'        => 'solid map-marker-alt',
-                'label'       => 'Map',
+                'label'       => __( 'Map' ),
                 'uri'         => 'https://google.com/maps/place/Dacre+St,+London+UK/',
                 'parameters'  => [],
             ],

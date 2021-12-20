@@ -42,11 +42,11 @@ final class View
                 </div>
                 <div class="icon-picker-control">
                     <a data-direction="back" href="#">
-                        <i class="fas fa-angle-left fa-lg"></i>
+                        <span class="dashicons dashicons-arrow-left-alt2" aria-hidden="true"></span>
                     </a>
                     <input type="text" class="" placeholder="<?php esc_attr_e( 'Search', 'mobile-contact-bar' ); ?>">
                     <a data-direction="forward" href="#">
-                        <i class="fas fa-angle-right fa-lg"></i>
+                        <span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span>
                     </a>
                 </div>
                 <!-- <ul data-brand="fa">
@@ -74,7 +74,6 @@ final class View
                     $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/ti/tabler-sprite.svg';
                     $icons = array_slice( Input::ti_icons(), 0, 30 );
                     foreach ( $icons as $icon ) :
-                        $title = 'ti ti-' . $icon;
                         ?>
                         <li data-icon="<?php echo $icon; ?>">
                             <a href="#" title="<?php echo $icon; ?>">
@@ -115,7 +114,7 @@ final class View
             </div>
             <div id="mcb-footer-contacts">
                 <button type="button" id="mcb-add-contact" title="<?php echo esc_attr__( 'Add New Contact', 'mobile-contact-bar' ); ?>">
-                    <i class="fas fa-plus fa-fw" aria-hidden="true"></i>
+                    <span class="dashicons dashicons-plus-alt2" aria-hidden="true"></span>
                     <span class="mcb-add-contact-label"><?php echo esc_attr__( 'New Contact', 'mobile-contact-bar' ); ?></span>
                 </button>
             </div>
@@ -150,7 +149,7 @@ final class View
         // draggable
         $out .= sprintf(
             '<div class="mcb-sortable-draggable ui-sortable-handle" title="%s">
-                <i class="fas fa-grip-vertical"></i>
+                <span class="dashicons dashicons-move" aria-hidden="true"></span>
             </div>',
             esc_attr__( 'Drag and drop to reorder', 'mobile-contact-bar' )
         );
@@ -173,8 +172,7 @@ final class View
             $names = explode( ' ', $contact['icon'] );
             $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/fa/svgs/' . $names[0] . '/' . $names[1] . '.svg';
             $svg = file_get_contents( $path );
-            $sanititzed_svg = preg_replace( '/<!--[^>]*-->/', '', $svg );
-            $out .= sprintf( '<div class="mcb-summary-icon">%s</div>', $sanititzed_svg );
+            $out .= sprintf( '<div class="mcb-summary-icon mcb-fa">%s</div>', $svg );
         }
         elseif ( 'ti' === $contact['brand'] && abmcb( Input::class )->in_ti_icons( $contact['icon'] ))
         {
@@ -201,8 +199,8 @@ final class View
         $out .= '<div class="mcb-right-actions">';
 
         $out .= sprintf(
-            '<button type="button" class="mcb-action-icon mcb-action-toggle-details" title="%1$s">
-                <i class="fas fa-edit" aria-expanded="false" aria-hidden="true"></i>
+            '<button type="button" class="mcb-action-icon mcb-action-toggle-details" title="%1$s" aria-expanded="false">
+                <span class="dashicons dashicons-admin-tools" aria-hidden="true"></span>
                 <span class="screen-reader-text">%1$s</span>
             </button>',
             esc_attr__( 'Edit contact details', 'mobile-contact-bar' )
@@ -210,7 +208,7 @@ final class View
 
         $out .= sprintf(
             '<button type="button" class="mcb-action-icon mcb-action-delete-contact" title="%1$s">
-                <i class="fas fa-times" aria-hidden="true"></i>
+                <span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
                 <span class="screen-reader-text">%1$s</span>
             </button>',
             esc_attr__( 'Delete this contact', 'mobile-contact-bar' )
@@ -218,7 +216,7 @@ final class View
 
         $out .= sprintf(
             '<button type="button" class="mcb-action-icon mcb-action-order-higher" title="%1$s">
-                <i class="fas fa-angle-up" aria-hidden="true"></i>
+                <span class="dashicons dashicons-arrow-up-alt2" aria-hidden="true"></span>
                 <span class="screen-reader-text">%1$s</span>
             </button>',
             esc_attr__( 'Order contact higher', 'mobile-contact-bar' )
@@ -226,7 +224,7 @@ final class View
 
         $out .= sprintf(
             '<button type="button" class="mcb-action-icon mcb-action-order-lower" title="%1$s">
-                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                <span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>
                 <span class="screen-reader-text">%1$s</span>
             </button>',
             esc_attr__( 'Order contact lower', 'mobile-contact-bar' )
@@ -299,8 +297,7 @@ final class View
             $meta = explode( ' ', $contact['icon'] );
             $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/fa/svgs/' . $meta[0] . '/' . $meta[1] . '.svg';
             $svg = file_get_contents( $path );
-            $sanititzed_svg = preg_replace( '/<!--[^>]*-->/', '', $svg );
-            $icon = sprintf( '<span>%s</span>', $sanititzed_svg );
+            $icon = sprintf( '<span class="mcb-fa">%s</span>', $svg );
         }
         elseif ( 'ti' === $contact['brand'] && abmcb( Input::class )->in_ti_icons( $contact['icon'] ))
         {
@@ -515,7 +512,7 @@ final class View
                 <div class="mcb-input">
                     <input type="text" name="' . $prefix . '[key]" id="' . $prefix . '[key]" placeholder="%s" value="%s">
                     <button type="button" class="mcb-action-icon mcb-action-delete-parameter" title="%5$s">
-                        <i class="fas fa-times" aria-hidden="true"></i>
+                        <span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
                         <span class="screen-reader-text">%5$s</span>
                     </button>
                 </div>

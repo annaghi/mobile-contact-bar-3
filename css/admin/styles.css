@@ -196,9 +196,12 @@
 
 .mcb-summary-icon svg,
 .mcb-details-icon svg {
-    width: 2em;
-    height: 2em;
-    /* fill: currentColor; */
+    width: 1.6em;
+    height: 1.6em;
+}
+
+.mcb-fa svg {
+    fill: currentColor;
 }
 
 .mcb-summary-label,
@@ -210,6 +213,7 @@
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
+    gap: 10px;
 }
 
 .mcb-summary-checkbox input[type='checkbox'] {
@@ -220,7 +224,7 @@
     line-height: 1;
 }
 .mcb-sortable-draggable {
-    padding: 0.35em 1.6em;
+    padding: 0.35em 0.4em 0.35em 0.8em;
     margin-left: -12px;
     cursor: pointer;
     color: #a7aaad;

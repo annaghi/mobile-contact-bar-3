@@ -36,8 +36,8 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 
 = Special Icons =
 
-* Browser History Back Button
-* Scroll to Top
+* Browser History Back button
+* Scroll to Top button
 * WooCommerce Cart with Item Counter
 
 
