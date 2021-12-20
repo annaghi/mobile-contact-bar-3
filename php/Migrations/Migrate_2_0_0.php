@@ -7,6 +7,7 @@ use MobileContactBar\Contacts\Input as ContactsInput;
 use MobileContactBar\Contacts\Validator as ContactsValidator;
 use MobileContactBar\Styles\CSS;
 
+
 final class Migrate_2_0_0
 {
     public $old_option_plugin = false;
@@ -104,6 +105,7 @@ logg(__METHOD__);
                 $contact = [];
                 $contact['checked'] = 1;
                 $contact['id'] = '';
+                $contact['brand'] = 'fa';
                 $contact['palette'] = abmcb( ContactsInput::class )->palette_defaults();
 
                 $uri = $this->build_uri( $old_contact['protocol'], $old_contact['resource'] );
@@ -113,13 +115,13 @@ logg(__METHOD__);
                 {
                     case 'phone':
                         $contact['type']       = 'tel';
-                        $contact['icon']       = 'fas fa-phone';
+                        $contact['icon']       = 'solid phone';
                         $contact['label']      = '';
                         break;
 
                     case 'text':
                         $contact['type']       = 'sms';
-                        $contact['icon']       = 'far fa-sms';
+                        $contact['icon']       = 'regular sms';
                         $contact['label']      = '';
                         $contact['parameters'] = [
                             [
@@ -137,7 +139,7 @@ logg(__METHOD__);
 
                     case 'email':
                         $contact['type']       = 'email';
-                        $contact['icon']       = 'far fa-envelope';
+                        $contact['icon']       = 'regular envelope';
                         $contact['label']      = '';
                         $contact['parameters'] = [
                             [
@@ -186,73 +188,73 @@ logg(__METHOD__);
 
                     case 'skype':
                         $contact['type']  = 'skype';
-                        $contact['icon']  = 'fab fa-skype';
+                        $contact['icon']  = 'brands skype';
                         $contact['label'] = '';
                         break;
 
                     case 'address':
                         $contact['type']  = 'link';
-                        $contact['icon']  = 'fas fa-map-marker-alt';
+                        $contact['icon']  = 'solid map-marker-alt';
                         $contact['label'] = '';
                         break;
 
                     case 'facebook':
                         $contact['type']  = 'link';
-                        $contact['icon']  = 'fab fa-facebook-f';
+                        $contact['icon']  = 'brands facebook-f';
                         $contact['label'] = '';
                         break;
 
                     case 'twitter':
                         $contact['type']  = 'link';
-                        $contact['icon']  = 'fab fa-twitter';
+                        $contact['icon']  = 'brands twitter';
                         $contact['label'] = '';
                         break;
 
                     case 'googleplus':
                         $contact['type']  = 'link';
-                        $contact['icon']  = 'fab fa-google-plus-g';
+                        $contact['icon']  = 'brands google-plus-g';
                         $contact['label'] = '';
                         break;
 
                     case 'instagram':
                         $contact['type']  = 'link';
-                        $contact['icon']  = 'fab fa-instagram';
+                        $contact['icon']  = 'brands instagram';
                         $contact['label'] = '';
                         break;
 
                     case 'youtube':
                         $contact['type']  = 'link';
-                        $contact['icon']  = 'fab fa-youtube';
+                        $contact['icon']  = 'brands youtube';
                         $contact['label'] = '';
                         break;
 
                     case 'pinterest':
                         $contact['type']  = 'link';
-                        $contact['icon']  = 'fab fa-pinterest-p';
+                        $contact['icon']  = 'brands pinterest-p';
                         $contact['label'] = '';
                         break;
 
                     case 'tumblr':
                         $contact['type']  = 'link';
-                        $contact['icon']  = 'fab fa-tumblr';
+                        $contact['icon']  = 'brands tumblr';
                         $contact['label'] = '';
                         break;
 
                     case 'linkedin':
                         $contact['type']  = 'link';
-                        $contact['icon']  = 'fab fa-linkedin-in';
+                        $contact['icon']  = 'brands linkedin-in';
                         $contact['label'] = '';
                         break;
 
                     case 'vimeo':
                         $contact['type']  = 'link';
-                        $contact['icon']  = 'fab fa-vimeo-v';
+                        $contact['icon']  = 'brands vimeo-v';
                         $contact['label'] = '';
                         break;
 
                     case 'flickr':
                         $contact['type']  = 'link';
-                        $contact['icon']  = 'fab fa-flickr';
+                        $contact['icon']  = 'brands flickr';
                         $contact['label'] = '';
                         break;
                 }

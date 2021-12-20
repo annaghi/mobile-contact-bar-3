@@ -288,7 +288,7 @@
                 focused.focus();
             });
 
-            // Select type
+            // Select contact type
             option.contactList.on('change', '.mcb-details-type select', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -330,6 +330,7 @@
                 }, 100);
 
                 var iconList,
+                    searchTerm = '',
                     button = $(this),
                     offset = button.offset(),
                     contact = $(this).closest('.mcb-contact'),
@@ -346,7 +347,66 @@
                     .appendTo('body')
                     .show();
 
-                iconList = $('#mcb-icon-picker-container ul[data-brand="fa"]');
+                iconList = $('#mcb-icon-picker-container ul');
+
+                function circular_rolling_window_forward(path, icons) {
+                    var lastIcon = iconList.children().last().attr('data-icon'),
+                        firstIconIndex = icons.indexOf(lastIcon) + 1;
+
+                    firstIconIndex = firstIconIndex === icons.length ? 0 : firstIconIndex;
+
+                    update_picker_page2(path, icons, firstIconIndex);
+                }
+
+                function circular_rolling_window_backward(path, icons) {
+                    var firstIcon = iconList.children().first().attr('data-icon'),
+                        firstIconIndex = icons.indexOf(firstIcon) - 30;
+
+                    firstIconIndex = firstIconIndex < 0 ? icons.length + firstIconIndex : firstIconIndex;
+
+                    update_picker_page2(path, icons, firstIconIndex);
+                }
+
+                function update_picker_page(path, icons, firstIconIndex) {
+                    var sliderIndex, icon;
+
+                    iconList.children().each(function (index) {
+                        sliderIndex = firstIconIndex + index;
+                        icon = icons[sliderIndex % icons.length];
+                        $(this).attr('data-icon', icon);
+                        $(this).find('a').prop('title', icon);
+                        $(this)
+                            .find('use')
+                            .attr('xlink:href', path + '#tabler-' + icon);
+                    });
+                }
+
+                function update_picker_page2(path, icons, firstIconIndex) {
+                    var sliderIndex, icon;
+
+                    iconList.children().each(function (index) {
+                        sliderIndex = firstIconIndex + index;
+                        icon = icons[sliderIndex];
+                        if (undefined === icon) {
+                            $(this).css({ display: 'none' });
+                        } else {
+                            $(this).css({ display: 'inline-block' });
+                            $(this).attr('data-icon', icon);
+                            $(this).find('a').prop('title', icon);
+                            $(this)
+                                .find('use')
+                                .attr('xlink:href', path + '#tabler-' + icon);
+                        }
+                    });
+                }
+
+                function filtered_ti_icons(searchTerm) {
+                    return searchTerm === ''
+                        ? mobile_contact_bar.ti_icons
+                        : mobile_contact_bar.ti_icons.filter(function (icon) {
+                              return icon.includes(searchTerm);
+                          });
+                }
 
                 // Change brand
                 $('body')
@@ -355,18 +415,15 @@
                         event.preventDefault();
                         event.stopPropagation();
 
+                        $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
+                        $(this).addClass('mcb-icon-brand-active');
+
                         if ('ti' === $(this).attr('data-brand')) {
-                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
-                            $(this).addClass('mcb-icon-brand-active');
-                            $('#mcb-icon-picker-container ul[data-brand="fa"]').addClass('mcb-hidden');
-                            iconList = $('#mcb-icon-picker-container ul[data-brand="ti"]');
-                            iconList.removeClass('mcb-hidden');
+                            var path = mobile_contact_bar.page_url + 'dist/icons/ti/tabler-sprite.svg';
+                            var icons = filtered_ti_icons(searchTerm);
+
+                            update_picker_page2(path, icons, 0);
                         } else {
-                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
-                            $(this).addClass('mcb-icon-brand-active');
-                            $('#mcb-icon-picker-container ul[data-brand="ti"]').addClass('mcb-hidden');
-                            iconList = $('#mcb-icon-picker-container ul[data-brand="fa"]');
-                            iconList.removeClass('mcb-hidden');
                         }
                     });
 
@@ -377,36 +434,68 @@
                         event.preventDefault();
                         event.stopPropagation();
 
-                        var icon = $(this).children().attr('class');
+                        var brand = $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand');
+                        var icon = $(this).prop('title');
 
-                        contact
-                            .find('input[name$="[icon]"]')
-                            .val(icon)
-                            .end()
-                            .find('.mcb-summary-icon i')
-                            .removeClass()
-                            .addClass(icon)
-                            .empty()
-                            .end()
-                            .find('.mcb-details-icon i')
-                            .removeClass()
-                            .addClass(icon)
-                            .empty();
+                        if ('ti' === brand) {
+                            $.ajax({
+                                url: ajaxurl,
+                                method: 'POST',
+                                data: {
+                                    action: 'get-icon',
+                                    nonce: mobile_contact_bar.nonce,
+                                    brand: brand,
+                                    icon: icon
+                                }
+                            }).done(function (response) {
+                                if (!response) {
+                                    return false;
+                                }
+                                var svg = JSON.parse(response);
+                                if (svg.length <= 0) {
+                                    return false;
+                                }
+
+                                contact
+                                    .find('input[name$="[brand]"]')
+                                    .val(brand)
+                                    .end()
+                                    .find('input[name$="[icon]"]')
+                                    .val(icon)
+                                    .end()
+                                    .find('.mcb-summary-icon')
+                                    .removeClass('mcb-blank-icon')
+                                    .empty()
+                                    .append(svg)
+                                    .end()
+                                    .find('.mcb-details-icon span')
+                                    .removeClass('mcb-blank-icon')
+                                    .empty()
+                                    .append(svg);
+                            });
+                        } else {
+                        }
 
                         $('#mcb-icon-picker-container').remove();
                     });
 
-                // Browse icons
+                // Paginate icons
                 $('body')
                     .off('click', '#mcb-icon-picker-container div a')
                     .on('click', '#mcb-icon-picker-container div a', function (event) {
                         event.preventDefault();
                         event.stopPropagation();
 
-                        if ('back' === $(this).attr('data-direction')) {
-                            iconList.find('li:gt(' + (iconList.children().length - 31) + ')').prependTo(iconList);
+                        if ('ti' === $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand')) {
+                            var path = mobile_contact_bar.page_url + 'dist/icons/ti/tabler-sprite.svg';
+                            var icons = filtered_ti_icons(searchTerm);
+
+                            if ('back' === $(this).attr('data-direction')) {
+                                circular_rolling_window_backward(path, icons);
+                            } else {
+                                circular_rolling_window_forward(path, icons);
+                            }
                         } else {
-                            iconList.find('li:lt(30)').appendTo(iconList);
                         }
                     });
 
@@ -417,16 +506,14 @@
                         event.preventDefault();
                         event.stopPropagation();
 
-                        var searchTerm = $(this).val();
+                        searchTerm = $(this).val();
 
-                        if ('' === searchTerm) {
-                            iconList.find('li:lt(30)').show();
+                        if ('ti' === $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand')) {
+                            var path = mobile_contact_bar.page_url + 'dist/icons/ti/tabler-sprite.svg';
+                            var icons = filtered_ti_icons(searchTerm);
+
+                            update_picker_page2(path, icons, 0);
                         } else {
-                            iconList
-                                .children()
-                                .not('[data-icon*="' + searchTerm + '"]')
-                                .hide();
-                            iconList.children('[data-icon*="' + searchTerm + '"]').show();
                         }
                     });
 
@@ -445,7 +532,7 @@
                         }
                     });
 
-                // Close icon picker on document resize
+                // Close icon picker on window resize
                 $(window).resize(function () {
                     if (
                         !$('#mcb-icon-picker-container').is(event.target) &&
@@ -464,16 +551,17 @@
                 var contact = $(this).closest('.mcb-contact');
 
                 contact
+                    .find('input[name$="[brand]"]')
+                    .val('')
+                    .end()
                     .find('input[name$="[icon]"]')
                     .val('')
                     .end()
-                    .find('.mcb-summary-icon i')
-                    .removeClass()
+                    .find('.mcb-summary-icon')
                     .addClass('mcb-blank-icon')
                     .text('---')
                     .end()
-                    .find('.mcb-details-icon i')
-                    .removeClass()
+                    .find('.mcb-details-icon span')
                     .addClass('mcb-blank-icon')
                     .text('---');
             });

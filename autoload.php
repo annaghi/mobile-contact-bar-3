@@ -2,6 +2,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
+
 spl_autoload_register( function ( $class_name )
 {
     $namespaces = ['MobileContactBar\\' => __DIR__ . '/php/'];

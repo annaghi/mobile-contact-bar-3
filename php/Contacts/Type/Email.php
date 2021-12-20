@@ -4,11 +4,9 @@ namespace MobileContactBar\Contacts\Type;
 
 use MobileContactBar\Contacts\Input;
 
+
 final class Email extends TypeAbstract
 {
-    private $icon = 'far fa-envelope';
-
-
     public function __construct()
     {
         parent::__construct();
@@ -21,7 +19,8 @@ final class Email extends TypeAbstract
             'type'        => $this->type,
             'title'       => __( 'Email', 'mobile-contact-bar' ),
             'checked'     => 0,
-            'icon'        => $this->icon,
+            'brand'       => 'fa',
+            'icon'        => 'regular envelope',
             'label'       => __( 'Email', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'mailto:username@example.com',

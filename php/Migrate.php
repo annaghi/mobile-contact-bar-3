@@ -4,8 +4,8 @@ namespace MobileContactBar;
 
 use MobileContactBar\Settings\Input;
 use MobileContactBar\Styles\CSS;
-
 use DirectoryIterator;
+
 
 final class Migrate
 {

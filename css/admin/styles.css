@@ -153,7 +153,7 @@
 
 .mcb-summary {
     display: grid;
-    grid-template-columns: 60px 1fr 2fr 1fr;
+    grid-template-columns: 80px 1fr 2fr 1fr;
     grid-template-rows: auto;
     grid-template-areas: 'left-actions icon-label uri right-actions';
     column-gap: 15px;
@@ -180,17 +180,25 @@
 
 .mcb-summary-icon-label {
     display: flex;
+    gap: 15px;
     align-items: center;
 }
 
-.mcb-summary-icon {
-    line-height: 1;
-    text-align: center;
-    min-width: 50px;
+.mcb-summary-icon,
+.mcb-details-icon {
+    font-size: 100%;
+    line-height: 50%;
 }
-.mcb-summary-icon i,
-.mcb-details-icon i {
-    font-size: 1.3em;
+
+.mcb-blank-icon {
+    width: 2em;
+}
+
+.mcb-summary-icon svg,
+.mcb-details-icon svg {
+    width: 2em;
+    height: 2em;
+    /* fill: currentColor; */
 }
 
 .mcb-summary-label,
@@ -354,15 +362,6 @@
     width: 100%;
 }
 
-.mcb-input i {
-    min-width: 2em;
-}
-
-.mcb-blank-icon {
-    font-size: 1.3em !important;
-    font-style: normal;
-}
-
 /* Contact Palette */
 
 .mcb-palette .mcb-input {
@@ -457,7 +456,7 @@
 
 @media only screen and (max-width: 1399px) {
     .mcb-summary {
-        grid-template-columns: 60px 2fr 1fr;
+        grid-template-columns: 80px 2fr 1fr;
         grid-template-areas:
             'left-actions icon-label right-actions'
             '. uri uri';
@@ -493,14 +492,6 @@
         font-size: 16px;
     }
 
-    .mcb-summary-icon {
-        text-align: left;
-    }
-
-    .mcb-summary-icon i,
-    .mcb-details-icon i {
-        font-size: 1.8em;
-    }
     .mcb-blank-icon {
         font-size: 1.8em !important;
     }
@@ -565,6 +556,11 @@
 
 /* ICON PICKER */
 
+.mcb-icon {
+    width: 20px;
+    height: 20px;
+}
+
 #mcb-icon-picker-container {
     background-color: #f1f1f1;
     border: 1px solid #cccccc;
@@ -582,14 +578,6 @@
     padding: 0;
 }
 
-#mcb-icon-picker-container ul li a i {
-    display: block !important;
-    font-size: 20px;
-    height: 20px;
-    text-align: center;
-    width: 20px;
-}
-
 #mcb-icon-picker-container ul li {
     display: inline-block;
     margin: 5px;
@@ -597,10 +585,11 @@
 
 #mcb-icon-picker-container ul li a {
     border: 1px solid #eeeeee;
-    color: #373737;
+    color: #000000;
     display: block;
     padding: 6px 10px;
     text-decoration: none;
+    line-height: 50%;
 }
 
 #mcb-icon-picker-container ul li a:hover {

@@ -2,6 +2,7 @@
 
 namespace MobileContactBar\Styles;
 
+
 final class CSS
 {
     /**
@@ -167,11 +168,15 @@ final class CSS
         $styles .= '.mobile-contact-bar-icon{';
         $styles .= 'display:inline-flex;';
         $styles .= 'position:relative;';
+        $styles .= 'font-size: 100%;';
+        $styles .= 'line-height: 50%;';
         $styles .= '}';
 
-        $styles .= '.mobile-contact-bar-icon i{';
+        $styles .= '.mobile-contact-bar-icon svg{';
         $styles .= 'color:' . $items['icon_color'] . ';';
-        $styles .= 'font-size:' . $items['icon_size'] . 'em;';
+        // $styles .= 'font-size:' . $items['icon_size'] . 'em;';
+        $styles .= 'width:2em;';
+        $styles .= 'height:2em;';
         $styles .= '}';
 
         $styles .= '.mobile-contact-bar-label{';
@@ -208,19 +213,19 @@ final class CSS
         {
             if ( $items['secondary_colors']['focus'] )
             {
-                $styles .= '.mobile-contact-bar-item:focus .mobile-contact-bar-icon i{';
+                $styles .= '.mobile-contact-bar-item:focus .mobile-contact-bar-icon svg{';
                 $styles .= 'color:' . $items['secondary_icon_color'] . ';';
                 $styles .= '}';
             }
             if ( $items['secondary_colors']['hover'] )
             {
-                $styles .= '.mobile-contact-bar-item:hover .mobile-contact-bar-icon i{';
+                $styles .= '.mobile-contact-bar-item:hover .mobile-contact-bar-icon svg{';
                 $styles .= 'color:' . $items['secondary_icon_color'] . ';';
                 $styles .= '}';
             }
             if ( $items['secondary_colors']['active'] )
             {
-                $styles .= '.mobile-contact-bar-item.mobile-contact-bar-active .mobile-contact-bar-icon i{';
+                $styles .= '.mobile-contact-bar-item.mobile-contact-bar-active .mobile-contact-bar-icon svg{';
                 $styles .= 'color:' . $items['secondary_icon_color'] . ';';
                 $styles .= '}';
             }
@@ -469,7 +474,7 @@ final class CSS
                 $styles .= 'background-color:' . $contact['palette']['background_color'] . ';';
                 $styles .= '}';
 
-                $styles .= '#' . $contact['id'] . ' .mobile-contact-bar-icon i{';
+                $styles .= '#' . $contact['id'] . ' .mobile-contact-bar-icon svg{';
                 $styles .= 'color:' . $contact['palette']['icon_color'] . ';';
                 $styles .= '}';
 

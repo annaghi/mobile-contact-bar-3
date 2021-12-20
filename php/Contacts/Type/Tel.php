@@ -4,11 +4,9 @@ namespace MobileContactBar\Contacts\Type;
 
 use MobileContactBar\Contacts\Input;
 
+
 final class Tel extends TypeAbstract
 {
-    private $icon = 'fas fa-external-link-square-alt';
-
-
     public function __construct()
     {
         parent::__construct();
@@ -21,7 +19,8 @@ final class Tel extends TypeAbstract
             'type'        => $this->type,
             'title'       => __( 'Phone', 'mobile-contact-bar' ),
             'checked'     => 0,
-            'icon'        => $this->icon,
+            'brand'       => 'fa',
+            'icon'        => 'solid phone',
             'label'       => __( 'Call Us', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'tel:15417543010 or tel:+15417543010',

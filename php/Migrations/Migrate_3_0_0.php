@@ -7,6 +7,7 @@ use MobileContactBar\Settings\Input as SettingsInput;
 use MobileContactBar\Contacts\Input as ContactsInput;
 use MobileContactBar\Styles\CSS;
 
+
 final class Migrate_3_0_0
 {
     /**
@@ -146,6 +147,8 @@ logg(__METHOD__);
                 unset( $contact['placeholder'] );
                 $contact['id'] = '';
                 $contact['label'] = '';
+                $contact['brand'] = 'fa';
+                // TODO convert $contact['icon]
                 $contact['palette'] = $palette;
                 $contact['type'] = strtolower( $old_contact['type'] );
                 switch ( $contact['type'] )

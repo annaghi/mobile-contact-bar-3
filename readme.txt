@@ -132,7 +132,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Add] Display label above / below and instead of the icon - [text-below-icon](https://wordpress.org/support/topic/text-below-icon/), [add-label-under-icons](https://wordpress.org/support/topic/add-label-under-icons/)
 * [Add] Toggle option for setting the bar to be closed as default - [toggle-state](https://wordpress.org/support/topic/toggle-state-4/), [default-toggle-state](https://wordpress.org/support/topic/default-toggle-state/)
 * [Add] Instead of Font Awesome's CSS classes use font-size for setting the icons' size
-* [Add] Remove + sign from tel and sms protocols - [telephone-remove](https://wordpress.org/support/topic/telephone-remove/)
+* [Add] Let the + sign be optional in tel and sms protocols - [telephone-remove](https://wordpress.org/support/topic/telephone-remove/)
 * [Add] CSS class selectors for contacts, icons and labels
 * [Fix] Move migration process to `init` in order to run it on both admin and public faces
 * [Update] Font Awesome 5.15.4
@@ -235,7 +235,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Fix] Default option issue during network activation
 
 = 0.1.0 =
-* [Adde] Initial release
+* [Add] Initial release
 
 
 

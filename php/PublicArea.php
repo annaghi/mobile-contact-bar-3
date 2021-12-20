@@ -2,6 +2,7 @@
 
 namespace MobileContactBar;
 
+
 final class PublicArea
 {
     public $option_bar = [];
@@ -33,14 +34,6 @@ final class PublicArea
      */
     public function wp_enqueue_scripts()
     {
-        wp_enqueue_style(
-            'fa',
-            plugin_dir_url( abmcb()->file ) . 'dist/css/public.min.css',
-            [],
-            '5.15.4',
-            'all'
-        );
-
         if ( $this->option_bar['settings']['toggle']['is_render'] && $this->option_bar['settings']['toggle']['is_cookie'] )
         {
             wp_enqueue_script(

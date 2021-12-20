@@ -5,6 +5,7 @@ namespace MobileContactBar\Contacts;
 use MobileContactBar\Renderer;
 use MobileContactBar\Helper;
 
+
 final class View
 {
     public $option_bar = [];
@@ -36,8 +37,8 @@ final class View
         <script type="text/html" id="mcb-tmpl-icon-picker">
             <div id="mcb-icon-picker-container">
                 <div class="mcb-icon-picker-brands">
-                    <button type="button" data-brand="fa" class="button mcb-icon-brand-active">Font Awesome</button>
-                    <button type="button" data-brand="ti" class="button">Tabler Icons</button>
+                    <button type="button" data-brand="fa" class="button">Font Awesome</button>
+                    <button type="button" data-brand="ti" class="button mcb-icon-brand-active">Tabler Icons</button>
                 </div>
                 <div class="icon-picker-control">
                     <a data-direction="back" href="#">
@@ -48,8 +49,9 @@ final class View
                         <i class="fas fa-angle-right fa-lg"></i>
                     </a>
                 </div>
-                <ul data-brand="fa">
+                <!-- <ul data-brand="fa">
                     <?php
+                    $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/fa/sprites/';
                     $icons = Input::fa_icons();
                     foreach ( $icons as $section_id => $section ) :
                         foreach ( $section as $icon ) :
@@ -57,23 +59,28 @@ final class View
                             ?>
                             <li data-icon="<?php echo $icon; ?>">
                                 <a href="#" title="<?php echo $icon; ?>">
-                                    <i class="<?php echo $title; ?>"></i>
+                                    <svg class="mcb-icon">
+                                        <use xlink:href="<?php echo $path . $section_id; ?>.svg#<?php echo $icon; ?>"></use>
+                                    </svg>
                                 </a>
                             </li>
                             <?php
                         endforeach;
                     endforeach;
                     ?>
-                </ul>
-                <ul class="mcb-hidden" data-brand="ti">
+                </ul> -->
+                <ul>
                     <?php
-                    $icons = Input::ti_icons();
+                    $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/ti/tabler-sprite.svg';
+                    $icons = array_slice( Input::ti_icons(), 0, 30 );
                     foreach ( $icons as $icon ) :
                         $title = 'ti ti-' . $icon;
                         ?>
                         <li data-icon="<?php echo $icon; ?>">
                             <a href="#" title="<?php echo $icon; ?>">
-                                <i class="<?php echo $title; ?>"></i>
+                                <svg class="mcb-icon">
+                                    <use xlink:href="<?php echo $path; ?>#<?php echo 'tabler-' . $icon; ?>"></use>
+                                </svg>
                             </a>
                         </li>
                         <?php
@@ -132,7 +139,6 @@ final class View
         $out = '';
 
         $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_id ) . ']';
-        $icon   = esc_attr( $contact['icon'] );
 
         $out .= sprintf(
             '<div class="mcb-summary%s">',
@@ -162,9 +168,24 @@ final class View
         $out .= '<div class="mcb-summary-icon-label">';
 
         // 'icon'
-        $out .= ( empty( $icon ))
-            ? '<div class="mcb-summary-icon"><i class="mcb-blank-icon">---</i></div>'
-            : '<div class="mcb-summary-icon"><i class="' . $icon . '"></i></div>';
+        if ( 'fa' === $contact['brand'] && abmcb( Input::class )->in_fa_icons( $contact['icon'] ))
+        {
+            $names = explode( ' ', $contact['icon'] );
+            $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/fa/svgs/' . $names[0] . '/' . $names[1] . '.svg';
+            $svg = file_get_contents( $path );
+            $sanititzed_svg = preg_replace( '/<!--[^>]*-->/', '', $svg );
+            $out .= sprintf( '<div class="mcb-summary-icon">%s</div>', $sanititzed_svg );
+        }
+        elseif ( 'ti' === $contact['brand'] && abmcb( Input::class )->in_ti_icons( $contact['icon'] ))
+        {
+            $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/ti/icons/'. $contact['icon'] . '.svg';
+            $svg = file_get_contents( $path );
+            $out .= sprintf( '<div class="mcb-summary-icon">%s</div>', $svg );
+        }
+        else
+        {
+            $out .= '<div class="mcb-summary-icon mcb-blank-icon">---</div>';
+        }
 
         // 'label'
         $out .= sprintf( '<div class="mcb-summary-label">%s</div>', esc_attr( $contact['label'] ));
@@ -233,15 +254,17 @@ final class View
         $out = '';
 
         $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_id ) . ']';
-        $icon   = esc_attr( $contact['icon'] );
 
         $contact_types = apply_filters( 'mcb_admin_contact_types', [] );
         $contact_type  = $contact_types[$contact['type']];
 
         $out .= '<div class="mcb-details">';
 
+        // 'brand' hidden
+        $out .= sprintf( '<input type="hidden" name="' . $prefix . '[brand]" value="%s">', esc_attr( $contact['brand'] ));
+
         // 'icon' hidden
-        $out .= '<input type="hidden" name="' . $prefix . '[icon]" value="' . $icon . '">';
+        $out .= sprintf( '<input type="hidden" name="' . $prefix . '[icon]" value="%s">', esc_attr( $contact['icon'] ));
 
         // 'type' input
         $select = '<select name="' . $prefix . '[type]" id="' . $prefix . '[type]">';
@@ -271,9 +294,24 @@ final class View
         );
 
         // 'icon' visible
-        $icon = ( empty( $icon ))
-            ? '<i class="mcb-blank-icon">---</i>'
-            : '<i class="' . $icon . '"></i>';
+        if ( 'fa' === $contact['brand'] && abmcb( Input::class )->in_fa_icons( $contact['icon'] ))
+        {
+            $meta = explode( ' ', $contact['icon'] );
+            $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/fa/svgs/' . $meta[0] . '/' . $meta[1] . '.svg';
+            $svg = file_get_contents( $path );
+            $sanititzed_svg = preg_replace( '/<!--[^>]*-->/', '', $svg );
+            $icon = sprintf( '<span>%s</span>', $sanititzed_svg );
+        }
+        elseif ( 'ti' === $contact['brand'] && abmcb( Input::class )->in_ti_icons( $contact['icon'] ))
+        {
+            $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/ti/icons/'. $contact['icon'] . '.svg';
+            $svg = file_get_contents( $path );
+            $icon = sprintf( '<span>%s</span>', $svg );
+        }
+        else
+        {
+            $icon = '<span class="mcb-blank-icon">---</span>';
+        }
 
         // select & clear 'icon' button
         $out .= sprintf(
@@ -285,7 +323,6 @@ final class View
                     %2$s
                     <button type="button" class="button action mcb-action-pick-icon" title="%3$s">%3$s</button>
                     <button type="button" class="button action mcb-action-clear-icon" title="%4$s">%4$s</button>
-                    
                 </div>
             </div>',
             esc_attr__( 'Contact Icon', 'mobile-contact-bar' ),
@@ -748,6 +785,28 @@ final class View
             $data['parameters'] = $this->output_parameters( ['contact_id' => $_POST['contact_id'], 'contact' => $contact_type, 'contact_type' => $contact_type] );
 
             return $data;
+        }
+
+        wp_die();
+    }
+
+
+    /**
+     * Renders contact type related parameters.
+     *
+     * @uses $_POST
+     */
+    public function ajax_get_icon()
+    {
+        if ( isset( $_POST['brand'], $_POST['icon'] ) && in_array( $_POST['brand'], ['fa', 'ti'] ))
+        {
+            if ( 'ti' === $_POST['brand'] && abmcb( Input::class )->in_ti_icons( $_POST['icon'] ))
+            {
+                $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/ti/icons/'. $_POST['icon'] . '.svg';
+                $svg = file_get_contents( $path );
+
+                return $svg;
+            }
         }
 
         wp_die();

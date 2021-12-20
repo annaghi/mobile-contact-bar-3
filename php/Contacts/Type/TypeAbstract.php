@@ -4,6 +4,7 @@ namespace MobileContactBar\Contacts\Type;
 
 use ReflectionClass;
 
+
 abstract class TypeAbstract
 {
     protected $type = '';

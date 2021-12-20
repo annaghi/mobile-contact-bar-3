@@ -4,11 +4,9 @@ namespace MobileContactBar\Contacts\Type;
 
 use MobileContactBar\Contacts\Input;
 
+
 final class ScrollToTop extends TypeAbstract
 {
-    private $icon = 'fas fa-chevron-up';
-
-
     public function __construct()
     {
         parent::__construct();
@@ -22,7 +20,8 @@ final class ScrollToTop extends TypeAbstract
             'type'        => $this->type,
             'title'       => __( 'Scroll to Top', 'mobile-contact-bar' ),
             'checked'     => 0,
-            'icon'        => $this->icon,
+            'brand'       => 'fa',
+            'icon'        => 'solid chevron-up',
             'label'       => __( 'Scroll To Top', 'mobile-contact-bar' ),
             'uri'         => '#',
             'placeholder' => 'some placeholder',

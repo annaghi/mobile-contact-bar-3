@@ -2,6 +2,7 @@
 
 namespace MobileContactBar;
 
+
 final class Notices
 {
     const USER_META_KEY = 'mobile_contact_bar_notices';

@@ -4,6 +4,7 @@ namespace MobileContactBar;
 
 use MobileContactBar\Contacts\Validator;
 
+
 final class Renderer
 {
     public function bar( $settings, $contacts, $checked_contacts )
@@ -82,7 +83,28 @@ final class Renderer
 
             $badge = apply_filters( 'mcb_public_add_badge', '', $contact['type'] );
             $label = ( ! empty( $contact['label'] )) ? sprintf( '<span class="mobile-contact-bar-label">%s</span>', str_replace( '\n', '<br />', esc_attr( $contact['label'] ))) : '';
-            $icon = ( ! empty( $contact['icon'] )) ? sprintf( '<span class="mobile-contact-bar-icon"><i class="%s"></i>%s</span>', esc_attr( $contact['icon'] ), $badge ) : '';
+
+            // TODO move validation to Options
+            if ( 'fa' === $contact['brand'] )
+            {
+                $meta = explode( ' ', $contact['icon'] );
+                $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/fa/svgs/' . $meta[0] . '/' . $meta[1] . '.svg';
+                $svg = file_get_contents( $path );
+                $sanititzed_svg = preg_replace( '/<!--[^>]*-->/', '', $svg );
+
+                $icon = sprintf( '<span class="mobile-contact-bar-icon">%s%s</span>', $sanititzed_svg, $badge );
+            }
+            elseif ( 'ti' === $contact['brand'] )
+            {
+                $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/ti/icons/'. $contact['icon'] . '.svg';
+                $svg = file_get_contents( $path );
+
+                $icon = sprintf( '<span class="mobile-contact-bar-icon">%s%s</span>', $svg, $badge );
+            }
+            else
+            {
+                $icon = '';
+            }
 
             $out .= sprintf( '<li class="mobile-contact-bar-item" %s>', $id );
             // $out .= sprintf( '<a href="%s" %s>', $uri, $new_tab );

@@ -4,11 +4,9 @@ namespace MobileContactBar\Contacts\Type;
 
 use MobileContactBar\Contacts\Input;
 
+
 final class SMS extends TypeAbstract
 {
-    private $icon = 'far fa-comment';
-
-
     public function __construct()
     {
         parent::__construct();
@@ -21,7 +19,8 @@ final class SMS extends TypeAbstract
             'type'        => $this->type,
             'title'       => 'SMS',
             'checked'     => 0,
-            'icon'        => $this->icon,
+            'brand'       => 'fa',
+            'icon'        => 'solid sms',
             'label'       => __( 'Phone Number for texting', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'sms:15417543010 or sms:+15417543010',

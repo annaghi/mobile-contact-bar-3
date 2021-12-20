@@ -6,6 +6,7 @@ use MobileContactBar\Settings;
 use MobileContactBar\Contacts;
 use MobileContactBar\Styles;
 
+
 final class Options
 {
     public function get_option( $path, $default_option_method, $is_valid_option_method )
@@ -63,7 +64,7 @@ final class Options
     {
         $is_valid = true;
 
-        $contact_keys = ['type', 'id', 'checked', 'icon', 'label', 'uri', 'parameters', 'palette'];
+        $contact_keys = ['type', 'id', 'checked', 'brand', 'icon', 'label', 'uri', 'parameters', 'palette'];
         $palette_keys = ['background_color', 'border_color', 'icon_color', 'label_color'];
         $parameter_keys = ['key', 'value'];
 

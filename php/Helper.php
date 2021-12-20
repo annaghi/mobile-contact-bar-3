@@ -2,6 +2,7 @@
 
 namespace MobileContactBar;
 
+
 final class Helper
 {
     /**

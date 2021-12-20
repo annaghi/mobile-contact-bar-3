@@ -4,11 +4,9 @@ namespace MobileContactBar\Contacts\Type;
 
 use MobileContactBar\Contacts\Input;
 
+
 final class Skype extends TypeAbstract
 {
-    private $icon = 'fab fa-skype';
-
-
     public function __construct()
     {
         parent::__construct();
@@ -21,7 +19,8 @@ final class Skype extends TypeAbstract
             'type'        => $this->type,
             'title'       => 'Skype',
             'checked'     => 0,
-            'icon'        => $this->icon,
+            'brand'       => 'fa',
+            'icon'        => 'brands skype',
             'label'       => 'Skype',
             'uri'         => '',
             'placeholder' => 'skype:username?chat or skype:username?call',

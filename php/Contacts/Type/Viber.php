@@ -4,11 +4,9 @@ namespace MobileContactBar\Contacts\Type;
 
 use MobileContactBar\Contacts\Input;
 
+
 final class Viber extends TypeAbstract
 {
-    private $icon = 'fab fa-viber';
-
-
     public function __construct()
     {
         parent::__construct();
@@ -21,7 +19,8 @@ final class Viber extends TypeAbstract
             'type'        => $this->type,
             'title'       => 'Viber',
             'checked'     => 0,
-            'icon'        => $this->icon,
+            'brand'       => 'fa',
+            'icon'        => 'brands viber',
             'label'       => 'Viber',
             'uri'         => 'viber://pa?chatURI=URI',
             'placeholder' => 'place',

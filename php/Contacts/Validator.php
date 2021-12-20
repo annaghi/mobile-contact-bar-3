@@ -2,6 +2,7 @@
 
 namespace MobileContactBar\Contacts;
 
+
 final class Validator
 {
     const SCHEMES = ['viber', 'tel', 'sms', 'skype', 'mailto', 'https', 'http'];

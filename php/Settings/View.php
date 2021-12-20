@@ -4,6 +4,7 @@ namespace MobileContactBar\Settings;
 
 use MobileContactBar\Settings;
 
+
 final class View
 {
     public $option_bar = [];

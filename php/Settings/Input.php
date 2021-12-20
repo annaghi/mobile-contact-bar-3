@@ -2,6 +2,7 @@
 
 namespace MobileContactBar\Settings;
 
+
 final class Input
 {
     /**

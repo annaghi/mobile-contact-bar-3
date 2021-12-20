@@ -4,11 +4,9 @@ namespace MobileContactBar\Contacts\Type;
 
 use MobileContactBar\Contacts\Input;
 
+
 final class WooCommerce extends TypeAbstract
 {
-    private $icon = 'fas fa-shopping-cart';
-
-
     public function __construct()
     {
         if( class_exists( 'WooCommerce' ))
@@ -34,7 +32,8 @@ final class WooCommerce extends TypeAbstract
             'type'        => $this->type,
             'title'       => __( 'WooCommerce Cart', 'mobile-contact-bar' ),
             'checked'     => 0,
-            'icon'        => $this->icon,
+            'brand'       => 'fa',
+            'icon'        => 'solid shopping-cart',
             'label'       => __( 'Cart', 'mobile-contact-bar' ),
             'uri'         => get_site_url() . '/cart',
             'placeholder' => is_ssl() ? 'https://mysite.com/cart' : 'http://mysite.com/cart',

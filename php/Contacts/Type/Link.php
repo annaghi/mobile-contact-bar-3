@@ -4,11 +4,9 @@ namespace MobileContactBar\Contacts\Type;
 
 use MobileContactBar\Contacts\Input;
 
+
 final class Link extends TypeAbstract
 {
-    private $icon = 'fas fa-external-link-square-alt';
-
-
     public function __construct()
     {
         parent::__construct();
@@ -21,7 +19,8 @@ final class Link extends TypeAbstract
             'type'        => $this->type,
             'title'       => __( 'Link', 'mobile-contact-bar' ),
             'checked'     => 0,
-            'icon'        => $this->icon,
+            'brand'       => 'fa',
+            'icon'        => 'solid external-link-square-alt',
             'label'       => '',
             'uri'         => '',
             'placeholder' => 'http(s)://www.somesite.com/path',

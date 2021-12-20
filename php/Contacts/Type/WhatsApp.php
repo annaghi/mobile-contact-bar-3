@@ -4,11 +4,9 @@ namespace MobileContactBar\Contacts\Type;
 
 use MobileContactBar\Contacts\Input;
 
+
 final class WhatsApp extends TypeAbstract
 {
-    private $icon = 'fab fa-whatsapp';
-
-
     public function __construct()
     {
         parent::__construct();
@@ -21,7 +19,8 @@ final class WhatsApp extends TypeAbstract
             'type'        => $this->type,
             'title'       => 'WhatsApp',
             'checked'     => 0,
-            'icon'        => $this->icon,
+            'brand'       => 'fa',
+            'icon'        => 'brands whatsapp',
             'label'       => 'WhatsApp',
             'uri'         => 'https://api.whatsapp.com/send',
             'placeholder' => 'place',

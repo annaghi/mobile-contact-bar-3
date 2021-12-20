@@ -3,9 +3,9 @@
 namespace MobileContactBar;
 
 use MobileContactBar\Styles\CSS;
-use MobileContactBar\Contacts\Type;
 use DirectoryIterator;
 use ReflectionClass;
+
 
 final class AdminArea
 {
@@ -21,6 +21,7 @@ final class AdminArea
         'add-contact',
         'add-parameter',
         'change-contact_type',
+        'get-icon'
     ];
 
 
@@ -95,9 +96,6 @@ final class AdminArea
                     <div id="post-body" class="metabox-holder columns-<?php echo ( 1 === get_current_screen()->get_columns() ) ? '1' : '2'; ?>">
 
                         <div id="postbox-container-2" class="postbox-container">
-                            <!-- <div id="mcb-real-contacts">
-                                <?php echo abmcb( Renderer::class )->bar( $this->option_bar['settings'], $this->option_bar['contacts'], $checked_contacts ); ?>
-                            </div> -->
                             <?php do_meta_boxes( abmcb()->page_suffix, 'advanced', null ); ?>
                         </div><!-- #postbox-container-2 -->
 
@@ -485,18 +483,6 @@ final class AdminArea
 
             // WordPress's color picker styles and scripts
             wp_enqueue_style( 'wp-color-picker' );
-            // wp_register_script(
-            //     'wp-color-picker-alpha',
-            //     $url_to_script,
-            //     ['wp-color-picker'],
-            //     $current_version,
-            //     $in_footer
-            // );
-            // wp_add_inline_script(
-            //     'wp-color-picker-alpha',
-            //     'jQuery( function() { jQuery( ".color-picker" ).wpColorPicker(); } );'
-            // );
-            // wp_enqueue_script( 'wp-color-picker-alpha' );
             wp_enqueue_script( 'wp-color-picker' );
 
             wp_enqueue_style(
@@ -518,7 +504,12 @@ final class AdminArea
             wp_localize_script(
                 'mcb-admin',
                 abmcb()->id,
-                ['nonce' => wp_create_nonce( abmcb()->id )]
+                [
+                    'nonce'    => wp_create_nonce( abmcb()->id ),
+                    'page_url' => plugin_dir_url( abmcb()->file ),
+                    'ti_icons' => Contacts\Input::ti_icons(),
+                    'fa_icons' => Contacts\Input::fa_icons(),
+                ]
             );
 
             wp_enqueue_script(
@@ -637,6 +628,27 @@ final class AdminArea
         if ( $this->check_ajax_request() )
         {
             $data = abmcb( Contacts\View::class )->ajax_change_contact_type();
+            $response = json_encode( $data );
+
+            if ( $response )
+            {
+                echo $response;
+            }
+        }
+        wp_die();
+    }
+
+
+    /**
+     * Renders parameters for the selected contact type.
+     *
+     * @uses $_POST
+     */
+    public function get_icon()
+    {
+        if ( $this->check_ajax_request() )
+        {
+            $data = abmcb( Contacts\View::class )->ajax_get_icon();
             $response = json_encode( $data );
 
             if ( $response )
