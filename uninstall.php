@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) and defined( 'WP_UNINSTALL_PLUGIN' ) || exit();
 
 
 /**
- * Database cleaning process
+ * Cleans database from all plugin related data.
  *
  * @global $wpdb
  */
