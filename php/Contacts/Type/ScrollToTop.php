@@ -25,7 +25,7 @@ final class ScrollToTop extends TypeAbstract
             'label'       => __( 'Scroll To Top', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'some placeholder',
-            'palette'     => abmcb( Input::class )->palette_defaults(),
+            'custom'      => abmcb( Input::class )->default_customization(),
             'desc_type'   => __( 'Inline JavaScript handles the scrolling.', 'mobile-contact-bar' ),
             'desc_uri'    => '',
         ];

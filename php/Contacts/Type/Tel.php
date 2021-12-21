@@ -24,7 +24,7 @@ final class Tel extends TypeAbstract
             'label'       => __( 'Call Us', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'tel:15417543010 or tel:+15417543010',
-            'palette'     => abmcb( Input::class )->palette_defaults(),
+            'custom'      => abmcb( Input::class )->default_customization(),
             'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
             'desc_uri'    => __( 'URI desc', 'mobile-contact-bar' ),
         ];

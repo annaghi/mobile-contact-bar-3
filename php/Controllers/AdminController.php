@@ -1,13 +1,14 @@
 <?php
 
-namespace MobileContactBar;
+namespace MobileContactBar\Controllers;
 
-use MobileContactBar\Styles\CSS;
-use DirectoryIterator;
-use ReflectionClass;
+use MobileContactBar\Options;
+use MobileContactBar\Settings;
+use MobileContactBar\Contacts;
+use MobileContactBar\Styles;
 
 
-final class AdminArea
+final class AdminController
 {
     /**
      * Multidimensional array of the plugin's option, divided into sections: 'settings', 'contacts', 'styles'.
@@ -17,48 +18,11 @@ final class AdminArea
     public $option_bar = [];
 
  
-    private $ajax_actions = [
-        'add-contact',
-        'add-parameter',
-        'change-contact_type',
-        'get-icon'
-    ];
-
-
-    public function register_ajax_hooks()
-    {
-        foreach ( $this->ajax_actions as $ajax_action )
-        {
-            add_action( 'wp_ajax_' . $ajax_action, [$this, str_replace( '-', '_', $ajax_action )], 1 );
-        }
-    }
-
-
-    public function admin_head()
-    {
-        ?>
-        <style id="mobile-contact-bar-css" type="text/css" media="screen"><?php echo strip_tags( $this->option_bar['styles'] ); ?></style>
-        <style>
-            body {
-                border-top: 0 !important;
-                border-bottom: 0 !important;
-            }
-            #mobile-contact-bar {
-                position: static;
-                margin-top: 0;
-            }
-            #mobile-contact-bar-toggle {
-                position: relative;
-                transform: unset;
-            }
-        </style>
-        <?php
-    }
-
-
     /**
      * Adds option page to the admin menu.
      * Hooks the option page related screen tabs.
+     * 
+     * @return void
      */
     public function admin_menu()
     {
@@ -77,6 +41,8 @@ final class AdminArea
 
     /**
      * Renders the option page skeleton.
+     * 
+     * @return void
      */
     public function callback_render_page()
     {
@@ -121,7 +87,9 @@ final class AdminArea
 
 
     /**
-     * Adds sections and fields to the option page.
+     * Adds sections and settings to the option page.
+     * 
+     * @return void
      */
     public function admin_init()
     {
@@ -138,7 +106,7 @@ final class AdminArea
     }
 
 
-     /**
+    /**
      * Sanitizes the settings and contacts.
      *
      * @param  array $input Multidimensional array of the bar-option
@@ -164,6 +132,8 @@ final class AdminArea
     /**
      * Adds meta boxes to the option page.
      * Adjusts meta box classes.
+     * 
+     * @return void
      *
      * @global $wp_settings_sections
      */
@@ -217,13 +187,15 @@ final class AdminArea
 
 
     /**
-     * Renders Real-time Model and Plugin Info meta box
+     * Renders Real-time Model meta box.
+     * 
+     * @return void
      */
     public function callback_render_model()
     {
         ?>
         <div id="mcb-model">
-            <?php include_once plugin_dir_path( abmcb()->file ) . 'dist/images/real-time-model/model.svg'; ?>
+            <?php include_once plugin_dir_path( abmcb()->file ) . 'assets/images/real-time-model/model.svg'; ?>
             <footer><em><?php _e( 'The model is an approximation. A lot depends on your active theme\'s styles.', 'mobile-contact-bar' ); ?></em></footer>
         </div>
 
@@ -245,8 +217,9 @@ final class AdminArea
     /**
      * Renders a meta box.
      *
-     * @param object $object  null
-     * @param array  $section Passed from add_meta_box as sixth parameter
+     * @param  object $object  null
+     * @param  array  $section Passed from add_meta_box as sixth parameter
+     * @return void
      */
     public function callback_render_section( $object, $section )
     {
@@ -254,7 +227,7 @@ final class AdminArea
 
         if ( 'mcb-table-contacts' === $table_id )
         {
-            echo abmcb( Contacts\View::class )->output_contact_list();
+            echo abmcb( Contacts\View::class )->render_contact_list();
         }
         else
         {
@@ -283,8 +256,10 @@ final class AdminArea
 
 
     /**
-     * Triggers the 'add_meta_boxes' hook_suffix.
-     * Adds screen options.
+     * Triggers add_meta_boxes on 'add_meta_boxes' hook.
+     * Adds screen options tab.
+     * 
+     * @return void
      */
     public function load_screen_options()
     {
@@ -295,6 +270,8 @@ final class AdminArea
 
     /**
      * Adds contextual help menu.
+     * 
+     * @return void
      */
     public function load_help()
     {
@@ -305,32 +282,32 @@ final class AdminArea
             [
                 'title'    => __( 'Links', 'mobile-contact-bar' ),
                 'id'       => 'mcb-link',
-                'callback' => [$this, 'render_help_tab_link'],
+                'callback' => [$this, 'callback_render_help_tab_link'],
             ],
             [
                 'title'    => __( 'Emails', 'mobile-contact-bar' ),
                 'id'       => 'mcb-mailto',
-                'callback' => [$this, 'render_help_tab_mailto'],
+                'callback' => [$this, 'callback_render_help_tab_mailto'],
             ],
             [
                 'title'    => __( 'Phone calls', 'mobile-contact-bar' ),
                 'id'       => 'mcb-tel',
-                'callback' => [$this, 'render_help_tab_tel'],
+                'callback' => [$this, 'callback_render_help_tab_tel'],
             ],
             [
                 'title'    => __( 'SMS', 'mobile-contact-bar' ),
                 'id'       => 'mcb-sms',
-                'callback' => [$this, 'render_help_tab_sms'],
+                'callback' => [$this, 'callback_render_help_tab_sms'],
             ],
             [
                 'title'    => __( 'Skype', 'mobile-contact-bar' ),
                 'id'       => 'mcb-skype',
-                'callback' => [$this, 'render_help_tab_skype'],
+                'callback' => [$this, 'callback_render_help_tab_skype'],
             ],
             [
                 'title'    => __( 'Viber', 'mobile-contact-bar' ),
                 'id'       => 'mcb-viber',
-                'callback' => [$this, 'render_help_tab_viber'],
+                'callback' => [$this, 'callback_render_help_tab_viber'],
             ],
         ];
 
@@ -344,44 +321,29 @@ final class AdminArea
 
 
     /**
-     * Renders 'tel' help tab.
+     * Renders 'links' help tab.
+     * 
+     * @return void
      */
-    public function render_help_tab_tel()
+    public function callback_render_help_tab_link()
     {
         ?>
-        <h4><?php _e( 'Initiating phone or mobile audio calls', 'mobile-contact-bar' ); ?></h4>
-        <code>tel:15417543010</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>tel:+15417543010</code>
-        <p><?php _e( 'Use the international dialing format: the plus sign (<code>+</code>), country code, area code, and number. You can separate each segment of the number with a hyphen (<code>-</code>) for easier reading.', 'mobile-contact-bar' ); ?></p>
+        <h4><?php _e( 'Linking to web pages on your or others websites', 'mobile-contact-bar' ); ?></h4>
+        <code>http://domain.com</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>http://domain.com/path/to/page</code>
+        <p><?php _e( 'For secure websites using SSL to encrypt data and authenticate the website use the <code>https</code> protocol:', 'mobile-contact-bar' ); ?></p>
+        <code>https://domain.com</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>https://domain.com/path/to/page</code>
+        <p><?php _e( 'You can append query parameters to URLs using the', 'mobile-contact-bar' ); ?> <span class="mcb-tab-button button">&nbsp;<?php _e( 'Add Parameter', 'mobile-contact-bar' ); ?></span> <?php _e( 'button', 'mobile-contact-bar' ); ?></p>
         <p class="mcb-tab-status-green"><?php _e( 'Standardised protocol', 'mobile-contact-bar' ); ?></p>
         <?php
     }
 
 
     /**
-     * Renders 'sms' help tab.
-     */
-    public function render_help_tab_sms()
-    {
-        ?>
-        <h4><?php _e( 'Sending text messages to mobile phones', 'mobile-contact-bar' ); ?></h4>
-        <code>sms:15417543010</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>sms:+15417543010</code>
-        <p><?php _e( 'Use the international dialing format: the plus sign (<code>+</code>), country code, area code, and number. You can separate each segment of the number with a hyphen (<code>-</code>) for easier reading.', 'mobile-contact-bar' ); ?></p>
-        <p><?php _e( 'Optional query parameter:', 'mobile-contact-bar' ); ?></p>
-        <ul class="mcb-query-parameters">
-            <li>
-                <span class="mcb-query-parameter-key">body</span>
-                <span><?php _e( 'Text message to appear in the body of the message (it does not always work).', 'mobile-contact-bar' ); ?></span>
-            </li>
-        </ul>
-        <p class="mcb-tab-status-yellow"><?php _e( 'Inconsistent protocol', 'mobile-contact-bar' ); ?></p>
-        <?php
-    }
-
-
-    /**
      * Renders 'mailto' help tab.
+     * 
+     * @return void
      */
-    public function render_help_tab_mailto()
+    public function callback_render_help_tab_mailto()
     {
         ?>
         <h4><?php _e( 'Sending emails to email addresses', 'mobile-contact-bar' ); ?></h4>
@@ -411,25 +373,50 @@ final class AdminArea
 
 
     /**
-     * Renders 'links' help tab.
+     * Renders 'tel' help tab.
+     * 
+     * @return void
      */
-    public function render_help_tab_link()
+    public function callback_render_help_tab_tel()
     {
         ?>
-        <h4><?php _e( 'Linking to web pages on your or others websites', 'mobile-contact-bar' ); ?></h4>
-        <code>http://domain.com</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>http://domain.com/path/to/page</code>
-        <p><?php _e( 'For secure websites using SSL to encrypt data and authenticate the website use the <code>https</code> protocol:', 'mobile-contact-bar' ); ?></p>
-        <code>https://domain.com</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>https://domain.com/path/to/page</code>
-        <p><?php _e( 'You can append query parameters to URLs using the', 'mobile-contact-bar' ); ?> <span class="mcb-tab-button button">&nbsp;<?php _e( 'Add Parameter', 'mobile-contact-bar' ); ?></span> <?php _e( 'button', 'mobile-contact-bar' ); ?></p>
+        <h4><?php _e( 'Initiating phone or mobile audio calls', 'mobile-contact-bar' ); ?></h4>
+        <code>tel:15417543010</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>tel:+15417543010</code>
+        <p><?php _e( 'Use the international dialing format: the plus sign (<code>+</code>), country code, area code, and number. You can separate each segment of the number with a hyphen (<code>-</code>) for easier reading.', 'mobile-contact-bar' ); ?></p>
         <p class="mcb-tab-status-green"><?php _e( 'Standardised protocol', 'mobile-contact-bar' ); ?></p>
         <?php
     }
 
 
     /**
-     * Renders 'skype' help tab.
+     * Renders 'sms' help tab.
+     * 
+     * @return void
      */
-    public function render_help_tab_skype()
+    public function callback_render_help_tab_sms()
+    {
+        ?>
+        <h4><?php _e( 'Sending text messages to mobile phones', 'mobile-contact-bar' ); ?></h4>
+        <code>sms:15417543010</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>sms:+15417543010</code>
+        <p><?php _e( 'Use the international dialing format: the plus sign (<code>+</code>), country code, area code, and number. You can separate each segment of the number with a hyphen (<code>-</code>) for easier reading.', 'mobile-contact-bar' ); ?></p>
+        <p><?php _e( 'Optional query parameter:', 'mobile-contact-bar' ); ?></p>
+        <ul class="mcb-query-parameters">
+            <li>
+                <span class="mcb-query-parameter-key">body</span>
+                <span><?php _e( 'Text message to appear in the body of the message (it does not always work).', 'mobile-contact-bar' ); ?></span>
+            </li>
+        </ul>
+        <p class="mcb-tab-status-yellow"><?php _e( 'Inconsistent protocol', 'mobile-contact-bar' ); ?></p>
+        <?php
+    }
+
+
+    /**
+     * Renders 'skype' help tab.
+     * 
+     * @return void
+     */
+    public function callback_render_help_tab_skype()
     {
         ?>
         <h4><?php _e( 'Sending instant messages to other Skype users, phones, or mobiles', 'mobile-contact-bar' ); ?></h4>
@@ -443,8 +430,10 @@ final class AdminArea
 
     /**
      * Renders 'viber' help tab.
+     * 
+     * @return void
      */
-    public function render_help_tab_viber()
+    public function callback_render_help_tab_viber()
     {
         ?>
         <h4><?php _e( 'Sending instant messages to other Viber users, phones, or mobiles', 'mobile-contact-bar' ); ?></h4>
@@ -470,9 +459,10 @@ final class AdminArea
 
 
     /**
-     * Loads styles and scripts for plugin option page.
+     * Loads styles and scripts for the option page.
      *
-     * @param string $hook_suffix The specific admin page
+     * @param  string $hook_suffix The specific admin page
+     * @return void
      */
     public function admin_enqueue_scripts( $hook_suffix )
     {
@@ -487,7 +477,7 @@ final class AdminArea
 
             wp_enqueue_style(
                 'mcb-admin',
-                plugin_dir_url( abmcb()->file ) . 'dist/css/admin.min.css',
+                plugin_dir_url( abmcb()->file ) . 'assets/css/admin.min.css',
                 ['wp-color-picker'],
                 abmcb()->version,
                 'all'
@@ -495,7 +485,7 @@ final class AdminArea
 
             wp_enqueue_script(
                 'mcb-admin',
-                plugin_dir_url( abmcb()->file ) . 'dist/js/admin.min.js',
+                plugin_dir_url( abmcb()->file ) . 'assets/js/admin.min.js',
                 ['jquery', 'jquery-ui-slider', 'jquery-ui-sortable', 'postbox', 'wp-color-picker'],
                 abmcb()->version,
                 false
@@ -514,7 +504,7 @@ final class AdminArea
 
             wp_enqueue_script(
                 'mobile-contact-bar',
-                plugin_dir_url( abmcb()->file ) . 'dist/js/public.min.js',
+                plugin_dir_url( abmcb()->file ) . 'assets/js/public.min.js',
                 [],
                 abmcb()->version,
                 true
@@ -525,10 +515,12 @@ final class AdminArea
 
     /**
      * Renders HTML template elements.
+     * 
+     * @return void
      */
     public function admin_footer()
     {
-        abmcb( Contacts\View::class )->icon_picker_html_template();
+        abmcb( Contacts\View::class )->render_icon_picker_template();
     }
 
 
@@ -541,7 +533,7 @@ final class AdminArea
      */
     public function pre_update_option( $new_value, $old_value = [] )
     {
-        $new_value['styles'] = CSS::generate( $new_value['settings'], $new_value['contacts'] );
+        $new_value['styles'] = Styles\CSS::output( $new_value['settings'], $new_value['contacts'] );
         return $new_value;
     }
 
@@ -558,104 +550,5 @@ final class AdminArea
             ['settings' => '<a href="' . admin_url( 'options-general.php?page=' . abmcb()->slug ) . '">' . esc_html__( 'Settings' ) . '</a>'],
             $links
         );
-    }
-
-
-    /**
-     * Checks $_POST parameters: nonce and action.
-     *
-     * @uses $_POST
-     */
-    private function check_ajax_request()
-    {
-        if ( ! empty( $_POST['nonce'] ) && ! empty( $_POST['action'] ) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ), abmcb()->id ))
-        {
-            return true;
-        }
-        wp_die();
-    }
-
-
-    /**
-     * Renders a new contact with type 'link'.
-     *
-     * @uses $_POST
-     */
-    public function add_contact()
-    {
-        if ( $this->check_ajax_request() )
-        {
-            $data = abmcb( Contacts\View::class )->ajax_add_contact();
-            $response = json_encode( $data );
-
-            if ( $response )
-            {
-                echo $response;
-            }
-        }
-        wp_die();
-    }
-
-
-    /**
-     * Renders a parameter with key-value inputs.
-     *
-     * @uses $_POST
-     */
-    public function add_parameter()
-    {
-        if ( $this->check_ajax_request() )
-        {
-            $data = abmcb( Contacts\View::class )->ajax_add_parameter();
-            $response = json_encode( $data );
-
-            if ( $response )
-            {
-                echo $response;
-            }
-        }
-        wp_die();
-    }
-
-
-    /**
-     * Renders parameters for the selected contact type.
-     *
-     * @uses $_POST
-     */
-    public function change_contact_type()
-    {
-        if ( $this->check_ajax_request() )
-        {
-            $data = abmcb( Contacts\View::class )->ajax_change_contact_type();
-            $response = json_encode( $data );
-
-            if ( $response )
-            {
-                echo $response;
-            }
-        }
-        wp_die();
-    }
-
-
-    /**
-     * Renders parameters for the selected contact type.
-     *
-     * @uses $_POST
-     */
-    public function get_icon()
-    {
-        if ( $this->check_ajax_request() )
-        {
-            $data = abmcb( Contacts\View::class )->ajax_get_icon();
-            $response = json_encode( $data );
-
-            if ( $response )
-            {
-                echo $response;
-            }
-        }
-        wp_die();
     }
 }

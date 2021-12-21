@@ -6,13 +6,13 @@ namespace MobileContactBar\Styles;
 final class CSS
 {
     /**
-     * Generates the public styles from settings and contacts.
+     * Outputs the public 'styles' generated from 'settings' and 'contacts'.
      *
-     * @param  array $settings Multidimensional array of bar settings
-     * @param  array $contacts Multidimensional array of bar contacts
-     * @return array           The generated bar styles
+     * @param  array  $settings
+     * @param  array  $contacts
+     * @return string           HTML
      */
-    public static function generate( $settings = [], $contacts = [] )
+    public static function output( $settings = [], $contacts = [] )
     {
         $styles = '';
 
@@ -475,27 +475,27 @@ final class CSS
             if ( !! $contact['id'] )
             {
                 $styles .= '#' . $contact['id'] . '.mobile-contact-bar-item{';
-                $styles .= 'background-color:' . $contact['palette']['background_color'] . ';';
+                $styles .= 'background-color:' . $contact['custom']['background_color'] . ';';
                 $styles .= '}';
 
                 $styles .= '#' . $contact['id'] . ' .mobile-contact-bar-icon svg{';
-                $styles .= 'color:' . $contact['palette']['icon_color'] . ';';
+                $styles .= 'color:' . $contact['custom']['icon_color'] . ';';
                 $styles .= '}';
 
                 $styles .= '#' . $contact['id'] . ' .mobile-contact-bar-label{';
-                $styles .= 'color:' . $contact['palette']['font_color'] . ';';
+                $styles .= 'color:' . $contact['custom']['font_color'] . ';';
                 $styles .= '}';
 
                 if ( $items['is_borders']['top'] )
                 {
                     $styles .= '#' . $contact['id'] . '.mobile-contact-bar-item{';
-                    $styles .= 'border-top-color:' . $contact['palette']['border_color'] . ';';
+                    $styles .= 'border-top-color:' . $contact['custom']['border_color'] . ';';
                     $styles .= '}';
                 }
                 if ( $items['is_borders']['bottom'] )
                 {
                     $styles .= '#' . $contact['id'] . '.mobile-contact-bar-item{';
-                    $styles .= 'border-bottom-color:' . $contact['palette']['border_color'] . ';';
+                    $styles .= 'border-bottom-color:' . $contact['custom']['border_color'] . ';';
                     $styles .= '}';
                 }
             }

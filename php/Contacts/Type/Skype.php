@@ -24,7 +24,7 @@ final class Skype extends TypeAbstract
             'label'       => 'Skype',
             'uri'         => '',
             'placeholder' => 'skype:username?chat or skype:username?call',
-            'palette'     => abmcb( Input::class )->palette_defaults(),
+            'custom'      => abmcb( Input::class )->default_customization(),
             'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
             'desc_uri'    => __( 'Use skype:username?call or skype:username?chat', 'mobile-contact-bar' ),
         ];

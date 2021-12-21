@@ -1,9 +1,9 @@
 <?php
 
-namespace MobileContactBar;
+namespace MobileContactBar\Controllers;
 
 
-final class Notices
+final class NoticeController
 {
     const USER_META_KEY = 'mobile_contact_bar_notices';
     const NOTICES = ['major', 'minor'];
@@ -24,7 +24,8 @@ final class Notices
     /**
      * Loads styles and scripts for admin notices.
      *
-     * @param string $hook_suffix The specific admin page
+     * @param  string $hook_suffix The specific admin page
+     * @return void
      */
     public function admin_enqueue_scripts( $hook_suffix )
     {
@@ -32,7 +33,7 @@ final class Notices
         {
             wp_enqueue_style(
                 'mobile-contact-bar-admin-notices',
-                plugin_dir_url( abmcb()->file ) . 'dist/css/notices.min.css',
+                plugin_dir_url( abmcb()->file ) . 'assets/css/notices.min.css',
                 [],
                 abmcb()->version,
                 'all'
@@ -40,7 +41,7 @@ final class Notices
 
             wp_enqueue_script(
                 'mobile-contact-bar-notices',
-                plugin_dir_url( abmcb()->file ) . 'dist/js/notices.min.js',
+                plugin_dir_url( abmcb()->file ) . 'assets/js/notices.min.js',
                 ['jquery'],
                 abmcb()->version,
                 false
@@ -75,7 +76,7 @@ final class Notices
                     _x( 'Thanks for installing Mobile Contact Bar v%s, we hope you love it!', 'admin-text', 'mobile-contact-bar' ),
                     abmcb()->version
                 );
-                $this->view_major_notice( $message );
+                $this->render_major_notice( $message );
             }
             elseif ( isset( $user_meta['major'] ) && ! $this->is_dismissed_notice( 'major' ))
             {
@@ -83,7 +84,7 @@ final class Notices
                     _x( 'Thanks for updating to Mobile Contact Bar v%s, we hope you love the changes!', 'admin-text', 'mobile-contact-bar' ),
                     abmcb()->version
                 );
-                $this->view_major_notice( $message );
+                $this->render_major_notice( $message );
             }
         }
     }
@@ -119,7 +120,12 @@ final class Notices
     }
 
 
-    private function view_major_notice( $message = '' )
+    /**
+     * Renders major version notice.
+     * 
+     * @return void
+     */
+    private function render_major_notice( $message = '' )
     {
         ?>
         <div class="updated notice is-dismissible mobile-contact-bar-notice" data-dismiss="major">
@@ -127,7 +133,7 @@ final class Notices
             <p>
                 <a href="<?php echo esc_url( 'https://wordpress.org/plugins/mobile-contact-bar/#developers' ); ?>" target="_blank" rel="noopener" class="button mobile-contact-bar-whats-new">
                     <span class="mobile-contact-bar-whats-new-icon">
-                        <?php include_once plugin_dir_path( abmcb()->file ) . 'dist/images/notices/whats-new-icon.svg'; ?>
+                        <?php include_once plugin_dir_path( abmcb()->file ) . 'assets/images/notices/whats-new-icon.svg'; ?>
                     </span>
                     <span><?php echo _x( 'See What\'s New', 'admin-text', 'mobile-contact-bar' ); ?></span>
                 </a>
@@ -137,6 +143,10 @@ final class Notices
     }
 
 
+    /**
+     * 
+     * @return array|void
+     */
     public function ajax_dismiss_notice()
     {
         if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], abmcb()->id ))
@@ -178,7 +188,7 @@ final class Notices
     private function get_user_meta()
     {
         $user_id = get_current_user_id();
-        $user_meta = get_user_meta( $user_id, static::USER_META_KEY, true );
+        $user_meta = get_user_meta( $user_id, self::USER_META_KEY, true );
 
         return ( ! $user_meta )
             ? []
@@ -193,11 +203,14 @@ final class Notices
 
         $user_id = get_current_user_id();
         // Instead of update_user_option using update_user_meta is deliberate
-        update_user_meta( $user_id, static::USER_META_KEY, $user_meta );
+        update_user_meta( $user_id, self::USER_META_KEY, $user_meta );
     }
 
 
     /**
+     * Extracts version level (major, minor, patch) from a version.
+     * 
+     * @param  string $version
      * @param  string $version_level
      * @return string
      */

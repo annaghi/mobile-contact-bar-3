@@ -26,7 +26,7 @@ logg(__METHOD__);
     {
         $settings = $this->migrate_settings();
         $contacts = $this->migrate_contacts();
-        $styles   = CSS::generate( $settings, $contacts );
+        $styles   = CSS::output( $settings, $contacts );
 
         $option_bar = [
             'settings' => $settings,
@@ -42,7 +42,7 @@ logg(__METHOD__);
     private function migrate_settings()
     {
         $settings = [];
-        $new_settings = abmcb( SettingsInput::class )->fields_defaults();
+        $new_settings = abmcb( SettingsInput::class )->default_settings();
 
         $old_option_bar = get_option( abmcb()->id );
         $old_settings = ( isset( $old_option_bar['settings'] ) && is_array( $old_option_bar['settings'] )) ? $old_option_bar['settings'] : [];
@@ -138,7 +138,7 @@ logg(__METHOD__);
 
         if ( ! empty ( array_column( $old_contacts, 'title' )))
         {
-            $palette = abmcb( ContactsInput::class )->palette_defaults();
+            $default_customization = abmcb( ContactsInput::class )->default_customization();
 
             foreach ( $old_contacts as $old_contact )
             {
@@ -149,7 +149,7 @@ logg(__METHOD__);
                 $contact['label'] = '';
                 $contact['brand'] = 'fa';
                 // TODO convert $contact['icon]
-                $contact['palette'] = $palette;
+                $contact['custom'] = $default_customization;
                 $contact['type'] = strtolower( $old_contact['type'] );
                 switch ( $contact['type'] )
                 {

@@ -5,7 +5,7 @@ namespace MobileContactBar;
 use MobileContactBar\Contacts\Validator;
 
 
-final class Renderer
+final class Output
 {
     public function bar( $settings, $contacts, $checked_contacts )
     {
@@ -60,8 +60,8 @@ final class Renderer
 
         foreach ( $checked_contacts as $contact )
         {
-            $id = isset( $contact['palette'], $contact['palette']['id'] )
-                ? sprintf( 'id="%s"', esc_attr( $contact['palette']['id'] ))
+            $id = isset( $contact['custom'], $contact['custom']['id'] )
+                ? sprintf( 'id="%s"', esc_attr( $contact['custom']['id'] ))
                 : '';
 
             $uri = Validator::escape_contact_uri( $contact['uri'] );
@@ -88,14 +88,14 @@ final class Renderer
             if ( 'fa' === $contact['brand'] )
             {
                 $meta = explode( ' ', $contact['icon'] );
-                $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/fa/svgs/' . $meta[0] . '/' . $meta[1] . '.svg';
+                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $meta[0] . '/' . $meta[1] . '.svg';
                 $svg = file_get_contents( $path );
 
                 $icon = sprintf( '<span class="mobile-contact-bar-icon mobile-contact-bar-fa">%s%s</span>', $svg, $badge );
             }
             elseif ( 'ti' === $contact['brand'] )
             {
-                $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/ti/icons/'. $contact['icon'] . '.svg';
+                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg';
                 $svg = file_get_contents( $path );
 
                 $icon = sprintf( '<span class="mobile-contact-bar-icon">%s%s</span>', $svg, $badge );
@@ -129,9 +129,9 @@ final class Renderer
         }
 
         $out .= '</ul>';
-        $out .= '</nav>'; // mobile-contact-bar-outer
+        $out .= '</nav>';
 
-        $out .= '</div>'; // <div id="mobile-contact-bar
+        $out .= '</div>';
 
         return $out;
     }

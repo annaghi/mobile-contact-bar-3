@@ -220,7 +220,7 @@
                     url: ajaxurl,
                     method: 'POST',
                     data: {
-                        action: 'add-contact',
+                        action: 'mcb_ajax_add_contact',
                         nonce: mobile_contact_bar.nonce,
                         contact_id: contactId
                     }
@@ -287,7 +287,7 @@
                 focused.focus();
             });
 
-            // Select contact type
+            // Change contact type
             option.contactList.on('change', '.mcb-details-type select', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -299,7 +299,7 @@
                     url: ajaxurl,
                     method: 'POST',
                     data: {
-                        action: 'change-contact_type',
+                        action: 'mcb_ajax_change_contact_type',
                         nonce: mobile_contact_bar.nonce,
                         contact_id: contactId,
                         contact_type: $(this).val()
@@ -309,13 +309,14 @@
                         return false;
                     }
                     var data = JSON.parse(response);
-                    if (!data.hasOwnProperty('contact') || !data.hasOwnProperty('parameters')) {
+                    if (!data.hasOwnProperty('contact_type') || !data.hasOwnProperty('uri') || !data.hasOwnProperty('parameters')) {
                         return false;
                     }
 
-                    contact.find('.mcb-details-uri').replaceWith($(data.contact));
+                    contact.find('.mcb-details-uri').replaceWith($(data.uri));
                     contact.find('.mcb-builtin-parameters, .mcb-custom-parameters, .mcb-builtin-parameter, .mcb-custom-parameter').detach();
                     contact.find('.mcb-details-uri').after($(data.parameters));
+                    contact.find('.mcb-details-type .mcb-description').text(data.contact_type.desc_type);
                 });
             });
 
@@ -418,7 +419,7 @@
                         $(this).addClass('mcb-icon-brand-active');
 
                         if ('ti' === $(this).attr('data-brand')) {
-                            var path = mobile_contact_bar.page_url + 'dist/icons/ti/tabler-sprite.svg';
+                            var path = mobile_contact_bar.page_url + 'assets/icons/ti/tabler-sprite.svg';
                             var icons = filtered_ti_icons(searchTerm);
 
                             update_picker_page2(path, icons, 0);
@@ -441,7 +442,7 @@
                                 url: ajaxurl,
                                 method: 'POST',
                                 data: {
-                                    action: 'get-icon',
+                                    action: 'mcb_ajax_get_icon',
                                     nonce: mobile_contact_bar.nonce,
                                     brand: brand,
                                     icon: icon
@@ -486,7 +487,7 @@
                         event.stopPropagation();
 
                         if ('ti' === $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand')) {
-                            var path = mobile_contact_bar.page_url + 'dist/icons/ti/tabler-sprite.svg';
+                            var path = mobile_contact_bar.page_url + 'assets/icons/ti/tabler-sprite.svg';
                             var icons = filtered_ti_icons(searchTerm);
 
                             if ('back' === $(this).attr('data-direction')) {
@@ -508,7 +509,7 @@
                         searchTerm = $(this).val();
 
                         if ('ti' === $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand')) {
-                            var path = mobile_contact_bar.page_url + 'dist/icons/ti/tabler-sprite.svg';
+                            var path = mobile_contact_bar.page_url + 'assets/icons/ti/tabler-sprite.svg';
                             var icons = filtered_ti_icons(searchTerm);
 
                             update_picker_page2(path, icons, 0);
@@ -598,7 +599,7 @@
                     url: ajaxurl,
                     method: 'POST',
                     data: {
-                        action: 'add-parameter',
+                        action: 'mcb_ajax_add_parameter',
                         nonce: mobile_contact_bar.nonce,
                         contact_id: contactId,
                         parameter_id: parameterId

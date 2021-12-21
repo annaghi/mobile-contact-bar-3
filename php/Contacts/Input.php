@@ -8,12 +8,14 @@ use MobileContactBar\Settings;
 final class Input
 {
     /**
-     * Defines a sample list of contacts.
+     * Defines sample 'contacts'.
      *
      * @return array
      */
-    public function samples()
+    public function sample_contacts()
     {
+        $default_customization = $this->default_customization();
+
         return
         [
             [
@@ -25,6 +27,7 @@ final class Input
                 'label'       => __( 'Home' ),
                 'uri'         => get_site_url(),
                 'parameters'  => [],
+                'custom'      => $default_customization,
             ],
             [
                 'type'        => 'email',
@@ -52,6 +55,7 @@ final class Input
                         'value' => '',
                     ],
                 ],
+                'custom'      => $default_customization,
             ],
             [
                 'type'        => 'whatsapp',
@@ -71,6 +75,7 @@ final class Input
                         'value' => '',
                     ],
                 ],
+                'custom'      => $default_customization,
             ],
             [
                 'type'        => 'link',
@@ -81,6 +86,7 @@ final class Input
                 'label'       => __( 'Map' ),
                 'uri'         => 'https://google.com/maps/place/Dacre+St,+London+UK/',
                 'parameters'  => [],
+                'custom'      => $default_customization,
             ],
             [
                 'type'        => 'scrolltotop',
@@ -90,22 +96,9 @@ final class Input
                 'icon'        => 'solid chevron-up',
                 'label'       => '',
                 'uri'         => '',
+                'custom'      => $default_customization,
             ],
         ];
-    }
-
-
-    public function fields_samples()
-    {
-        $samples = $this->samples();
-        $palette = $this->palette_defaults();
-
-        return array_map(
-            function( $field ) use ( $palette ) {
-                return array_merge( $field, ['palette' => $palette] );
-            },
-            $samples
-        );
     }
 
 
@@ -127,11 +120,11 @@ final class Input
 
 
     /**
-     * Defines the palette fields for the contacts.
+     * Defines custom settings fields.
      *
-     * @return array
+     * @return array Multidimensional array
      */
-    public function palette()
+    public function custom_input_fields()
     {
         return
         [
@@ -184,16 +177,16 @@ final class Input
 
 
     /**
-     * Filters out the default values from the palette fields.
+     * Retrieves the custom default values.
      *
      * @return array Default settings
      */
-    public function palette_defaults()
+    public function default_customization()
     {
         $defaults = [];
-        $fields = $this->palette();
+        $input_fields = $this->custom_input_fields();
 
-        foreach ( $fields as $section_id => $section )
+        foreach ( $input_fields as $section_id => $section )
         {
             foreach ( $section as $field_id => $field )
             {
@@ -209,10 +202,10 @@ final class Input
 
 
     /**
-     * Sanitizes the contacts part of the bar-option.
+     * Sanitizes 'contacts'.
      *
-     * @param  array $contacts The array of contacts to be sanitized
-     * @return array           Sanitized contacts
+     * @param  array $contacts
+     * @return array           Sanitized 'contacts'
      */
     public function sanitize( $contacts = [] )
     {
@@ -220,7 +213,7 @@ final class Input
 
         $contact_types = apply_filters( 'mcb_admin_contact_types', [] );
         $contact_types_keys = array_keys( $contact_types );
-        $palette_fields = $this->palette();
+        $input_fields = $this->custom_input_fields();
 
         foreach ( $contacts as $contact_id => &$contact )
         {
@@ -234,7 +227,7 @@ final class Input
             if ( ! empty( $contact['icon'] ) && ! $this->in_fa_icons( $contact['icon'] ) && ! $this->in_ti_icons( $contact['icon'] ))
             {
                 // TODO Come back when FA is ready;
-//                unset( $contacts[$contact_id] );
+            //    unset( $contacts[$contact_id] );
             }
 
             // remove contact if invalid 'type'
@@ -283,8 +276,8 @@ final class Input
             $sanitized_contact['uri'] = Validator::sanitize_contact_uri( $contact['uri'] );
 
             // sanitize 'id'
-            $palette = $contact['palette'];
-            $is_any_color = array_filter( $palette, function( $color ) { return ! empty( $color['primary'] || ! empty( $color['secondary'] )); });
+            $custom = $contact['custom'];
+            $is_any_color = array_filter( $custom, function( $color ) { return ! empty( $color['primary'] || ! empty( $color['secondary'] )); });
 
             $value = sanitize_key( $contact['id'] );
             if ( empty( $value ) && $is_any_color )
@@ -296,16 +289,16 @@ final class Input
                 $sanitized_contact['id'] = $value;
             }
 
-            // sanitize palette
-            foreach ( $palette_fields as $section_id => $section )
+            // sanitize customization
+            foreach ( $input_fields as $section_id => $section )
             {  
                 foreach ( $section as $field_id => $field )
                 {
-                    $value = ( isset( $palette[$section_id], $palette[$section_id][$field_id] ))
-                        ? abmcb( Settings\Input::class )->sanitize_color( $palette[$section_id][$field_id] )
+                    $value = ( isset( $custom[$section_id], $custom[$section_id][$field_id] ))
+                        ? abmcb( Settings\Input::class )->sanitize_color( $custom[$section_id][$field_id] )
                         : null;
 
-                    $sanitized_contact['palette'][$section_id][$field_id] = ( abmcb( Settings\Input::class )->is_color( $value ))
+                    $sanitized_contact['custom'][$section_id][$field_id] = ( abmcb( Settings\Input::class )->is_color( $value ))
                         ? $value
                         : '';
                 }
@@ -345,7 +338,7 @@ final class Input
 
 
     /**
-     * Checks whether an icon exists or not in Font Awesome Icons.
+     * Checks whether an icon name is a valid Font Awesome icon.
      *
      * @param  string $classes Font Awesome CSS classes
      * @return bool            Whether the icon exists or not
@@ -373,7 +366,7 @@ final class Input
 
 
     /**
-     * Checks whether an icon exists or not in Tabler Icons.
+     * Checks whether an icon name is a valid Tabler Icon.
      *
      * @param  string $classes Tabler CSS classes
      * @return bool            Whether the icon exists or not
@@ -386,9 +379,9 @@ final class Input
 
 
     /**
-     * Font Awesome Icons divided into sections: 'fas', 'far', 'fab'.
+     * Defines the Font Awesome icons which are divided into sections: 'solid', 'regular', 'brands'.
      *
-     * @return array Array of Font Awesome Icon names
+     * @return array Array of Font Awesome icon names
      */
     public static function fa_icons()
     {
@@ -402,7 +395,7 @@ final class Input
 
 
     /**
-     * Tabler Icons
+     * Defines the Tabler Icons.
      *
      * @return array Array of Tabler Icon names
      */

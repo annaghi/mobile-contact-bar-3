@@ -6,11 +6,11 @@ namespace MobileContactBar\Settings;
 final class Input
 {
     /**
-     * Defines the setting fields.
+     * Defines the input fields for the 'settings'.
      *
-     * @return array Multidimensional array of settings fields, divided into sections
+     * @return array Multidimensional array
      */
-    public function fields()
+    public function input_fields()
     {
         return
         [
@@ -419,16 +419,16 @@ final class Input
 
 
     /**
-     * Filters out the default values from the setting fields.
+     * Retrieves the 'settings' with default values.
      *
-     * @return array Default settings
+     * @return array Multidimensional array: 'settings' with default values
      */
-    public function fields_defaults()
+    public function default_settings()
     {
         $defaults = [];
-        $fields = $this->fields();
+        $input_fields = $this->input_fields();
 
-        foreach ( $fields as $section_id => $section )
+        foreach ( $input_fields as $section_id => $section )
         {
             foreach ( $section as $field_id => $field )
             {
@@ -451,15 +451,15 @@ final class Input
 
 
     /**
-     * Sanitizes the settings part of the bar-option.
+     * Sanitizes the 'settings'.
      * 
-     * @param  array $settings The array of settings to be sanitized
-     * @return array           Sanitized settings
+     * @param  array $settings
+     * @return array           Sanitized 'settings'
      */
     public function sanitize( $settings = [] )
     {
         $sanitized_settings = [];
-        $input_fields = $this->fields();
+        $input_fields = $this->input_fields();
 
         foreach ( $input_fields as $section_id => $section )
         {
@@ -598,6 +598,7 @@ final class Input
 
         return '';
     }
+
 
     /**
      * Sanitizes RGB color code.

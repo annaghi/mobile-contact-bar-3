@@ -2,13 +2,13 @@
 
 namespace MobileContactBar\Contacts;
 
-use MobileContactBar\Renderer;
 use MobileContactBar\Helper;
 
 
 final class View
 {
     public $option_bar = [];
+
 
     /**
      * Adds Contact List metabox to the options page.
@@ -30,8 +30,10 @@ final class View
 
     /**
      * Renders template HTML elements for the Icon Picker.
+     * 
+     * @return void
      */
-    public function icon_picker_html_template()
+    public function render_icon_picker_template()
     {
         ?>
         <script type="text/html" id="mcb-tmpl-icon-picker">
@@ -51,7 +53,7 @@ final class View
                 </div>
                 <!-- <ul data-brand="fa">
                     <?php
-                    $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/fa/sprites/';
+                    $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/sprites/';
                     $icons = Input::fa_icons();
                     foreach ( $icons as $section_id => $section ) :
                         foreach ( $section as $icon ) :
@@ -71,7 +73,7 @@ final class View
                 </ul> -->
                 <ul>
                     <?php
-                    $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/ti/tabler-sprite.svg';
+                    $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/tabler-sprite.svg';
                     $icons = array_slice( Input::ti_icons(), 0, 30 );
                     foreach ( $icons as $icon ) :
                         ?>
@@ -94,8 +96,10 @@ final class View
 
     /**
      * Renders the contact list.
+     * 
+     * @return void
      */
-    public function output_contact_list()
+    public function render_contact_list()
     {
         $settings = $this->option_bar['settings'];
         $contacts = $this->option_bar['contacts'];
@@ -129,7 +133,7 @@ final class View
      * @param  array  $args
      * 	       string $contact_id
      * 	       array  $contact
-     * @return string             HTML
+     * @return string              HTML
      */
     private function output_summary( $args )
     {
@@ -170,13 +174,13 @@ final class View
         if ( 'fa' === $contact['brand'] && abmcb( Input::class )->in_fa_icons( $contact['icon'] ))
         {
             $names = explode( ' ', $contact['icon'] );
-            $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/fa/svgs/' . $names[0] . '/' . $names[1] . '.svg';
+            $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $names[0] . '/' . $names[1] . '.svg';
             $svg = file_get_contents( $path );
             $out .= sprintf( '<div class="mcb-summary-icon mcb-fa">%s</div>', $svg );
         }
         elseif ( 'ti' === $contact['brand'] && abmcb( Input::class )->in_ti_icons( $contact['icon'] ))
         {
-            $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/ti/icons/'. $contact['icon'] . '.svg';
+            $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg';
             $svg = file_get_contents( $path );
             $out .= sprintf( '<div class="mcb-summary-icon">%s</div>', $svg );
         }
@@ -197,14 +201,6 @@ final class View
         );
 
         $out .= '<div class="mcb-right-actions">';
-
-        $out .= sprintf(
-            '<button type="button" class="mcb-action-icon mcb-action-toggle-details" title="%1$s" aria-expanded="false">
-                <span class="dashicons dashicons-admin-tools" aria-hidden="true"></span>
-                <span class="screen-reader-text">%1$s</span>
-            </button>',
-            esc_attr__( 'Edit contact details', 'mobile-contact-bar' )
-        );
 
         $out .= sprintf(
             '<button type="button" class="mcb-action-icon mcb-action-delete-contact" title="%1$s">
@@ -230,6 +226,14 @@ final class View
             esc_attr__( 'Order contact lower', 'mobile-contact-bar' )
         );
 
+        $out .= sprintf(
+            '<button type="button" class="mcb-action-icon mcb-action-toggle-details" title="%1$s" aria-expanded="false">
+                <span class="dashicons dashicons-admin-tools" aria-hidden="true"></span>
+                <span class="screen-reader-text">%1$s</span>
+            </button>',
+            esc_attr__( 'Edit contact', 'mobile-contact-bar' )
+        );
+
         $out .= '</div>';
         $out .= '</div>';
 
@@ -243,7 +247,7 @@ final class View
      * @param  array  $args
      * 	       string $contact_id
      * 	       array  $contact
-     * @return string             HTML
+     * @return string              HTML
      */
     private function output_details( $args )
     {
@@ -295,13 +299,13 @@ final class View
         if ( 'fa' === $contact['brand'] && abmcb( Input::class )->in_fa_icons( $contact['icon'] ))
         {
             $meta = explode( ' ', $contact['icon'] );
-            $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/fa/svgs/' . $meta[0] . '/' . $meta[1] . '.svg';
+            $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $meta[0] . '/' . $meta[1] . '.svg';
             $svg = file_get_contents( $path );
             $icon = sprintf( '<span class="mcb-fa">%s</span>', $svg );
         }
         elseif ( 'ti' === $contact['brand'] && abmcb( Input::class )->in_ti_icons( $contact['icon'] ))
         {
-            $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/ti/icons/'. $contact['icon'] . '.svg';
+            $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg';
             $svg = file_get_contents( $path );
             $icon = sprintf( '<span>%s</span>', $svg );
         }
@@ -346,7 +350,7 @@ final class View
 
         $out .= $this->output_details_uri( ['contact_id' => $contact_id, 'contact' => $contact, 'contact_type' => $contact_type] );
         $out .= $this->output_parameters( ['contact_id' => $contact_id, 'contact' => $contact, 'contact_type' => $contact_type] );
-        $out .= $this->output_palette( ['contact_id' => $contact_id, 'contact' => $contact, 'contact_type' => $contact_type] );
+        $out .= $this->output_customization( ['contact_id' => $contact_id, 'contact' => $contact, 'contact_type' => $contact_type] );
 
         $out .= '</div>';
 
@@ -414,7 +418,7 @@ final class View
      * @param  array  $args
      * 	       string $contact_id
      * 	       array  $contact
-     * @return string             HTML
+     * @return string              HTML
      */
     private function output_parameters( $args )
     {
@@ -487,7 +491,7 @@ final class View
      *         string $contact_id
      * 	       string $parameter_id
      * 	       array  $parameter_key
-     * @return string                HTML
+     * @return string                 HTML
      */
     private function output_link_parameter( $args )
     {
@@ -578,7 +582,7 @@ final class View
      *         string $contact_id
      * 	       string $parameter_id
      * 	       array  $parameter_key
-     * @return string                HTML
+     * @return string                 HTML
      */
     private function output_builtin_parameter( $args )
     {
@@ -653,16 +657,16 @@ final class View
      * @param  array  $args
      * 	       string $contact_id
      * 	       array  $contact
-     * @return string             HTML
+     * @return string              HTML
      */
-    private function output_palette( $args )
+    private function output_customization( $args )
     {
         extract( $args );
 
         $out = '';
 
         $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_id ) . ']';
-        $palette_fields = abmcb( Input::class )->palette();
+        $input_fields = abmcb( Input::class )->custom_input_fields();
 
         // 'id' input
         $out .= sprintf(
@@ -677,28 +681,28 @@ final class View
             </div>',
             esc_attr__( 'CSS ID selector', 'mobile-contact-bar' ),
             preg_match( '/^mcb-sample-id-[0-9]+/', $contact['id'] )
-                ? esc_attr__( 'This is a generated ID, do not rely on unique numbers. Change it to your needs.', 'mobile-contact-bar' )
+                ? esc_attr__( 'This is a generated ID, do not rely on it. Change it to your needs.', 'mobile-contact-bar' )
                 : esc_attr__( 'Unique identifier. Used when colors are specified.', 'mobile-contact-bar' ),
             esc_attr( $contact['id'] )
         );
 
         // 'color' inputs
-        foreach( $palette_fields as $section_id => $section )
+        foreach( $input_fields as $section_id => $section )
         {
             $out .= sprintf(
-                '<div class="mcb-row mcb-palette mcb-palette-%4$s">
+                '<div class="mcb-row mcb-custom mcb-custom-%4$s">
                     <div class="mcb-label">
                         <label>%1$s</label>
                         <p class="mcb-description">%2$s</p>
                     </div>
                     <div class="mcb-input">
-                        <div class="mcb-palette-colors">
+                        <div class="mcb-custom-colors">
                             <span>%3$s</span>
-                            <input type="text" class="color-picker" name="' . $prefix . '[palette][%4$s][primary]" data-alpha-enabled="true" value="%5$s">
+                            <input type="text" class="color-picker" name="' . $prefix . '[custom][%4$s][primary]" data-alpha-enabled="true" value="%5$s">
                         </div>
-                        <div class="mcb-palette-colors">
+                        <div class="mcb-custom-colors">
                             <span>%6$s</span>
-                            <input type="text" class="color-picker" name="' . $prefix . '[palette][%4$s][secondary]" data-alpha-enabled="true" value="%7$s">
+                            <input type="text" class="color-picker" name="' . $prefix . '[custom][%4$s][secondary]" data-alpha-enabled="true" value="%7$s">
                         </div>
                     </div>
                 </div>',
@@ -706,9 +710,9 @@ final class View
                 esc_attr__( 'Long', 'mobile-contact-bar' ),
                 esc_attr__( 'primary', 'mobile-contact-bar' ),
                 esc_attr( $section_id ),
-                esc_attr( $contact['palette'][$section_id]['primary'] ),
+                esc_attr( $contact['custom'][$section_id]['primary'] ),
                 esc_attr__( 'secondary', 'mobile-contact-bar' ),
-                esc_attr( $contact['palette'][$section_id]['secondary'] )
+                esc_attr( $contact['custom'][$section_id]['secondary'] )
             );
         }
 
@@ -778,7 +782,8 @@ final class View
 
             $contact_type = abmcb()->contact_types[$_POST['contact_type']]->contact();
 
-            $data['contact'] = $this->output_details_uri( ['contact_id' => $_POST['contact_id'], 'contact' => $contact_type, 'contact_type' => $contact_type] );
+            $data['contact_type'] = $contact_type;
+            $data['uri'] = $this->output_details_uri( ['contact_id' => $_POST['contact_id'], 'contact' => $contact_type, 'contact_type' => $contact_type] );
             $data['parameters'] = $this->output_parameters( ['contact_id' => $_POST['contact_id'], 'contact' => $contact_type, 'contact_type' => $contact_type] );
 
             return $data;
@@ -799,7 +804,7 @@ final class View
         {
             if ( 'ti' === $_POST['brand'] && abmcb( Input::class )->in_ti_icons( $_POST['icon'] ))
             {
-                $path = plugin_dir_url( abmcb()->file ) . 'dist/icons/ti/icons/'. $_POST['icon'] . '.svg';
+                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $_POST['icon'] . '.svg';
                 $svg = file_get_contents( $path );
 
                 return $svg;

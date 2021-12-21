@@ -37,7 +37,7 @@ final class WooCommerce extends TypeAbstract
             'label'       => __( 'Cart', 'mobile-contact-bar' ),
             'uri'         => get_site_url() . '/cart',
             'placeholder' => is_ssl() ? 'https://mysite.com/cart' : 'http://mysite.com/cart',
-            'palette'     => abmcb( Input::class )->palette_defaults(),
+            'custom'      => abmcb( Input::class )->default_customization(),
             'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
             'desc_uri'    => __( 'URI desc', 'mobile-contact-bar' ),
         ];

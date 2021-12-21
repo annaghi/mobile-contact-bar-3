@@ -18,14 +18,14 @@ final class HistoryBack extends TypeAbstract
     {
         return [
             'type'        => $this->type,
-            'title'       => __( 'History Back', 'mobile-contact-bar' ),
+            'title'       => __( 'Back in History', 'mobile-contact-bar' ),
             'checked'     => 0,
             'brand'       => 'fa',
             'icon'        => 'solid long-arrow-alt-left',
             'label'       => '',
             'uri'         => '',
             'placeholder' => '',
-            'palette'     => abmcb( Input::class )->palette_defaults(),
+            'custom'      => abmcb( Input::class )->default_customization(),
             'desc_type'   => __( 'Inline JavaScript runs the history.back() method.', 'mobile-contact-bar' ),
             'desc_uri'    => '',
         ];

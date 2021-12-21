@@ -53,7 +53,7 @@ final class Options
 
     public function is_valid_settings( $settings )
     {
-        $default_settings = abmcb( Settings\Input::class )->fields_defaults();
+        $default_settings = abmcb( Settings\Input::class )->default_settings();
         $diff = Helper::array_diff_assoc_recursive( $default_settings, $settings );
 
         return empty( $diff );
@@ -64,15 +64,15 @@ final class Options
     {
         $is_valid = true;
 
-        $contact_keys = ['type', 'id', 'checked', 'brand', 'icon', 'label', 'uri', 'parameters', 'palette'];
-        $palette_keys = ['background_color', 'border_color', 'icon_color', 'label_color'];
+        $contact_keys = ['type', 'id', 'checked', 'brand', 'icon', 'label', 'uri', 'parameters', 'custom'];
+        $custom_keys = ['background_color', 'border_color', 'icon_color', 'label_color'];
         $parameter_keys = ['key', 'value'];
 
         foreach ( $contacts as $contact )
         {
-            if ( is_array( $contact['palette'] ))
+            if ( is_array( $contact['custom'] ))
             {
-                $is_valid = $is_valid && empty( array_diff( $palette_keys, array_keys( $contact['palette'] )));
+                $is_valid = $is_valid && empty( array_diff( $custom_keys, array_keys( $contact['custom'] )));
             }
 
             $keys = array_keys( $contact );
@@ -105,9 +105,9 @@ final class Options
      */
     public function default_option_bar()
     {
-       $settings = abmcb( Settings\Input::class )->fields_defaults();
-       $contacts = abmcb( Contacts\Input::class )->fields_samples();
-       $styles = Styles\CSS::generate( $settings, $contacts );
+       $settings = abmcb( Settings\Input::class )->default_settings();
+       $contacts = abmcb( Contacts\Input::class )->sample_contacts();
+       $styles = Styles\CSS::output( $settings, $contacts );
 
        return [
            'settings' => $settings,

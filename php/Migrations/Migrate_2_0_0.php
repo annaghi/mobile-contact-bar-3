@@ -10,7 +10,7 @@ use MobileContactBar\Styles\CSS;
 
 final class Migrate_2_0_0
 {
-    public $old_option_plugin = false;
+    public $option_1_0_0 = false;
 
 
     /**
@@ -18,12 +18,12 @@ final class Migrate_2_0_0
      */
     public function run()
     {
-        $old_option_plugin = get_option( 'mcb_option' );
+        $option_1_0_0 = get_option( 'mcb_option' );
 
-        if ( !! $old_option_plugin && is_array( $old_option_plugin ))
+        if ( !! $option_1_0_0 && is_array( $option_1_0_0 ))
         {
 logg(__METHOD__);
-            $this->old_option_plugin = $old_option_plugin;
+            $this->option_1_0_0 = $option_1_0_0;
             $this->migrate_bar();
 
             return true;
@@ -37,7 +37,7 @@ logg(__METHOD__);
     {
         $settings = $this->migrate_settings();
         $contacts = $this->migrate_contacts();
-        $styles   = CSS::generate( $settings, $contacts );
+        $styles   = CSS::output( $settings, $contacts );
 
         $option_bar = [
             'settings' => $settings,
@@ -52,11 +52,11 @@ logg(__METHOD__);
 
     private function migrate_settings()
     {
-        $settings = abmcb( SettingsInput::class )->fields_defaults();
+        $settings = abmcb( SettingsInput::class )->default_settings();
 
-        if ( isset( $this->old_option_plugin['settings'] ) && is_array( $this->old_option_plugin['settings'] ))
+        if ( isset( $this->option_1_0_0['settings'] ) && is_array( $this->option_1_0_0['settings'] ))
         {
-            $old_settings = $this->old_option_plugin['settings'];
+            $old_settings = $this->option_1_0_0['settings'];
 
             $settings['bar']['device']                              = ( $old_settings['bar_max_screen_width'] > 1400 ) ? 'both' : 'mobile';
             $settings['bar']['device']                              = ( $old_settings['bar_is_active'] ) ? $settings['bar']['device'] : 'none';
@@ -96,9 +96,10 @@ logg(__METHOD__);
         $contacts = [];
         $contact_types = array_keys( apply_filters( 'mcb_admin_contact_types', [] ));
 
-        if ( isset( $this->old_option_plugin['contacts'] ) && is_array( $this->old_option_plugin['contacts'] ))
+        if ( isset( $this->option_1_0_0['contacts'] ) && is_array( $this->option_1_0_0['contacts'] ))
         {
-            $old_contacts = $this->old_option_plugin['contacts'];
+            $old_contacts = $this->option_1_0_0['contacts'];
+            $default_customization = abmcb( ContactsInput::class )->default_customization();
 
             foreach( $old_contacts as $old_id => $old_contact )
             {
@@ -106,7 +107,7 @@ logg(__METHOD__);
                 $contact['checked'] = 1;
                 $contact['id'] = '';
                 $contact['brand'] = 'fa';
-                $contact['palette'] = abmcb( ContactsInput::class )->palette_defaults();
+                $contact['custom'] = $default_customization;
 
                 $uri = $this->build_uri( $old_contact['protocol'], $old_contact['resource'] );
                 $contact['uri'] = ContactsValidator::sanitize_contact_uri( $uri );

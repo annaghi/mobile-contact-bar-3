@@ -38,7 +38,7 @@ final class WhatsApp extends TypeAbstract
                     'placeholder' => __( 'Message ...', 'mobile-contact-bar' ),
                 ],
             ],
-            'palette'     => abmcb( Input::class )->palette_defaults(),
+            'custom'      => abmcb( Input::class )->default_customization(),
             'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
             'desc_uri'    => __( 'URI desc', 'mobile-contact-bar' ),
         ];

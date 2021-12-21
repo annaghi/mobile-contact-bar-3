@@ -227,7 +227,7 @@
     padding: 0.35em 0.4em 0.35em 0.8em;
     margin-left: -12px;
     cursor: pointer;
-    color: #a7aaad;
+    color: #a2aab2;
 }
 .mcb-contact.ui-sortable-placeholder {
     background: repeating-linear-gradient(45deg, #e1e1e1, #e1e1e1 25px, #ededed 25px, #ededed 50px);
@@ -366,15 +366,15 @@
     width: 100%;
 }
 
-/* Contact Palette */
+/* Contact Customization */
 
-.mcb-palette .mcb-input {
+.mcb-custom .mcb-input {
     display: flex;
     flex-flow: row nowrap;
     gap: 20px;
 }
 
-.mcb-palette-colors {
+.mcb-custom-colors {
     display: flex;
     flex-flow: column nowrap;
     align-items: flex-start;
@@ -394,9 +394,9 @@
 .mcb-details-label,
 .mcb-details-type,
 .mcb-details-id,
-.mcb-palette-background_color,
-.mcb-palette-icon_color,
-.mcb-palette-label_color {
+.mcb-custom-background_color,
+.mcb-custom-icon_color,
+.mcb-custom-label_color {
     border-bottom: #ededed solid 1px;
 }
 .mcb-custom-parameter .mcb-parameter-key,
@@ -504,14 +504,14 @@
         background-color: #f9f9f9;
     }
 
-    .mcb-row:not(.mcb-details-icon):not(.mcb-custom-parameters):not(.mcb-builtin-parameters):not(.mcb-palette) {
+    .mcb-row:not(.mcb-details-icon):not(.mcb-custom-parameters):not(.mcb-builtin-parameters):not(.mcb-custom) {
         flex-flow: column nowrap;
     }
 
-    .mcb-row:not(.mcb-details-icon):not(.mcb-custom-parameters):not(.mcb-builtin-parameters):not(.mcb-palette) .mcb-label {
+    .mcb-row:not(.mcb-details-icon):not(.mcb-custom-parameters):not(.mcb-builtin-parameters):not(.mcb-custom) .mcb-label {
         padding-bottom: 0;
     }
-    .mcb-row:not(.mcb-details-icon):not(.mcb-custom-parameters):not(.mcb-builtin-parameters):not(.mcb-palette) .mcb-input {
+    .mcb-row:not(.mcb-details-icon):not(.mcb-custom-parameters):not(.mcb-builtin-parameters):not(.mcb-custom) .mcb-input {
         padding-top: 10px;
     }
 
@@ -519,12 +519,12 @@
         border-right: 0;
     }
 
-    .mcb-row:not(.mcb-palette) .mcb-label {
+    .mcb-row:not(.mcb-custom) .mcb-label {
         width: unset;
         min-width: unset;
     }
 
-    .mcb-palette .mcb-input {
+    .mcb-custom .mcb-input {
         display: flex;
         flex-flow: column nowrap;
         gap: 20px;

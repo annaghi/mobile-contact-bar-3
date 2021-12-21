@@ -11,15 +11,16 @@ final class View
 
 
     /**
-     * Adds settings metaboxes to the options page.
+     * Adds meta box for each section in the 'settings'.
      * 
-     * @param array $option_bar
+     * @param  array $option_bar
+     * @return void
      */
     public function add( $option_bar = [] )
     {
         $this->option_bar = $option_bar;
 
-        $input_fields = abmcb( Settings\Input::class )->fields();
+        $input_fields = abmcb( Settings\Input::class )->input_fields();
 
         foreach ( $input_fields as $section_id => $section )
         {
@@ -66,7 +67,7 @@ final class View
                 add_settings_field(
                     $setting_id,
                     $this->output_setting_th( $section_id, $setting_id, $setting ),
-                    [$this, 'callback_output_setting_td'],
+                    [$this, 'callback_render_setting_td'],
                     abmcb()->id,
                     'mcb-section-' . $section_id,
                     $args
@@ -77,11 +78,12 @@ final class View
 
 
     /**
-     * Outputs a setting field's TH part.
+     * Outputs a setting input field's TH part.
      *
-     * @param string $section_id
-     * @param string $setting_id
-     * @param array  $setting
+     * @param  string $section_id
+     * @param  string $setting_id
+     * @param  array  $setting
+     * @return string              HTML
      */
     private function output_setting_th( $section_id, $setting_id, $setting )
     {
@@ -112,14 +114,15 @@ final class View
 
 
     /**
-     * Outputs a setting field's TD part.
+     * Renders a setting input field's TD part.
      *
-     * @param array  $args
-     *        string $section_id
-     *        string $setting_id
-     *        array  $setting
+     * @param  array  $args
+     *         string $section_id
+     *         string $setting_id
+     *         array  $setting
+     * @return void                HTML
      */
-    public function callback_output_setting_td( $args )
+    public function callback_render_setting_td( $args )
     {
         extract( $args );
 

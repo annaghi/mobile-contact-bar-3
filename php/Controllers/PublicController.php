@@ -1,9 +1,12 @@
 <?php
 
-namespace MobileContactBar;
+namespace MobileContactBar\Controllers;
+
+use MobileContactBar\Options;
+use MobileContactBar\Output;
 
 
-final class PublicArea
+final class PublicController
 {
     public $option_bar = [];
     public $checked_contacts = [];
@@ -30,7 +33,9 @@ final class PublicArea
 
 
     /**
-     * Loads Font Awesome styles and scripts.
+     * Loads scripts for the plugin - when needed.
+     * 
+     * @return void
      */
     public function wp_enqueue_scripts()
     {
@@ -38,7 +43,7 @@ final class PublicArea
         {
             wp_enqueue_script(
                 'mobile-contact-bar',
-                plugin_dir_url( abmcb()->file ) . 'dist/js/public.min.js',
+                plugin_dir_url( abmcb()->file ) . 'assets/js/public.min.js',
                 [],
                 abmcb()->version,
                 true
@@ -48,7 +53,9 @@ final class PublicArea
 
 
     /**
-     * Adds plugin related CSS styles within the head section.
+     * Renders the plugin generated CSS styles.
+     * 
+     * @return void
      */
     public function wp_head()
     {
@@ -73,16 +80,17 @@ final class PublicArea
 
 
     /**
-     * Outputs contact bar.
+     * Renders contact bar.
      *
-     * @param array $settings Associative array of settings
-     * @param array $contacts Associative array of displayable contacts
+     * @param  array $settings Associative array of settings
+     * @param  array $contacts Associative array of displayable contacts
+     * @return void
      */
     public function mcb_public_render_html( $settings, $contacts, $checked_contacts )
     {
         if ( 1 === did_action( 'mcb_public_render_html' ))
         {    
-            echo abmcb( Renderer::class )->bar( $settings, $contacts, $checked_contacts );
+            echo abmcb( Output::class )->bar( $settings, $contacts, $checked_contacts );
         }
     }
 }

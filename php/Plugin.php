@@ -2,15 +2,19 @@
 
 namespace MobileContactBar;
 
+use MobileContactBar\Controllers\AdminController;
+use MobileContactBar\Controllers\AJAXController;
+use MobileContactBar\Controllers\NoticeController;
+use MobileContactBar\Controllers\PublicController;
 use DirectoryIterator;
 use ReflectionClass;
 
 
 /**
-    @property string $id
-    @property string $slug
-    @property string $capability
-    @property string $page_suffix;
+ * @property string $id
+ * @property string $slug
+ * @property string $capability
+ * @property string $page_suffix;
 */
 final class Plugin extends Container
 {
@@ -28,10 +32,21 @@ final class Plugin extends Container
 
     public $contact_types = [];
 
-    protected $notices = null;
+
+    /**
+     * Controllers
+     */
     protected $admin = null;
+    protected $ajax = null;
+    protected $notice = null;
     protected $public = null;
 
+
+    /**
+     * Plugin instance
+     * 
+     * @var Plugin
+     */
     protected static $instance = null;
 
 
@@ -50,9 +65,10 @@ final class Plugin extends Container
 
 
     /**
-     * Constructs the Plugin instance. 
+     * Constructor, which extracts plugin data from the main plugin file. 
      * 
-     * @param string $file The filename of the plugin (__FILE__)
+     * @param  string $file The filename of the plugin (__FILE__)
+     * @return void
      */
     public function __construct( $file = '' )
     {
@@ -80,6 +96,12 @@ final class Plugin extends Container
     }
 
 
+    /**
+     * Reads class constants when they are accessed as properties.
+     * 
+     * @param  mixed $property
+     * @return mixed
+     */
     public function __get( $property )
     {
         if ( property_exists( $this, $property ))
@@ -96,9 +118,10 @@ final class Plugin extends Container
 
 
     /**
-     * Creates the default options such as version and bar (settings, contacts, styles) during the plugin activation.
+     * Runs the plugin installation during the plugin activation.
      *
-     * @param bool $network_wide Whether to enable the plugin for all sites in the network or just for the current site
+     * @param  bool $network_wide Whether to enable the plugin for all sites in the network or just for the current site
+     * @return void
      *
      * @global $wpdb
      */
@@ -123,18 +146,26 @@ final class Plugin extends Container
     }
 
 
+    /**
+     * Loads the plugin's translated strings.
+     * Hooks WordPress's actions and filters.
+     * 
+     * @return void
+     */
     public function plugins_loaded()
     {
         load_plugin_textdomain( self::ID, false, plugin_basename( $this->file ) . '/languages' );
 
-        $this->register_hooks();
+        $this->hook_actions_filters();
     }
 
 
     /**
-     * Hooks WordPress's actions and filters.
+     * Hooks WordPress's actions and filters in 4 main areas: admin, notice, ajax, public.
+     * 
+     * @return void
      */
-    public function register_hooks()
+    public function hook_actions_filters()
     {
         add_action( 'init', [$this, 'init'] );
 
@@ -149,14 +180,12 @@ final class Plugin extends Container
 
         if ( $this->is_admin() )
         {
-            $this->notices = abmcb( Notices::class );
-            add_action( 'admin_enqueue_scripts', [$this->notices, 'admin_enqueue_scripts'] );
-            add_action( 'admin_notices', [$this->notices, 'admin_notices'] );
-            add_action( 'wp_ajax_mcb_ajax_dismiss_notice', [$this->notices, 'ajax_dismiss_notice'] );
+            $this->notice = abmcb( NoticeController::class );
+            add_action( 'admin_enqueue_scripts', [$this->notice, 'admin_enqueue_scripts'] );
+            add_action( 'admin_notices', [$this->notice, 'admin_notices'] );
+            add_action( 'wp_ajax_mcb_ajax_dismiss_notice', [$this->notice, 'ajax_dismiss_notice'] );
 
-            $this->admin = abmcb( AdminArea::class );
-            $this->admin->register_ajax_hooks();
-            add_action( 'admin_head', [$this->admin, 'admin_head'] );
+            $this->admin = abmcb( AdminController::class );
             add_action( 'admin_menu', [$this->admin, 'admin_menu'] );
             add_action( 'admin_init', [$this->admin, 'admin_init'] );
             add_action( 'add_meta_boxes', [$this->admin, 'add_meta_boxes'] );
@@ -164,20 +193,27 @@ final class Plugin extends Container
             add_action( 'admin_footer', [$this->admin, 'admin_footer'] );
             add_filter( 'pre_update_option_' . self::ID, [$this->admin, 'pre_update_option'], 10, 2 );
             add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), [$this->admin, 'plugin_action_links'] );
+
+            $this->ajax = abmcb( AJAXController::class );
+            foreach ( $this->ajax->admin_actions as $admin_action )
+            {
+                add_action( 'wp_ajax_mcb_' . $admin_action, [$this->ajax, $admin_action], 1 );
+            }
         }
 
         if ( ! $this->is_admin() )
         {
-            $this->public = abmcb( PublicArea::class );
+            $this->public = abmcb( PublicController::class );
             add_action( 'init', [$this->public, 'init'] );
         }
     }
 
 
     /**
-     * Creates default options on blog creation.
+     * Runs the plugin installation for the newly created site.
      *
-     * @param int $blog_id Blog ID of the newly created blog
+     * @param  int  $blog_id Blog ID of the newly created blog
+     * @return void
      */
     public function wpmu_new_blog( $blog_id )
     {
@@ -193,9 +229,10 @@ final class Plugin extends Container
 
 
     /**
-     * Creates default options after blog creation.
+     * Runs the plugin installation for the newly created site.
      *
-     * @param int $site_id Site ID of the newly created site
+     * @param  int  $site_id Site ID of the newly created site
+     * @return void
      */
     public function wp_initialize_site( $site )
     {
@@ -211,20 +248,23 @@ final class Plugin extends Container
 
 
     /**
-     * Updates plugin's options.
-     * Registers contact types.
+     * Runs the plugin installation on each request.
+     * Creates instances for contact types.
+     * 
+     * @return void
      */
     public function init()
     {
         $this->install();
 
-        $this->contact_types = $this->register_contact_types();
+        $this->register_contact_types();
     }
 
 
     /**
-     * Creates or updates version and bar options.
-     *
+     * Creates or updates the plugin options (version, bar) in the database - when needed.
+     * 
+     * @return void
      */
     private function install()
     {
@@ -248,9 +288,15 @@ final class Plugin extends Container
     }
 
 
+    /**
+     * Creates instances for contact types.
+     *  
+     * @return void
+     */
     private function register_contact_types()
     {
         $contact_types = [];
+
         $dir = plugin_dir_path( $this->file ) . 'php/Contacts/Type';
 
         if ( is_dir( $dir ))
@@ -270,11 +316,13 @@ final class Plugin extends Container
             }
         }
 
-        return $contact_types;
+        $this->contact_types = $contact_types;
     }
 
 
     /**
+     * Checks if the current request is on the administrative page.
+     * 
      * @return bool
      */
     private function is_admin()

@@ -111,7 +111,7 @@ logg($this->needed_migrations);
         {
             $settings = $this->refreshed_settings();
             $contacts = ( isset( $old_option_bar['contacts'] ) && is_array( $old_option_bar['contacts'] )) ? $old_option_bar['contacts'] : [];
-            $styles   = CSS::generate( $settings, $contacts );
+            $styles   = CSS::output( $settings, $contacts );
     
             $option_bar = [
                 'settings' => $settings,
@@ -128,7 +128,7 @@ logg($this->needed_migrations);
     {
         $settings = [];
 
-        $default_settings = abmcb( Settings\Input::class )->fields_defaults();
+        $default_settings = abmcb( Settings\Input::class )->default_settings();
 
         $old_option_bar = get_option( abmcb()->id );
 
