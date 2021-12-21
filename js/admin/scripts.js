@@ -220,7 +220,7 @@
                     url: ajaxurl,
                     method: 'POST',
                     data: {
-                        action: 'mcb_ajax_add_contact',
+                        action: 'mcb_ajax_get_contact',
                         nonce: mobile_contact_bar.nonce,
                         contact_id: contactId
                     }
@@ -299,7 +299,7 @@
                     url: ajaxurl,
                     method: 'POST',
                     data: {
-                        action: 'mcb_ajax_change_contact_type',
+                        action: 'mcb_ajax_get_contact_type',
                         nonce: mobile_contact_bar.nonce,
                         contact_id: contactId,
                         contact_type: $(this).val()
@@ -320,7 +320,7 @@
                 });
             });
 
-            // Add icon
+            // Pick icon
             option.contactList.on('click', '.mcb-action-pick-icon', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -464,12 +464,12 @@
                                     .val(icon)
                                     .end()
                                     .find('.mcb-summary-icon')
-                                    .removeClass('mcb-blank-icon')
+                                    .removeClass('mcb-blank-icon, mcb-fa')
                                     .empty()
                                     .append(svg)
                                     .end()
                                     .find('.mcb-details-icon span')
-                                    .removeClass('mcb-blank-icon')
+                                    .removeClass('mcb-blank-icon, mcb-fa')
                                     .empty()
                                     .append(svg);
                             });
@@ -599,7 +599,7 @@
                     url: ajaxurl,
                     method: 'POST',
                     data: {
-                        action: 'mcb_ajax_add_parameter',
+                        action: 'mcb_ajax_get_parameter',
                         nonce: mobile_contact_bar.nonce,
                         contact_id: contactId,
                         parameter_id: parameterId

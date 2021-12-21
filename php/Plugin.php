@@ -36,8 +36,8 @@ final class Plugin extends Container
     /**
      * Controllers
      */
-    protected $admin = null;
-    protected $ajax = null;
+    protected $admin  = null;
+    protected $ajax   = null;
     protected $notice = null;
     protected $public = null;
 
@@ -321,7 +321,7 @@ final class Plugin extends Container
 
 
     /**
-     * Checks if the current request is on the administrative page.
+     * Checks if the current request is on an administrative page.
      * 
      * @return bool
      */

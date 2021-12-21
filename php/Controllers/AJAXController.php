@@ -13,9 +13,9 @@ final class AJAXController
      * @var array
      */
     public $admin_actions = [
-        'ajax_add_contact',
-        'ajax_add_parameter',
-        'ajax_change_contact_type',
+        'ajax_get_contact',
+        'ajax_get_parameter',
+        'ajax_get_contact_type',
         'ajax_get_icon'
     ];
 
@@ -27,13 +27,32 @@ final class AJAXController
      *
      * @uses $_POST
      */
-    public function ajax_add_contact()
+    public function ajax_get_contact()
     {
-        if ( $this->verify_nonce() )
+        if ( $this->verify_nonce()
+            && isset( $_POST['contact_id'] )
+            && (int) $_POST['contact_id'] >= 0 )
         {
-            $data = abmcb( Contacts\View::class )->ajax_add_contact();
-            $response = json_encode( $data );
+            $data = [];
 
+            $contact_types = apply_filters( 'mcb_admin_contact_types', [] );
+            $contact = $contact_types['link'];
+    
+            $data['summary'] = abmcb( Contacts\View::class )->output_summary(
+                [
+                    'contact_id' => $_POST['contact_id'],
+                    'contact' => $contact
+                ]
+            );
+
+            $data['details'] = abmcb( Contacts\View::class )->output_details(
+                [
+                    'contact_id' => $_POST['contact_id'],
+                    'contact' => $contact
+                ]
+            );
+    
+            $response = json_encode( $data );
             if ( $response )
             {
                 echo $response;
@@ -44,19 +63,29 @@ final class AJAXController
 
 
     /**
-     * Sends HTML for a parameter with key-value inputs.
+     * Sends HTML for a new parameter with key-value inputs.
      * 
      * @return void
      *
      * @uses $_POST
      */
-    public function ajax_add_parameter()
+    public function ajax_get_parameter()
     {
-        if ( $this->verify_nonce() )
+        if ( $this->verify_nonce()
+            && isset( $_POST['contact_id'], $_POST['parameter_id'] )
+            && (int) $_POST['contact_id'] >= 0
+            && (int) $_POST['parameter_id'] >= 0 )
         {
-            $data = abmcb( Contacts\View::class )->ajax_add_parameter();
-            $response = json_encode( $data );
+            $data = abmcb( Contacts\View::class )->output_link_parameter(
+                [
+                    'contact_id'     => $_POST['contact_id'],
+                    'parameter_type' => ['field' => 'text'],
+                    'parameter_id'   => $_POST['parameter_id'],
+                    'parameter'      => ['key' => '', 'value' => '']
+                ]
+            );
 
+            $response = json_encode( $data );
             if ( $response )
             {
                 echo $response;
@@ -73,13 +102,37 @@ final class AJAXController
      *
      * @uses $_POST
      */
-    public function ajax_change_contact_type()
+    public function ajax_get_contact_type()
     {
-        if ( $this->verify_nonce() )
-        {
-            $data = abmcb( Contacts\View::class )->ajax_change_contact_type();
-            $response = json_encode( $data );
+        $contact_types = abmcb()->contact_types;
 
+        if ( $this->verify_nonce()
+            && isset( $_POST['contact_id'], $_POST['contact_type'] )
+            && (int) $_POST['contact_id'] >= 0
+            && in_array( $_POST['contact_type'], array_keys( $contact_types )))
+        {
+            $data = [];
+
+            $contact_type = $contact_types[$_POST['contact_type']]->contact();
+
+            $data['contact_type'] = $contact_type;
+            $data['uri'] = abmcb( Contacts\View::class )->output_details_uri(
+                [
+                    'contact_id' => $_POST['contact_id'],
+                    'contact' => $contact_type,
+                    'contact_type' => $contact_type
+                ]
+            );
+
+            $data['parameters'] = abmcb( Contacts\View::class )->output_parameters(
+                [
+                    'contact_id' => $_POST['contact_id'],
+                    'contact' => $contact_type,
+                    'contact_type' => $contact_type
+                ]
+            );
+    
+            $response = json_encode( $data );
             if ( $response )
             {
                 echo $response;
@@ -98,14 +151,20 @@ final class AJAXController
      */
     public function ajax_get_icon()
     {
-        if ( $this->verify_nonce() )
+        if ( $this->verify_nonce()
+            && isset( $_POST['brand'], $_POST['icon'] )
+            && in_array( $_POST['brand'], ['fa', 'ti'] ))
         {
-            $data = abmcb( Contacts\View::class )->ajax_get_icon();
-            $response = json_encode( $data );
-
-            if ( $response )
+            if ( 'ti' === $_POST['brand'] && abmcb( Contacts\Input::class )->in_ti_icons( $_POST['icon'] ))
             {
-                echo $response;
+                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $_POST['icon'] . '.svg';
+                $data = file_get_contents( $path );
+
+                $response = json_encode( $data );
+                if ( $response )
+                {
+                    echo $response;
+                }
             }
         }
         wp_die();
@@ -113,7 +172,7 @@ final class AJAXController
 
 
     /**
-     * Verifies nonce for the AJAX request.
+     * Verifies nonce for an AJAX request.
      * 
      * @return bool|void
      *
@@ -121,7 +180,7 @@ final class AJAXController
      */
     private function verify_nonce()
     {
-        if ( ! empty( $_POST['nonce'] ) && ! empty( $_POST['action'] ) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ), abmcb()->id ))
+        if ( isset( $_POST['nonce'] ) && wp_verify_nonce( $_POST['nonce'], abmcb()->id ))
         {
             return true;
         }

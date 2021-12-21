@@ -135,7 +135,7 @@ final class View
      * 	       array  $contact
      * @return string              HTML
      */
-    private function output_summary( $args )
+    public function output_summary( $args )
     {
         extract( $args );
 
@@ -249,7 +249,7 @@ final class View
      * 	       array  $contact
      * @return string              HTML
      */
-    private function output_details( $args )
+    public function output_details( $args )
     {
         extract( $args );
 
@@ -359,7 +359,7 @@ final class View
 
 
 
-    private function output_details_uri( $args )
+    public function output_details_uri( $args )
     {
         extract( $args );
 
@@ -420,7 +420,7 @@ final class View
      * 	       array  $contact
      * @return string              HTML
      */
-    private function output_parameters( $args )
+    public function output_parameters( $args )
     {
         extract( $args );
 
@@ -493,7 +493,7 @@ final class View
      * 	       array  $parameter_key
      * @return string                 HTML
      */
-    private function output_link_parameter( $args )
+    public function output_link_parameter( $args )
     {
         extract( $args );
 
@@ -584,7 +584,7 @@ final class View
      * 	       array  $parameter_key
      * @return string                 HTML
      */
-    private function output_builtin_parameter( $args )
+    public function output_builtin_parameter( $args )
     {
         extract( $args );
 
@@ -659,7 +659,7 @@ final class View
      * 	       array  $contact
      * @return string              HTML
      */
-    private function output_customization( $args )
+    public function output_customization( $args )
     {
         extract( $args );
 
@@ -686,7 +686,7 @@ final class View
             esc_attr( $contact['id'] )
         );
 
-        // 'color' inputs
+        // 'custom' inputs
         foreach( $input_fields as $section_id => $section )
         {
             $out .= sprintf(
@@ -717,100 +717,5 @@ final class View
         }
 
         return $out;
-    }
-
-
-    /**
-     * Renders a contact.
-     *
-     * @uses $_POST
-     */
-    public function ajax_add_contact()
-    {
-        if ( isset( $_POST['contact_id'] ) && (int) $_POST['contact_id'] >= 0 )
-        {
-            $data = [];
-
-            $contact_types = apply_filters( 'mcb_admin_contact_types', [] );
-            $contact = $contact_types['link'];
-    
-            $data['summary'] = $this->output_summary( ['contact_id' => $_POST['contact_id'], 'contact' => $contact] );
-            $data['details'] = $this->output_details( ['contact_id' => $_POST['contact_id'], 'contact' => $contact] );
-    
-            return $data;	
-        }
-
-        wp_die();
-    }
-
-
-    /**
-     * Renders a parameter.
-     *
-     * @uses $_POST
-     */
-    public function ajax_add_parameter()
-    {
-        if ( isset( $_POST['contact_id'], $_POST['parameter_id'] ) && (int) $_POST['contact_id'] >= 0 && (int) $_POST['parameter_id'] >= 0 )
-        {
-            return $this->output_link_parameter(
-                [
-                    'contact_id'     => $_POST['contact_id'],
-                    'parameter_type' => ['field' => 'text'],
-                    'parameter_id'   => $_POST['parameter_id'],
-                    'parameter'      => ['key' => '', 'value' => '']
-                ]
-            );
-        }
-
-        wp_die();		
-    }
-
-
-    /**
-     * Renders contact type related parameters.
-     *
-     * @uses $_POST
-     */
-    public function ajax_change_contact_type()
-    {
-        $contact_types = array_keys( abmcb()->contact_types );
-
-        if ( isset( $_POST['contact_id'], $_POST['contact_type'] ) && (int) $_POST['contact_id'] >= 0 && in_array( $_POST['contact_type'], $contact_types ))
-        {
-            $data = [];
-
-            $contact_type = abmcb()->contact_types[$_POST['contact_type']]->contact();
-
-            $data['contact_type'] = $contact_type;
-            $data['uri'] = $this->output_details_uri( ['contact_id' => $_POST['contact_id'], 'contact' => $contact_type, 'contact_type' => $contact_type] );
-            $data['parameters'] = $this->output_parameters( ['contact_id' => $_POST['contact_id'], 'contact' => $contact_type, 'contact_type' => $contact_type] );
-
-            return $data;
-        }
-
-        wp_die();
-    }
-
-
-    /**
-     * Renders contact type related parameters.
-     *
-     * @uses $_POST
-     */
-    public function ajax_get_icon()
-    {
-        if ( isset( $_POST['brand'], $_POST['icon'] ) && in_array( $_POST['brand'], ['fa', 'ti'] ))
-        {
-            if ( 'ti' === $_POST['brand'] && abmcb( Input::class )->in_ti_icons( $_POST['icon'] ))
-            {
-                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $_POST['icon'] . '.svg';
-                $svg = file_get_contents( $path );
-
-                return $svg;
-            }
-        }
-
-        wp_die();
     }
 }
