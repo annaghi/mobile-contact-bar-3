@@ -248,16 +248,15 @@ final class Plugin extends Container
 
 
     /**
-     * Runs the plugin installation on each request.
      * Creates instances for contact types.
+     * Runs the plugin installation on each request.
      * 
      * @return void
      */
     public function init()
     {
-        $this->install();
-
         $this->register_contact_types();
+        $this->install();
     }
 
 
@@ -280,7 +279,7 @@ final class Plugin extends Container
             update_option( self::ID, abmcb( Options::class )->default_option_bar() );
             update_option( self::ID . '_version', $this->version );
         }
-        elseif ( !! $version && version_compare( $version, $this->version, '<' ))
+        elseif ( $version && version_compare( $version, $this->version, '<' ))
         {
             abmcb( Migrate::class )->run();
             update_option( self::ID . '_version', $this->version );
@@ -308,7 +307,7 @@ final class Plugin extends Container
                 {
                     $contact_type = str_replace( '.php', '', $fileinfo->getFilename() );
                     $contact_type_class = Helper::build_class_name( $contact_type, 'Contacts\Type');
-                    if ( class_exists( $contact_type_class ) && ! ( new \ReflectionClass( $contact_type_class ))->isAbstract() )
+                    if ( class_exists( $contact_type_class ) && ! ( new ReflectionClass( $contact_type_class ))->isAbstract() )
                     {
                         $contact_types[strtolower( $contact_type )] = abmcb( $contact_type_class );
                     }

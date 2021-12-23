@@ -223,11 +223,10 @@ final class Input
                 unset( $contacts[$contact_id] );
             }
 
-            // remove contact if invalid 'icon', but leave empty icons
+            // remove contact if 'icon' does not exist in FA or TI, but leave empty icons
             if ( ! empty( $contact['icon'] ) && ! $this->in_fa_icons( $contact['icon'] ) && ! $this->in_ti_icons( $contact['icon'] ))
             {
-                // TODO Come back when FA is ready;
-            //    unset( $contacts[$contact_id] );
+                unset( $contacts[$contact_id] );
             }
 
             // remove contact if invalid 'type'
@@ -277,7 +276,7 @@ final class Input
 
             // sanitize 'id'
             $custom = $contact['custom'];
-            $is_any_color = array_filter( $custom, function( $color ) { return ! empty( $color['primary'] || ! empty( $color['secondary'] )); });
+            $is_any_color = array_filter( $custom, function ( $color ) { return ! empty( $color['primary'] || ! empty( $color['secondary'] )); });
 
             $value = sanitize_key( $contact['id'] );
             if ( empty( $value ) && $is_any_color )
@@ -340,12 +339,17 @@ final class Input
     /**
      * Checks whether an icon name is a valid Font Awesome icon.
      *
-     * @param  string $classes Font Awesome CSS classes
-     * @return bool            Whether the icon exists or not
+     * @param  string $icon Icon name, like 'solid envelope'
+     * @return bool         Whether the icon exists or not
      */
-    public function in_fa_icons( $names )
+    public function in_fa_icons( $icon )
     {
-        $names = explode( ' ', $names );
+        $names = preg_split( '/\s+/', $icon, -1, PREG_SPLIT_NO_EMPTY );
+        if ( ! is_array( $names ) || count( $names ) !== 2 )
+        {
+            return false;
+        }
+
         $valid_icons = self::fa_icons();
 
         foreach ( $valid_icons as $section => $icons )
@@ -368,13 +372,13 @@ final class Input
     /**
      * Checks whether an icon name is a valid Tabler Icon.
      *
-     * @param  string $classes Tabler CSS classes
-     * @return bool            Whether the icon exists or not
+     * @param  string $icon Icon name, like 'envelope'
+     * @return bool         Whether the icon exists or not
      */
-    public function in_ti_icons( $name )
+    public function in_ti_icons( $icon )
     {
         $valid_icons = self::ti_icons();
-        return in_array( $name, $valid_icons );
+        return in_array( $icon, $valid_icons );
     }
 
 

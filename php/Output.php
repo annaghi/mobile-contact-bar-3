@@ -66,7 +66,7 @@ final class Output
 
             $uri = Validator::escape_contact_uri( $contact['uri'] );
 
-            if ( ! empty( $uri ) && isset( $contact['parameters'] ))
+            if ( ! empty( $uri ) && ! empty( $contact['parameters'] ) && is_array( $contact['parameters'] ))
             {
                 $query_arg = [];
 
@@ -87,8 +87,8 @@ final class Output
             // TODO move validation to Options
             if ( 'fa' === $contact['brand'] )
             {
-                $meta = explode( ' ', $contact['icon'] );
-                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $meta[0] . '/' . $meta[1] . '.svg';
+                $names = preg_split( '/\s+/', $contact['icon'], -1, PREG_SPLIT_NO_EMPTY );
+                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $names[0] . '/' . $names[1] . '.svg';
                 $svg = file_get_contents( $path );
 
                 $icon = sprintf( '<span class="mobile-contact-bar-icon mobile-contact-bar-fa">%s%s</span>', $svg, $badge );

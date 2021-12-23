@@ -2,15 +2,14 @@
 
 namespace MobileContactBar\Migrations;
 
-use MobileContactBar\Settings\Input as SettingsInput;
-use MobileContactBar\Contacts\Input as ContactsInput;
-use MobileContactBar\Contacts\Validator as ContactsValidator;
-use MobileContactBar\Styles\CSS;
+use MobileContactBar\Settings;
+use MobileContactBar\Contacts;
+use MobileContactBar\Styles;
 
 
 final class Migrate_2_0_0
 {
-    public $option_1_0_0 = false;
+    public $option_bar_v1 = false;
 
 
     /**
@@ -18,13 +17,13 @@ final class Migrate_2_0_0
      */
     public function run()
     {
-        $option_1_0_0 = get_option( 'mcb_option' );
+        $option_bar_v1 = get_option( 'mcb_option' );
 
-        if ( !! $option_1_0_0 && is_array( $option_1_0_0 ))
+        if ( $option_bar_v1 && is_array( $option_bar_v1 ))
         {
-logg(__METHOD__);
-            $this->option_1_0_0 = $option_1_0_0;
+            $this->option_bar_v1 = $option_bar_v1;
             $this->migrate_bar();
+            delete_option( 'mcb_option' );
 
             return true;
         }
@@ -37,7 +36,7 @@ logg(__METHOD__);
     {
         $settings = $this->migrate_settings();
         $contacts = $this->migrate_contacts();
-        $styles   = CSS::output( $settings, $contacts );
+        $styles   = '';
 
         $option_bar = [
             'settings' => $settings,
@@ -46,45 +45,84 @@ logg(__METHOD__);
         ];
 
         update_option( abmcb()->id, $option_bar );
-        delete_option( 'mcb_option' );
     }
 
 
     private function migrate_settings()
     {
-        $settings = abmcb( SettingsInput::class )->default_settings();
+        $settings = [];
 
-        if ( isset( $this->option_1_0_0['settings'] ) && is_array( $this->option_1_0_0['settings'] ))
+        if ( isset( $this->option_bar_v1['settings'] ) && is_array( $this->option_bar_v1['settings'] ))
         {
-            $old_settings = $this->option_1_0_0['settings'];
+            $settings_v1 = $this->option_bar_v1['settings'];
 
-            $settings['bar']['device']                              = ( $old_settings['bar_max_screen_width'] > 1400 ) ? 'both' : 'mobile';
-            $settings['bar']['device']                              = ( $old_settings['bar_is_active'] ) ? $settings['bar']['device'] : 'none';
-            $settings['bar']['is_new_tab']                          = ( isset( $old_settings['bar_is_new_tab'] )) ? $old_settings['bar_is_new_tab'] : 0;
-            $settings['bar']['vertical_alignment']                  = $old_settings['bar_position'];
-            $settings['bar']['is_fixed']                            = $old_settings['bar_is_fixed'];
-            $settings['bar']['height']                              = $old_settings['bar_height'];
-            $settings['bar']['horizontal_alignment']                = ( isset( $old_settings['bar_horizontal_align'] )) ? $old_settings['bar_horizontal_align'] : 'center';
-            $settings['bar']['opacity']                             = $old_settings['bar_opacity'];
-            $settings['bar']['placeholder_height']                  = 0;
+            $settings['bar']['placeholder_height']      = 0;
+            $settings['toggle']['label']                = '';
 
-            $settings['icons_labels']['is_borders']                 = ! $old_settings['icon_is_border'] ? 'none' : 'around';
-            $settings['icons_labels']['border_color']               = $old_settings['icon_border_color'];
-            $settings['icons_labels']['border_width']               = $old_settings['icon_border_width'];
-            $settings['icons_labels']['icon_size']                  = $old_settings['icon_size'];
-            $settings['icons_labels']['background_color']           = $old_settings['bar_color'];
-            $settings['icons_labels']['icon_color']                 = $old_settings['icon_color'];
-            $settings['icons_labels']['secondary_colors']['hover']  = 0;
-            $settings['icons_labels']['secondary_colors']['focus']  = 0;
-            $settings['icons_labels']['secondary_colors']['active'] = 0;
-            $settings['icons_labels']['secondary_background_color'] = '';
-            $settings['icons_labels']['secondary_icon_color']       = '';
-            $settings['icons_labels']['secondary_label_color']      = '';
-            $settings['icons_labels']['secondary_border_color']     = '';
-
-            $settings['toggle']['is_render']                        = $old_settings['bar_is_toggle'];
-            $settings['toggle']['background_color']                 = $old_settings['bar_toggle_color'];
-            $settings['toggle']['font_color']                       = $old_settings['icon_color'];
+            if ( isset( $settings_v1['bar_max_screen_width'] ))
+            {
+                $settings['bar']['device']              = ( $settings_v1['bar_max_screen_width'] > 1400 ) ? 'both' : 'mobile';
+            }
+            if ( isset( $settings_v1['bar_is_active'], $settings['bar']['device'] ))
+            {
+                $settings['bar']['device']              = ( $settings_v1['bar_is_active'] ) ? $settings['bar']['device'] : 'none';    
+            }
+            if ( isset( $settings_v1['bar_is_new_tab'] ))
+            {
+                $settings['bar']['is_new_tab']          = $settings_v1['bar_is_new_tab'];
+            }
+            if ( isset( $settings_v1['bar_horizontal_align'] ))
+            {
+                $settings['bar']['horizontal_position'] = $settings_v1['bar_horizontal_align'];
+            }
+            if ( isset( $settings_v1['bar_position'] ))
+            {
+                $settings['bar']['vertical_position']   = $settings_v1['bar_position'];
+            }
+            if ( isset( $settings_v1['bar_is_fixed'] ))
+            {
+                $settings['bar']['is_fixed']            = $settings_v1['bar_is_fixed'];
+            }
+            if ( isset( $settings_v1['bar_height'] ))
+            {
+                $settings['bar']['height']              = $settings_v1['bar_height'];
+            }
+            if ( isset( $settings_v1['bar_color'] ))
+            {
+                $settings['bar']['color']               = $settings_v1['bar_color'];
+            }
+            if ( isset( $settings_v1['bar_opacity'] ))
+            {
+                $settings['bar']['opacity']             = $settings_v1['bar_opacity'];
+            }
+            if ( isset( $settings_v1['icon_size'] ))
+            {
+                $settings['icons']['size']              = $settings_v1['icon_size'];
+            }
+            if ( isset( $settings_v1['icon_color'] ))
+            {
+                $settings['icons']['color']             = $settings_v1['icon_color'];
+            }
+            if ( isset( $settings_v1['icon_is_border'] ))
+            {
+                $settings['icons']['is_border']         = 'four';
+            }
+            if ( isset( $settings_v1['icon_border_color'] ))
+            {
+                $settings['icons']['border_color']      = $settings_v1['icon_border_color'];
+            }
+            if ( isset( $settings_v1['icon_border_width'] ))
+            {
+                $settings['icons']['border_width']      = $settings_v1['icon_border_width'];
+            }
+            if ( isset( $settings_v1['bar_is_toggle'] ))
+            {
+                $settings['toggle']['is_render']        = $settings_v1['bar_is_toggle'];
+            }
+            if ( isset( $settings_v1['bar_toggle_color'] ))
+            {
+                $settings['toggle']['color']            = $settings_v1['bar_toggle_color'];
+            }
         }
 
         return $settings;
@@ -94,186 +132,182 @@ logg(__METHOD__);
     private function migrate_contacts()
     {
         $contacts = [];
-        $contact_types = array_keys( apply_filters( 'mcb_admin_contact_types', [] ));
 
-        if ( isset( $this->option_1_0_0['contacts'] ) && is_array( $this->option_1_0_0['contacts'] ))
+        if ( isset( $this->option_bar_v1['contacts'] ) && is_array( $this->option_bar_v1['contacts'] ))
         {
-            $old_contacts = $this->option_1_0_0['contacts'];
-            $default_customization = abmcb( ContactsInput::class )->default_customization();
+            $contacts_v1 = $this->option_bar_v1['contacts'];
 
-            foreach( $old_contacts as $old_id => $old_contact )
+            foreach( $contacts_v1 as $id_v1 => $contact_v1 )
             {
                 $contact = [];
                 $contact['checked'] = 1;
-                $contact['id'] = '';
-                $contact['brand'] = 'fa';
-                $contact['custom'] = $default_customization;
 
-                $uri = $this->build_uri( $old_contact['protocol'], $old_contact['resource'] );
-                $contact['uri'] = ContactsValidator::sanitize_contact_uri( $uri );
+                $uri = $this->migrate_uri( $contact_v1['protocol'], $contact_v1['resource'] );
+                $contact['uri'] = Contacts\Validator::sanitize_contact_uri( $uri );
 
-                switch( $old_id )
+                switch( $id_v1 )
                 {
                     case 'phone':
-                        $contact['type']       = 'tel';
-                        $contact['icon']       = 'solid phone';
-                        $contact['label']      = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fas fa-phone';
+                        $contact['title']       = 'Phone Number for calling';
+                        $contact['placeholder'] = 'tel:+15417543010';
                         break;
 
                     case 'text':
-                        $contact['type']       = 'sms';
-                        $contact['icon']       = 'regular sms';
-                        $contact['label']      = '';
-                        $contact['parameters'] = [
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'far fa-comment';
+                        $contact['title']       = 'Phone Number for texting';
+                        $contact['placeholder'] = 'sms:+15417543010';
+                        $contact['parameters']  = [
                             [
-                                'key'   => 'body',
-                                'value' => '',
+                                'key'         => 'body',
+                                'type'        => 'text',
+                                'placeholder' => 'Message ...',
+                                'value'       => '',
                             ],
                         ];
 
-                        if( isset( $old_contact['parameters'], $old_contact['parameters']['body'] ))
+                        if( isset( $contact_v1['parameters'], $contact_v1['parameters']['body'] ))
                         {
-                            $value = urldecode( $old_contact['parameters']['body'] );
-                            $contact['parameters'][0]['value'] = ContactsValidator::sanitize_parameter_value( $value, 'text' );
+                            $value = urldecode( $contact_v1['parameters']['body'] );
+                            $contact['parameters'][0]['value'] = Contacts\Validator::sanitize_parameter_value( $value, 'text' );
                         }
                         break;
 
                     case 'email':
-                        $contact['type']       = 'email';
-                        $contact['icon']       = 'regular envelope';
-                        $contact['label']      = '';
-                        $contact['parameters'] = [
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'far fa-envelope';
+                        $contact['title']       = 'Email Address';
+                        $contact['placeholder'] = 'mailto:username@example.com';
+                        $contact['parameters']  = [
                             [
-                                'key'   => 'subject',
-                                'value' => '',
+                                'key'         => 'subject',
+                                'type'        => 'text',
+                                'placeholder' => 'Subject ...',
+                                'value'       => '',
                             ],
                             [
-                                'key'   => 'body',
-                                'value' => '',
+                                'key'         => 'body',
+                                'type'        => 'textarea',
+                                'placeholder' => 'Text ...',
+                                'value'       => '',
                             ],
                             [
-                                'key'   => 'cc',
-                                'value' => '',
+                                'key'         => 'cc',
+                                'type'        => 'email',
+                                'placeholder' => 'example@domain.com',
+                                'value'       => '',
                             ],
                             [
-                                'key'   => 'bcc',
-                                'value' => '',
+                                'key'         => 'bcc',
+                                'type'        => 'email',
+                                'placeholder' => 'example1@domain.com,example2@domain.net',
+                                'value'       => '',
                             ],
                         ];
-
-                        $contact_type  = $contact_types['email'];
 
                         foreach( $contact['parameters'] as $parameter_id => &$parameter )
                         {
                             $key = $parameter['key'];
 
-                            if ( 'link' === $contact['type'] )
+                            if( isset( $contact_v1['parameters'] ) && isset( $contact_v1['parameters'][$key] ))
                             {
-                                $field = 'text';
-                            }
-                            else
-                            {
-                                $parameter_index = array_search( $key, array_column( $contact_type['parameters'], 'key' ));
-                                $parameter_type = $contact_type['parameters'][$parameter_index];
-                                $field = $parameter_type['field'];
-                            }
-
-                            if( isset( $old_contact['parameters'], $old_contact['parameters'][$key] ))
-                            {
-                                $value = urldecode( $old_contact['parameters'][$key] );
-                                $parameter['value'] = ContactsValidator::sanitize_parameter_value( $value, $field );
+                                $value = urldecode( $contact_v1['parameters'][$key] );
+                                $parameter['value'] = Contacts\Validator::sanitize_parameter_value( $value, $parameter['type'] );
                             }
                         }
+
                         unset( $parameter );
                         break;
 
                     case 'skype':
-                        $contact['type']  = 'skype';
-                        $contact['icon']  = 'brands skype';
-                        $contact['label'] = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fab fa-skype';
+                        $contact['title']       = 'Skype for calling';
+                        $contact['placeholder'] = 'skype:username?call';
                         break;
 
                     case 'address':
-                        $contact['type']  = 'link';
-                        $contact['icon']  = 'solid map-marker-alt';
-                        $contact['label'] = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fas fa-map-marker-alt';
+                        $contact['title']       = 'Google Maps';
+                        $contact['placeholder'] = 'https://google.com/maps/place/Dacre+St,+London+UK/';
                         break;
 
                     case 'facebook':
-                        $contact['type']  = 'link';
-                        $contact['icon']  = 'brands facebook-f';
-                        $contact['label'] = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fab fa-facebook-f';
+                        $contact['title']       = 'Facebook';
+                        $contact['placeholder'] = 'https://www.facebook.com/username';
                         break;
 
                     case 'twitter':
-                        $contact['type']  = 'link';
-                        $contact['icon']  = 'brands twitter';
-                        $contact['label'] = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fab fa-twitter';
+                        $contact['title']       = 'Twitter';
+                        $contact['placeholder'] = 'https://twitter.com/username';
                         break;
 
                     case 'googleplus':
-                        $contact['type']  = 'link';
-                        $contact['icon']  = 'brands google-plus-g';
-                        $contact['label'] = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fab fa-google-plus-g';
+                        $contact['title']       = 'Google+';
+                        $contact['placeholder'] = 'https://plus.google.com/username';
                         break;
 
                     case 'instagram':
-                        $contact['type']  = 'link';
-                        $contact['icon']  = 'brands instagram';
-                        $contact['label'] = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fab fa-instagram';
+                        $contact['title']       = 'Instagram';
+                        $contact['placeholder'] = 'https://www.instagram.com/username';
                         break;
 
                     case 'youtube':
-                        $contact['type']  = 'link';
-                        $contact['icon']  = 'brands youtube';
-                        $contact['label'] = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fab fa-youtube';
+                        $contact['title']       = 'YouTube';
+                        $contact['placeholder'] = 'https://www.youtube.com/user/username';
                         break;
 
                     case 'pinterest':
-                        $contact['type']  = 'link';
-                        $contact['icon']  = 'brands pinterest-p';
-                        $contact['label'] = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fab fa-pinterest-p';
+                        $contact['title']       = 'Pinterest';
+                        $contact['placeholder'] = 'https://www.pinterest.com/username';
                         break;
 
                     case 'tumblr':
-                        $contact['type']  = 'link';
-                        $contact['icon']  = 'brands tumblr';
-                        $contact['label'] = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fab fa-tumblr';
+                        $contact['title']       = 'Tumblr';
+                        $contact['placeholder'] = 'https://username.tumblr.com';
                         break;
 
                     case 'linkedin':
-                        $contact['type']  = 'link';
-                        $contact['icon']  = 'brands linkedin-in';
-                        $contact['label'] = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fab fa-linkedin-in';
+                        $contact['title']       = 'LinkedIn';
+                        $contact['placeholder'] = 'https://www.linkedin.com/in/username';
                         break;
 
                     case 'vimeo':
-                        $contact['type']  = 'link';
-                        $contact['icon']  = 'brands vimeo-v';
-                        $contact['label'] = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fab fa-vimeo-v';
+                        $contact['title']       = 'Vimeo';
+                        $contact['placeholder'] = 'https://vimeo.com/username';
                         break;
 
                     case 'flickr':
-                        $contact['type']  = 'link';
-                        $contact['icon']  = 'brands flickr';
-                        $contact['label'] = '';
+                        $contact['type']        = 'Sample';
+                        $contact['icon']        = 'fab fa-flickr';
+                        $contact['title']       = 'Flickr';
+                        $contact['placeholder'] = 'https://www.flickr.com/people/username';
                         break;
                 }
 
                 $contacts[] = $contact;
             }
-
-            // $missing_default_contacts = array_filter(
-            //     $new_contacts,
-            //     function( $contact ) use ( $contacts ) {
-            //         return ! in_array( $contact['icon'], array_column( $contacts, 'icon' ));
-            //     }
-            // );
-            // $contacts = array_merge( $contacts, $missing_default_contacts );
-        }
-        else
-        {
-            $contacts = abmcb( ContactsInput::class )->fields_sampoes();
         }
 
         return $contacts;
@@ -287,7 +321,7 @@ logg(__METHOD__);
      * @param  string $resource [description]
      * @return string           URI
      */
-    private function build_uri( $protocol, $resource )
+    private function migrate_uri( $protocol, $resource )
     {
         $uri = '';
 

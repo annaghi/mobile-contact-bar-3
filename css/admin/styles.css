@@ -191,6 +191,7 @@
 }
 
 .mcb-blank-icon {
+    font-family: Consolas, Monaco, monospace;
     width: 2em;
 }
 
@@ -440,6 +441,10 @@
     display: none;
 }
 
+.mcb-monospace {
+    font-family: Consolas, Monaco, monospace;
+}
+
 .mcb-checked {
     box-shadow: inset 4px 0 #72aee6;
     background-color: #f0f6fc;
@@ -494,10 +499,6 @@
     .mcb-summary-label,
     .mcb-summary-uri {
         font-size: 16px;
-    }
-
-    .mcb-blank-icon {
-        font-size: 1.8em !important;
     }
 
     .mcb-details {

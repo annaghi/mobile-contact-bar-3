@@ -23,18 +23,20 @@ final class Validator
 
         $new_uri = '';
 
-        $uri = strtolower( $uri );
         $scheme = array_reduce(
             self::SCHEMES,
-            function( $acc, $scheme ) use( $uri ) { return ( strpos( $uri, $scheme ) > -1 ) ? $scheme : $acc; },
+            function ( $acc, $scheme ) use ( $uri ) { return ( strpos( $uri, $scheme ) > -1 ) ? $scheme : $acc; },
             ''
         );
 
         switch( $scheme )
         {
-            case 'tel':
             case 'sms':
-                $new_uri = self::sanitize_phone_number( $uri );
+                $new_uri = self::sanitize_sms( $uri );
+                break;
+
+            case 'tel':
+                $new_uri = self::sanitize_tel( $uri );
                 break;
 
             case 'skype':
@@ -55,11 +57,11 @@ final class Validator
 
                 if ( isset( $parsed_uri['path'] ))
                 {
-                    $new_uri = untrailingslashit( esc_url( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] . $parsed_uri['path'] ));
+                    $new_uri = esc_url( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] . $parsed_uri['path'] );
                 }
                 else
                 {
-                    $new_uri = untrailingslashit( esc_url( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] ));
+                    $new_uri = esc_url( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] );
                 }
                 break;
 
@@ -85,18 +87,20 @@ final class Validator
 
         $new_uri = '';
 
-        $uri = strtolower( $uri );
         $scheme = array_reduce(
             self::SCHEMES,
-            function( $acc, $scheme ) use( $uri ) { return ( strpos( $uri, $scheme ) > -1 ) ? $scheme : $acc; },
+            function ( $acc, $scheme ) use ( $uri ) { return ( strpos( $uri, $scheme ) > -1 ) ? $scheme : $acc; },
             ''
         );
 
         switch( $scheme )
         {
-            case 'tel':
             case 'sms':
-                $new_uri = self::sanitize_phone_number( $uri );
+                $new_uri = self::sanitize_sms( $uri );
+                break;
+
+            case 'tel':
+                $new_uri = self::sanitize_tel( $uri );
                 break;
 
             case 'skype':
@@ -117,11 +121,11 @@ final class Validator
 
                 if ( isset( $parsed_uri['path'] ))
                 {
-                    $new_uri = untrailingslashit( esc_url_raw( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] . $parsed_uri['path'] ));
+                    $new_uri = esc_url_raw( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] . $parsed_uri['path'] );
                 }
                 else
                 {
-                    $new_uri = untrailingslashit( esc_url_raw( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] ));
+                    $new_uri = esc_url_raw( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] );
                 }
                 break;
 
@@ -167,10 +171,10 @@ final class Validator
 
 
     /**
-     * Sanitizes skype URI.
+     * Sanitizes 'skype' URI.
      *
-     * @param  string $skype
-     * @return string        Filtered skype URI
+     * @param  string $skype URI with 'skype' scheme, a name or a phone number prefixed with + sign
+     * @return string        Sanitized URI
      */
     public static function sanitize_skype( $skype )
     {
@@ -189,15 +193,15 @@ final class Validator
 
 
     /**
-     * Sanitizes viber URI.
+     * Sanitizes 'viber' URI.
      *
-     * @param  string $viber
-     * @return string        Filtered viber URI
+     * @param  string $viber URI with 'viber' scheme, path 'pa', and 'chatURI'
+     * @return string        Sanitized URI
      */
     public static function sanitize_viber( $viber )
     {
         $sanitized_viber = preg_replace( '/\s+/', '', $viber );
-        if ( preg_match( '/^viber:\/\/pa\?chatURI=.*/i', $sanitized_viber ))
+        if ( preg_match( '/^viber:\/\/pa\?chatURI=.*/', $sanitized_viber ))
         {
             return $sanitized_viber;
         }
@@ -207,24 +211,49 @@ final class Validator
 
 
     /**
-     * Sanitizes phone number.
+     * Sanitizes 'sms' URI.
      *
-     * @param  string $phone Phone number with protocol and an optional + sign
-     * @return string        Filtered phone number
+     * @param  string $sms URI with 'sms' scheme, an optional + sign, and a phone number
+     * @return string      Sanitized URI
      */
-    public static function sanitize_phone_number( $phone )
+    public static function sanitize_sms( $sms )
     {
-        $sanitized_phone = preg_replace( '/\s+/', '', $phone );
-        $sanitized_phone = preg_replace( '/[\.\-\(\)]/', '', $sanitized_phone );
-        if ( preg_match( '/^tel:\+?[0-9]+$/i', $sanitized_phone ))
+        $sanitized_sms = preg_replace( '/\s+/', '', $sms );
+        $sanitized_sms = preg_replace( '/[\.\-\(\)]/', '', $sanitized_sms );
+        if ( preg_match( '/^sms:\+?[0-9]+$/', $sanitized_sms ))
         {
-            return $sanitized_phone;
+            return $sanitized_sms;
         }
 
         return '';
     }
 
 
+    /**
+     * Sanitizes 'tel' URI.
+     *
+     * @param  string $tel URI with 'tel' scheme, an optional + sign, and a phone number
+     * @return string      Sanitized URI
+     */
+    public static function sanitize_tel( $tel )
+    {
+        $sanitized_tel = preg_replace( '/\s+/', '', $tel );
+        $sanitized_tel = preg_replace( '/[\.\-\(\)]/', '', $sanitized_tel );
+        if ( preg_match( '/^tel:\+?[0-9]+$/', $sanitized_tel ))
+        {
+            return $sanitized_tel;
+        }
+
+        return '';
+    }
+
+
+    /**
+     * Sanitizes 'mailto' URI.
+     *
+     * @param  string $email URI with 'mailto' scheme, and an email address
+     * @return string        Sanitized URI
+     */
     public static function sanitize_email( $email )
     {
         $sanitized_email = preg_replace( '/\s+/', '', $email );

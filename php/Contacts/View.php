@@ -29,7 +29,7 @@ final class View
 
 
     /**
-     * Renders template HTML elements for the Icon Picker.
+     * Renders template HTML for the Icon Picker.
      * 
      * @return void
      */
@@ -173,7 +173,7 @@ final class View
         // 'icon'
         if ( 'fa' === $contact['brand'] && abmcb( Input::class )->in_fa_icons( $contact['icon'] ))
         {
-            $names = explode( ' ', $contact['icon'] );
+            $names = preg_split( '/\s+/', $contact['icon'], -1, PREG_SPLIT_NO_EMPTY );
             $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $names[0] . '/' . $names[1] . '.svg';
             $svg = file_get_contents( $path );
             $out .= sprintf( '<div class="mcb-summary-icon mcb-fa">%s</div>', $svg );
@@ -186,19 +186,32 @@ final class View
         }
         else
         {
-            $out .= '<div class="mcb-summary-icon mcb-blank-icon">---</div>';
+            $out .= '<div class="mcb-summary-icon mcb-blank-icon">--</div>';
         }
 
         // 'label'
-        $out .= sprintf( '<div class="mcb-summary-label">%s</div>', esc_attr( $contact['label'] ));
+        $label = esc_attr( $contact['label'] );
+        $out .= sprintf(
+            '<div class="mcb-summary-label">%s</div>',
+            empty( $label ) ? esc_attr__( '(no label)', 'mobile-contact-bar' ) : $label
+        );
 
         $out .= '</div>';
 
         // 'URI'
-        $out .= sprintf(
-            '<div class="mcb-summary-uri">%s</div>',
-            Validator::escape_contact_uri( $contact['uri'] )
-        );
+        if ( in_array( $contact['type'], ['historyback', 'scrolltotop'] ))
+        {
+            $out .= '<div class="mcb-summary-uri mcb-monospace">#</div>';
+        }
+        else
+        {
+            $uri = Validator::escape_contact_uri( $contact['uri'] );
+            $out .= sprintf(
+                '<div class="mcb-summary-uri%s">%s</div>',
+                empty( $uri ) ? '' : ' mcb-monospace',
+                empty( $uri ) ? esc_attr__( '(no URI)', 'mobile-contact-bar' ) : $uri
+            );
+        }
 
         $out .= '<div class="mcb-right-actions">';
 
@@ -298,8 +311,8 @@ final class View
         // 'icon' visible
         if ( 'fa' === $contact['brand'] && abmcb( Input::class )->in_fa_icons( $contact['icon'] ))
         {
-            $meta = explode( ' ', $contact['icon'] );
-            $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $meta[0] . '/' . $meta[1] . '.svg';
+            $names = preg_split( '/\s+/', $contact['icon'], -1, PREG_SPLIT_NO_EMPTY );
+            $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $names[0] . '/' . $names[1] . '.svg';
             $svg = file_get_contents( $path );
             $icon = sprintf( '<span class="mcb-fa">%s</span>', $svg );
         }
@@ -311,7 +324,7 @@ final class View
         }
         else
         {
-            $icon = '<span class="mcb-blank-icon">---</span>';
+            $icon = '<span class="mcb-blank-icon">--</span>';
         }
 
         // select & clear 'icon' button
@@ -358,7 +371,6 @@ final class View
     }
 
 
-
     public function output_details_uri( $args )
     {
         extract( $args );
@@ -382,7 +394,7 @@ final class View
                         <label>%s</label>
                         <p class="mcb-description">%s</p>
                     </div>
-                    <div class="mcb-input">---</div>
+                    <div class="mcb-input">#</div>
                 </div>',
                 esc_attr__( 'Contact URI', 'mobile-contact-bar' ),
                 esc_attr( $contact_type['desc_uri'] )
@@ -397,7 +409,7 @@ final class View
                         <label for="' . $prefix . '[uri]">%s</label>
                         <p class="mcb-description">%s</p>
                     </div>
-                    <div class="mcb-input">
+                    <div class="mcb-input mcb-monospace">
                         <input type="text" name="' . $prefix . '[uri]" id="' . $prefix . '[uri]" placeholder="%s" value="%s">
                     </div>
                 </div>',

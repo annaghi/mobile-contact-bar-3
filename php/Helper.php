@@ -25,6 +25,20 @@ final class Helper
     }
 
 
+    public static function array_intersect_key_recursive( $array1, $array2 )
+    {
+        $array1 = array_intersect_key( $array1, $array2 );
+        foreach ( $array1 as $key1 => &$value1 )
+        {
+            if ( is_array( $value1 ) && is_array( $array2[$key1] ))
+            {
+                $value1 = self::array_intersect_key_recursive( $value1, $array2[$key1] );
+            }
+        }
+        return $array1;
+    }
+
+
     public static function array_diff_assoc_recursive( $array1, $array2 )
     {
         foreach ( $array1 as $key => $value )
@@ -57,43 +71,6 @@ final class Helper
         return ( isset( $difference ) && is_array( $difference ))
             ? $difference
             : [];
-    }
-
-
-    /**
-     * 
-     * 
-     * @param  array      $array Multidimensional array
-     * @param  array      $array Multidimensional array
-     * @return array             Slice
-     */
-    public static function array_slice_assoc_recursive( $array1, $array2 )
-    {
-        if ( ! is_array( $array2 ))
-        {
-            return $array2;
-        }
-        if ( ! is_array( $array1 ))
-        {
-            return $array1;
-        }
-
-        $result = [];
-        $keys = array_keys( $array1 );
-        
-        foreach( $keys as $key )
-        {
-            if ( isset( $array2[$key] ))
-            {
-                $result[$key] = self::array_slice_assoc_recursive( $array1[$key], $array2[$key] );    
-            }
-            else
-            {
-                $result[$key] = self::array_slice_assoc_recursive( $array1[$key], $array1[$key] );
-            }
-        }
-
-        return $result;
     }
 
 

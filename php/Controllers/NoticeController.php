@@ -133,7 +133,7 @@ final class NoticeController
             <p>
                 <a href="<?php echo esc_url( 'https://wordpress.org/plugins/mobile-contact-bar/#developers' ); ?>" target="_blank" rel="noopener" class="button mobile-contact-bar-whats-new">
                     <span class="mobile-contact-bar-whats-new-icon">
-                        <?php include_once plugin_dir_path( abmcb()->file ) . 'assets/images/notices/whats-new-icon.svg'; ?>
+                        <?php include_once plugin_dir_path( abmcb()->file ) . 'assets/images/whats-new-icon.svg'; ?>
                     </span>
                     <span><?php echo _x( 'See What\'s New', 'admin-text', 'mobile-contact-bar' ); ?></span>
                 </a>
@@ -224,9 +224,11 @@ final class NoticeController
             case 'major':
                 $version = isset( $matches[1] ) ? $matches[1] : '';
                 break;
+
             case 'minor':
                 $version = isset( $matches[1], $matches[2] ) ? $matches[1] . $matches[2] : '';
                 break;
+
             case 'patch':
                 $version = isset( $matches[1], $matches[2], $matches[3] ) ? $matches[1] . $matches[2] . $matches[3] : '';
                 break;

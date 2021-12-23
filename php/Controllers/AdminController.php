@@ -46,7 +46,7 @@ final class AdminController
      */
     public function callback_render_page()
     {
-        $checked_contacts = array_filter( $this->option_bar['contacts'], function( $contact ) { return $contact['checked']; });
+        $checked_contacts = array_filter( $this->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
         ?>
         <div class="wrap">
             <h2><?php esc_html_e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?></h2>
@@ -195,7 +195,7 @@ final class AdminController
     {
         ?>
         <div id="mcb-model">
-            <?php include_once plugin_dir_path( abmcb()->file ) . 'assets/images/real-time-model/model.svg'; ?>
+            <?php include_once plugin_dir_path( abmcb()->file ) . 'assets/images/real-time-model.svg'; ?>
             <footer><em><?php _e( 'The model is an approximation. A lot depends on your active theme\'s styles.', 'mobile-contact-bar' ); ?></em></footer>
         </div>
 

@@ -84,7 +84,7 @@ final class Options
                 {
                     $is_valid = $is_valid && array_reduce(
                         $contact['parameters'],
-                        function( $acc, $parameter ) use ( $parameter_keys ) { return $acc && empty( array_diff( $parameter_keys, array_keys( $parameter ))); }, true
+                        function ( $acc, $parameter ) use ( $parameter_keys ) { return $acc && empty( array_diff( $parameter_keys, array_keys( $parameter ))); }, true
                     );
                 }
             }
@@ -122,7 +122,7 @@ final class Options
      */
     public function is_valid_option_migrations( $migrations )
     {
-        return ( !! $migrations && is_array( $migrations ));
+        return ( $migrations && is_array( $migrations ));
     }
 
 

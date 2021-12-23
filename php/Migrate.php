@@ -2,8 +2,8 @@
 
 namespace MobileContactBar;
 
-use MobileContactBar\Settings\Input;
-use MobileContactBar\Styles\CSS;
+use MobileContactBar\Settings;
+use MobileContactBar\Styles;
 use DirectoryIterator;
 
 
@@ -38,16 +38,15 @@ final class Migrate
     public function run()
     {
         $this->run_all();
-        $this->refresh_settings();
+        $this->refresh_option_bar();
     }
 
 
     private function run_all()
     {
-logg($this->needed_migrations);
         foreach ( $this->needed_migrations as $migration => $success )
         {
-            $migration_class = Helper::build_class_name( $migration, 'Migrations' );
+            $migration_class = Helper::build_class_name( $this->versionToClassName( $migration ), 'Migrations' );
 
             if ( class_exists( $migration_class ))
             {
@@ -75,7 +74,7 @@ logg($this->needed_migrations);
             {
                 if ( 'file' === $fileinfo->getType() )
                 {
-                    $migrations[] = str_replace( ['.php'], '', $fileinfo->getFilename() );
+                    $migrations[] = $this->classNameToVersion( $fileinfo->getFilename() );
                 }
             }
         }
@@ -92,77 +91,62 @@ logg($this->needed_migrations);
     protected function needed_migrations()
     {
         $start_from = get_option( abmcb()->id . '_version', '0.0.0' );
-        $start_from = 'Migrate_' . str_replace( '.', '_', $start_from );
 
         $needed_migrations = array_filter(
             $this->available_migrations,
-            function( $available_migration ) use ( $start_from ) { return $available_migration > $start_from; }
+            function ( $available_migration ) use ( $start_from ) { return $available_migration > $start_from; }
         );
 
         return array_fill_keys( $needed_migrations, false );
     }
 
 
-    private function refresh_settings()
+    private function refresh_option_bar()
     {
-        $old_option_bar = get_option( abmcb()->id );
+        $refreshed_option_bar = [];
 
-        if ( !! $old_option_bar )
+        $option_bar = get_option( abmcb()->id );
+
+        if ( $option_bar && is_array( $option_bar ))
         {
-            $settings = $this->refreshed_settings();
-            $contacts = ( isset( $old_option_bar['contacts'] ) && is_array( $old_option_bar['contacts'] )) ? $old_option_bar['contacts'] : [];
-            $styles   = CSS::output( $settings, $contacts );
+            $default_settings = abmcb( Settings\Input::class )->default_settings();
+            $settings = $default_settings;
+
+            if ( isset( $option_bar['settings'] ) && is_array( $option_bar['settings'] ))
+            {
+                $settings = Helper::array_intersect_key_recursive( array_replace_recursive( $default_settings, $option_bar['settings'] ), $default_settings );
+            }
+
+            $sample_contacts = abmcb( Contacts\Input::class )->sample_contacts();
+            $contacts = array_map( function ( $contact ) { return array_replace( $contact, ['checked' => 0] ); }, $sample_contacts );
+
+            if ( isset( $option_bar['contacts'] ) && is_array( $option_bar['contacts'] ))
+            {
+                $contacts = $option_bar['contacts'];
+            }
+
+            $styles = Styles\CSS::output( $settings, $contacts );
     
-            $option_bar = [
+            $refreshed_option_bar = [
                 'settings' => $settings,
                 'contacts' => $contacts,
                 'styles'   => $styles,
             ];
-    
-            abmcb( Options::class )->update_option( $option_bar, abmcb()->id, 'default_option_bar', 'is_valid_option_bar' );
         }
+
+        abmcb( Options::class )->update_option( $refreshed_option_bar, abmcb()->id, 'default_option_bar', 'is_valid_option_bar' );
     }
 
 
-    protected function refreshed_settings()
+    private function classNameToVersion( $className )
     {
-        $settings = [];
+        $version = str_replace( ['Migrate_', '.php'], '', $className );
+        return str_replace( '_', '.', $version );
+    }
 
-        $default_settings = abmcb( Settings\Input::class )->default_settings();
-
-        $old_option_bar = get_option( abmcb()->id );
-
-        if ( isset( $old_option_bar['settings'] ) && is_array( $old_option_bar['settings'] ))
-        {
-            $old_settings = $old_option_bar['settings'];
-
-            foreach ( $default_settings as $section_id => $section )
-            {
-                if ( isset( $old_settings[$section_id] ))
-                {
-                    foreach ( $section as $setting_id => $setting )
-                    {
-                        if ( isset( $old_settings[$section_id][$setting_id] ))
-                        {
-                            $settings[$section_id][$setting_id] = $old_settings[$section_id][$setting_id];
-                        }
-                        else
-                        {
-                            $settings[$section_id][$setting_id] = $setting;
-                        }
-                    }
-                }
-                else
-                {
-                    $settings[$section_id] = $section;
-                }
-            }
-        }
-        else
-        {
-            $settings = $default_settings;
-        }
-
-        return $settings;
+    private function versionToClassName( $version )
+    {
+        $className = str_replace( '.', '_', $version );
+        return 'Migrate_' . $className;
     }
 }

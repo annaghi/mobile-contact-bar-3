@@ -240,6 +240,7 @@
                     $(contact).append($(data.summary)).append($(data.details));
 
                     $(contact).find('.color-picker').wpColorPicker();
+                    $(contact).addClass('mcb-opened').find('.mcb-action-toggle-details').attr('aria-expanded', 'true');
 
                     option.contactList.append(contact);
                 });

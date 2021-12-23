@@ -15,7 +15,7 @@ final class PublicController
     public function init()
     {
         $this->option_bar = abmcb( Options::class )->get_option( abmcb()->id, 'default_option_bar', 'is_valid_option_bar' );
-        $this->checked_contacts = array_filter( $this->option_bar['contacts'], function( $contact ) { return $contact['checked']; });
+        $this->checked_contacts = array_filter( $this->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
 
         if ( count( $this->checked_contacts ) > 0 )
         {
