@@ -25,7 +25,7 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 
 = Features =
 
-* Icons for social media, call-to-actions, or any links to web pages
+* SVG icons for social media, call-to-actions, or any links to web pages
 * Simple and intuitive styling with the aid of the Real-time Model
 * Built-in icon picker with [Font Awesome 5](https://fontawesome.com/) and [Tabler Icons](https://tabler-icons.io/) integration
 * Customizable URLs using query string parameters
@@ -125,18 +125,17 @@ You have full control over the single cookie which is called *mobile_contact_bar
 = 3.0.0 =
 * [Upgrade] Minimum supported WordPress version is 4.9.18
 * [Upgrade] Minimum supported PHP version is 5.6.20
+* [Upgrade] Replace webfonts with SVG icons
 * [Upgrade] Reimplement plugin
 * [Rename] `#mobile-contact-bar-outer` to `#mobile-contact-bar-nav`
 * [Add] Introduce Tabler Icons 1.48.0
 * [Add] Browser history back button
 + [Add] viber [viber-chat](https://wordpress.org/support/topic/problem-whit-link/)
-* [Add] Contact colors customization
-* [Add] Display label above / below and instead of the icon - [text-below-icon](https://wordpress.org/support/topic/text-below-icon/), [add-label-under-icons](https://wordpress.org/support/topic/add-label-under-icons/)
-* [Add] Toggle option for setting the bar to be closed as default - [toggle-state](https://wordpress.org/support/topic/toggle-state-4/), [default-toggle-state](https://wordpress.org/support/topic/default-toggle-state/)
-* [Add] Instead of Font Awesome's CSS classes use font-size for setting the icons' size
+* [Add] CSS ID selector and color customization to contacts
+* [Add] Display label above, below, and instead of the icon - [text-below-icon](https://wordpress.org/support/topic/text-below-icon/), [add-label-under-icons](https://wordpress.org/support/topic/add-label-under-icons/)
+* [Add] Option for setting the bar to be closed as default - [toggle-state](https://wordpress.org/support/topic/toggle-state-4/), [default-toggle-state](https://wordpress.org/support/topic/default-toggle-state/)
 * [Add] Let the + sign be optional in tel and sms protocols - [telephone-remove](https://wordpress.org/support/topic/telephone-remove/)
-* [Add] CSS class selectors for contacts, icons and labels
-* [Fix] Move migration process to `init` in order to run it on both admin and public faces
+* [Fix] Move migration process to `init` in order to run it on both admin and public pages
 * [Update] Font Awesome 5.15.4
 
 = 2.0.9 =
@@ -171,22 +170,22 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Update] Font Awesome 5.0.13
 
 = 2.0.0 =
-* [Upgrade] New data scheme for options in the database
+* [Upgrade] Reimplement plugin with new options in the database
 * [Upgrade] Font Awesome 5.0.12 - [can-add-support-fontawesome-v5-0-8](https://wordpress.org/support/topic/can-add-support-fontawesome-v5-0-8/)
 * [Rename] `mcb_front_render_html` to `mcb_public_render_html`
 * [Remove] `mcb_admin_update_contacts` and `mcb_admin_update_settings` filters
 * [Add] UI for managing contacts and their parameters (add, delete, modify) - [a-couple-of-more-feature-suggestions](https://wordpress.org/support/topic/a-couple-of-more-feature-suggestions/)
-* [Add] Option for setting label on the toggle Toggle:Label - [a-couple-of-more-feature-suggestions](https://wordpress.org/support/topic/a-couple-of-more-feature-suggestions/)
-* [Add] Option for adding space above/below the bar Bar:Space_Height - [contact-bar-overlaying-footer-credits-on-site](https://wordpress.org/support/topic/contact-bar-overlaying-footer-credits-on-site/), [position](https://wordpress.org/support/topic/position-20/), [hidding-menu](https://wordpress.org/support/topic/hidding-menu/)
+* [Add] Option for setting label on the toggle - [a-couple-of-more-feature-suggestions](https://wordpress.org/support/topic/a-couple-of-more-feature-suggestions/)
+* [Add] Option for adding space above/below the bar - [contact-bar-overlaying-footer-credits-on-site](https://wordpress.org/support/topic/contact-bar-overlaying-footer-credits-on-site/), [position](https://wordpress.org/support/topic/position-20/), [hidding-menu](https://wordpress.org/support/topic/hidding-menu/)
 * [Add] Storing toggle state in a cookie - [toggle-state](https://wordpress.org/support/topic/toggle-state/), [toggle-issue](https://wordpress.org/support/topic/toggle-issue/)
 * [Add] WhatsApp - [a-couple-of-feature-ideas](https://wordpress.org/support/topic/a-couple-of-feature-ideas/), [whatsapp-chat](https://wordpress.org/support/topic/whatsapp-chat/)
 * [Add] WooCommerce Cart with Item Counter - [a-couple-of-feature-ideas](https://wordpress.org/support/topic/a-couple-of-feature-ideas/)
 
 = 1.4.1 =
-* [Fix] Bar:Width and Bar:Alignment issues
+* [Fix] Bar width and bar alignment issues
 
 = 1.4.0 =
-* [Add] Option for setting Bar:Width - [bar-width-2](https://wordpress.org/support/topic/bar-width/)
+* [Add] Option for setting bar width - [bar-width-2](https://wordpress.org/support/topic/bar-width/)
 * [Add] Icon for Instagram - [no-instagram-icon](https://wordpress.org/support/topic/no-instagram-icon/)
 * [Fix] Plugin upgrade on network
 
@@ -194,7 +193,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Test] Tested up to WordPress 4.9
 
 = 1.3.0 =
-* [Add] Icon for texting - [text-with-pre-filled-option](https://wordpress.org/support/topic/text-with-pre-filled-option/)
+* [Add] Icon for texting (sms) - [text-with-pre-filled-option](https://wordpress.org/support/topic/text-with-pre-filled-option/)
 
 = 1.2.3 =
 * [Fix] array_filter() issue
