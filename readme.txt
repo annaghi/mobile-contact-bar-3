@@ -36,7 +36,7 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 
 = Special Icons =
 
-* Browser History Back button
+* Browser History Back and Forward buttons
 * Scroll to Top button
 * WooCommerce Cart with Item Counter
 
@@ -125,13 +125,13 @@ You have full control over the single cookie which is called *mobile_contact_bar
 = 3.0.0 =
 * [Upgrade] Minimum supported WordPress version is 4.9.18
 * [Upgrade] Minimum supported PHP version is 5.6.20
-* [Upgrade] Replace webfonts with SVG icons
+* [Upgrade] Replace icon fonts with SVG icons
 * [Upgrade] Reimplement plugin
 * [Rename] `#mobile-contact-bar-outer` to `#mobile-contact-bar-nav`
 * [Add] Introduce Tabler Icons 1.48.0
-* [Add] Browser history back button
+* [Add] Browser history back and forward buttons
 + [Add] viber [viber-chat](https://wordpress.org/support/topic/problem-whit-link/)
-* [Add] CSS ID selector and color customization to contacts
+* [Add] CSS ID selector and color customization
 * [Add] Display label above, below, and instead of the icon - [text-below-icon](https://wordpress.org/support/topic/text-below-icon/), [add-label-under-icons](https://wordpress.org/support/topic/add-label-under-icons/)
 * [Add] Option for setting the bar to be closed as default - [toggle-state](https://wordpress.org/support/topic/toggle-state-4/), [default-toggle-state](https://wordpress.org/support/topic/default-toggle-state/)
 * [Add] Let the + sign be optional in tel and sms protocols - [telephone-remove](https://wordpress.org/support/topic/telephone-remove/)
