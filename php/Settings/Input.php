@@ -428,19 +428,19 @@ final class Input
         $defaults = [];
         $input_fields = $this->input_fields();
 
-        foreach ( $input_fields as $section_id => $section )
+        foreach ( $input_fields as $section_key => $section )
         {
-            foreach ( $section as $field_id => $field )
+            foreach ( $section as $setting_key => $setting )
             {
-                if ( isset( $field['default'] ))
+                if ( isset( $setting['default'] ))
                 {
-                    $defaults[$section_id][$field_id] = $field['default'];
+                    $defaults[$section_key][$setting_key] = $setting['default'];
                 }
-                elseif ( isset( $field['options']))
+                elseif ( isset( $setting['options']))
                 {
-                    foreach ( $field['options'] as $option_id => $option )
+                    foreach ( $setting['options'] as $option_key => $option )
                     {
-                        $defaults[$section_id][$field_id][$option_id] = $option['default'];
+                        $defaults[$section_key][$setting_key][$option_key] = $option['default'];
                     }
                 }
             }
@@ -461,56 +461,56 @@ final class Input
         $sanitized_settings = [];
         $input_fields = $this->input_fields();
 
-        foreach ( $input_fields as $section_id => $section )
+        foreach ( $input_fields as $section_key => $section )
         {
             // Fill up with unused sections
-            if ( ! isset( $settings[$section_id] ))
+            if ( ! isset( $settings[$section_key] ))
             {
-                $sanitized_settings[$section_id] = [];
-                foreach ( $section as $field_id => $field )
+                $sanitized_settings[$section_key] = [];
+                foreach ( $section as $setting_key => $setting )
                 {
-                    $sanitized_settings[$section_id][$field_id] = $field['default'];
+                    $sanitized_settings[$section_key][$setting_key] = $setting['default'];
                 }
             }
 
-            foreach ( $section as $field_id => $field )
+            foreach ( $section as $setting_key => $setting )
             {
-                $value = ( isset( $settings[$section_id], $settings[$section_id][$field_id] ))
-                    ? $settings[$section_id][$field_id]
+                $value = ( isset( $settings[$section_key], $settings[$section_key][$setting_key] ))
+                    ? $settings[$section_key][$setting_key]
                     : null;
 
-                switch ( $field['type'] )
+                switch ( $setting['type'] )
                 {
                     case 'select':
                     case 'radio':
-                        $sanitized_settings[$section_id][$field_id] =
-                            ( in_array( $value, array_keys( $field['options'] )))
+                        $sanitized_settings[$section_key][$setting_key] =
+                            ( in_array( $value, array_keys( $setting['options'] )))
                             ? $value
-                            : $field['default'];
+                            : $setting['default'];
                         break;
 
                     case 'color-picker':
-                        $sanitized_settings[$section_id][$field_id] = $value === '' ? 'transparent' : $this->sanitize_color( $value );
+                        $sanitized_settings[$section_key][$setting_key] = $value === '' ? 'transparent' : $this->sanitize_color( $value );
                         break;
 
                     case 'checkbox':
                         $value = (int) $value;
-                        $sanitized_settings[$section_id][$field_id] =
+                        $sanitized_settings[$section_key][$setting_key] =
                             ( 0 === $value || 1 === $value )
                             ? $value
-                            : $field['default'];
+                            : $setting['default'];
                         break;
 
                     case 'checkbox-group':
-                        foreach( $field['options'] as $option_id => $option )
+                        foreach( $setting['options'] as $option_key => $option )
                         {
                             $value =
-                                isset( $settings[$section_id], $settings[$section_id][$field_id], $settings[$section_id][$field_id][$option_id] )
-                                ? $settings[$section_id][$field_id][$option_id]
+                                isset( $settings[$section_key], $settings[$section_key][$setting_key], $settings[$section_key][$setting_key][$option_key] )
+                                ? $settings[$section_key][$setting_key][$option_key]
                                 : null;
 
                             $value = (int) $value;
-                            $sanitized_settings[$section_id][$field_id][$option_id] =
+                            $sanitized_settings[$section_key][$setting_key][$option_key] =
                                 ( 0 === $value || 1 === $value )
                                 ? $value
                                 : $option['default'];
@@ -519,22 +519,22 @@ final class Input
 
                     case 'number':
                         $value = (int) $value;
-                        $sanitized_settings[$section_id][$field_id] =
-                            (( isset( $field['min'] ) && $value < $field['min'] ) || ( isset( $field['max'] ) && $value > $field['max'] ))
-                            ? $field['default']
+                        $sanitized_settings[$section_key][$setting_key] =
+                            (( isset( $setting['min'] ) && $value < $setting['min'] ) || ( isset( $setting['max'] ) && $value > $setting['max'] ))
+                            ? $setting['default']
                             : $value;
                         break;
 
                     case 'text':
-                        $sanitized_settings[$section_id][$field_id] = sanitize_text_field( $value );
+                        $sanitized_settings[$section_key][$setting_key] = sanitize_text_field( $value );
                         break;
 
                     case 'slider':
                         $value = (float) $value;
-                        $sanitized_settings[$section_id][$field_id] =
-                            ( $field['min'] <= $value || $value <= $field['max'] )
+                        $sanitized_settings[$section_key][$setting_key] =
+                            ( $setting['min'] <= $value || $value <= $setting['max'] )
                             ? $value
-                            : $field['default'];
+                            : $setting['default'];
                         break;
                 }
             }

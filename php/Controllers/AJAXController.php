@@ -30,24 +30,23 @@ final class AJAXController
     public function ajax_get_contact()
     {
         if ( $this->verify_nonce()
-            && isset( $_POST['contact_id'] )
-            && (int) $_POST['contact_id'] >= 0 )
+            && isset( $_POST['contact_key'] )
+            && (int) $_POST['contact_key'] >= 0 )
         {
             $data = [];
 
-            $contact_types = apply_filters( 'mcb_admin_contact_types', [] );
-            $contact = $contact_types['link'];
+            $contact = abmcb()->contact_types['link']->contact();
     
             $data['summary'] = abmcb( Contacts\View::class )->output_summary(
                 [
-                    'contact_id' => $_POST['contact_id'],
+                    'contact_key' => $_POST['contact_key'],
                     'contact' => $contact
                 ]
             );
 
             $data['details'] = abmcb( Contacts\View::class )->output_details(
                 [
-                    'contact_id' => $_POST['contact_id'],
+                    'contact_key' => $_POST['contact_key'],
                     'contact' => $contact
                 ]
             );
@@ -72,15 +71,15 @@ final class AJAXController
     public function ajax_get_parameter()
     {
         if ( $this->verify_nonce()
-            && isset( $_POST['contact_id'], $_POST['parameter_id'] )
-            && (int) $_POST['contact_id'] >= 0
-            && (int) $_POST['parameter_id'] >= 0 )
+            && isset( $_POST['contact_key'], $_POST['parameter_key'] )
+            && (int) $_POST['contact_key'] >= 0
+            && (int) $_POST['parameter_key'] >= 0 )
         {
             $data = abmcb( Contacts\View::class )->output_link_parameter(
                 [
-                    'contact_id'     => $_POST['contact_id'],
+                    'contact_key'    => $_POST['contact_key'],
                     'parameter_type' => ['field' => 'text'],
-                    'parameter_id'   => $_POST['parameter_id'],
+                    'parameter_key'  => $_POST['parameter_key'],
                     'parameter'      => ['key' => '', 'value' => '']
                 ]
             );
@@ -107,8 +106,8 @@ final class AJAXController
         $contact_types = abmcb()->contact_types;
 
         if ( $this->verify_nonce()
-            && isset( $_POST['contact_id'], $_POST['contact_type'] )
-            && (int) $_POST['contact_id'] >= 0
+            && isset( $_POST['contact_key'], $_POST['contact_type'] )
+            && (int) $_POST['contact_key'] >= 0
             && in_array( $_POST['contact_type'], array_keys( $contact_types )))
         {
             $data = [];
@@ -118,7 +117,7 @@ final class AJAXController
             $data['contact_type'] = $contact_type;
             $data['uri'] = abmcb( Contacts\View::class )->output_details_uri(
                 [
-                    'contact_id' => $_POST['contact_id'],
+                    'contact_key' => $_POST['contact_key'],
                     'contact' => $contact_type,
                     'contact_type' => $contact_type
                 ]
@@ -126,7 +125,7 @@ final class AJAXController
 
             $data['parameters'] = abmcb( Contacts\View::class )->output_parameters(
                 [
-                    'contact_id' => $_POST['contact_id'],
+                    'contact_key' => $_POST['contact_key'],
                     'contact' => $contact_type,
                     'contact_type' => $contact_type
                 ]

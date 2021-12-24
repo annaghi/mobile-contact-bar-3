@@ -25,6 +25,11 @@ final class Helper
     }
 
 
+    /**
+     * @param  array $array1
+     * @param  array $array2
+     * @return array
+     */
     public static function array_intersect_key_recursive( $array1, $array2 )
     {
         $array1 = array_intersect_key( $array1, $array2 );
@@ -39,6 +44,11 @@ final class Helper
     }
 
 
+    /**
+     * @param  array $array1
+     * @param  array $array2
+     * @return array
+     */
     public static function array_diff_assoc_recursive( $array1, $array2 )
     {
         foreach ( $array1 as $key => $value )
@@ -47,29 +57,29 @@ final class Helper
             {
                 if ( ! isset( $array2[$key] ))
                 {
-                    $difference[$key] = $value;
+                    $diff[$key] = $value;
                 }
                 elseif ( ! is_array( $array2[$key] ))
                 {
-                    $difference[$key] = $value;
+                    $diff[$key] = $value;
                 }
                 else
                 {
                     $new_diff = self::array_diff_assoc_recursive( $value, $array2[$key] );
                     if ( ! empty( $new_diff ))
                     {
-                        $difference[$key] = $new_diff;
+                        $diff[$key] = $new_diff;
                     }
                 }
             }
             elseif ( ! isset( $array2[$key] ))
             {
-                $difference[$key] = $value;
+                $diff[$key] = $value;
             }
         }
 
-        return ( isset( $difference ) && is_array( $difference ))
-            ? $difference
+        return ( isset( $diff ) && is_array( $diff ))
+            ? $diff
             : [];
     }
 

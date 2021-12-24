@@ -29,7 +29,11 @@ final class Migrate
 
     public function __construct()
     {
-        $this->option_migrations = abmcb( Options::class )->get_option( abmcb()->id . '_migrations', 'default_option_migrations', 'is_valid_option_migrations' );
+        $this->option_migrations = abmcb( Options::class )->get_option(
+            abmcb()->id . '_migrations',
+            'default_option_migrations',
+            'is_valid_option_migrations'
+        );
         $this->available_migrations = $this->available_migrations();
         $this->needed_migrations = $this->needed_migrations();
     }
@@ -55,7 +59,12 @@ final class Migrate
         }
 
         $migrations = $this->option_migrations + $this->needed_migrations;
-        abmcb( Options::class )->update_option( $migrations, abmcb()->id . '_migrations', 'default_option_migrations', 'is_valid_option_migrations' );
+        abmcb( Options::class )->update_option(
+            $migrations,
+            abmcb()->id . '_migrations',
+            'default_option_migrations',
+            'is_valid_option_migrations'
+        );
     }
 
 
@@ -114,7 +123,10 @@ final class Migrate
 
             if ( isset( $option_bar['settings'] ) && is_array( $option_bar['settings'] ))
             {
-                $settings = Helper::array_intersect_key_recursive( array_replace_recursive( $default_settings, $option_bar['settings'] ), $default_settings );
+                $settings = Helper::array_intersect_key_recursive(
+                    array_replace_recursive( $default_settings, $option_bar['settings'] ),
+                    $default_settings
+                );
             }
 
             $sample_contacts = abmcb( Contacts\Input::class )->sample_contacts();
@@ -134,7 +146,12 @@ final class Migrate
             ];
         }
 
-        abmcb( Options::class )->update_option( $refreshed_option_bar, abmcb()->id, 'default_option_bar', 'is_valid_option_bar' );
+        abmcb( Options::class )->update_option(
+            $refreshed_option_bar,
+            abmcb()->id,
+            'default_option_bar',
+            'is_valid_option_bar'
+        );
     }
 
 

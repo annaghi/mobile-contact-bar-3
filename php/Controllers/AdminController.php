@@ -93,7 +93,11 @@ final class AdminController
      */
     public function admin_init()
     {
-        $this->option_bar = abmcb( Options::class )->get_option( abmcb()->id, 'default_option_bar', 'is_valid_option_bar' );
+        $this->option_bar = abmcb( Options::class )->get_option(
+            abmcb()->id,
+            'default_option_bar',
+            'is_valid_option_bar'
+        );
 
         register_setting(
             abmcb()->id . '_group',
@@ -167,7 +171,6 @@ final class AdminController
                 'default'
             );
 
-            // Add all meta box classes to this class list except the Contact List meta box
             if ( 'mcb-section-contacts' !== $section['id'] )
             {
                 add_filter( 'postbox_classes_' . abmcb()->page_suffix . '_' . $section['id'], [$this, 'postbox_classes'] );
@@ -177,7 +180,7 @@ final class AdminController
         $user_id = get_current_user_id();
         $closed_meta_boxes = get_user_meta( 'closedpostboxes_' . abmcb()->page_suffix, $user_id );
 
-        // Close meta boxes for the first time user
+        // Close all meta boxes for the first time user
         if ( ! $closed_meta_boxes )
         {
             $meta_boxes = array_keys( $wp_settings_sections[abmcb()->id] );
@@ -243,7 +246,7 @@ final class AdminController
 
     
     /**
-     * Adds classes to meta boxes.
+     * Adds 'mcb-settings' class to meta boxes.
      *
      * @param  array $classes Array of classes
      * @return array          Updated array of classes

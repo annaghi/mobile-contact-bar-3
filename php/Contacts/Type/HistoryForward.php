@@ -5,7 +5,7 @@ namespace MobileContactBar\Contacts\Type;
 use MobileContactBar\Contacts\Input;
 
 
-final class HistoryBack extends TypeAbstract
+final class HistoryForward extends TypeAbstract
 {
     public function __construct()
     {
@@ -18,15 +18,15 @@ final class HistoryBack extends TypeAbstract
     {
         return [
             'type'        => $this->type,
-            'title'       => __( 'History Back', 'mobile-contact-bar' ),
+            'title'       => __( 'History Forward', 'mobile-contact-bar' ),
             'checked'     => 0,
             'brand'       => 'fa',
-            'icon'        => 'solid long-arrow-alt-left',
+            'icon'        => 'solid long-arrow-alt-right',
             'label'       => '',
             'uri'         => '',
             'placeholder' => '',
             'custom'      => abmcb( Input::class )->default_customization(),
-            'desc_type'   => __( 'Inline JavaScript runs the history.back() method.', 'mobile-contact-bar' ),
+            'desc_type'   => __( 'Inline JavaScript runs the history.forward() method.', 'mobile-contact-bar' ),
             'desc_uri'    => '',
         ];
     }
@@ -45,7 +45,7 @@ final class HistoryBack extends TypeAbstract
             document.addEventListener('DOMContentLoaded', function() {
                 document.scripts['mobile-contact-bar-<?php echo esc_attr( $this->type ); ?>'].parentElement.firstChild.onclick = function( event ) {
                     event.preventDefault();
-                    window.history.back();
+                    window.history.forward();
                 }
             });
         })();

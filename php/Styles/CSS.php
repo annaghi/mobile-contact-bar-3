@@ -176,7 +176,7 @@ final class CSS
         $styles .= 'fill:currentColor;';
         $styles .= '}';
 
-        $styles .= '.mobile-contact-bar-icon svg{';
+        $styles .= '.mobile-contact-bar-icon{';
         $styles .= 'color:' . $items['icon_color'] . ';';
         // $styles .= 'font-size:' . $items['icon_size'] . 'em;';
         $styles .= 'width:2em;';
@@ -259,7 +259,7 @@ final class CSS
 
 
         // Toggle
-        if ( !! $toggle && $toggle['is_render'] && $bar['is_fixed'] )
+        if ( $toggle && $toggle['is_render'] && $bar['is_fixed'] )
         {
             if ( $toggle['is_animation'] )
             {
@@ -310,7 +310,7 @@ final class CSS
 
 
         // Badges
-        if ( !! $badges )
+        if ( $badges )
         {
             $styles .= '.mobile-contact-bar-badge{';
             $styles .= 'background-color:' . $badges['background_color'] . ';';
@@ -460,6 +460,7 @@ final class CSS
                     $styles .= 'transform:translateX(-50%);';
                     $styles .= '}';
                     break;
+
                 case 'right':
                     $styles .= '#mobile-contact-bar{';
                     $styles .= 'left:100%;';
@@ -472,30 +473,30 @@ final class CSS
 
         foreach ( $contacts as $contact )
         {
-            if ( !! $contact['id'] )
+            if ( $contact['id'] )
             {
                 $styles .= '#' . $contact['id'] . '.mobile-contact-bar-item{';
-                $styles .= 'background-color:' . $contact['custom']['background_color'] . ';';
+                $styles .= 'background-color:' . $contact['custom']['background_color']['primary'] . ';';
                 $styles .= '}';
 
-                $styles .= '#' . $contact['id'] . ' .mobile-contact-bar-icon svg{';
-                $styles .= 'color:' . $contact['custom']['icon_color'] . ';';
+                $styles .= '#' . $contact['id'] . ' .mobile-contact-bar-icon{';
+                $styles .= 'color:' . $contact['custom']['icon_color']['primary'] . ';';
                 $styles .= '}';
 
                 $styles .= '#' . $contact['id'] . ' .mobile-contact-bar-label{';
-                $styles .= 'color:' . $contact['custom']['font_color'] . ';';
+                $styles .= 'color:' . $contact['custom']['font_color']['primary'] . ';';
                 $styles .= '}';
 
                 if ( $items['is_borders']['top'] )
                 {
                     $styles .= '#' . $contact['id'] . '.mobile-contact-bar-item{';
-                    $styles .= 'border-top-color:' . $contact['custom']['border_color'] . ';';
+                    $styles .= 'border-top-color:' . $contact['custom']['border_color']['primary'] . ';';
                     $styles .= '}';
                 }
                 if ( $items['is_borders']['bottom'] )
                 {
                     $styles .= '#' . $contact['id'] . '.mobile-contact-bar-item{';
-                    $styles .= 'border-bottom-color:' . $contact['custom']['border_color'] . ';';
+                    $styles .= 'border-bottom-color:' . $contact['custom']['border_color']['primary'] . ';';
                     $styles .= '}';
                 }
             }

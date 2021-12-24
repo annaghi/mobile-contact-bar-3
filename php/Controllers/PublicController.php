@@ -14,7 +14,11 @@ final class PublicController
 
     public function init()
     {
-        $this->option_bar = abmcb( Options::class )->get_option( abmcb()->id, 'default_option_bar', 'is_valid_option_bar' );
+        $this->option_bar = abmcb( Options::class )->get_option(
+            abmcb()->id,
+            'default_option_bar',
+            'is_valid_option_bar'
+        );
         $this->checked_contacts = array_filter( $this->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
 
         if ( count( $this->checked_contacts ) > 0 )
@@ -75,7 +79,7 @@ final class PublicController
             add_action( 'mcb_public_render_html', [$this, 'mcb_public_render_html'], 10, 3 );
         }
 
-        do_action( 'mcb_public_render_html', $this->option_bar['settings'], $this->option_bar['contacts'], $this->checked_contacts );
+        do_action( 'mcb_public_render_html', $this->option_bar['settings'], $this->checked_contacts );
     }
 
 
@@ -83,14 +87,14 @@ final class PublicController
      * Renders contact bar.
      *
      * @param  array $settings Associative array of settings
-     * @param  array $contacts Associative array of displayable contacts
+     * @param  array $contacts Associative array of checked contacts
      * @return void
      */
-    public function mcb_public_render_html( $settings, $contacts, $checked_contacts )
+    public function mcb_public_render_html( $settings, $contacts )
     {
         if ( 1 === did_action( 'mcb_public_render_html' ))
         {    
-            echo abmcb( Output::class )->bar( $settings, $contacts, $checked_contacts );
+            echo abmcb( Output::class )->bar( $settings, $contacts );
         }
     }
 }

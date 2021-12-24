@@ -160,7 +160,7 @@
         return this[0].className.split(/\s+/);
     };
 
-    $.fn.maxId = function (rowType) {
+    $.fn.maxKey = function (rowType) {
         var id = -1,
             attr = 'data-' + rowType + '-id';
 
@@ -203,9 +203,9 @@
                 event.stopPropagation();
 
                 if (this.checked) {
-                    $(this).closest('.mcb-summary').addClass('mcb-checked');
+                    $(this).closest('.mcb-contact').addClass('mcb-checked');
                 } else {
-                    $(this).closest('.mcb-summary').removeClass('mcb-checked');
+                    $(this).closest('.mcb-contact').removeClass('mcb-checked');
                 }
             });
 
@@ -214,7 +214,7 @@
                 event.preventDefault();
                 event.stopPropagation();
 
-                var contactId = option.contactList.children('.mcb-contact').maxId('contact') + 1;
+                var contactKey = option.contactList.children('.mcb-contact').maxKey('contact') + 1;
 
                 $.ajax({
                     url: ajaxurl,
@@ -222,7 +222,7 @@
                     data: {
                         action: 'mcb_ajax_get_contact',
                         nonce: mobile_contact_bar.nonce,
-                        contact_id: contactId
+                        contact_key: contactKey
                     }
                 }).done(function (response) {
                     if (!response) {
@@ -235,7 +235,7 @@
 
                     var contact = document.createElement('div');
                     $(contact).addClass('mcb-contact');
-                    $(contact).attr('data-contact-id', contactId);
+                    $(contact).attr('data-contact-key', contactKey);
 
                     $(contact).append($(data.summary)).append($(data.details));
 
@@ -294,7 +294,7 @@
                 event.stopPropagation();
 
                 var contact = $(this).closest('.mcb-contact');
-                var contactId = contact.attr('data-contact-id');
+                var contactKey = contact.attr('data-contact-key');
 
                 $.ajax({
                     url: ajaxurl,
@@ -302,7 +302,7 @@
                     data: {
                         action: 'mcb_ajax_get_contact_type',
                         nonce: mobile_contact_bar.nonce,
-                        contact_id: contactId,
+                        contact_key: contactKey,
                         contact_type: $(this).val()
                     }
                 }).done(function (response) {
@@ -314,6 +314,9 @@
                         return false;
                     }
 
+                    ['historyback', 'historyforward', 'scrolltotop'].includes(data.contact_type.type)
+                        ? contact.find('.mcb-summary-uri').text('#')
+                        : contact.find('.mcb-summary-uri').text('(no URI)');
                     contact.find('.mcb-details-uri').replaceWith($(data.uri));
                     contact.find('.mcb-builtin-parameters, .mcb-custom-parameters, .mcb-builtin-parameter, .mcb-custom-parameter').detach();
                     contact.find('.mcb-details-uri').after($(data.parameters));
@@ -350,39 +353,31 @@
 
                 iconList = $('#mcb-icon-picker-container ul');
 
-                function circular_rolling_window_forward(path, icons) {
-                    var lastIcon = iconList.children().last().attr('data-icon'),
-                        firstIconIndex = icons.indexOf(lastIcon) + 1;
-
-                    firstIconIndex = firstIconIndex === icons.length ? 0 : firstIconIndex;
-
-                    update_picker_page2(path, icons, firstIconIndex);
-                }
-
-                function circular_rolling_window_backward(path, icons) {
+                function ti_circular_window_forward(path, icons) {
                     var firstIcon = iconList.children().first().attr('data-icon'),
-                        firstIconIndex = icons.indexOf(firstIcon) - 30;
+                        firstIconIndex = icons.indexOf(firstIcon),
+                        nextPageFirstIconIndex = firstIconIndex + 30 < icons.length ? firstIconIndex + 30 : 0;
 
-                    firstIconIndex = firstIconIndex < 0 ? icons.length + firstIconIndex : firstIconIndex;
-
-                    update_picker_page2(path, icons, firstIconIndex);
+                    ti_update_picker_window(path, icons, nextPageFirstIconIndex);
                 }
 
-                function update_picker_page(path, icons, firstIconIndex) {
-                    var sliderIndex, icon;
+                function ti_circular_window_backward(path, icons) {
+                    var firstIcon = iconList.children().first().attr('data-icon'),
+                        firstIconIndex = icons.indexOf(firstIcon),
+                        prevPageFirstIconIndex = 0;
 
-                    iconList.children().each(function (index) {
-                        sliderIndex = firstIconIndex + index;
-                        icon = icons[sliderIndex % icons.length];
-                        $(this).attr('data-icon', icon);
-                        $(this).find('a').prop('title', icon);
-                        $(this)
-                            .find('use')
-                            .attr('xlink:href', path + '#tabler-' + icon);
-                    });
+                    if (firstIconIndex === 0 && icons.length % 30 === 0) {
+                        prevPageFirstIconIndex = icons.length - 30;
+                    } else if (firstIconIndex === 0 && icons.length % 30 > 0) {
+                        prevPageFirstIconIndex = icons.length - (icons.length % 30);
+                    } else if (firstIconIndex >= 30) {
+                        prevPageFirstIconIndex = firstIconIndex - 30;
+                    }
+
+                    ti_update_picker_window(path, icons, prevPageFirstIconIndex);
                 }
 
-                function update_picker_page2(path, icons, firstIconIndex) {
+                function ti_update_picker_window(path, icons, firstIconIndex) {
                     var sliderIndex, icon;
 
                     iconList.children().each(function (index) {
@@ -401,10 +396,19 @@
                     });
                 }
 
-                function filtered_ti_icons(searchTerm) {
+                function ti_filtered_icons(searchTerm) {
                     return searchTerm === ''
                         ? mobile_contact_bar.ti_icons
                         : mobile_contact_bar.ti_icons.filter(function (icon) {
+                              return icon.includes(searchTerm);
+                          });
+                }
+
+                console.log(mobile_contact_bar.fa_icons);
+                function fa_filtered_icons(searchTerm) {
+                    return searchTerm === ''
+                        ? mobile_contact_bar.fa_icons
+                        : mobile_contact_bar.fa_icons.filter(function (icon) {
                               return icon.includes(searchTerm);
                           });
                 }
@@ -421,9 +425,9 @@
 
                         if ('ti' === $(this).attr('data-brand')) {
                             var path = mobile_contact_bar.page_url + 'assets/icons/ti/tabler-sprite.svg';
-                            var icons = filtered_ti_icons(searchTerm);
+                            var icons = ti_filtered_icons(searchTerm);
 
-                            update_picker_page2(path, icons, 0);
+                            ti_update_picker_window(path, icons, 0);
                         } else {
                         }
                     });
@@ -489,12 +493,12 @@
 
                         if ('ti' === $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand')) {
                             var path = mobile_contact_bar.page_url + 'assets/icons/ti/tabler-sprite.svg';
-                            var icons = filtered_ti_icons(searchTerm);
+                            var icons = ti_filtered_icons(searchTerm);
 
                             if ('back' === $(this).attr('data-direction')) {
-                                circular_rolling_window_backward(path, icons);
+                                ti_circular_window_backward(path, icons);
                             } else {
-                                circular_rolling_window_forward(path, icons);
+                                ti_circular_window_forward(path, icons);
                             }
                         } else {
                         }
@@ -511,9 +515,9 @@
 
                         if ('ti' === $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand')) {
                             var path = mobile_contact_bar.page_url + 'assets/icons/ti/tabler-sprite.svg';
-                            var icons = filtered_ti_icons(searchTerm);
+                            var icons = ti_filtered_icons(searchTerm);
 
-                            update_picker_page2(path, icons, 0);
+                            ti_update_picker_window(path, icons, 0);
                         } else {
                         }
                     });
@@ -593,8 +597,8 @@
                 var contact = $(this).closest('.mcb-contact');
                 var parameters = contact.find('.mcb-custom-parameter');
 
-                var contactId = contact.attr('data-contact-id'),
-                    parameterId = parameters.maxId('parameter') + 1;
+                var contactKey = contact.attr('data-contact-key'),
+                    parameterKey = parameters.maxKey('parameter') + 1;
 
                 $.ajax({
                     url: ajaxurl,
@@ -602,8 +606,8 @@
                     data: {
                         action: 'mcb_ajax_get_parameter',
                         nonce: mobile_contact_bar.nonce,
-                        contact_id: contactId,
-                        parameter_id: parameterId
+                        contact_key: contactKey,
+                        parameter_key: parameterKey
                     }
                 }).done(function (response) {
                     if (!response) {

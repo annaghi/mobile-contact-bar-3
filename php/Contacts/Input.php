@@ -186,13 +186,13 @@ final class Input
         $defaults = [];
         $input_fields = $this->custom_input_fields();
 
-        foreach ( $input_fields as $section_id => $section )
+        foreach ( $input_fields as $custom_key => $custom )
         {
-            foreach ( $section as $field_id => $field )
+            foreach ( $custom as $field_key => $field )
             {
                 if ( isset( $field['default'] ))
                 {
-                    $defaults[$section_id][$field_id] = $field['default'];
+                    $defaults[$custom_key][$field_key] = $field['default'];
                 }
             }
         }
@@ -211,50 +211,49 @@ final class Input
     {
         $sanitized_contacts = [];
 
-        $contact_types = apply_filters( 'mcb_admin_contact_types', [] );
-        $contact_types_keys = array_keys( $contact_types );
+        $contact_types_keys = array_keys( abmcb()->contact_types );
         $input_fields = $this->custom_input_fields();
 
-        foreach ( $contacts as $contact_id => &$contact )
+        foreach ( $contacts as $contact_key => &$contact )
         {
             // remove contact if invalid 'brand'
             if ( ! empty( $contact['brand'] ) && ! in_array( $contact['brand'], ['fa', 'ti'] ))
             {
-                unset( $contacts[$contact_id] );
+                unset( $contacts[$contact_key] );
             }
 
             // remove contact if 'icon' does not exist in FA or TI, but leave empty icons
             if ( ! empty( $contact['icon'] ) && ! $this->in_fa_icons( $contact['icon'] ) && ! $this->in_ti_icons( $contact['icon'] ))
             {
-                unset( $contacts[$contact_id] );
+                unset( $contacts[$contact_key] );
             }
 
             // remove contact if invalid 'type'
             if ( ! in_array( $contact['type'], $contact_types_keys ))
             {
-                unset( $contacts[$contact_id] );
+                unset( $contacts[$contact_key] );
             }
 
             // reindex 'parameters'
             if ( isset( $contact['parameters'] ) && ! empty( $contact['parameters'] ))
             {
-                $contacts[$contact_id]['parameters'] = array_values( $contacts[$contact_id]['parameters'] );
+                $contacts[$contact_key]['parameters'] = array_values( $contacts[$contact_key]['parameters'] );
             }
 
             // add 'parameters' for 'link' contact type if it was empty
             if ( 'link' === $contact['type'] && ! isset( $contact['parameters'] ))
             {
-                $contacts[$contact_id]['parameters'] = [];
+                $contacts[$contact_key]['parameters'] = [];
             }
         }
         unset( $contact );
 
         // merge and sanitize contacts
-        foreach ( $contacts as $contact_id => $contact )
+        foreach ( $contacts as $contact_key => $contact )
         {
             $sanitized_contact = [];
 
-            $contact_type = $contact_types[$contact['type']];
+            $contact_type = abmcb()->contact_types[$contact['type']]->contact();
 
             // 'type' is already sanitized
             $sanitized_contact['type'] = $contact['type'];
@@ -275,13 +274,15 @@ final class Input
             $sanitized_contact['uri'] = Validator::sanitize_contact_uri( $contact['uri'] );
 
             // sanitize 'id'
-            $custom = $contact['custom'];
-            $is_any_color = array_filter( $custom, function ( $color ) { return ! empty( $color['primary'] || ! empty( $color['secondary'] )); });
+            $is_any_color = array_filter(
+                $contact['custom'],
+                function ( $color ) { return ! empty( $color['primary'] || ! empty( $color['secondary'] )); }
+            );
 
-            $value = sanitize_key( $contact['id'] );
+            $value = sanitize_key( str_replace( ['#', '.'], '', $contact['id'] ));
             if ( empty( $value ) && $is_any_color )
             {
-                $sanitized_contact['id'] = 'mcb-sample-id-' . $contact_id;
+                $sanitized_contact['id'] = 'mcb-sample-id-' . $contact_key;
             }
             else
             {
@@ -289,15 +290,15 @@ final class Input
             }
 
             // sanitize customization
-            foreach ( $input_fields as $section_id => $section )
+            foreach ( $input_fields as $custom_key => $custom )
             {  
-                foreach ( $section as $field_id => $field )
+                foreach ( $custom as $field_key => $field )
                 {
-                    $value = ( isset( $custom[$section_id], $custom[$section_id][$field_id] ))
-                        ? abmcb( Settings\Input::class )->sanitize_color( $custom[$section_id][$field_id] )
+                    $value = ( isset( $contact['custom'][$custom_key], $contact['custom'][$custom_key][$field_key] ))
+                        ? abmcb( Settings\Input::class )->sanitize_color( $contact['custom'][$custom_key][$field_key] )
                         : null;
 
-                    $sanitized_contact['custom'][$section_id][$field_id] = ( abmcb( Settings\Input::class )->is_color( $value ))
+                    $sanitized_contact['custom'][$custom_key][$field_key] = ( abmcb( Settings\Input::class )->is_color( $value ))
                         ? $value
                         : '';
                 }
@@ -308,7 +309,7 @@ final class Input
             {
                 $sanitized_contact['parameters'] = [];
 
-                foreach ( $contact['parameters'] as $parameter_id => $parameter )
+                foreach ( $contact['parameters'] as $parameter_key => $parameter )
                 {
                     if ( 'link' === $contact['type'] )
                     {
@@ -322,13 +323,13 @@ final class Input
                     }
 
                     // sanitize 'key'
-                    $sanitized_contact['parameters'][$parameter_id]['key'] = sanitize_key( $parameter['key'] );
+                    $sanitized_contact['parameters'][$parameter_key]['key'] = sanitize_key( $parameter['key'] );
 
                     // santitize 'value'
-                    $sanitized_contact['parameters'][$parameter_id]['value'] = Validator::sanitize_parameter_value( $parameter['value'], $field );
+                    $sanitized_contact['parameters'][$parameter_key]['value'] = Validator::sanitize_parameter_value( $parameter['value'], $field );
                 }
             }
-            $sanitized_contacts[$contact_id] = $sanitized_contact;
+            $sanitized_contacts[$contact_key] = $sanitized_contact;
         }
 
         // reindex

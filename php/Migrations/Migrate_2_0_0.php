@@ -207,7 +207,7 @@ final class Migrate_2_0_0
                             ],
                         ];
 
-                        foreach( $contact['parameters'] as $parameter_id => &$parameter )
+                        foreach( $contact['parameters'] as &$parameter )
                         {
                             $key = $parameter['key'];
 

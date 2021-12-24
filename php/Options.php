@@ -64,7 +64,8 @@ final class Options
     {
         $is_valid = true;
 
-        $contact_keys = ['type', 'id', 'checked', 'brand', 'icon', 'label', 'uri', 'parameters', 'custom'];
+        // TODO Nicer validation
+        $contact_keys = ['type', 'id', 'checked', 'brand', 'icon', 'label', 'uri', 'custom', 'parameters'];
         $custom_keys = ['background_color', 'border_color', 'icon_color', 'label_color'];
         $parameter_keys = ['key', 'value'];
 
@@ -84,7 +85,11 @@ final class Options
                 {
                     $is_valid = $is_valid && array_reduce(
                         $contact['parameters'],
-                        function ( $acc, $parameter ) use ( $parameter_keys ) { return $acc && empty( array_diff( $parameter_keys, array_keys( $parameter ))); }, true
+                        function ( $acc, $parameter ) use ( $parameter_keys )
+                        {
+                            return $acc && empty( array_diff( $parameter_keys, array_keys( $parameter )));
+                        },
+                        true
                     );
                 }
             }
@@ -107,7 +112,7 @@ final class Options
     {
        $settings = abmcb( Settings\Input::class )->default_settings();
        $contacts = abmcb( Contacts\Input::class )->sample_contacts();
-       $styles = Styles\CSS::output( $settings, $contacts );
+       $styles   = Styles\CSS::output( $settings, $contacts );
 
        return [
            'settings' => $settings,
@@ -118,6 +123,7 @@ final class Options
 
 
     /**
+     * @param  array $migrations
      * @return array
      */
     public function is_valid_option_migrations( $migrations )
@@ -126,6 +132,9 @@ final class Options
     }
 
 
+    /**
+     * @return array
+     */
     public function default_option_migrations()
     {
         return [];

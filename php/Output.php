@@ -7,7 +7,7 @@ use MobileContactBar\Contacts\Validator;
 
 final class Output
 {
-    public function bar( $settings, $contacts, $checked_contacts )
+    public function bar( $settings, $contacts )
     {
         $out = '';
            
@@ -58,10 +58,10 @@ final class Output
         $out .= '<ul>';
         $new_tab = ( $settings['bar']['is_new_tab'] ) ? 'target="_blank" rel="noopener"' : '';
 
-        foreach ( $checked_contacts as $contact )
+        foreach ( $contacts as $contact )
         {
-            $id = isset( $contact['custom'], $contact['custom']['id'] )
-                ? sprintf( 'id="%s"', esc_attr( $contact['custom']['id'] ))
+            $id = isset( $contact['id'] )
+                ? sprintf( 'id="%s"', esc_attr( $contact['id'] ))
                 : '';
 
             $uri = Validator::escape_contact_uri( $contact['uri'] );
