@@ -24,6 +24,54 @@
     text-decoration: none;
 }
 
+/* HEADER */
+
+.mcb-header {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+#mcb-badge-length {
+    font-size: 13px;
+    line-height: 1;
+    border-radius: 50%;
+    display: inline-block;
+    min-width: 1em;
+    padding: 0.3em;
+    text-align: center;
+}
+
+#mcb-badge-display {
+    font-size: 13px;
+    line-height: 1;
+    border-radius: 10px;
+    display: inline-block;
+    padding: 0.3em 0.5em;
+}
+
+.mcb-badge-enabled {
+    color: #ffffff;
+    background-color: #00a32a;
+    border: 2px solid #00a32a;
+}
+.mcb-badge-enabled-secondary {
+    color: #00a32a;
+    background-color: transparent;
+    border: 2px solid #00a32a;
+}
+.mcb-badge-disabled {
+    color: #ffffff;
+    background-color: #d63638;
+    border: 2px solid #d63638;
+}
+.mcb-badge-disabled-secondary {
+    color: #d63638;
+    background-color: transparent;
+    border: 2px solid #d63638;
+}
+
 /* LIVE PREVIEW */
 
 #mcb-live-preview iframe {

@@ -17,7 +17,10 @@ final class AdminController
      */
     public $option_bar = [];
 
- 
+
+    public $l10n = [];
+
+
     /**
      * Adds option page to the admin menu.
      * Hooks the option page related screen tabs.
@@ -47,9 +50,16 @@ final class AdminController
     public function callback_render_page()
     {
         $checked_contacts = array_filter( $this->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
+        $bar_device = ( 'none' === $this->option_bar['settings']['bar']['device'] ) ? $this->l10n['disabled'] : $this->l10n['enabled'];
+        $badge_length = ( 0 == count( $checked_contacts )) ? 'mcb-badge-disabled' : 'mcb-badge-enabled';
+        $badge_display = ( 'none' === $this->option_bar['settings']['bar']['device'] ) ? 'mcb-badge-disabled' : 'mcb-badge-enabled';
         ?>
         <div class="wrap">
-            <h2><?php esc_html_e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?></h2>
+            <h2 class="mcb-header">
+                <?php esc_html_e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?>
+                <span id="mcb-badge-length" class="<?php echo $badge_length; ?>"><?php echo count( $checked_contacts ); ?></span>
+                <span id="mcb-badge-display" class="<?php echo $badge_display; ?>"><?php echo esc_html( $bar_device ); ?></span>
+            </h2>
 
             <form id="mcb-form" action="options.php" method="post">
                 <?php
@@ -98,6 +108,11 @@ final class AdminController
             'default_option_bar',
             'is_valid_option_bar'
         );
+
+        $this->l10n = [
+            'disabled' => __( 'disabled', 'mobile-contact-bar' ),
+            'enabled'  => __( 'enabled', 'mobile-contact-bar' ),
+        ];
 
         register_setting(
             abmcb()->id . '_group',
@@ -515,6 +530,7 @@ final class AdminController
                     'page_url' => plugin_dir_url( abmcb()->file ),
                     'ti_icons' => Contacts\Input::ti_icons(),
                     'fa_icons' => Contacts\Input::fa_icons(),
+                    'l10n'     => $this->l10n,
                 ]
             );
 

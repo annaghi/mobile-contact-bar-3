@@ -198,6 +198,7 @@
             });
 
             // Highlight checked contact
+            // Change badge-count
             option.contactList.on('change', '.mcb-summary-checkbox input', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -207,6 +208,32 @@
                 } else {
                     $(this).closest('.mcb-contact').removeClass('mcb-checked');
                 }
+
+                var checked_contacts_length = option.contactList.find('.mcb-checked').length;
+                0 === checked_contacts_length
+                    ? $('#mcb-badge-length').removeClass().addClass('mcb-badge-disabled-secondary').text(0)
+                    : $('#mcb-badge-length').removeClass().addClass('mcb-badge-enabled-secondary').text(checked_contacts_length);
+            });
+
+            // Change badge-state
+            $('#mcb-bar-device').on('change', 'input', function () {
+                'mcb-bar-device--none' === $(this).attr('id')
+                    ? $('#mcb-badge-display').removeClass().addClass('mcb-badge-disabled-secondary').text(mobile_contact_bar.l10n.disabled)
+                    : $('#mcb-badge-display').removeClass().addClass('mcb-badge-enabled-secondary').text(mobile_contact_bar.l10n.enabled);
+            });
+
+            option.contactList.on('change', '.mcb-summary-checkbox input', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (this.checked) {
+                    $(this).closest('.mcb-contact').addClass('mcb-checked');
+                } else {
+                    $(this).closest('.mcb-contact').removeClass('mcb-checked');
+                }
+                option.contactList.find('.mcb-checked').length === 0
+                    ? $('#mcb-bar-count').removeClass().addClass('mcb-disabled-secondary')
+                    : $('#mcb-bar-count').removeClass().addClass('mcb-enabled-secondary');
             });
 
             // Add contact
