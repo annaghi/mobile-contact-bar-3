@@ -26,7 +26,7 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 = Features =
 
 * SVG icons for social media, call-to-actions, or any links to web pages
-* Simple and intuitive styling with the aid of the Real-time Model
+* Simple and intuitive editing with live preview
 * Built-in icon picker with [Font Awesome 5](https://fontawesome.com/) and [Tabler Icons](https://tabler-icons.io/) integration
 * Customizable URLs using query string parameters
 * No data collection from your website's visitors

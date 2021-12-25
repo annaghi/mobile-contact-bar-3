@@ -6,7 +6,7 @@ use MobileContactBar\Options;
 use MobileContactBar\Output;
 
 
-final class PublicController
+final class IFrameController
 {
     public $option_bar = [];
     public $checked_contacts = [];

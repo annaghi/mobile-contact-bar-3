@@ -152,9 +152,9 @@ final class AdminController
         global $wp_settings_sections;
 
         add_meta_box(
-            'mcb-section-model',
-            __( 'Real-time Model', 'mobile-contact-bar' ),
-            [$this, 'callback_render_model'],
+            'mcb-section-live-preview',
+            __( 'Live Preview' ),
+            [$this, 'callback_render_live_preview'],
             abmcb()->page_suffix,
             'side',
             'default'
@@ -173,45 +173,45 @@ final class AdminController
 
             if ( 'mcb-section-contacts' !== $section['id'] )
             {
-                add_filter( 'postbox_classes_' . abmcb()->page_suffix . '_' . $section['id'], [$this, 'postbox_classes'] );
+                add_filter( 'postbox_classes_' . abmcb()->page_suffix . '_' . $section['id'], [$this, 'postbox_classes_mcb_settings'] );
             }
         }
 
-        $user_id = get_current_user_id();
-        $closed_meta_boxes = get_user_meta( 'closedpostboxes_' . abmcb()->page_suffix, $user_id );
-
         // Close all meta boxes for the first time user
+        $user_id = get_current_user_id();
+        $closed_meta_boxes = get_user_meta( $user_id, 'closedpostboxes_' . abmcb()->page_suffix );
+
         if ( ! $closed_meta_boxes )
         {
-            $meta_boxes = array_keys( $wp_settings_sections[abmcb()->id] );
+            $meta_boxes = array_merge( array_keys( $wp_settings_sections[abmcb()->id] ), ['mcb-section-live-preview'] );
             update_user_meta( $user_id, 'closedpostboxes_' . abmcb()->page_suffix, $meta_boxes, true );
+            foreach( $meta_boxes as $meta_box )
+            {
+                add_filter( 'postbox_classes_' . abmcb()->page_suffix . '_' . $meta_box, [$this, 'postbox_classes_closed'] );
+            }
         }
     }
 
 
     /**
-     * Renders Real-time Model meta box.
+     * Renders Live Preview meta box.
      * 
      * @return void
      */
-    public function callback_render_model()
+    public function callback_render_live_preview()
     {
         ?>
-        <div id="mcb-model">
-            <?php include_once plugin_dir_path( abmcb()->file ) . 'assets/images/real-time-model.svg'; ?>
-            <footer><em><?php _e( 'The model is an approximation. A lot depends on your active theme\'s styles.', 'mobile-contact-bar' ); ?></em></footer>
-        </div>
-
-        <div id="mcb-about">
-            <h2><?php _e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?> <?php echo abmcb()->version; ?></h2>
-            <p><?php _e( abmcb()->description, 'mobile-contact-bar' ); ?></p>
-            <ul>
-                <li><a href="<?php echo esc_url( abmcb()->plugin_uri . '#developers' ); ?>" target="_blank" rel="noopener"><?php _e( 'Changelog', 'mobile-contact-bar' ); ?></a></li>
-                <li><a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/mobile-contact-bar' ); ?>" target="_blank" rel="noopener"><?php _e( 'Forum', 'mobile-contact-bar' ); ?></a></li>
-            </ul>
-            <footer>
-                <?php printf( __( 'Thank you for networking with <a href="%s">MCB</a>.', 'mobile-contact-bar' ), esc_url( abmcb()->plugin_uri )); ?>
-            </footer>
+        <div id="mcb-live-preview">
+            <iframe src="<?php echo add_query_arg( ['mobile-contact-bar-iframe' => true], get_home_url() ); ?>" title="<?php esc_attr_e( 'Live Preview' ); ?>"></iframe>
+            <script>
+            (function() {
+                jQuery('#mcb-live-preview iframe').on('load', function () {
+                    jQuery(this).contents().find('html').css({ 'pointer-events': 'none' });
+                    jQuery(this).contents().find('body').css({ 'pointer-events': 'none' });
+                    jQuery(this).contents().find('#mobile-contact-bar').css({ 'pointer-events': 'all' });
+                });
+            })(jQuery);
+            </script>
         </div>
         <?php
     }
@@ -251,9 +251,22 @@ final class AdminController
      * @param  array $classes Array of classes
      * @return array          Updated array of classes
      */
-    public function postbox_classes( $classes )
+    public function postbox_classes_mcb_settings( $classes )
     {
         $classes[] = 'mcb-settings';
+        return $classes;
+    }
+
+
+    /**
+     * Adds 'closed' class to Live Preview meta box.
+     *
+     * @param  array $classes Array of classes
+     * @return array          Updated array of classes
+     */
+    public function postbox_classes_closed( $classes )
+    {
+        $classes[] = 'closed';
         return $classes;
     }
 

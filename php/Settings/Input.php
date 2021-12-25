@@ -490,7 +490,7 @@ final class Input
                         break;
 
                     case 'color-picker':
-                        $sanitized_settings[$section_key][$setting_key] = $value === '' ? 'transparent' : $this->sanitize_color( $value );
+                        $sanitized_settings[$section_key][$setting_key] = $this->sanitize_color( $value );
                         break;
 
                     case 'checkbox':

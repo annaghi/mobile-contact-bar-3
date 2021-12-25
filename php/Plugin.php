@@ -4,6 +4,7 @@ namespace MobileContactBar;
 
 use MobileContactBar\Controllers\AdminController;
 use MobileContactBar\Controllers\AJAXController;
+use MobileContactBar\Controllers\IFrameController;
 use MobileContactBar\Controllers\NoticeController;
 use MobileContactBar\Controllers\PublicController;
 use DirectoryIterator;
@@ -38,6 +39,7 @@ final class Plugin extends Container
      */
     protected $admin  = null;
     protected $ajax   = null;
+    protected $iframe = null;
     protected $notice = null;
     protected $public = null;
 
@@ -201,7 +203,13 @@ final class Plugin extends Container
             }
         }
 
-        if ( ! $this->is_admin() )
+        if ( isset( $_GET['mobile-contact-bar-iframe'] ))
+        {
+            $this->iframe = abmcb( IFrameController::class );
+            add_action( 'init', [$this->iframe, 'init'] );
+        }
+
+        if ( ! $this->is_admin() && ! wp_doing_ajax() && ! isset( $_GET['mobile-contact-bar-iframe'] ))
         {
             $this->public = abmcb( PublicController::class );
             add_action( 'init', [$this->public, 'init'] );
@@ -325,7 +333,7 @@ final class Plugin extends Container
      * 
      * @return bool
      */
-    private function is_admin()
+    public function is_admin()
     {
         return ( is_admin() || is_network_admin() );
     }

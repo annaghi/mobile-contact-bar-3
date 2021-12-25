@@ -137,7 +137,7 @@ final class View
                     '<input type="text" class="color-picker" id="mcb-%1$s-%2$s" name="' . $prefix . '[%1$s][%2$s]" data-alpha-enabled="true" value="%3$s">',
                     esc_attr( $section_key ),
                     esc_attr( $setting_key ),
-                    esc_attr(( $value === 'transparent' ) ? '' : $value )
+                    esc_attr( $value )
                 );
                 break;
 
