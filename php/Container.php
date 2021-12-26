@@ -10,9 +10,16 @@ use ReflectionParameter;
 
 abstract class Container
 {
+    /**
+     * @var array
+     */
     protected $instances = [];
 
 
+    /**
+     * @param  mixed $class
+     * @return mixed
+     */
     public function make( $class )
     {
         if ( isset( $this->instances[$class] ))
@@ -25,6 +32,11 @@ abstract class Container
     }
 
 
+    /**
+     * @param  string $class
+     * @return mixed
+     * @throws Exception
+     */
     private function resolve( $class )
     {
         $reflector = new ReflectionClass( $class );
@@ -48,6 +60,10 @@ abstract class Container
     }
 
 
+    /**
+     * @param ReflectionParameter[] $parameters
+     * @return array
+     */
     private function get_dependencies( $parameters )
     {
         $dependencies = [];
@@ -69,6 +85,11 @@ abstract class Container
     }
 
 
+    /**
+     * @param  ReflectionParameter $parameter
+     * @return mixed
+     * @throws Exception
+     */
     private function resolve_non_class( ReflectionParameter $parameter )
     {
         if ( $parameter->isDefaultValueAvailable())
@@ -80,11 +101,15 @@ abstract class Container
     }
 
     
+    /**
+     * @param  ReflectionParameter $parameter
+     * @return null|ReflectionClass|ReflectionNamedType|ReflectionType
+     */
     private function get_class( $parameter )
     {
-        if ( version_compare( phpversion(), '8', '<' ))
+        if ( version_compare( PHP_VERSION, '8', '<' ))
         {
-            return $parameter->getClass(); // @compat PHP < 8
+            return $parameter->getClass();
         }
         return $parameter->getType();
     }
