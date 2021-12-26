@@ -18,10 +18,12 @@ final class HistoryForward extends TypeAbstract
     {
         return [
             'type'        => $this->type,
+            'id'          => '',
             'title'       => __( 'History Forward', 'mobile-contact-bar' ),
             'checked'     => 0,
             'brand'       => 'fa',
-            'icon'        => 'solid long-arrow-alt-right',
+            'group'       => 'solid',
+            'icon'        => 'long-arrow-alt-right',
             'label'       => '',
             'uri'         => '',
             'placeholder' => '',

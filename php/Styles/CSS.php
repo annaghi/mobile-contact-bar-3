@@ -175,15 +175,18 @@ final class CSS
         $styles .= 'line-height: 50%;';
         $styles .= '}';
 
+        $styles .= '.mobile-contact-bar-icon svg{';
+        $styles .= 'width:2em;';
+        $styles .= 'height:2em;';
+        // $styles .= 'font-size:' . $items['icon_size'] . 'em;';
+        $styles .= '}';
+
         $styles .= '.mobile-contact-bar-fa svg{';
         $styles .= 'fill:currentColor;';
         $styles .= '}';
 
         $styles .= '.mobile-contact-bar-icon{';
         $styles .= ( empty( $items['icon_color'] )) ? '' : 'color:' . $items['icon_color'] . ';';
-        // $styles .= 'font-size:' . $items['icon_size'] . 'em;';
-        $styles .= 'width:2em;';
-        $styles .= 'height:2em;';
         $styles .= '}';
 
         $styles .= '.mobile-contact-bar-label{';
@@ -501,10 +504,10 @@ final class CSS
                     $styles .= '}';
                 }
 
-                if ( ! empty( $contact['custom']['font_color']['primary'] ))
+                if ( ! empty( $contact['custom']['label_color']['primary'] ))
                 {
                     $styles .= '#' . $contact['id'] . ' .mobile-contact-bar-label{';
-                    $styles .= 'color:' . $contact['custom']['font_color']['primary'] . ';';
+                    $styles .= 'color:' . $contact['custom']['label_color']['primary'] . ';';
                     $styles .= '}';
                 }
 

@@ -17,10 +17,12 @@ final class SMS extends TypeAbstract
     {
         return [
             'type'        => $this->type,
+            'id'          => '',
             'title'       => 'SMS',
             'checked'     => 0,
             'brand'       => 'fa',
-            'icon'        => 'solid sms',
+            'group'       => 'solid',
+            'icon'        => 'sms',
             'label'       => __( 'Phone Number for texting', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'sms:15417543010 or sms:+15417543010',

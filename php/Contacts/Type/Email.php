@@ -17,10 +17,12 @@ final class Email extends TypeAbstract
     {
         return [
             'type'        => $this->type,
+            'id'          => '',
             'title'       => __( 'Email', 'mobile-contact-bar' ),
             'checked'     => 0,
             'brand'       => 'fa',
-            'icon'        => 'regular envelope',
+            'group'       => 'regular',
+            'icon'        => 'envelope',
             'label'       => __( 'Email', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'mailto:username@example.com',

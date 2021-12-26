@@ -211,6 +211,7 @@ final class Migrate_3_0_0
                 $contact['id'] = '';
                 $contact['checked'] = $contact_v2['checked'];
                 $contact['brand'] = 'fa';
+                $contact['group'] = $this->migrate_group( $contact_v2['icon'] ); 
                 $contact['icon'] = $this->migrate_icon( $contact_v2['icon'] );
                 $contact['label'] = '';
                 $contact['uri'] = ( $contact_v2['uri'] === '#' ) ? '' : $contact_v2['uri'];
@@ -314,24 +315,39 @@ final class Migrate_3_0_0
     }
 
 
-    private function migrate_icon( $icon )
+    private function migrate_group( $icon )
     {
         $names = preg_split( '/\s+/', $icon, -1, PREG_SPLIT_NO_EMPTY );
-        $names[1] = str_replace( 'fa-', '', $names[1] );
+        if ( ! is_array( $names ) || count( $names ) !== 2 )
+        {
+            return '';
+        }
 
         switch ( $names[0] )
         {
             case 'fas':
-                return 'solid ' . $names[1];
+                return 'solid';
 
             case 'far':
-                return 'regular ' . $names[1];
+                return 'regular';
 
             case 'fab':
-                return 'brands ' . $names[1];
+                return 'brands';
 
             default:
                 return '';
         }
+    }
+
+
+    private function migrate_icon( $icon )
+    {
+        $names = preg_split( '/\s+/', $icon, -1, PREG_SPLIT_NO_EMPTY );
+        if ( ! is_array( $names ) || count( $names ) !== 2 )
+        {
+            return '';
+        }
+
+        return str_replace( 'fa-', '', $names[1] );
     }
 }

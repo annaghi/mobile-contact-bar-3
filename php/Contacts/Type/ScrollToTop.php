@@ -18,10 +18,12 @@ final class ScrollToTop extends TypeAbstract
     {
         return [
             'type'        => $this->type,
+            'id'          => '',
             'title'       => __( 'Scroll to Top', 'mobile-contact-bar' ),
             'checked'     => 0,
             'brand'       => 'fa',
-            'icon'        => 'solid chevron-up',
+            'group'       => 'solid',
+            'icon'        => 'chevron-up',
             'label'       => __( 'Scroll To Top', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'some placeholder',

@@ -17,10 +17,12 @@ final class Link extends TypeAbstract
     {
         return [
             'type'        => $this->type,
+            'id'          => '',
             'title'       => __( 'Link', 'mobile-contact-bar' ),
             'checked'     => 0,
             'brand'       => 'fa',
-            'icon'        => 'solid external-link-square-alt',
+            'group'       => 'solid',
+            'icon'        => 'external-link-square-alt',
             'label'       => '',
             'uri'         => '',
             'placeholder' => 'http(s)://www.somesite.com/path',

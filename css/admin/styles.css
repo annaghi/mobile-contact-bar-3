@@ -56,19 +56,9 @@
     background-color: #00a32a;
     border: 2px solid #00a32a;
 }
-.mcb-badge-enabled-secondary {
-    color: #00a32a;
-    background-color: transparent;
-    border: 2px solid #00a32a;
-}
 .mcb-badge-disabled {
     color: #ffffff;
     background-color: #d63638;
-    border: 2px solid #d63638;
-}
-.mcb-badge-disabled-secondary {
-    color: #d63638;
-    background-color: transparent;
     border: 2px solid #d63638;
 }
 
@@ -246,7 +236,7 @@
 
 .mcb-blank-icon {
     font-family: Consolas, Monaco, monospace;
-    width: 2em;
+    width: 1.6em;
 }
 
 .mcb-summary-icon svg,
@@ -284,6 +274,10 @@
     cursor: pointer;
     color: #a2aab2;
 }
+.mcb-opened .mcb-sortable-draggable {
+    color: #cbd0d4;
+}
+
 .mcb-contact.ui-sortable-placeholder {
     background-color: #cccccc;
 }
@@ -477,7 +471,8 @@
     border-bottom: #ededed solid 1px;
 }
 .mcb-custom-parameter .mcb-parameter-key,
-.mcb-builtin-parameter .mcb-parameter-value {
+.mcb-builtin-parameter .mcb-parameter-value,
+.mcb-close-contact {
     border-top: #ededed solid 1px;
 }
 

@@ -18,10 +18,12 @@ final class HistoryBack extends TypeAbstract
     {
         return [
             'type'        => $this->type,
+            'id'          => '',
             'title'       => __( 'History Back', 'mobile-contact-bar' ),
             'checked'     => 0,
             'brand'       => 'fa',
-            'icon'        => 'solid long-arrow-alt-left',
+            'group'       => 'solid',
+            'icon'        => 'long-arrow-alt-left',
             'label'       => '',
             'uri'         => '',
             'placeholder' => '',

@@ -19,6 +19,9 @@ final class IFrameController
      */
     public function init()
     {
+        remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+        remove_action( 'wp_print_styles', 'print_emoji_styles' );
+
         $this->option_bar = abmcb( Options::class )->get_option(
             abmcb()->id,
             'default_option_bar',
@@ -185,8 +188,7 @@ final class IFrameController
             // TODO move validation to Options
             if ( 'fa' === $contact['brand'] )
             {
-                $names = preg_split( '/\s+/', $contact['icon'], -1, PREG_SPLIT_NO_EMPTY );
-                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $names[0] . '/' . $names[1] . '.svg';
+                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg';
                 $svg = file_get_contents( $path );
 
                 $icon = sprintf( '<span class="mobile-contact-bar-icon mobile-contact-bar-fa">%s%s</span>', $svg, $badge );

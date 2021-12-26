@@ -161,17 +161,91 @@
     };
 
     $.fn.maxKey = function (rowType) {
-        var id = -1,
-            attr = 'data-' + rowType + '-id';
+        var key = -1,
+            attr = 'data-' + rowType + '-key';
 
         if (0 === this.length) {
-            return id;
+            return key;
         } else {
             this.each(function () {
-                id = Math.max(id, $(this).attr(attr));
+                key = Math.max(key, $(this).attr(attr));
             });
-            return id;
+            return key;
         }
+    };
+
+    var filtered_icons = function (icons, searchTerm) {
+        return searchTerm === ''
+            ? icons
+            : icons.filter(function (icon) {
+                  return icon.includes(searchTerm);
+              });
+    };
+
+    var circular_window_forward = function (iconList, path, icons, fn) {
+        var firstIcon = iconList.children().first().attr('data-icon'),
+            firstIconIndex = icons.indexOf(firstIcon),
+            nextPageFirstIconIndex = firstIconIndex + 30 < icons.length ? firstIconIndex + 30 : 0;
+
+        fn(iconList, path, icons, nextPageFirstIconIndex);
+    };
+
+    var circular_window_backward = function (iconList, path, icons, fn) {
+        var firstIcon = iconList.children().first().attr('data-icon'),
+            firstIconIndex = icons.indexOf(firstIcon),
+            prevPageFirstIconIndex = 0;
+
+        if (firstIconIndex === 0 && icons.length % 30 === 0) {
+            prevPageFirstIconIndex = icons.length - 30;
+        } else if (firstIconIndex === 0 && icons.length % 30 > 0) {
+            prevPageFirstIconIndex = icons.length - (icons.length % 30);
+        } else if (firstIconIndex >= 30) {
+            prevPageFirstIconIndex = firstIconIndex - 30;
+        }
+
+        fn(iconList, path, icons, prevPageFirstIconIndex);
+    };
+
+    var ti_update_picker_window = function (iconList, path, icons, firstIconIndex) {
+        var sliderIndex, icon;
+
+        iconList.children().each(function (index) {
+            sliderIndex = firstIconIndex + index;
+            icon = icons[sliderIndex];
+            if (undefined === icon) {
+                $(this).css({ display: 'none' });
+            } else {
+                $(this).css({ display: 'inline-block' });
+                $(this).attr('data-icon', icon);
+                $(this).find('a').prop('title', icon);
+                $(this)
+                    .find('use')
+                    .attr('xlink:href', path + '#tabler-' + icon);
+            }
+        });
+    };
+
+    var fa_update_picker_window = function (iconList, path, icons, firstIconIndex) {
+        var sliderIndex,
+            icon,
+            names = [];
+
+        iconList.children().each(function (index) {
+            sliderIndex = firstIconIndex + index;
+            icon = icons[sliderIndex];
+
+            if (undefined === icon) {
+                $(this).css({ display: 'none' });
+            } else {
+                names = icon.split(' ');
+                $(this).css({ display: 'inline-block' });
+                $(this).attr('data-icon', icon);
+                $(this).find('a').prop('title', names[1]);
+                $(this)
+                    .find('use')
+                    .attr('xlink:href', path + names[0] + '.svg#' + names[1]);
+            }
+        });
     };
 
     var option = {
@@ -190,6 +264,15 @@
         },
 
         onReady: function () {
+            // Icon lists
+            var ti_icons = mobile_contact_bar.ti_icons;
+            var fa_icons = [];
+            $.each(mobile_contact_bar.fa_icons, function (section, icons) {
+                $.each(icons, function (index, icon) {
+                    fa_icons.push(section + ' ' + icon);
+                });
+            });
+
             // Slider value
             $('.mcb-settings').on('input change', '.mcb-slider-input', function () {
                 $(this)
@@ -198,7 +281,7 @@
             });
 
             // Highlight checked contact
-            // Change badge-count
+            // Update badge-length
             option.contactList.on('change', '.mcb-summary-checkbox input', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -211,15 +294,15 @@
 
                 var checked_contacts_length = option.contactList.find('.mcb-checked').length;
                 0 === checked_contacts_length
-                    ? $('#mcb-badge-length').removeClass().addClass('mcb-badge-disabled-secondary').text(0)
-                    : $('#mcb-badge-length').removeClass().addClass('mcb-badge-enabled-secondary').text(checked_contacts_length);
+                    ? $('#mcb-badge-length').removeClass().addClass('mcb-badge-disabled').text(0)
+                    : $('#mcb-badge-length').removeClass().addClass('mcb-badge-enabled').text(checked_contacts_length);
             });
 
-            // Change badge-state
+            // Update badge-display
             $('#mcb-bar-device').on('change', 'input', function () {
                 'mcb-bar-device--none' === $(this).attr('id')
-                    ? $('#mcb-badge-display').removeClass().addClass('mcb-badge-disabled-secondary').text(mobile_contact_bar.l10n.disabled)
-                    : $('#mcb-badge-display').removeClass().addClass('mcb-badge-enabled-secondary').text(mobile_contact_bar.l10n.enabled);
+                    ? $('#mcb-badge-display').removeClass().addClass('mcb-badge-disabled').text(mobile_contact_bar.l10n.disabled)
+                    : $('#mcb-badge-display').removeClass().addClass('mcb-badge-enabled').text(mobile_contact_bar.l10n.enabled);
             });
 
             option.contactList.on('change', '.mcb-summary-checkbox input', function (event) {
@@ -232,8 +315,8 @@
                     $(this).closest('.mcb-contact').removeClass('mcb-checked');
                 }
                 option.contactList.find('.mcb-checked').length === 0
-                    ? $('#mcb-bar-count').removeClass().addClass('mcb-disabled-secondary')
-                    : $('#mcb-bar-count').removeClass().addClass('mcb-enabled-secondary');
+                    ? $('#mcb-bar-count').removeClass().addClass('mcb-disabled')
+                    : $('#mcb-bar-count').removeClass().addClass('mcb-enabled');
             });
 
             // Add contact
@@ -287,6 +370,14 @@
                 event.stopPropagation();
 
                 $(this).toggleAriaExpanded().closest('.mcb-contact').toggleClass('mcb-opened');
+            });
+
+            // Close contact
+            option.contactList.on('click', '.mcb-action-close-contact', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                $(this).closest('.mcb-contact').removeClass('mcb-opened').find('.mcb-action-toggle-details').attr('aria-expanded', 'false');
             });
 
             // Order higher
@@ -361,6 +452,10 @@
                 }, 100);
 
                 var iconList,
+                    ti_path = mobile_contact_bar.page_url + 'assets/icons/ti/tabler-sprite.svg',
+                    fa_path = mobile_contact_bar.page_url + 'assets/icons/fa/sprites/',
+                    ti_filtered_icons = [],
+                    fa_filtered_icons = [],
                     searchTerm = '',
                     button = $(this),
                     offset = button.offset(),
@@ -380,65 +475,8 @@
 
                 iconList = $('#mcb-icon-picker-container ul');
 
-                function ti_circular_window_forward(path, icons) {
-                    var firstIcon = iconList.children().first().attr('data-icon'),
-                        firstIconIndex = icons.indexOf(firstIcon),
-                        nextPageFirstIconIndex = firstIconIndex + 30 < icons.length ? firstIconIndex + 30 : 0;
-
-                    ti_update_picker_window(path, icons, nextPageFirstIconIndex);
-                }
-
-                function ti_circular_window_backward(path, icons) {
-                    var firstIcon = iconList.children().first().attr('data-icon'),
-                        firstIconIndex = icons.indexOf(firstIcon),
-                        prevPageFirstIconIndex = 0;
-
-                    if (firstIconIndex === 0 && icons.length % 30 === 0) {
-                        prevPageFirstIconIndex = icons.length - 30;
-                    } else if (firstIconIndex === 0 && icons.length % 30 > 0) {
-                        prevPageFirstIconIndex = icons.length - (icons.length % 30);
-                    } else if (firstIconIndex >= 30) {
-                        prevPageFirstIconIndex = firstIconIndex - 30;
-                    }
-
-                    ti_update_picker_window(path, icons, prevPageFirstIconIndex);
-                }
-
-                function ti_update_picker_window(path, icons, firstIconIndex) {
-                    var sliderIndex, icon;
-
-                    iconList.children().each(function (index) {
-                        sliderIndex = firstIconIndex + index;
-                        icon = icons[sliderIndex];
-                        if (undefined === icon) {
-                            $(this).css({ display: 'none' });
-                        } else {
-                            $(this).css({ display: 'inline-block' });
-                            $(this).attr('data-icon', icon);
-                            $(this).find('a').prop('title', icon);
-                            $(this)
-                                .find('use')
-                                .attr('xlink:href', path + '#tabler-' + icon);
-                        }
-                    });
-                }
-
-                function ti_filtered_icons(searchTerm) {
-                    return searchTerm === ''
-                        ? mobile_contact_bar.ti_icons
-                        : mobile_contact_bar.ti_icons.filter(function (icon) {
-                              return icon.includes(searchTerm);
-                          });
-                }
-
-                console.log(mobile_contact_bar.fa_icons);
-                function fa_filtered_icons(searchTerm) {
-                    return searchTerm === ''
-                        ? mobile_contact_bar.fa_icons
-                        : mobile_contact_bar.fa_icons.filter(function (icon) {
-                              return icon.includes(searchTerm);
-                          });
-                }
+                fa_filtered_icons = filtered_icons(fa_icons, searchTerm);
+                ti_filtered_icons = filtered_icons(ti_icons, searchTerm);
 
                 // Change brand
                 $('body')
@@ -451,11 +489,9 @@
                         $(this).addClass('mcb-icon-brand-active');
 
                         if ('ti' === $(this).attr('data-brand')) {
-                            var path = mobile_contact_bar.page_url + 'assets/icons/ti/tabler-sprite.svg';
-                            var icons = ti_filtered_icons(searchTerm);
-
-                            ti_update_picker_window(path, icons, 0);
+                            ti_update_picker_window(iconList, ti_path, ti_filtered_icons, 0);
                         } else {
+                            fa_update_picker_window(iconList, fa_path, fa_filtered_icons, 0);
                         }
                     });
 
@@ -467,46 +503,76 @@
                         event.stopPropagation();
 
                         var brand = $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand');
-                        var icon = $(this).prop('title');
+                        var icon = $(this).closest('li').attr('data-icon');
+                        var names = 'fa' === brand ? icon.split(' ') : ['', icon];
 
-                        if ('ti' === brand) {
-                            $.ajax({
-                                url: ajaxurl,
-                                method: 'POST',
-                                data: {
-                                    action: 'mcb_ajax_get_icon',
-                                    nonce: mobile_contact_bar.nonce,
-                                    brand: brand,
-                                    icon: icon
-                                }
-                            }).done(function (response) {
-                                if (!response) {
-                                    return false;
-                                }
-                                var svg = JSON.parse(response);
-                                if (svg.length <= 0) {
-                                    return false;
-                                }
-
+                        $.ajax({
+                            url: ajaxurl,
+                            method: 'POST',
+                            data: {
+                                action: 'mcb_ajax_get_icon',
+                                nonce: mobile_contact_bar.nonce,
+                                brand: brand,
+                                group: names[0],
+                                icon: names[1]
+                            }
+                        }).done(function (response) {
+                            if (!response) {
+                                return false;
+                            }
+                            var svg = JSON.parse(response);
+                            if (svg.length <= 0) {
                                 contact
                                     .find('input[name$="[brand]"]')
-                                    .val(brand)
+                                    .val('')
+                                    .end()
+                                    .find('input[name$="[group]"]')
+                                    .val('')
                                     .end()
                                     .find('input[name$="[icon]"]')
-                                    .val(icon)
+                                    .val('')
                                     .end()
                                     .find('.mcb-summary-icon')
-                                    .removeClass('mcb-blank-icon, mcb-fa')
-                                    .empty()
-                                    .append(svg)
+                                    .removeClass('mcb-fa')
+                                    .addClass('mcb-blank-icon')
+                                    .text('--')
                                     .end()
                                     .find('.mcb-details-icon span')
-                                    .removeClass('mcb-blank-icon, mcb-fa')
-                                    .empty()
-                                    .append(svg);
-                            });
-                        } else {
-                        }
+                                    .removeClass('mcb-fa')
+                                    .addClass('mcb-blank-icon')
+                                    .text('--');
+                                return false;
+                            }
+
+                            contact
+                                .find('input[name$="[brand]"]')
+                                .val(brand)
+                                .end()
+                                .find('input[name$="[group]"]')
+                                .val(names[0])
+                                .end()
+                                .find('input[name$="[icon]"]')
+                                .val(names[1])
+                                .end()
+                                .find('.mcb-summary-icon')
+                                .removeClass(['mcb-blank-icon', 'mcb-fa'])
+                                .empty()
+                                .append(svg)
+                                .end()
+                                .find('.mcb-details-icon span')
+                                .removeClass(['mcb-blank-icon', 'mcb-fa'])
+                                .empty()
+                                .append(svg);
+
+                            if ('fa' === brand) {
+                                contact
+                                    .find('.mcb-summary-icon')
+                                    .addClass('mcb-fa')
+                                    .end()
+                                    .find('.mcb-details-icon span')
+                                    .addClass('mcb-fa');
+                            }
+                        });
 
                         $('#mcb-icon-picker-container').remove();
                     });
@@ -518,16 +584,20 @@
                         event.preventDefault();
                         event.stopPropagation();
 
-                        if ('ti' === $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand')) {
-                            var path = mobile_contact_bar.page_url + 'assets/icons/ti/tabler-sprite.svg';
-                            var icons = ti_filtered_icons(searchTerm);
+                        var brand = $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand');
 
+                        if ('ti' === brand) {
                             if ('back' === $(this).attr('data-direction')) {
-                                ti_circular_window_backward(path, icons);
+                                circular_window_backward(iconList, ti_path, ti_filtered_icons, ti_update_picker_window);
                             } else {
-                                ti_circular_window_forward(path, icons);
+                                circular_window_forward(iconList, ti_path, ti_filtered_icons, ti_update_picker_window);
                             }
-                        } else {
+                        } else if ('fa' === brand) {
+                            if ('back' === $(this).attr('data-direction')) {
+                                circular_window_backward(iconList, fa_path, fa_filtered_icons, fa_update_picker_window);
+                            } else {
+                                circular_window_forward(iconList, fa_path, fa_filtered_icons, fa_update_picker_window);
+                            }
                         }
                     });
 
@@ -538,14 +608,16 @@
                         event.preventDefault();
                         event.stopPropagation();
 
+                        var brand = $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand');
+
                         searchTerm = $(this).val();
+                        ti_filtered_icons = filtered_icons(ti_icons, searchTerm);
+                        fa_filtered_icons = filtered_icons(fa_icons, searchTerm);
 
-                        if ('ti' === $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand')) {
-                            var path = mobile_contact_bar.page_url + 'assets/icons/ti/tabler-sprite.svg';
-                            var icons = ti_filtered_icons(searchTerm);
-
-                            ti_update_picker_window(path, icons, 0);
-                        } else {
+                        if ('ti' === brand) {
+                            ti_update_picker_window(iconList, ti_path, ti_filtered_icons, 0);
+                        } else if ('fa' === brand) {
+                            fa_update_picker_window(iconList, fa_path, fa_filtered_icons, 0);
                         }
                     });
 
@@ -590,12 +662,14 @@
                     .val('')
                     .end()
                     .find('.mcb-summary-icon')
+                    .removeClass('mcb-fa')
                     .addClass('mcb-blank-icon')
-                    .text('---')
+                    .text('--')
                     .end()
                     .find('.mcb-details-icon span')
+                    .removeClass('mcb-fa')
                     .addClass('mcb-blank-icon')
-                    .text('---');
+                    .text('--');
             });
 
             // Update label
@@ -617,7 +691,7 @@
             });
 
             // Add parameter
-            option.contactList.on('click', '.mcb-add-parameter', function (event) {
+            option.contactList.on('click', '.mcb-action-add-parameter', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
@@ -661,23 +735,3 @@
 
     $(document).ready(option.init);
 })(jQuery, window, document);
-
-// Colect icon names from FontAwesome cheatsheet
-//
-//
-// var groups = {};
-// var sections = document.getElementsByClassName('cheatsheet-set');
-// for( const section of sections ) {
-//     const names = [];
-//     groups['fa' + section.id.charAt(0)] = names;
-//     var icons = section.getElementsByClassName('icon');
-//     for( const icon of icons ) {
-//         const name = icon.getElementsByTagName('dd')[0].innerText;
-//         names.push(name);
-//     }
-// }
-
-// groups.fas = groups.fas.sort();
-// groups.far = groups.far.sort();
-// groups.fab = groups.fab.sort();
-// copy(JSON.stringify(groups));

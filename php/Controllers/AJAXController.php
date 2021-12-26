@@ -151,12 +151,23 @@ final class AJAXController
     public function ajax_get_icon()
     {
         if ( $this->verify_nonce()
-            && isset( $_POST['brand'], $_POST['icon'] )
+            && isset( $_POST['brand'], $_POST['group'], $_POST['icon'] )
             && in_array( $_POST['brand'], ['fa', 'ti'] ))
         {
-            if ( 'ti' === $_POST['brand'] && abmcb( Contacts\Input::class )->in_ti_icons( $_POST['icon'] ))
+            if ( 'ti' === $_POST['brand'] && abmcb( Contacts\Input::class )->ti_in_icons( $_POST['icon'] ))
             {
                 $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $_POST['icon'] . '.svg';
+                $data = file_get_contents( $path );
+
+                $response = json_encode( $data );
+                if ( $response )
+                {
+                    echo $response;
+                }
+            }
+            elseif ( 'fa' === $_POST['brand'] && abmcb( Contacts\Input::class )->fa_in_icons( $_POST['group'], $_POST['icon'] ))
+            {
+                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/'. $_POST['group'] . '/' . $_POST['icon'] . '.svg';
                 $data = file_get_contents( $path );
 
                 $response = json_encode( $data );

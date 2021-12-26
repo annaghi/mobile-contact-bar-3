@@ -17,10 +17,12 @@ final class Tel extends TypeAbstract
     {
         return [
             'type'        => $this->type,
+            'id'          => '',
             'title'       => __( 'Phone', 'mobile-contact-bar' ),
             'checked'     => 0,
             'brand'       => 'fa',
-            'icon'        => 'solid phone',
+            'group'       => 'solid',
+            'icon'        => 'phone',
             'label'       => __( 'Call Us', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'tel:15417543010 or tel:+15417543010',

@@ -30,10 +30,12 @@ final class WooCommerce extends TypeAbstract
     {
         return [
             'type'        => $this->type,
+            'id'          => '',
             'title'       => __( 'WooCommerce Cart', 'mobile-contact-bar' ),
             'checked'     => 0,
             'brand'       => 'fa',
-            'icon'        => 'solid shopping-cart',
+            'group'       => 'solid',
+            'icon'        => 'shopping-cart',
             'label'       => __( 'Cart', 'mobile-contact-bar' ),
             'uri'         => get_site_url() . '/cart',
             'placeholder' => is_ssl() ? 'https://mysite.com/cart' : 'http://mysite.com/cart',

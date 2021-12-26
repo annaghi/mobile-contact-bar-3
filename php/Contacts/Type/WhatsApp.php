@@ -17,10 +17,12 @@ final class WhatsApp extends TypeAbstract
     {
         return [
             'type'        => $this->type,
+            'id'          => '',
             'title'       => 'WhatsApp',
             'checked'     => 0,
             'brand'       => 'fa',
-            'icon'        => 'brands whatsapp',
+            'group'       => 'brands',
+            'icon'        => 'whatsapp',
             'label'       => 'WhatsApp',
             'uri'         => 'https://api.whatsapp.com/send',
             'placeholder' => 'place',

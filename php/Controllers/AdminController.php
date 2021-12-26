@@ -29,6 +29,17 @@ final class AdminController
      */
     public function admin_menu()
     {
+        $this->option_bar = abmcb( Options::class )->get_option(
+            abmcb()->id,
+            'default_option_bar',
+            'is_valid_option_bar'
+        );
+
+        $this->l10n = [
+            'disabled' => __( 'disabled', 'mobile-contact-bar' ),
+            'enabled'  => __( 'enabled', 'mobile-contact-bar' ),
+        ];
+
         add_options_page(
             __( 'Mobile Contact Bar', 'mobile-contact-bar' ),
             __( 'Mobile Contact Bar', 'mobile-contact-bar' ),
@@ -103,17 +114,6 @@ final class AdminController
      */
     public function admin_init()
     {
-        $this->option_bar = abmcb( Options::class )->get_option(
-            abmcb()->id,
-            'default_option_bar',
-            'is_valid_option_bar'
-        );
-
-        $this->l10n = [
-            'disabled' => __( 'disabled', 'mobile-contact-bar' ),
-            'enabled'  => __( 'enabled', 'mobile-contact-bar' ),
-        ];
-
         register_setting(
             abmcb()->id . '_group',
             abmcb()->id,

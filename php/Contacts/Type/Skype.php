@@ -17,10 +17,12 @@ final class Skype extends TypeAbstract
     {
         return [
             'type'        => $this->type,
+            'id'          => '',
             'title'       => 'Skype',
             'checked'     => 0,
             'brand'       => 'fa',
-            'icon'        => 'brands skype',
+            'group'       => 'brands',
+            'icon'        => 'skype',
             'label'       => 'Skype',
             'uri'         => '',
             'placeholder' => 'skype:username?chat or skype:username?call',

@@ -87,8 +87,7 @@ final class Output
             // TODO move validation to Options
             if ( 'fa' === $contact['brand'] )
             {
-                $names = preg_split( '/\s+/', $contact['icon'], -1, PREG_SPLIT_NO_EMPTY );
-                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $names[0] . '/' . $names[1] . '.svg';
+                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg';
                 $svg = file_get_contents( $path );
 
                 $icon = sprintf( '<span class="mobile-contact-bar-icon mobile-contact-bar-fa">%s%s</span>', $svg, $badge );

@@ -17,10 +17,12 @@ final class Viber extends TypeAbstract
     {
         return [
             'type'        => $this->type,
+            'id'          => '',
             'title'       => 'Viber',
             'checked'     => 0,
             'brand'       => 'fa',
-            'icon'        => 'brands viber',
+            'group'       => 'brands',
+            'icon'        => 'viber',
             'label'       => 'Viber',
             'uri'         => 'viber://pa?chatURI=URI',
             'placeholder' => 'place',

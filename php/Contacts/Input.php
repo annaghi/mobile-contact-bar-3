@@ -23,7 +23,8 @@ final class Input
                 'id'          => '',
                 'checked'     => 1,
                 'brand'       => 'fa',
-                'icon'        => 'solid home',
+                'group'       => 'solid',
+                'icon'        => 'home',
                 'label'       => __( 'Home' ),
                 'uri'         => get_site_url(),
                 'parameters'  => [],
@@ -34,7 +35,8 @@ final class Input
                 'id'          => '',
                 'checked'     => 1,
                 'brand'       => 'fa',
-                'icon'        => 'regular envelope',
+                'group'       => 'regular',
+                'icon'        => 'envelope',
                 'label'       => __( 'Email' ),
                 'uri'         => $this->email(),
                 'parameters'  => [
@@ -62,7 +64,8 @@ final class Input
                 'id'          => '',
                 'checked'     => 0,
                 'brand'       => 'fa',
-                'icon'        => 'brands whatsapp',
+                'group'       => 'brands',
+                'icon'        => 'whatsapp',
                 'label'       => 'WhatsApp',
                 'uri'         => 'https://api.whatsapp.com/send',
                 'parameters'  => [
@@ -82,7 +85,8 @@ final class Input
                 'id'          => '',
                 'checked'     => 1,
                 'brand'       => 'fa',
-                'icon'        => 'solid map-marker-alt',
+                'group'       => 'solid',
+                'icon'        => 'map-marker-alt',
                 'label'       => __( 'Map' ),
                 'uri'         => 'https://google.com/maps/place/Dacre+St,+London+UK/',
                 'parameters'  => [],
@@ -93,7 +97,8 @@ final class Input
                 'id'          => '',
                 'checked'     => 1,
                 'brand'       => 'fa',
-                'icon'        => 'solid chevron-up',
+                'group'       => 'solid',
+                'icon'        => 'chevron-up',
                 'label'       => '',
                 'uri'         => '',
                 'custom'      => $default_customization,
@@ -222,8 +227,20 @@ final class Input
                 unset( $contacts[$contact_key] );
             }
 
+            // remove contact if 'brand' and 'group' does not match
+            if ( 'ti' === $contact['brand'] && '' !== $contact['group'] )
+            {
+                unset( $contacts[$contact_key] );
+            }
+            if ( 'fa' === $contact['brand'] && ! in_array( $contact['group'], ['regular', 'solid', 'brands'] ) )
+            {
+                unset( $contacts[$contact_key] );
+            }
+
             // remove contact if 'icon' does not exist in FA or TI, but leave empty icons
-            if ( ! empty( $contact['icon'] ) && ! $this->in_fa_icons( $contact['icon'] ) && ! $this->in_ti_icons( $contact['icon'] ))
+            if ( ! empty( $contact['icon'] )
+                && ! $this->ti_in_icons( $contact['icon'] )
+                && ! $this->fa_in_icons( $contact['group'], $contact['icon'] ))
             {
                 unset( $contacts[$contact_key] );
             }
@@ -264,6 +281,9 @@ final class Input
             // 'brand' is already sanitized
             $sanitized_contact['brand'] = $contact['brand'];
 
+            // 'brand' is already sanitized
+            $sanitized_contact['group'] = $contact['group'];
+
             // 'icon' is already sanitized
             $sanitized_contact['icon'] = $contact['icon'];
 
@@ -282,7 +302,7 @@ final class Input
             $value = sanitize_key( str_replace( ['#', '.'], '', $contact['id'] ));
             if ( empty( $value ) && $is_any_color )
             {
-                $sanitized_contact['id'] = 'mcb-sample-id-' . $contact_key;
+                $sanitized_contact['id'] = 'mcb-sample-id-' . ( $this->max_key( $contacts ) + 1 );
             }
             else
             {
@@ -338,28 +358,51 @@ final class Input
 
 
     /**
+     * @param  array $contacts
+     * @return int
+     */
+    public function max_key( $contacts )
+    {
+        $key = -1;
+        if ( 0 === count( $contacts ))
+        {
+            return $key;
+        }
+        else
+        {
+            $ids = array_column( $contacts, 'id' );
+
+            foreach( $ids as $id )
+            {
+                $match = preg_match( '/^mcb-sample-id-([0-9]+)$/', $id, $matches );
+                if ( 1 === $match )
+                {
+                    $key = max( $matches[1], $key );
+                }
+            }
+            return $key;
+        }
+    }
+
+
+    /**
      * Checks whether an icon name is a valid Font Awesome icon.
      *
-     * @param  string $icon Icon name, like 'solid envelope'
-     * @return bool         Whether the icon exists or not
+     * @param  string $group Icon group, only for Font Awesome (regular, solid, brands)
+     * @param  string $icon  Icon name
+     * @return bool          Whether the icon exists or not
      */
-    public function in_fa_icons( $icon )
+    public function fa_in_icons( $group, $icon )
     {
-        $names = preg_split( '/\s+/', $icon, -1, PREG_SPLIT_NO_EMPTY );
-        if ( ! is_array( $names ) || count( $names ) !== 2 )
-        {
-            return false;
-        }
+        $icon_set = self::fa_icons();
 
-        $valid_icons = self::fa_icons();
-
-        foreach ( $valid_icons as $section => $icons )
+        foreach ( $icon_set as $valid_group => $valid_icons )
         {
-            if ( $names[0] === $section )
+            if ( $group === $valid_group )
             {
-                foreach ( $icons as $icon )
+                foreach ( $valid_icons as $valid_icon )
                 {
-                    if ( $names[1] === $icon )
+                    if ( $icon === $valid_icon )
                     {
                         return true;
                     }
@@ -376,7 +419,7 @@ final class Input
      * @param  string $icon Icon name, like 'envelope'
      * @return bool         Whether the icon exists or not
      */
-    public function in_ti_icons( $icon )
+    public function ti_in_icons( $icon )
     {
         $valid_icons = self::ti_icons();
         return in_array( $icon, $valid_icons );

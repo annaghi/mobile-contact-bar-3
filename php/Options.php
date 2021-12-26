@@ -65,7 +65,7 @@ final class Options
         $is_valid = true;
 
         // TODO Nicer validation
-        $contact_keys = ['type', 'id', 'checked', 'brand', 'icon', 'label', 'uri', 'custom', 'parameters'];
+        $contact_keys = ['type', 'id', 'checked', 'brand', 'group', 'icon', 'label', 'uri', 'custom', 'parameters'];
         $custom_keys = ['background_color', 'border_color', 'icon_color', 'label_color'];
         $parameter_keys = ['key', 'value'];
 

@@ -39,8 +39,8 @@ final class View
         <script type="text/html" id="mcb-tmpl-icon-picker">
             <div id="mcb-icon-picker-container">
                 <div class="mcb-icon-picker-brands">
-                    <button type="button" data-brand="fa" class="button">Font Awesome</button>
                     <button type="button" data-brand="ti" class="button mcb-icon-brand-active">Tabler Icons</button>
+                    <button type="button" data-brand="fa" class="button">Font Awesome</button>
                 </div>
                 <div class="icon-picker-control">
                     <a data-direction="back" href="#">
@@ -51,26 +51,6 @@ final class View
                         <span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span>
                     </a>
                 </div>
-                <!-- <ul data-brand="fa">
-                    <?php
-                    $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/sprites/';
-                    $icons = Input::fa_icons();
-                    foreach ( $icons as $section_key => $section ) :
-                        foreach ( $section as $icon ) :
-                            $title = $section_key . ' fa-' . $icon;
-                            ?>
-                            <li data-icon="<?php echo $icon; ?>">
-                                <a href="#" title="<?php echo $icon; ?>">
-                                    <svg class="mcb-icon">
-                                        <use xlink:href="<?php echo $path . $section_key; ?>.svg#<?php echo $icon; ?>"></use>
-                                    </svg>
-                                </a>
-                            </li>
-                            <?php
-                        endforeach;
-                    endforeach;
-                    ?>
-                </ul> -->
                 <ul>
                     <?php
                     $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/tabler-sprite.svg';
@@ -168,18 +148,17 @@ final class View
         $out .= '<div class="mcb-summary-icon-label">';
 
         // 'icon'
-        if ( 'fa' === $contact['brand'] && abmcb( Input::class )->in_fa_icons( $contact['icon'] ))
-        {
-            $names = preg_split( '/\s+/', $contact['icon'], -1, PREG_SPLIT_NO_EMPTY );
-            $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $names[0] . '/' . $names[1] . '.svg';
-            $svg = file_get_contents( $path );
-            $out .= sprintf( '<div class="mcb-summary-icon mcb-fa">%s</div>', $svg );
-        }
-        elseif ( 'ti' === $contact['brand'] && abmcb( Input::class )->in_ti_icons( $contact['icon'] ))
+        if ( 'ti' === $contact['brand'] && abmcb( Input::class )->ti_in_icons( $contact['icon'] ))
         {
             $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg';
             $svg = file_get_contents( $path );
             $out .= sprintf( '<div class="mcb-summary-icon">%s</div>', $svg );
+        }
+        elseif ( 'fa' === $contact['brand'] && abmcb( Input::class )->fa_in_icons( $contact['group'], $contact['icon'] ))
+        {
+            $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg';
+            $svg = file_get_contents( $path );
+            $out .= sprintf( '<div class="mcb-summary-icon mcb-fa">%s</div>', $svg );
         }
         else
         {
@@ -273,6 +252,9 @@ final class View
         // 'brand' hidden
         $out .= sprintf( '<input type="hidden" name="' . $prefix . '[brand]" value="%s">', esc_attr( $contact['brand'] ));
 
+        // 'group' hidden
+        $out .= sprintf( '<input type="hidden" name="' . $prefix . '[group]" value="%s">', esc_attr( $contact['group'] ));
+
         // 'icon' hidden
         $out .= sprintf( '<input type="hidden" name="' . $prefix . '[icon]" value="%s">', esc_attr( $contact['icon'] ));
 
@@ -305,18 +287,17 @@ final class View
         );
 
         // 'icon' visible
-        if ( 'fa' === $contact['brand'] && abmcb( Input::class )->in_fa_icons( $contact['icon'] ))
-        {
-            $names = preg_split( '/\s+/', $contact['icon'], -1, PREG_SPLIT_NO_EMPTY );
-            $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $names[0] . '/' . $names[1] . '.svg';
-            $svg = file_get_contents( $path );
-            $icon = sprintf( '<span class="mcb-fa">%s</span>', $svg );
-        }
-        elseif ( 'ti' === $contact['brand'] && abmcb( Input::class )->in_ti_icons( $contact['icon'] ))
+        if ( 'ti' === $contact['brand'] && abmcb( Input::class )->ti_in_icons( $contact['icon'] ))
         {
             $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg';
             $svg = file_get_contents( $path );
             $icon = sprintf( '<span>%s</span>', $svg );
+        }
+        elseif ( 'fa' === $contact['brand'] && abmcb( Input::class )->fa_in_icons( $contact['group'], $contact['icon'] ))
+        {
+            $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg';
+            $svg = file_get_contents( $path );
+            $icon = sprintf( '<span class="mcb-fa">%s</span>', $svg );
         }
         else
         {
@@ -331,8 +312,8 @@ final class View
                 </div>
                 <div class="mcb-input">
                     %2$s
-                    <button type="button" class="button action mcb-action-pick-icon" title="%3$s">%3$s</button>
-                    <button type="button" class="button action mcb-action-clear-icon" title="%4$s">%4$s</button>
+                    <button type="button" class="button mcb-action-pick-icon" title="%3$s">%3$s</button>
+                    <button type="button" class="button mcb-action-clear-icon" title="%4$s">%4$s</button>
                 </div>
             </div>',
             esc_attr__( 'Contact Icon', 'mobile-contact-bar' ),
@@ -360,6 +341,8 @@ final class View
         $out .= $this->output_details_uri( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_type' => $contact_type] );
         $out .= $this->output_parameters( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_type' => $contact_type] );
         $out .= $this->output_customization( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_type' => $contact_type] );
+
+        $out .= $this->output_close_contact();
 
         $out .= '</div>';
 
@@ -442,7 +425,7 @@ final class View
                         <label>%s</label>
                     </div>
                     <div class="mcb-input">
-                        <button type="button" class="button action mcb-add-parameter" title="%2$s">%2$s</button>
+                        <button type="button" class="button mcb-action-add-parameter" title="%2$s">%2$s</button>
                     </div>
                 </div>',
                 esc_attr__( 'Query String Parameters', 'mobile-contact-bar' ),
@@ -723,6 +706,22 @@ final class View
                 esc_attr( $contact['custom'][$custom_key]['secondary'] )
             );
         }
+
+        return $out;
+    }
+
+
+    public function output_close_contact()
+    {
+        $out = sprintf(
+            '<div class="mcb-row mcb-close-contact">
+                <div class="mcb-label"></div>
+                <div class="mcb-input">
+                    <button type="button" class="button mcb-action-close-contact" title="%1$s">%1$s</button>
+                </div>
+            </div>',
+            esc_attr__( 'Close Contact', 'mobile-contact-bar' )
+        );
 
         return $out;
     }
