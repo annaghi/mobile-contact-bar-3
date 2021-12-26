@@ -305,20 +305,6 @@
                     : $('#mcb-badge-display').removeClass().addClass('mcb-badge-enabled').text(mobile_contact_bar.l10n.enabled);
             });
 
-            option.contactList.on('change', '.mcb-summary-checkbox input', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                if (this.checked) {
-                    $(this).closest('.mcb-contact').addClass('mcb-checked');
-                } else {
-                    $(this).closest('.mcb-contact').removeClass('mcb-checked');
-                }
-                option.contactList.find('.mcb-checked').length === 0
-                    ? $('#mcb-bar-count').removeClass().addClass('mcb-disabled')
-                    : $('#mcb-bar-count').removeClass().addClass('mcb-enabled');
-            });
-
             // Add contact
             $('#mcb-add-contact').click(function (event) {
                 event.preventDefault();
@@ -344,13 +330,11 @@
                     }
 
                     var contact = document.createElement('div');
-                    $(contact).addClass('mcb-contact');
-                    $(contact).attr('data-contact-key', contactKey);
-
+                    $(contact).addClass(['mcb-contact', 'mcb-opened']).attr('data-contact-key', contactKey);
                     $(contact).append($(data.summary)).append($(data.details));
 
                     $(contact).find('.color-picker').wpColorPicker();
-                    $(contact).addClass('mcb-opened').find('.mcb-action-toggle-details').attr('aria-expanded', 'true');
+                    $(contact).find('.mcb-action-toggle-details').attr('aria-expanded', 'true');
 
                     option.contactList.append(contact);
                 });

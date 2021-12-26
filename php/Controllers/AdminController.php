@@ -507,23 +507,24 @@ final class AdminController
             wp_enqueue_script( 'wp-color-picker' );
 
             wp_enqueue_style(
-                'mcb-admin',
-                plugin_dir_url( abmcb()->file ) . 'assets/css/admin.min.css',
+                'mobile-contact-bar-admin',
+                plugin_dir_url( abmcb()->file ) . 'assets/css/admin.css',
                 ['wp-color-picker'],
                 abmcb()->version,
                 'all'
             );
+            wp_style_add_data( 'mobile-contact-bar-admin', 'rtl', 'replace' );
 
             wp_enqueue_script(
-                'mcb-admin',
-                plugin_dir_url( abmcb()->file ) . 'assets/js/admin.min.js',
+                'mobile-contact-bar-admin',
+                plugin_dir_url( abmcb()->file ) . 'assets/js/admin.js',
                 ['jquery', 'jquery-ui-slider', 'jquery-ui-sortable', 'postbox', 'wp-color-picker'],
                 abmcb()->version,
                 false
             );
 
             wp_localize_script(
-                'mcb-admin',
+                'mobile-contact-bar-admin',
                 abmcb()->id,
                 [
                     'nonce'    => wp_create_nonce( abmcb()->id ),
@@ -532,14 +533,6 @@ final class AdminController
                     'fa_icons' => Contacts\Input::fa_icons(),
                     'l10n'     => $this->l10n,
                 ]
-            );
-
-            wp_enqueue_script(
-                'mobile-contact-bar',
-                plugin_dir_url( abmcb()->file ) . 'assets/js/public.min.js',
-                [],
-                abmcb()->version,
-                true
             );
         }
     }

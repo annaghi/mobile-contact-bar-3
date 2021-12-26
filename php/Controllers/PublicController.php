@@ -52,7 +52,7 @@ final class PublicController
         {
             wp_enqueue_script(
                 'mobile-contact-bar',
-                plugin_dir_url( abmcb()->file ) . 'assets/js/public.min.js',
+                plugin_dir_url( abmcb()->file ) . 'assets/js/public.js',
                 [],
                 abmcb()->version,
                 true

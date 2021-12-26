@@ -32,16 +32,17 @@ final class NoticeController
         if ( $this->is_notice_on_screen( $hook_suffix ))
         {
             wp_enqueue_style(
-                'mobile-contact-bar-admin-notices',
-                plugin_dir_url( abmcb()->file ) . 'assets/css/notices.min.css',
+                'mobile-contact-bar-notices',
+                plugin_dir_url( abmcb()->file ) . 'assets/css/notices.css',
                 [],
                 abmcb()->version,
                 'all'
             );
+            wp_style_add_data( 'mobile-contact-bar-notices', 'rtl', 'replace' );
 
             wp_enqueue_script(
                 'mobile-contact-bar-notices',
-                plugin_dir_url( abmcb()->file ) . 'assets/js/notices.min.js',
+                plugin_dir_url( abmcb()->file ) . 'assets/js/notices.js',
                 ['jquery'],
                 abmcb()->version,
                 false
