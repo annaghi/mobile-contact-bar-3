@@ -97,9 +97,9 @@ final class View
             <?php } ?>
             </div>
             <div id="mcb-footer-contacts">
-                <button type="button" id="mcb-add-contact" title="<?php echo esc_attr__( 'Add New Contact', 'mobile-contact-bar' ); ?>">
+                <button type="button" class="button button-primary" id="mcb-add-contact" title="<?php echo esc_attr__( 'Add New Contact', 'mobile-contact-bar' ); ?>">
                     <span class="dashicons dashicons-plus-alt2" aria-hidden="true"></span>
-                    <span class="mcb-add-contact-label"><?php echo esc_attr__( 'New Contact', 'mobile-contact-bar' ); ?></span>
+                    <span><?php echo esc_attr__( 'New Contact', 'mobile-contact-bar' ); ?></span>
                 </button>
             </div>
         </div>

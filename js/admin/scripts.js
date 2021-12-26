@@ -3,7 +3,7 @@
  * License GPL-2.0 - https://www.gnu.org/licenses/gpl-2.0.en.html
  */
 
-/* global ajaxurl, pagenow, postboxes, mobile_contact_bar */
+/* global isRtl, ajaxurl, pagenow, postboxes, mobile_contact_bar */
 
 (function ($, window, document) {
     'use strict';
@@ -453,7 +453,7 @@
                     );
 
                 picker
-                    .css({ top: offset.top - 15, left: offset.left })
+                    .css({ top: offset.top - 15, left: offset.left - (isRtl ? 185 : 0) })
                     .appendTo('body')
                     .show();
 

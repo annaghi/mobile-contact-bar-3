@@ -9,6 +9,8 @@
  * Licensed under the GPLv2 license or later.
  */
 
+/* global isRtl */
+
 (function ($, undef) {
     var wpColorPickerAlpha = {
         version: 300
@@ -518,17 +520,17 @@
             });
 
             // Define the correct position for ltr or rtl direction.
-            if ('ltr' === self.colorAlpha.css('direction')) {
-                self.colorAlpha.css({
-                    'border-bottom-left-radius': '2px',
-                    'border-top-left-radius': '2px',
-                    left: 0
-                });
-            } else {
+            if (isRtl) {
                 self.colorAlpha.css({
                     'border-bottom-right-radius': '2px',
                     'border-top-right-radius': '2px',
                     right: 0
+                });
+            } else {
+                self.colorAlpha.css({
+                    'border-bottom-left-radius': '2px',
+                    'border-top-left-radius': '2px',
+                    left: 0
                 });
             }
 

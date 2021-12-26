@@ -8,11 +8,11 @@
 .wp-core-ui .button.mobile-contact-bar-whats-new {
     display: inline-flex;
     align-items: center;
+    gap: 8px;
     padding-left: 5px;
 }
 
 .mobile-contact-bar-whats-new-icon {
-    margin-right: 8px;
     line-height: 50%;
     color: #00a32a;
 }
