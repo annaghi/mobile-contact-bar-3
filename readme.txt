@@ -72,7 +72,7 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 
 = Credits =
 
-* [Font Awesome](https://fontawesome.com) SVG, font, and CSS framework (SIL OFL 1.1 License)
+* [Font Awesome](https://fontawesome.com) SVG, font, and CSS framework (CC BY 4.0 License)
 * [Tabler Icons](https://tabler-icons.io/) Free SVG icons (MIT License)
 * [WP Color Picker Alpha](https://github.com/kallookoo/wp-color-picker-alpha) (GPL 2.0 License)
 
