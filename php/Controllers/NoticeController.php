@@ -32,16 +32,16 @@ final class NoticeController
         if ( $this->is_notice_on_screen( $hook_suffix ))
         {
             wp_enqueue_style(
-                'mobile-contact-bar-notices',
+                abmcb()->slug . '-notices',
                 plugin_dir_url( abmcb()->file ) . 'assets/css/notices.css',
                 [],
                 abmcb()->version,
                 'all'
             );
-            wp_style_add_data( 'mobile-contact-bar-notices', 'rtl', 'replace' );
+            wp_style_add_data( abmcb()->slug . '-notices', 'rtl', 'replace' );
 
             wp_enqueue_script(
-                'mobile-contact-bar-notices',
+                abmcb()->slug . '-notices',
                 plugin_dir_url( abmcb()->file ) . 'assets/js/notices.js',
                 ['jquery'],
                 abmcb()->version,
@@ -49,7 +49,7 @@ final class NoticeController
             );
 
             wp_localize_script(
-                'mobile-contact-bar-notices',
+                abmcb()->slug . '-notices',
                 abmcb()->id,
                 ['nonce' => wp_create_nonce( abmcb()->id  )]
             );

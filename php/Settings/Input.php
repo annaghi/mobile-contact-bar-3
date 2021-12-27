@@ -2,6 +2,8 @@
 
 namespace MobileContactBar\Settings;
 
+use MobileContactBar\Helper;
+
 
 final class Input
 {
@@ -191,21 +193,6 @@ final class Input
                     'postfix'  => 'em',
                     'title'    => __( 'Label Font Size', 'mobile-contact-bar' ),
                 ],
-                'background_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '#252832',
-                    'title'    => __( 'Background Color', 'mobile-contact-bar' ),
-                ],
-                'icon_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '#f1f4f8',
-                    'title'    => __( 'Icon Color', 'mobile-contact-bar' ),
-                ],
-                'label_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '#f1f4f8',
-                    'title'    => __( 'Label Font Color', 'mobile-contact-bar' ),
-                ],
                 'is_borders' => [
                     'type'     => 'checkbox-group',
                     'title'    => __( 'Borders', 'mobile-contact-bar' ),
@@ -233,12 +220,6 @@ final class Input
                     ],
                     'trigger'  => '==true',
                 ],
-                'border_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '#ffffff',
-                    'title'    => __( 'Border Color', 'mobile-contact-bar' ),
-                    'parent'   => 'is_borders',
-                ],
                 'border_width' => [
                     'type'     => 'number',
                     'default'  => 1,
@@ -250,49 +231,88 @@ final class Input
                 ],
                 'secondary_colors' => [
                     'type'     => 'checkbox-group',
-                    'title'    => __( 'Secondary colors', 'mobile-contact-bar' ),
+                    'title'    => __( 'Use Secondary Colors', 'mobile-contact-bar' ),
                     'options'  => [
                         'focus' => [
                             'type'     => 'checkbox',
                             'default'  => 1,
-                            'label'    => __( 'focus', 'mobile-contact-bar' ),
+                            'label'    => __( 'on focus', 'mobile-contact-bar' ),
                         ],
                         'hover' => [
                             'type'     => 'checkbox',
                             'default'  => 1,
-                            'label'    => __( 'hover', 'mobile-contact-bar' ),
+                            'label'    => __( 'on hover', 'mobile-contact-bar' ),
                         ],
                         'active' => [
                             'type'     => 'checkbox',
                             'default'  => 1,
-                            'label'    => __( 'active', 'mobile-contact-bar' ),
+                            'label'    => __( 'when active', 'mobile-contact-bar' ),
                         ],
                     ],
-                    'trigger'  => '==true',
                 ],
-                'secondary_background_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '#32373c',
-                    'title'    => __( 'Background Color', 'mobile-contact-bar' ),
-                    'parent'   => 'secondary_colors',
+                'background_color' => [
+                    'type'      => 'color-picker-group',
+                    'title'     => __( 'Background Color', 'mobile-contact-bar' ),
+                    'options'   => [
+                        'primary'   => [
+                            'type'    => 'color-picker',
+                            'default' => '#252832',
+                            'label'   => __( 'primary', 'mobile-contact-bar' ),
+                        ],
+                        'secondary' => [
+                            'type'    => 'color-picker',
+                            'default' => '#32373c',
+                            'label'   => __( 'secondary', 'mobile-contact-bar' ),
+                        ],
+                    ],
                 ],
-                'secondary_icon_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '#d32f2f',
-                    'title'    => __( 'Icon Color', 'mobile-contact-bar' ),
-                    'parent'   => 'secondary_colors',
+                'icon_color' => [
+                    'type'      => 'color-picker-group',
+                    'title'     => __( 'Icon Color', 'mobile-contact-bar' ),
+                    'options'   => [
+                        'primary' => [
+                            'type'    => 'color-picker',
+                            'default' => '#f1f4f8',
+                            'label'   => __( 'primary', 'mobile-contact-bar' ),
+                        ],
+                        'secondary' => [
+                            'type'    => 'color-picker',
+                            'default' => '#d32f2f',
+                            'label'   => __( 'secondary', 'mobile-contact-bar' ),
+                        ],
+                    ],
                 ],
-                'secondary_label_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '#d32f2f',
-                    'title'    => __( 'Label Font Color', 'mobile-contact-bar' ),
-                    'parent'   => 'secondary_colors',
+                'label_color' => [
+                    'type'      => 'color-picker-group',
+                    'title'     => __( 'Label Color', 'mobile-contact-bar' ),
+                    'options'   => [
+                        'primary'   => [
+                            'type'    => 'color-picker',
+                            'default' => '#f1f4f8',
+                            'label'   => __( 'primary', 'mobile-contact-bar' ),
+                        ],
+                        'secondary' => [
+                            'type'    => 'color-picker',
+                            'default' => '#d32f2f',
+                            'label'   => __( 'secondary', 'mobile-contact-bar' ),
+                        ],
+                    ],
                 ],
-                'secondary_border_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '',
-                    'title'    => __( 'Border Color (top / bottom)', 'mobile-contact-bar' ),
-                    'parent'   => 'secondary_colors',
+                'border_color' => [
+                    'type'      => 'color-picker-group',
+                    'title'     => __( 'Border Color', 'mobile-contact-bar' ),
+                    'options'   => [
+                        'primary'   => [
+                            'type'    => 'color-picker',
+                            'default' => '',
+                            'label'   => __( 'primary', 'mobile-contact-bar' ),
+                        ],
+                        'secondary' => [
+                            'type'    => 'color-picker',
+                            'default' => '',
+                            'label'   => __( 'secondary', 'mobile-contact-bar' ),
+                        ],
+                    ],
                 ],
                 // 'size' => [
                 //     'type'     => 'select',
@@ -421,7 +441,7 @@ final class Input
     /**
      * Retrieves the 'settings' with default values.
      *
-     * @return array Multidimensional array: 'settings' with default values
+     * @return array
      */
     public function default_settings()
     {
@@ -436,11 +456,57 @@ final class Input
                 {
                     $defaults[$section_key][$setting_key] = $setting['default'];
                 }
-                elseif ( isset( $setting['options']))
+                elseif ( isset( $setting['options'] ))
                 {
                     foreach ( $setting['options'] as $option_key => $option )
                     {
-                        $defaults[$section_key][$setting_key][$option_key] = $option['default'];
+                        if ( isset( $option['default'] ))
+                        {
+                            $defaults[$section_key][$setting_key][$option_key] = $option['default'];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $defaults;
+    }
+
+
+    /**
+     * Retrieves the 'settings' with empty default values.
+     *
+     * @return array
+     */
+    public function empty_default_settings()
+    {
+        $defaults = [];
+        $input_fields = $this->input_fields();
+
+        foreach ( $input_fields as $section_key => $section )
+        {
+            foreach ( $section as $setting_key => $setting )
+            {
+                if ( isset( $setting['default'] ) && 'checkbox' === $setting['type'] )
+                {
+                    $defaults[$section_key][$setting_key] = 0;
+                }
+                elseif ( isset( $setting['default'] ))
+                {
+                    $defaults[$section_key][$setting_key] = $setting['default'];
+                }
+                elseif ( isset( $setting['options'] ))
+                {
+                    foreach ( $setting['options'] as $option_key => $option )
+                    {
+                        if ( isset( $option['default'] ) && 'checkbox' === $option['type'] )
+                        {
+                            $defaults[$section_key][$setting_key][$option_key] = 0;
+                        }
+                        elseif ( isset( $option['default'] ))
+                        {
+                            $defaults[$section_key][$setting_key][$option_key] = $option['default'];
+                        }
                     }
                 }
             }
@@ -454,30 +520,29 @@ final class Input
      * Sanitizes the 'settings'.
      * 
      * @param  array $settings
-     * @return array           Sanitized 'settings'
+     * @return array
      */
     public function sanitize( $settings = [] )
     {
-        $sanitized_settings = [];
-        $input_fields = $this->input_fields();
+        if ( ! is_array( $settings ) || empty( $settings ))
+        {
+            return $this->default_settings();
+        }
 
+        $sanitized_settings = [];
+
+        $empty_default_settings = $this->empty_default_settings();
+        $refreshed_settings = Helper::array_intersect_key_recursive(
+            array_replace_recursive( $empty_default_settings, $settings ),
+            $empty_default_settings
+        );
+
+        $input_fields = $this->input_fields();
         foreach ( $input_fields as $section_key => $section )
         {
-            // Fill up with unused sections
-            if ( ! isset( $settings[$section_key] ))
-            {
-                $sanitized_settings[$section_key] = [];
-                foreach ( $section as $setting_key => $setting )
-                {
-                    $sanitized_settings[$section_key][$setting_key] = $setting['default'];
-                }
-            }
-
             foreach ( $section as $setting_key => $setting )
             {
-                $value = ( isset( $settings[$section_key], $settings[$section_key][$setting_key] ))
-                    ? $settings[$section_key][$setting_key]
-                    : null;
+                $value = $refreshed_settings[$section_key][$setting_key];
 
                 switch ( $setting['type'] )
                 {
@@ -493,6 +558,13 @@ final class Input
                         $sanitized_settings[$section_key][$setting_key] = $this->sanitize_color( $value );
                         break;
 
+                    case 'color-picker-group':
+                        foreach( $setting['options'] as $option_key => $option )
+                        {
+                            $sanitized_settings[$section_key][$setting_key][$option_key] = $this->sanitize_color( $value[$option_key] );
+                        }
+                        break;
+
                     case 'checkbox':
                         $value = (int) $value;
                         $sanitized_settings[$section_key][$setting_key] =
@@ -504,15 +576,10 @@ final class Input
                     case 'checkbox-group':
                         foreach( $setting['options'] as $option_key => $option )
                         {
-                            $value =
-                                isset( $settings[$section_key], $settings[$section_key][$setting_key], $settings[$section_key][$setting_key][$option_key] )
-                                ? $settings[$section_key][$setting_key][$option_key]
-                                : null;
-
-                            $value = (int) $value;
+                            $value_ = (int) $value[$option_key];
                             $sanitized_settings[$section_key][$setting_key][$option_key] =
-                                ( 0 === $value || 1 === $value )
-                                ? $value
+                                ( 0 === $value_ || 1 === $value_ )
+                                ? $value_
                                 : $option['default'];
                         }
                         break;
@@ -541,20 +608,6 @@ final class Input
         }
 
         return $sanitized_settings;
-    }
-
-
-    /**
-     * Verifies that a color code is valid.
-     *
-     * @param  string      $color Color code (Hex or RGBA)
-     * @return bool|string        Either false or the valid color code
-     */
-    public function is_color( $color )
-    {
-        $color = $this->sanitize_color( $color );
-
-        return $color ? $color : false;
     }
 
 

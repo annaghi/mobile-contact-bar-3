@@ -7,19 +7,13 @@ use MobileContactBar\Settings;
 
 final class View
 {
-    public $option_bar = [];
-
-
     /**
      * Adds meta box for each section in the 'settings'.
      * 
-     * @param  array $option_bar
      * @return void
      */
-    public function add( $option_bar = [] )
+    public function add()
     {
-        $this->option_bar = $option_bar;
-
         $input_fields = abmcb( Settings\Input::class )->input_fields();
 
         foreach ( $input_fields as $section_key => $section )
@@ -87,12 +81,15 @@ final class View
      */
     private function output_setting_th( $section_key, $setting_key, $setting )
     {
+        $out = '';
+
         switch ( $setting['type'] )
         {
             case 'radio':
             case 'checkbox':
             case 'checkbox-group':
             case 'color-picker':
+            case 'color-picker-group':
                 $out = esc_attr__( $setting['title'] );
                 break;
 
@@ -128,7 +125,7 @@ final class View
 
         $prefix = abmcb()->id . '[settings]';
 
-        $value = $this->option_bar['settings'][$section_key][$setting_key];
+        $value = abmcb()->option_bar['settings'][$section_key][$setting_key];
 
         switch ( $setting['type'] )
         {
@@ -139,6 +136,27 @@ final class View
                     esc_attr( $setting_key ),
                     esc_attr( $value )
                 );
+                break;
+
+            case 'color-picker-group':
+                foreach ( $setting['options'] as $option_key => $option )
+                {
+                    printf(
+                        '<fieldset class="mcb-color-picker-group" id="mcb-%s-%s">',
+                        esc_attr( $section_key ),
+                        esc_attr( $setting_key )
+                    );
+                    printf(
+                        '<label class="mcb-color-picker-label" for="mcb-%1$s-%2$s--%3$s">%4$s</label>
+                        <input type="text" class="color-picker" id="mcb-%1$s-%2$s--%3$s" name="' . $prefix . '[%1$s][%2$s][%3$s]" data-alpha-enabled="true" value="%5$s">',
+                        esc_attr( $section_key ),
+                        esc_attr( $setting_key ),
+                        esc_attr( $option_key ),
+                        esc_html( $option['label'] ),
+                        esc_attr( $value[$option_key] )
+                    );
+                    echo '</fieldset>';
+                }
                 break;
 
             case 'select':
@@ -161,7 +179,7 @@ final class View
 
             case 'radio':
                 printf(
-                    '<fieldset class="mcb-radio-label-wrap" id="mcb-%s-%s">',
+                    '<fieldset class="mcb-radio-group" id="mcb-%s-%s">',
                     esc_attr( $section_key ),
                     esc_attr( $setting_key )
                 );
@@ -193,7 +211,7 @@ final class View
 
             case 'checkbox-group':
                 printf(
-                    '<fieldset class="mcb-checkbox-label-wrap" id="mcb-%s-%s">',
+                    '<fieldset class="mcb-checkbox-group" id="mcb-%s-%s">',
                     esc_attr( $section_key ),
                     esc_attr( $setting_key )
                 );

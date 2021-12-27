@@ -42,7 +42,7 @@ final class ScrollToTop extends TypeAbstract
         }
 
         ?>
-        <script id="mobile-contact-bar-<?php echo esc_attr( $this->type ); ?>">
+        <script id="<?php echo abmcb()->slug, '-', esc_attr( $this->type ); ?>">
         (function() {
             function scrollTo(to = 0, duration = 1000) {
                 var start       = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0,
@@ -73,7 +73,7 @@ final class ScrollToTop extends TypeAbstract
             };
 
             document.addEventListener('DOMContentLoaded', function() {
-                document.scripts['mobile-contact-bar-<?php echo esc_attr( $this->type ); ?>'].parentElement.firstChild.onclick = function( event ) {
+                document.scripts['<?php echo abmcb()->slug, '-', esc_attr( $this->type ); ?>'].parentElement.firstChild.onclick = function( event ) {
                     event.preventDefault();
                     scrollTo(0, 300);
                 }

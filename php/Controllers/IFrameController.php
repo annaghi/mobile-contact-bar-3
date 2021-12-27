@@ -3,12 +3,10 @@
 namespace MobileContactBar\Controllers;
 
 use MobileContactBar\Contacts;
-use MobileContactBar\Options;
 
 
 final class IFrameController
 {
-    public $option_bar = [];
     public $checked_contacts = [];
 
 
@@ -22,12 +20,7 @@ final class IFrameController
         remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
         remove_action( 'wp_print_styles', 'print_emoji_styles' );
 
-        $this->option_bar = abmcb( Options::class )->get_option(
-            abmcb()->id,
-            'default_option_bar',
-            'is_valid_option_bar'
-        );
-        $this->checked_contacts = array_filter( $this->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
+        $this->checked_contacts = array_filter( abmcb()->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
 
         if ( count( $this->checked_contacts ) > 0 )
         {
@@ -45,10 +38,10 @@ final class IFrameController
      */
     public function wp_enqueue_scripts()
     {
-        if ( $this->option_bar['settings']['toggle']['is_render'] && $this->option_bar['settings']['toggle']['is_cookie'] )
+        if ( abmcb()->option_bar['settings']['toggle']['is_render'] && abmcb()->option_bar['settings']['toggle']['is_cookie'] )
         {
             wp_enqueue_script(
-                'mobile-contact-bar',
+                abmcb()->slug,
                 plugin_dir_url( abmcb()->file ) . 'assets/js/public.min.js',
                 [],
                 abmcb()->version,
@@ -66,7 +59,7 @@ final class IFrameController
     public function wp_head()
     {
         ?>
-        <style id="mobile-contact-bar-css" type="text/css" media="screen"><?php echo strip_tags( $this->option_bar['styles'] ); ?></style>
+        <style id="<?php echo abmcb()->slug, '-css'; ?>" type="text/css" media="screen"><?php echo strip_tags( abmcb()->option_bar['styles'] ); ?></style>
         <?php
     }
 
@@ -83,34 +76,33 @@ final class IFrameController
             add_action( 'mcb_public_render_html', [$this, 'mcb_public_render_html'], 10, 3 );
         }
 
-        do_action( 'mcb_public_render_html', $this->option_bar['settings'], $this->checked_contacts );
+        do_action( 'mcb_public_render_html' );
     }
 
 
     /**
      * Renders contact bar.
      *
-     * @param  array $settings Associative array of settings
-     * @param  array $contacts Associative array of checked contacts
      * @return void
      */
-    public function mcb_public_render_html( $settings, $contacts )
+    public function mcb_public_render_html()
     {
         if ( 1 === did_action( 'mcb_public_render_html' ))
         {    
-            echo $this->output( $settings, $contacts );
+            echo $this->output();
         }
     }
 
     
     /**
-     * @param  array  $settings
-     * @param  array  $contacts Checked contacts
-     * @return string           HTML
+     * @return string HTML
      */
-    public function output( $settings, $contacts )
+    public function output()
     {
         $out = '';
+
+        $settings = abmcb()->option_bar['settings'];
+        $contacts = $this->checked_contacts;
            
         $paths = [
             'top_rounded'    => '<path d="M 550 0 L 496.9 137.2 C 490.4 156.8 474.1 170 451.4 170 H 98.6 C 77.9 170 59.6 156.8 53.1 137.2 L 0 0 z">',

@@ -3,6 +3,7 @@
 namespace MobileContactBar\Contacts;
 
 use MobileContactBar\Settings;
+use MobileContactBar\Helper;
 
 
 final class Input
@@ -108,6 +109,18 @@ final class Input
 
 
     /**
+     * Retrieves the sample 'contacts' with unchecked items.
+     *
+     * @return array
+     */
+    public function unchecked_sample_contacts()
+    {
+        $sample_contacts = $this->sample_contacts();
+        return array_map( function ( $contact ) { return array_replace( $contact, ['checked' => 0] ); }, $sample_contacts );
+    }
+
+
+    /**
      * Generates email address for sample input.
      *
      * @return string Email address
@@ -125,7 +138,7 @@ final class Input
 
 
     /**
-     * Defines custom settings fields.
+     * Defines the input fields for custom settings fields.
      *
      * @return array Multidimensional array
      */
@@ -182,9 +195,9 @@ final class Input
 
 
     /**
-     * Retrieves the custom default values.
+     * Retrieves the custom settings fields with default values.
      *
-     * @return array Default settings
+     * @return array
      */
     public function default_customization()
     {
@@ -207,48 +220,93 @@ final class Input
 
 
     /**
-     * Sanitizes 'contacts'.
+     * Retrieves the custom settings fields with empty default values.
+     *
+     * @return array
+     */
+    public function empty_default_customization()
+    {
+        $defaults = [];
+        $input_fields = $this->custom_input_fields();
+
+        foreach ( $input_fields as $custom_key => $custom )
+        {
+            foreach ( $custom as $field_key => $field )
+            {
+                if ( isset( $field['default'] ))
+                {
+                    $defaults[$custom_key][$field_key] = '';
+                }
+            }
+        }
+
+        return $defaults;
+    }
+
+
+    /**
+     * Sanitizes the 'contacts'.
      *
      * @param  array $contacts
-     * @return array           Sanitized 'contacts'
+     * @return array
      */
     public function sanitize( $contacts = [] )
     {
+        if ( ! is_array( $contacts ))
+        {
+            return $this->unchecked_sample_contacts();
+        }
+
         $sanitized_contacts = [];
 
-        $contact_types_keys = array_keys( abmcb()->contact_types );
-        $input_fields = $this->custom_input_fields();
+        $contact_types = abmcb()->contact_types;
+        $contact_types_keys = array_keys( $contact_types );
+        $empty_default_customization = $this->empty_default_customization();
 
         foreach ( $contacts as $contact_key => &$contact )
         {
-            // remove contact if invalid 'brand'
-            if ( ! empty( $contact['brand'] ) && ! in_array( $contact['brand'], ['fa', 'ti'] ))
-            {
-                unset( $contacts[$contact_key] );
-            }
-
-            // remove contact if 'brand' and 'group' does not match
-            if ( 'ti' === $contact['brand'] && '' !== $contact['group'] )
-            {
-                unset( $contacts[$contact_key] );
-            }
-            if ( 'fa' === $contact['brand'] && ! in_array( $contact['group'], ['regular', 'solid', 'brands'] ) )
-            {
-                unset( $contacts[$contact_key] );
-            }
-
-            // remove contact if 'icon' does not exist in FA or TI, but leave empty icons
-            if ( ! empty( $contact['icon'] )
-                && ! $this->ti_in_icons( $contact['icon'] )
-                && ! $this->fa_in_icons( $contact['group'], $contact['icon'] ))
-            {
-                unset( $contacts[$contact_key] );
-            }
-
             // remove contact if invalid 'type'
             if ( ! in_array( $contact['type'], $contact_types_keys ))
             {
                 unset( $contacts[$contact_key] );
+                continue;
+            }
+
+            // add empty 'checked'
+            if ( ! isset( $contact['checked'] ))
+            {
+                $contacts[$contact_key]['checked'] = 0;
+            }
+
+            // add 'parameters' for 'link' contact type if it was empty
+            if ( 'link' === $contact['type'] && ! isset( $contact['parameters'] ))
+            {
+                $contacts[$contact_key]['parameters'] = [];
+            }
+
+            $contacts[$contact_key]['custom'] = Helper::array_intersect_key_recursive(
+                array_replace_recursive( $empty_default_customization, $contact['custom'] ),
+                $empty_default_customization
+            );
+
+            $diff_contact = Helper::array_minus_key_recursive( Helper::array_keys_recursive( $contact ), $contact_types[$contact['type']]->keys());
+            if ( ! empty( $diff_contact ) && count( $diff_contact ) > 1 && ! isset( $diff_contact['parameters'] ) && 'link' !== $contact['type'] )
+            {
+                unset( $contacts[$contact_key] );
+                continue;
+            }
+
+            if ( isset( $diff_contact['parameters'] ))
+            {
+                $diff_parameters = array_filter(
+                    $diff_contact['parameters'],
+                    function( $parameter ) { return ( count( $parameter ) !== 2 || ! isset( $parameter['key'], $parameter['value'] )); }
+                );
+                if ( ! empty( $diff_parameters ))
+                {
+                    unset( $contacts[$contact_key] );
+                    continue;
+                }
             }
 
             // reindex 'parameters'
@@ -257,31 +315,52 @@ final class Input
                 $contacts[$contact_key]['parameters'] = array_values( $contacts[$contact_key]['parameters'] );
             }
 
-            // add 'parameters' for 'link' contact type if it was empty
-            if ( 'link' === $contact['type'] && ! isset( $contact['parameters'] ))
+            // remove contact if invalid 'brand'
+            if ( ! empty( $contact['brand'] ) && ! in_array( $contact['brand'], ['fa', 'ti'] ))
             {
-                $contacts[$contact_key]['parameters'] = [];
+                unset( $contacts[$contact_key] );
+                continue;
+            }
+
+            // remove contact if 'brand' and 'group' does not match
+            if ( 'ti' === $contact['brand'] && '' !== $contact['group'] )
+            {
+                unset( $contacts[$contact_key] );
+                continue;
+            }
+            if ( 'fa' === $contact['brand'] && ! in_array( $contact['group'], ['regular', 'solid', 'brands'] ))
+            {
+                unset( $contacts[$contact_key] );
+                continue;
+            }
+
+            // remove contact if 'icon' does not exist in FA or TI, but leave empty icons
+            if ( ! empty( $contact['icon'] )
+                && ! $this->ti_in_icons( $contact['icon'] )
+                && ! $this->fa_in_icons( $contact['group'], $contact['icon'] ))
+            {
+                unset( $contacts[$contact_key] );
+                continue;
             }
         }
         unset( $contact );
 
-        // merge and sanitize contacts
+
+        // sanitize contacts
         foreach ( $contacts as $contact_key => $contact )
         {
             $sanitized_contact = [];
-
-            $contact_type = abmcb()->contact_types[$contact['type']]->contact();
 
             // 'type' is already sanitized
             $sanitized_contact['type'] = $contact['type'];
 
             // sanitize 'checked'
-            $sanitized_contact['checked'] = isset( $contact['checked'] ) ? (int) $contact['checked'] : 0;
+            $sanitized_contact['checked'] = (int) $contact['checked'];
 
             // 'brand' is already sanitized
             $sanitized_contact['brand'] = $contact['brand'];
 
-            // 'brand' is already sanitized
+            // 'group' is already sanitized
             $sanitized_contact['group'] = $contact['group'];
 
             // 'icon' is already sanitized
@@ -310,17 +389,12 @@ final class Input
             }
 
             // sanitize customization
-            foreach ( $input_fields as $custom_key => $custom )
+            foreach ( $contact['custom'] as $custom_key => $custom )
             {  
-                foreach ( $custom as $field_key => $field )
+                foreach ( $custom as $setting_key => $setting )
                 {
-                    $value = ( isset( $contact['custom'][$custom_key], $contact['custom'][$custom_key][$field_key] ))
-                        ? abmcb( Settings\Input::class )->sanitize_color( $contact['custom'][$custom_key][$field_key] )
-                        : null;
-
-                    $sanitized_contact['custom'][$custom_key][$field_key] = ( abmcb( Settings\Input::class )->is_color( $value ))
-                        ? $value
-                        : '';
+                    $sanitized_contact['custom'][$custom_key][$setting_key] =
+                        abmcb( Settings\Input::class )->sanitize_color( $setting );
                 }
             }
 
@@ -328,6 +402,8 @@ final class Input
             if ( isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
             {
                 $sanitized_contact['parameters'] = [];
+
+                $contact_type = $contact_types[$contact['type']]->contact();
 
                 foreach ( $contact['parameters'] as $parameter_key => $parameter )
                 {

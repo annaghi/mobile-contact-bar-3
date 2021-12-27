@@ -10,14 +10,6 @@ use MobileContactBar\Styles;
 
 final class AdminController
 {
-    /**
-     * Multidimensional array of the plugin's option, divided into sections: 'settings', 'contacts', 'styles'.
-     *
-     * @var array
-     */
-    public $option_bar = [];
-
-
     public $l10n = [];
 
 
@@ -29,12 +21,6 @@ final class AdminController
      */
     public function admin_menu()
     {
-        $this->option_bar = abmcb( Options::class )->get_option(
-            abmcb()->id,
-            'default_option_bar',
-            'is_valid_option_bar'
-        );
-
         $this->l10n = [
             'disabled' => __( 'disabled', 'mobile-contact-bar' ),
             'enabled'  => __( 'enabled', 'mobile-contact-bar' ),
@@ -60,10 +46,10 @@ final class AdminController
      */
     public function callback_render_page()
     {
-        $checked_contacts = array_filter( $this->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
-        $bar_device = ( 'none' === $this->option_bar['settings']['bar']['device'] ) ? $this->l10n['disabled'] : $this->l10n['enabled'];
+        $checked_contacts = array_filter( abmcb()->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
+        $bar_device = ( 'none' === abmcb()->option_bar['settings']['bar']['device'] ) ? $this->l10n['disabled'] : $this->l10n['enabled'];
         $badge_length = ( 0 == count( $checked_contacts )) ? 'mcb-badge-disabled' : 'mcb-badge-enabled';
-        $badge_display = ( 'none' === $this->option_bar['settings']['bar']['device'] ) ? 'mcb-badge-disabled' : 'mcb-badge-enabled';
+        $badge_display = ( 'none' === abmcb()->option_bar['settings']['bar']['device'] ) ? 'mcb-badge-disabled' : 'mcb-badge-enabled';
         ?>
         <div class="wrap">
             <h2 class="mcb-header">
@@ -120,31 +106,20 @@ final class AdminController
             [$this, 'callback_sanitize_option']
         );
 
-        abmcb( Settings\View::class )->add( $this->option_bar );
-        abmcb( Contacts\View::class )->add( $this->option_bar );
+        abmcb( Settings\View::class )->add();
+        abmcb( Contacts\View::class )->add();
     }
 
 
     /**
-     * Sanitizes the settings and contacts.
+     * Sanitizes the bar option.
      *
      * @param  array $input Multidimensional array of the bar-option
-     * @return array        Sanitized bar-option
+     * @return array
      */
     public function callback_sanitize_option( $input )
     {
-        if ( empty( $input ) || ! is_array( $input ))
-        {
-            return $this->option_bar;
-        }
-
-        $settings = isset( $input['settings'] ) ? $input['settings'] : [];
-        $contacts = isset( $input['contacts'] ) ? $input['contacts'] : [];
-
-        $this->option_bar['settings'] = abmcb( Settings\Input::class )->sanitize( $settings );
-        $this->option_bar['contacts'] = abmcb( Contacts\Input::class )->sanitize( $contacts );
-
-        return $this->option_bar;
+        return abmcb( Options::class )->sanitize_option_bar( $input );
     }
 
 
@@ -217,7 +192,7 @@ final class AdminController
     {
         ?>
         <div id="mcb-live-preview">
-            <iframe src="<?php echo add_query_arg( ['mobile-contact-bar-iframe' => true], get_home_url() ); ?>" title="<?php esc_attr_e( 'Live Preview' ); ?>"></iframe>
+            <iframe src="<?php echo add_query_arg( [abmcb()->slug . '-iframe' => true], get_home_url() ); ?>" title="<?php esc_attr_e( 'Live Preview' ); ?>"></iframe>
             <script>
             (function() {
                 jQuery('#mcb-live-preview iframe').on('load', function () {
@@ -507,16 +482,16 @@ final class AdminController
             wp_enqueue_script( 'wp-color-picker' );
 
             wp_enqueue_style(
-                'mobile-contact-bar-admin',
+                abmcb()->slug . '-admin',
                 plugin_dir_url( abmcb()->file ) . 'assets/css/admin.css',
                 ['wp-color-picker'],
                 abmcb()->version,
                 'all'
             );
-            wp_style_add_data( 'mobile-contact-bar-admin', 'rtl', 'replace' );
+            wp_style_add_data( abmcb()->slug . '-admin', 'rtl', 'replace' );
 
             wp_enqueue_script(
-                'mobile-contact-bar-admin',
+                abmcb()->slug . '-admin',
                 plugin_dir_url( abmcb()->file ) . 'assets/js/admin.js',
                 ['jquery', 'jquery-ui-slider', 'jquery-ui-sortable', 'postbox', 'wp-color-picker'],
                 abmcb()->version,
@@ -524,7 +499,7 @@ final class AdminController
             );
 
             wp_localize_script(
-                'mobile-contact-bar-admin',
+                abmcb()->slug . '-admin',
                 abmcb()->id,
                 [
                     'nonce'    => wp_create_nonce( abmcb()->id ),

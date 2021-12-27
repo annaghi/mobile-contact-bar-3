@@ -526,6 +526,12 @@
     }
 }
 
+@media only screen and (min-width: 1120px) and (max-width: 1250px) {
+    .mcb-row.mcb-custom .mcb-input {
+        flex-flow: column nowrap;
+    }
+}
+
 @media only screen and (max-width: 782px) {
     .mcb-action-icon {
         padding: 8px;
@@ -580,9 +586,7 @@
     }
 
     .mcb-custom .mcb-input {
-        display: flex;
         flex-flow: column nowrap;
-        gap: 20px;
     }
 }
 
@@ -704,15 +708,12 @@
 #mcb-form .wp-picker-container input[type='text'].wp-color-picker {
     margin-bottom: 6px;
 }
-
 #mcb-form .wp-picker-container .iris-picker {
     margin-top: 0;
 }
-
 #mcb-form .button.wp-picker-clear {
     width: auto;
 }
-
 #mcb-form .wp-picker-container .wp-color-result-text {
     min-width: 6.6em;
 }
@@ -741,10 +742,11 @@
     border-top: 0;
 }
 .mcb-settings th {
-    padding: 15px 10px;
+    padding: 15px 12px;
 }
 .mcb-settings td {
     padding: 15px 12px;
+    margin: 0;
 }
 .mcb-settings input[type='range'] {
     width: 15em;
@@ -766,24 +768,52 @@
 .mcb-settings .mcb-slider-value {
     vertical-align: top;
 }
+.mcb-setting-icons_labels-background_color td,
+.mcb-setting-icons_labels-icon_color td,
+.mcb-setting-icons_labels-label_color td,
+.mcb-setting-icons_labels-border_color td {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 20px;
+}
+.mcb-settings .mcb-color-picker-group {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+}
+.mcb-settings .mcb-color-picker-label {
+    margin: 0 !important;
+}
 
 @media screen and (max-width: 782px) {
+    .mcb-settings th {
+        padding-bottom: 0;
+    }
     .mcb-settings .mcb-child th {
         width: auto;
     }
-    .mcb-settings .mcb-radio-label-wrap {
+    .mcb-settings .mcb-radio-group {
         display: inline-block;
     }
     .mcb-settings .mcb-radio-label {
         display: block;
         margin: 0.25em 0 0.5em 0 !important;
     }
-    .mcb-settings .mcb-checkbox-label-wrap {
+    .mcb-settings .mcb-checkbox-group {
         display: inline-block;
     }
     .mcb-settings .mcb-checkbox-label {
         display: block;
         margin: 0.25em 0 0.5em 0 !important;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .mcb-setting-icons_labels-background_color td,
+    .mcb-setting-icons_labels-icon_color td,
+    .mcb-setting-icons_labels-label_color td,
+    .mcb-setting-icons_labels-border_color td {
+        flex-flow: column nowrap;
     }
 }
 

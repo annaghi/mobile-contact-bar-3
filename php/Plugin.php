@@ -35,6 +35,19 @@ final class Plugin extends Container
 
 
     /**
+     * @var string
+     */
+    public $option_version = '';
+
+    
+    /**
+     * Multidimensional array of the plugin's option, divided into sections: 'settings', 'contacts', 'styles'.
+     *
+     * @var array
+     */
+    public $option_bar = [];
+
+    /**
      * Controllers
      */
     protected $admin  = null;
@@ -203,13 +216,13 @@ final class Plugin extends Container
             }
         }
 
-        if ( isset( $_GET['mobile-contact-bar-iframe'] ))
+        if ( isset( $_GET[self::SLUG . '-iframe'] ))
         {
             $this->iframe = abmcb( IFrameController::class );
             add_action( 'init', [$this->iframe, 'init'] );
         }
 
-        if ( ! $this->is_admin() && ! wp_doing_ajax() && ! isset( $_GET['mobile-contact-bar-iframe'] ))
+        if ( ! $this->is_admin() && ! wp_doing_ajax() && ! isset( $_GET[self::SLUG . '-iframe'] ))
         {
             $this->public = abmcb( PublicController::class );
             add_action( 'init', [$this->public, 'init'] );
@@ -256,25 +269,29 @@ final class Plugin extends Container
 
 
     /**
-     * Creates instances for contact types.
      * Runs the plugin installation on each request.
      * 
      * @return void
      */
     public function init()
     {
-        $this->register_contact_types();
         $this->install();
+
+        $this->option_version = get_option( self::ID . '_version' );
+        $this->option_bar = abmcb( Options::class )->get_option( self::ID, 'sanitize_option_bar' );
     }
 
 
     /**
+     * Creates instances for contact types.
      * Creates or updates the plugin options (version, bar) in the database - when needed.
      * 
      * @return void
      */
     private function install()
     {
+        $this->register_contact_types();
+
         $version = get_option( self::ID . '_version' );
 
         if ( ! $version && get_option( 'mcb_option' ))

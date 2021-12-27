@@ -86,7 +86,7 @@ final class CSS
 
         // Items
         $styles .= '.mobile-contact-bar-item{';
-        $styles .= ( empty( $items['background_color'] )) ? '' : 'background-color:' . $items['background_color'] . ';';
+        $styles .= ( empty( $items['background_color']['primary'] )) ? '' : 'background-color:' . $items['background_color']['primary'] . ';';
         // $styles .= 'box-sizing:border-box;';
         $styles .= 'margin:0;';
         $styles .= 'padding:0;';
@@ -117,7 +117,7 @@ final class CSS
         // }
         $styles .= '}';
 
-        $items_border_color = empty( $items['border_color'] ) ? 'transparent' : $items['border_color'];
+        $items_border_color = empty( $items['border_color']['primary'] ) ? 'transparent' : $items['border_color']['primary'];
         if ( $items['is_borders']['top'] )
         {
             $styles .= '.mobile-contact-bar-item{';
@@ -186,79 +186,79 @@ final class CSS
         $styles .= '}';
 
         $styles .= '.mobile-contact-bar-icon{';
-        $styles .= ( empty( $items['icon_color'] )) ? '' : 'color:' . $items['icon_color'] . ';';
+        $styles .= ( empty( $items['icon_color']['primary'] )) ? '' : 'color:' . $items['icon_color']['primary'] . ';';
         $styles .= '}';
 
         $styles .= '.mobile-contact-bar-label{';
-        $styles .= ( empty( $items['label_color'] )) ? '' : 'color:' . $items['label_color'] . ';';
+        $styles .= ( empty( $items['label_color']['primary'] )) ? '' : 'color:' . $items['label_color']['primary'] . ';';
         $styles .= 'font-size:' . $items['label_size'] . 'em;';
         $styles .= 'line-height:1;';
         $styles .= '}';
 
 
         // Hover over item, active item
-        if ( ! empty( $items['secondary_background_color'] ))
+        if ( ! empty( $items['background_color']['secondary'] ))
         {
             if ( $items['secondary_colors']['focus'] )
             {
                 $styles .= '.mobile-contact-bar-item:focus{';
-                $styles .= 'background-color:' . $items['secondary_background_color'] . ';';
+                $styles .= 'background-color:' . $items['background_color']['secondary'] . ';';
                 $styles .= '}';
             }
             if ( $items['secondary_colors']['hover'] )
             {
                 $styles .= '.mobile-contact-bar-item:hover{';
-                $styles .= 'background-color:' . $items['secondary_background_color'] . ';';
+                $styles .= 'background-color:' . $items['background_color']['secondary'] . ';';
                 $styles .= '}';
             }
             if ( $items['secondary_colors']['active'] )
             {
                 $styles .= '.mobile-contact-bar-item.mobile-contact-bar-active{';
-                $styles .= 'background-color:' . $items['secondary_background_color'] . ';';
+                $styles .= 'background-color:' . $items['background_color']['secondary'] . ';';
                 $styles .= '}';
             }
         }
 
-        if ( ! empty( $items['secondary_icon_color'] ))
+        if ( ! empty( $items['icon_color']['secondary'] ))
         {
             if ( $items['secondary_colors']['focus'] )
             {
                 $styles .= '.mobile-contact-bar-item:focus .mobile-contact-bar-icon svg{';
-                $styles .= 'color:' . $items['secondary_icon_color'] . ';';
+                $styles .= 'color:' . $items['icon_color']['secondary'] . ';';
                 $styles .= '}';
             }
             if ( $items['secondary_colors']['hover'] )
             {
                 $styles .= '.mobile-contact-bar-item:hover .mobile-contact-bar-icon svg{';
-                $styles .= 'color:' . $items['secondary_icon_color'] . ';';
+                $styles .= 'color:' . $items['icon_color']['secondary'] . ';';
                 $styles .= '}';
             }
             if ( $items['secondary_colors']['active'] )
             {
                 $styles .= '.mobile-contact-bar-item.mobile-contact-bar-active .mobile-contact-bar-icon svg{';
-                $styles .= 'color:' . $items['secondary_icon_color'] . ';';
+                $styles .= 'color:' . $items['icon_color']['secondary'] . ';';
                 $styles .= '}';
             }
         }
 
-        if ( ! empty( $items['secondary_label_color'] ))
+        if ( ! empty( $items['label_color']['secondary'] ))
         {
             if ( $items['secondary_colors']['focus'] )
             {
                 $styles .= '.mobile-contact-bar-item:focus .mobile-contact-bar-label{';
-                $styles .= 'color:' . $items['secondary_label_color'] . ';';
+                $styles .= 'color:' . $items['label_color']['secondary'] . ';';
                 $styles .= '}';
             }
             if ( $items['secondary_colors']['hover'] )
             {
                 $styles .= '.mobile-contact-bar-item:hover .mobile-contact-bar-label{';
-                $styles .= 'color:' . $items['secondary_label_color'] . ';';
+                $styles .= 'color:' . $items['label_color']['secondary'] . ';';
                 $styles .= '}';
             }
             if ( $items['secondary_colors']['active'] )
             {
                 $styles .= '.mobile-contact-bar-item.mobile-contact-bar-active .mobile-contact-bar-label{';
-                $styles .= 'color:' . $items['secondary_label_color'] . ';';
+                $styles .= 'color:' . $items['label_color']['secondary'] . ';';
                 $styles .= '}';
             }
         }

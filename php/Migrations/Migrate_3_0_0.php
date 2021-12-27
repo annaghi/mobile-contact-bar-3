@@ -51,15 +51,15 @@ final class Migrate_3_0_0
         {
             $settings_v2 = $this->option_bar_v2['settings'];
 
-            $settings['bar']['placeholder_height']                        = 0;
-            $settings['toggle']['label']                                  = '';
-            $settings['icons_labels']['secondary_colors']['hover']        = 0;
-            $settings['icons_labels']['secondary_colors']['focus']        = 0;
-            $settings['icons_labels']['secondary_colors']['active']       = 0;
-            $settings['icons_labels']['secondary_background_color']       = '';
-            $settings['icons_labels']['secondary_icon_color']             = '';
-            $settings['icons_labels']['secondary_label_color']            = '';
-            $settings['icons_labels']['secondary_border_color']           = '';
+            $settings['bar']['placeholder_height']                           = 0;
+            $settings['toggle']['label']                                     = '';
+            $settings['icons_labels']['secondary_colors']['hover']           = 0;
+            $settings['icons_labels']['secondary_colors']['focus']           = 0;
+            $settings['icons_labels']['secondary_colors']['active']          = 0;
+            $settings['icons_labels']['background_color']['secondary']       = '';
+            $settings['icons_labels']['icon_color']['secondary']             = '';
+            $settings['icons_labels']['label_color']['secondary']            = '';
+            $settings['icons_labels']['border_color']['secondary']           = '';
             
             $settings = array_replace_recursive( $settings, $settings_v2 );
 
@@ -67,40 +67,40 @@ final class Migrate_3_0_0
             {
                 if ( isset( $settings_v2['bar']['horizontal_position'] ))
                 {
-                    $settings['bar']['horizontal_alignment']              = $settings_v2['bar']['horizontal_position'];
+                    $settings['bar']['horizontal_alignment']                 = $settings_v2['bar']['horizontal_position'];
                 }
                 if ( isset( $settings_v2['bar']['vertical_position'] ))
                 {
-                    $settings['bar']['vertical_alignment']                = $settings_v2['bar']['vertical_position'];    
+                    $settings['bar']['vertical_alignment']                   = $settings_v2['bar']['vertical_position'];    
                 }
                 if ( isset( $settings_v2['bar']['placeholder_height'] ))
                 {
-                    $settings['bar']['placeholder_height']                = $settings_v2['bar']['placeholder_height'];
+                    $settings['bar']['placeholder_height']                   = $settings_v2['bar']['placeholder_height'];
                 }
                 if ( isset( $settings_v2['bar']['vertical_alignment'], $settings_v2['bar']['is_border'] ))
                 {
                     if ( $settings_v2['bar']['vertical_alignment'] === 'top' && $settings_v2['bar']['is_border'] === 'one' )
                     {
-                        $settings['bar']['is_borders']['top']             = 0;
-                        $settings['bar']['is_borders']['bottom']          = 1;
+                        $settings['bar']['is_borders']['top']                = 0;
+                        $settings['bar']['is_borders']['bottom']             = 1;
                     }
                     elseif ( $settings_v2['bar']['vertical_alignment'] === 'bottom' && $settings_v2['bar']['is_border'] === 'one' )
                     {
-                        $settings['bar']['is_borders']['top']             = 1;
-                        $settings['bar']['is_borders']['bottom']          = 0;
+                        $settings['bar']['is_borders']['top']                = 1;
+                        $settings['bar']['is_borders']['bottom']             = 0;
                     }
                 }
                 if ( isset( $settings_v2['bar']['is_border'] ))
                 {
                     if ( $settings_v2['bar']['is_border'] === 'two' )
                     {
-                        $settings['bar']['is_borders']['top']             = 1;
-                        $settings['bar']['is_borders']['bottom']          = 1;
+                        $settings['bar']['is_borders']['top']                = 1;
+                        $settings['bar']['is_borders']['bottom']             = 1;
                     }
                 }
                 if ( isset( $settings_v2['bar']['color'] ))
                 {
-                    $settings['icons_labels']['background_color']         = $settings_v2['bar']['color'];
+                    $settings['icons_labels']['background_color']['primary'] = $settings_v2['bar']['color'];
                 }
             }
 
@@ -108,45 +108,46 @@ final class Migrate_3_0_0
             {
                 if ( isset( $settings_v2['icons']['alignment'] ))
                 {
-                    $settings['icons_labels']['alignment']                = $settings_v2['icons']['alignment'];
+                    $settings['icons_labels']['alignment']                   = $settings_v2['icons']['alignment'];
                 }
                 if ( isset( $settings_v2['icons']['width'] ))
                 {
-                    $settings['icons_labels']['width']                    = $settings_v2['icons']['width'];
+                    $settings['icons_labels']['width']                       = $settings_v2['icons']['width'];
                 }
                 if ( isset( $settings_v2['icons']['is_border'] ))
                 {
                     if ( $settings_v2['icons']['is_border'] === 'two' )
                     {
-                        $settings['icons_labels']['is_borders']['top']    = 0;
-                        $settings['icons_labels']['is_borders']['right']  = 1;
-                        $settings['icons_labels']['is_borders']['bottom'] = 0;
-                        $settings['icons_labels']['is_borders']['left']   = 1;
+                        $settings['icons_labels']['is_borders']['top']       = 0;
+                        $settings['icons_labels']['is_borders']['right']     = 1;
+                        $settings['icons_labels']['is_borders']['bottom']    = 0;
+                        $settings['icons_labels']['is_borders']['left']      = 1;
                     }
                     elseif ( $settings_v2['icons']['is_border'] === 'four' )
                     {
-                        $settings['icons_labels']['is_borders']['top']    = 1;
-                        $settings['icons_labels']['is_borders']['right']  = 1;
-                        $settings['icons_labels']['is_borders']['bottom'] = 1;
-                        $settings['icons_labels']['is_borders']['left']   = 1;
+                        $settings['icons_labels']['is_borders']['top']       = 1;
+                        $settings['icons_labels']['is_borders']['right']     = 1;
+                        $settings['icons_labels']['is_borders']['bottom']    = 1;
+                        $settings['icons_labels']['is_borders']['left']      = 1;
                     }
                 }
                 if ( isset( $settings_v2['icons']['border_color'] ))
                 {
-                    $settings['icons_labels']['border_color']             = $settings_v2['icons']['border_color'];
+                    $settings['icons_labels']['border_color']['primary']     = $settings_v2['icons']['border_color'];
                 }
                 if ( isset( $settings_v2['icons']['border_width'] ))
                 {
-                    $settings['icons_labels']['border_width']             = $settings_v2['icons']['border_width'];
+                    $settings['icons_labels']['border_width']                = $settings_v2['icons']['border_width'];
                 }
                 if ( isset( $settings_v2['icons']['size'] ))
                 {
-                    $settings['icons_labels']['icon_size']                = $settings_v2['icons']['size'];
+                    $settings['icons_labels']['icon_size']                   = $settings_v2['icons']['size'];
                 }
                 if ( isset( $settings_v2['icons']['color'] ))
                 {
-                    $settings['icons_labels']['icon_color']               = $settings_v2['icons']['color'];
-                    $settings['toggle']['font_color']                     = $settings_v2['icons']['color'];
+                    $settings['icons_labels']['icon_color']['primary']       = $settings_v2['icons']['color'];
+                    $settings['icons_labels']['label_color']['primary']      = $settings_v2['icons']['color'];
+                    $settings['toggle']['font_color']                        = $settings_v2['icons']['color'];
                 }
             }
 
@@ -154,15 +155,15 @@ final class Migrate_3_0_0
             {
                 if ( isset( $settings_v2['toggle']['color'] ))
                 {
-                    $settings['toggle']['background_color']               = $settings_v2['toggle']['color'];
+                    $settings['toggle']['background_color']                  = $settings_v2['toggle']['color'];
                 }
                 if ( isset( $settings_v2['toggle']['size'] ))
                 {
-                    $settings['toggle']['font_size']                      = $settings_v2['toggle']['size'];
+                    $settings['toggle']['font_size']                         = $settings_v2['toggle']['size'];
                 }
                 if ( isset( $settings_v2['toggle']['label'] ))
                 {
-                    $settings['toggle']['label']                          = $settings_v2['toggle']['label'];
+                    $settings['toggle']['label']                             = $settings_v2['toggle']['label'];
                 }
             }
 
@@ -170,11 +171,11 @@ final class Migrate_3_0_0
             {
                 if ( isset( $settings_v2['badges']['place'] ))
                 {
-                    $settings['badges']['position']                       = $settings_v2['badges']['place'];
+                    $settings['badges']['position']                          = $settings_v2['badges']['place'];
                 }
                 if ( isset( $settings_v2['badges']['size'] ))
                 {
-                    $settings['badges']['font_size']                      = $settings_v2['badges']['size'];
+                    $settings['badges']['font_size']                         = $settings_v2['badges']['size'];
                 }
             }
         }
@@ -226,6 +227,7 @@ final class Migrate_3_0_0
                         $parameter = [];
                         $parameter = $parameter_v2;
                         unset( $parameter['type'] );
+                        unset( $parameter['placeholder'] );
 
                         $contact['parameters'][] = $parameter;
                     }

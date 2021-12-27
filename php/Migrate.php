@@ -2,8 +2,7 @@
 
 namespace MobileContactBar;
 
-use MobileContactBar\Settings;
-use MobileContactBar\Styles;
+use MobileContactBar\Contacts;
 use DirectoryIterator;
 
 
@@ -29,11 +28,7 @@ final class Migrate
 
     public function __construct()
     {
-        $this->option_migrations = abmcb( Options::class )->get_option(
-            abmcb()->id . '_migrations',
-            'default_option_migrations',
-            'is_valid_option_migrations'
-        );
+        $this->option_migrations = abmcb( Options::class )->get_option( abmcb()->id . '_migrations', 'sanitize_option_migrations' );
         $this->available_migrations = $this->available_migrations();
         $this->needed_migrations = $this->needed_migrations();
     }
@@ -50,7 +45,7 @@ final class Migrate
     {
         foreach ( $this->needed_migrations as $migration => $success )
         {
-            $migration_class = Helper::build_class_name( $this->versionToClassName( $migration ), 'Migrations' );
+            $migration_class = Helper::build_class_name( $this->version_to_class_name( $migration ), 'Migrations' );
 
             if ( class_exists( $migration_class ))
             {
@@ -59,12 +54,7 @@ final class Migrate
         }
 
         $migrations = $this->option_migrations + $this->needed_migrations;
-        abmcb( Options::class )->update_option(
-            $migrations,
-            abmcb()->id . '_migrations',
-            'default_option_migrations',
-            'is_valid_option_migrations'
-        );
+        abmcb( Options::class )->update_option( $migrations, abmcb()->id . '_migrations', 'sanitize_option_migrations' );
     }
 
 
@@ -83,7 +73,7 @@ final class Migrate
             {
                 if ( 'file' === $fileinfo->getType() )
                 {
-                    $migrations[] = $this->classNameToVersion( $fileinfo->getFilename() );
+                    $migrations[] = $this->class_name_to_version( $fileinfo->getFilename() );
                 }
             }
         }
@@ -110,60 +100,40 @@ final class Migrate
     }
 
 
+    /**
+     * @return void
+     */
     private function refresh_option_bar()
     {
-        $refreshed_option_bar = [];
+        $option_bar = abmcb( Options::class )->get_option( abmcb()->id, 'sanitize_option_bar' );
 
-        $option_bar = get_option( abmcb()->id );
-
-        if ( $option_bar && is_array( $option_bar ))
+        if ( empty( $option_bar['contacts'] ))
         {
-            $default_settings = abmcb( Settings\Input::class )->default_settings();
-            $settings = $default_settings;
-
-            if ( isset( $option_bar['settings'] ) && is_array( $option_bar['settings'] ))
-            {
-                $settings = Helper::array_intersect_key_recursive(
-                    array_replace_recursive( $default_settings, $option_bar['settings'] ),
-                    $default_settings
-                );
-            }
-
-            $sample_contacts = abmcb( Contacts\Input::class )->sample_contacts();
-            $contacts = array_map( function ( $contact ) { return array_replace( $contact, ['checked' => 0] ); }, $sample_contacts );
-
-            if ( isset( $option_bar['contacts'] ) && is_array( $option_bar['contacts'] ))
-            {
-                $contacts = $option_bar['contacts'];
-            }
-
-            $styles = Styles\CSS::output( $settings, $contacts );
-    
-            $refreshed_option_bar = [
-                'settings' => $settings,
-                'contacts' => $contacts,
-                'styles'   => $styles,
-            ];
+            $option_bar['contacts'] = abmcb( Contacts\Input::class )->unchecked_sample_contacts();
         }
 
-        abmcb( Options::class )->update_option(
-            $refreshed_option_bar,
-            abmcb()->id,
-            'default_option_bar',
-            'is_valid_option_bar'
-        );
+        abmcb( Options::class )->update_option( $option_bar, abmcb()->id, 'sanitize_option_bar' );
     }
 
 
-    private function classNameToVersion( $className )
+    /**
+     * @param  string $class_name
+     * @return string             version
+     */
+    private function class_name_to_version( $class_name )
     {
-        $version = str_replace( ['Migrate_', '.php'], '', $className );
+        $version = str_replace( ['Migrate_', '.php'], '', $class_name );
         return str_replace( '_', '.', $version );
     }
 
-    private function versionToClassName( $version )
+
+    /**
+     * @param  string $version
+     * @return string          class name
+     */
+    private function version_to_class_name( $version )
     {
-        $className = str_replace( '.', '_', $version );
-        return 'Migrate_' . $className;
+        $name = str_replace( '.', '_', $version );
+        return 'Migrate_' . $name;
     }
 }

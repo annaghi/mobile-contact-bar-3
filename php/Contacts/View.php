@@ -7,18 +7,13 @@ use MobileContactBar\Helper;
 
 final class View
 {
-    public $option_bar = [];
-
-
     /**
      * Adds Contact List metabox to the options page.
      * 
-     * @param array $option_bar
+     * @return void
      */
-    public function add( $option_bar = [] )
+    public function add()
     {
-        $this->option_bar = $option_bar;
-
         add_settings_section(
             'mcb-section-contacts',
             __( 'Contact List', 'mobile-contact-bar' ),
@@ -81,13 +76,13 @@ final class View
      */
     public function render_contact_list()
     {
-        $settings = $this->option_bar['settings'];
-        $contacts = $this->option_bar['contacts'];
+        $settings = abmcb()->option_bar['settings'];
+        $contacts = abmcb()->option_bar['contacts'];
 
         ?>
         <div id="mcb-table-contacts">
             <div id="mcb-contacts">
-            <?php foreach ( $this->option_bar['contacts'] as $contact_key => $contact ) { ?>
+            <?php foreach ( $contacts as $contact_key => $contact ) { ?>
                 <div class="mcb-contact<?php echo ( $contact['checked'] ) ? ' mcb-checked' : ''?>" data-contact-key="<?php echo $contact_key; ?>">
                 <?php
                     echo $this->output_summary( ['contact_key' => $contact_key, 'contact' => $contact] );

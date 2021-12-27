@@ -42,10 +42,10 @@ final class HistoryBack extends TypeAbstract
         }
 
         ?>
-        <script id="mobile-contact-bar-<?php echo esc_attr( $this->type ); ?>">
+        <script id="<?php echo abmcb()->slug, '-', esc_attr( $this->type ); ?>">
         (function() {
             document.addEventListener('DOMContentLoaded', function() {
-                document.scripts['mobile-contact-bar-<?php echo esc_attr( $this->type ); ?>'].parentElement.firstChild.onclick = function( event ) {
+                document.scripts['<?php echo abmcb()->slug, '-', esc_attr( $this->type ); ?>'].parentElement.firstChild.onclick = function( event ) {
                     event.preventDefault();
                     window.history.back();
                 }

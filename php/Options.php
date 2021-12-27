@@ -9,97 +9,66 @@ use MobileContactBar\Styles;
 
 final class Options
 {
-    public function get_option( $path, $default_option_method, $is_valid_option_method )
+    public function get_option( $path, $sanitize_option_method )
     {
         $option = get_option( $path );
-        
-        if ( call_user_func( [$this, $is_valid_option_method], $option ))
+        return call_user_func( [$this, $sanitize_option_method], $option );
+    }
+
+
+    public function update_option( $option, $path, $sanitize_option_method )
+    {
+        $sanitized_option = call_user_func( [$this, $sanitize_option_method], $option );
+        update_option( $path, $sanitized_option );
+    }
+
+
+    /**
+     * @param  mixed $option
+     * @return array
+     */
+    public function sanitize_option_bar( $option )
+    {
+        if ( $option && is_array( $option ) && isset( $option['settings'] ))
         {
-            return $option;
+            $settings = abmcb( Settings\Input::class )->sanitize( $option['settings'] );    
         }
         else
         {
-            return call_user_func( [$this, $default_option_method] );
+            $settings = abmcb( Settings\Input::class )->default_settings();    
         }
-    }
 
-
-    public function update_option( $option, $path, $default_option_method, $is_valid_option_method )
-    {
-        if ( call_user_func( [$this, $is_valid_option_method], $option ))
+        if ( $option && is_array( $option ) && isset( $option['contacts'] ))
         {
-            update_option( $path, $option );
+            $contacts = abmcb( Contacts\Input::class )->sanitize( $option['contacts'] );
         }
         else
         {
-            update_option( $path, call_user_func( [$this, $default_option_method] ));
+            $contacts = [];
         }
+
+        return [
+            'settings' => $settings,
+            'contacts' => $contacts,
+            'styles'   => abmcb( Styles\CSS::class )->output( $settings, $contacts ),
+        ];
     }
 
 
-    public function is_valid_option_bar( $option_bar )
+    /**
+     * @param  mixed $option
+     * @return array
+     */
+    public function sanitize_option_migrations( $option )
     {
-        if ( ! $option_bar || ! is_array( $option_bar ))
+        if ( $option && is_array( $option ))
         {
-            return false;
+            return array_filter( $option, 'is_bool' );
         }
-
-        $settings = ( isset( $option_bar['settings'] ) && is_array( $option_bar['settings'] )) ? $option_bar['settings'] : [];
-        $contacts = ( isset( $option_bar['contacts'] ) && is_array( $option_bar['contacts'] )) ? $option_bar['contacts'] : [];
-
-        return $this->is_valid_settings( $settings ) && $this->is_valid_contacts( $contacts );
-    }
-
-
-    public function is_valid_settings( $settings )
-    {
-        $default_settings = abmcb( Settings\Input::class )->default_settings();
-        $diff = Helper::array_diff_assoc_recursive( $default_settings, $settings );
-
-        return empty( $diff );
-    }
-
-
-    public function is_valid_contacts( $contacts )
-    {
-        $is_valid = true;
-
-        // TODO Nicer validation
-        $contact_keys = ['type', 'id', 'checked', 'brand', 'group', 'icon', 'label', 'uri', 'custom', 'parameters'];
-        $custom_keys = ['background_color', 'border_color', 'icon_color', 'label_color'];
-        $parameter_keys = ['key', 'value'];
-
-        foreach ( $contacts as $contact )
+        else
         {
-            if ( is_array( $contact['custom'] ))
-            {
-                $is_valid = $is_valid && empty( array_diff( $custom_keys, array_keys( $contact['custom'] )));
-            }
-
-            $keys = array_keys( $contact );
-            $contact_diff = array_diff( $contact_keys, $keys );
-
-            if ( empty( $contact_diff ))
-            {
-                if ( is_array( $contact['parameters'] ))
-                {
-                    $is_valid = $is_valid && array_reduce(
-                        $contact['parameters'],
-                        function ( $acc, $parameter ) use ( $parameter_keys )
-                        {
-                            return $acc && empty( array_diff( $parameter_keys, array_keys( $parameter )));
-                        },
-                        true
-                    );
-                }
-            }
-            elseif ( array_values( $contact_diff ) !== ['parameters'] )
-            {
-                $is_valid = false;
-            }
+            return [];
         }
-
-        return $is_valid;
     }
 
 
@@ -119,24 +88,5 @@ final class Options
            'contacts' => $contacts,
            'styles'   => $styles,
        ];
-    }
-
-
-    /**
-     * @param  array $migrations
-     * @return array
-     */
-    public function is_valid_option_migrations( $migrations )
-    {
-        return ( $migrations && is_array( $migrations ));
-    }
-
-
-    /**
-     * @return array
-     */
-    public function default_option_migrations()
-    {
-        return [];
     }
 }
