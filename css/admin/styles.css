@@ -260,6 +260,7 @@
 
 .mcb-contact.ui-sortable-placeholder {
     background-color: #cccccc;
+    box-shadow: inset 0 1px rgba(0, 0, 0, 0.1);
 }
 .ui-sortable-helper .mcb-summary {
     box-shadow: 0 0 5px 3px #dddddd, 0 0 0 1px #000000;

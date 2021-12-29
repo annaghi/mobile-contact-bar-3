@@ -1,11 +1,9 @@
 <?php
 
-namespace MobileContactBar\Contacts\Type;
-
-use MobileContactBar\Contacts\Input;
+namespace MobileContactBar\ContactTypes;
 
 
-final class Tel extends TypeAbstract
+final class Link extends ContactType
 {
     public function __construct()
     {
@@ -18,15 +16,16 @@ final class Tel extends TypeAbstract
         return [
             'type'        => $this->type,
             'id'          => '',
-            'title'       => __( 'Phone', 'mobile-contact-bar' ),
+            'title'       => __( 'Link', 'mobile-contact-bar' ),
             'checked'     => 0,
             'brand'       => 'fa',
             'group'       => 'solid',
-            'icon'        => 'phone',
-            'label'       => __( 'Call Us', 'mobile-contact-bar' ),
+            'icon'        => 'external-link-square-alt',
+            'label'       => '',
             'uri'         => '',
-            'placeholder' => 'tel:15417543010 or tel:+15417543010',
-            'custom'      => abmcb( Input::class )->default_customization(),
+            'placeholder' => 'http(s)://www.somesite.com/path',
+            'parameters'  => [],
+            'custom'      => self::default_customization(),
             'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
             'desc_uri'    => __( 'URI desc', 'mobile-contact-bar' ),
         ];

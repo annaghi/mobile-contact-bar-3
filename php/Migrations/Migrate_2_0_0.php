@@ -2,10 +2,6 @@
 
 namespace MobileContactBar\Migrations;
 
-use MobileContactBar\Settings;
-use MobileContactBar\Contacts;
-use MobileContactBar\Styles;
-
 
 final class Migrate_2_0_0
 {
@@ -143,7 +139,7 @@ final class Migrate_2_0_0
                 $contact['checked'] = 1;
 
                 $uri = $this->migrate_uri( $contact_v1['protocol'], $contact_v1['resource'] );
-                $contact['uri'] = Contacts\Validator::sanitize_contact_uri( $uri );
+                $contact['uri'] = $uri;
 
                 switch( $id_v1 )
                 {
@@ -170,8 +166,7 @@ final class Migrate_2_0_0
 
                         if( isset( $contact_v1['parameters'], $contact_v1['parameters']['body'] ))
                         {
-                            $value = urldecode( $contact_v1['parameters']['body'] );
-                            $contact['parameters'][0]['value'] = Contacts\Validator::sanitize_parameter_value( $value, 'text' );
+                            $contact['parameters'][0]['value'] = urldecode( $contact_v1['parameters']['body'] );
                         }
                         break;
 
@@ -213,11 +208,9 @@ final class Migrate_2_0_0
 
                             if( isset( $contact_v1['parameters'] ) && isset( $contact_v1['parameters'][$key] ))
                             {
-                                $value = urldecode( $contact_v1['parameters'][$key] );
-                                $parameter['value'] = Contacts\Validator::sanitize_parameter_value( $value, $parameter['type'] );
+                                $parameter['value'] = urldecode( $contact_v1['parameters'][$key] );
                             }
                         }
-
                         unset( $parameter );
                         break;
 

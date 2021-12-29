@@ -1,11 +1,9 @@
 <?php
 
-namespace MobileContactBar\Contacts\Type;
-
-use MobileContactBar\Contacts\Input;
+namespace MobileContactBar\ContactTypes;
 
 
-final class Viber extends TypeAbstract
+final class Viber extends ContactType
 {
     public function __construct()
     {
@@ -24,8 +22,8 @@ final class Viber extends TypeAbstract
             'group'       => 'brands',
             'icon'        => 'viber',
             'label'       => 'Viber',
-            'uri'         => 'viber://pa?chatURI=URI',
-            'placeholder' => 'place',
+            'uri'         => 'viber://pa?chatURI=your_URI',
+            'placeholder' => 'viber://pa?chatURI=your_URI',
             'parameters'  => [
                 [
                     'field'       => 'text',
@@ -40,7 +38,7 @@ final class Viber extends TypeAbstract
                     'placeholder' => __( 'Text ...', 'mobile-contact-bar' ),
                 ],
             ],
-            'custom'      => abmcb( Input::class )->default_customization(),
+            'custom'      => self::default_customization(),
             'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
             'desc_uri'    => __( 'URI desc', 'mobile-contact-bar' ),
         ];

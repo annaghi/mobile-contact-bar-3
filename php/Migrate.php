@@ -28,7 +28,7 @@ final class Migrate
 
     public function __construct()
     {
-        $this->option_migrations = abmcb( Options::class )->get_option( abmcb()->id . '_migrations', 'sanitize_option_migrations' );
+        $this->option_migrations = abmcb( Option::class )->get_option( abmcb()->id . '_migrations', 'sanitize_option_migrations' );
         $this->available_migrations = $this->available_migrations();
         $this->needed_migrations = $this->needed_migrations();
     }
@@ -54,7 +54,7 @@ final class Migrate
         }
 
         $migrations = $this->option_migrations + $this->needed_migrations;
-        abmcb( Options::class )->update_option( $migrations, abmcb()->id . '_migrations', 'sanitize_option_migrations' );
+        abmcb( Option::class )->update_option( $migrations, abmcb()->id . '_migrations', 'sanitize_option_migrations' );
     }
 
 
@@ -105,14 +105,14 @@ final class Migrate
      */
     private function refresh_option_bar()
     {
-        $option_bar = abmcb( Options::class )->get_option( abmcb()->id, 'sanitize_option_bar' );
+        $option_bar = abmcb( Option::class )->get_option( abmcb()->id, 'sanitize_option_bar' );
 
         if ( empty( $option_bar['contacts'] ))
         {
             $option_bar['contacts'] = abmcb( Contacts\Input::class )->unchecked_sample_contacts();
         }
 
-        abmcb( Options::class )->update_option( $option_bar, abmcb()->id, 'sanitize_option_bar' );
+        abmcb( Option::class )->update_option( $option_bar, abmcb()->id, 'sanitize_option_bar' );
     }
 
 

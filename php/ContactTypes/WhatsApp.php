@@ -1,11 +1,9 @@
 <?php
 
-namespace MobileContactBar\Contacts\Type;
-
-use MobileContactBar\Contacts\Input;
+namespace MobileContactBar\ContactTypes;
 
 
-final class SMS extends TypeAbstract
+final class WhatsApp extends ContactType
 {
     public function __construct()
     {
@@ -18,23 +16,29 @@ final class SMS extends TypeAbstract
         return [
             'type'        => $this->type,
             'id'          => '',
-            'title'       => 'SMS',
+            'title'       => 'WhatsApp',
             'checked'     => 0,
             'brand'       => 'fa',
-            'group'       => 'solid',
-            'icon'        => 'sms',
-            'label'       => __( 'Phone Number for texting', 'mobile-contact-bar' ),
-            'uri'         => '',
-            'placeholder' => 'sms:15417543010 or sms:+15417543010',
+            'group'       => 'brands',
+            'icon'        => 'whatsapp',
+            'label'       => 'WhatsApp',
+            'uri'         => 'https://api.whatsapp.com/send',
+            'placeholder' => 'place',
             'parameters'  => [
                 [
                     'field'       => 'text',
-                    'key'         => 'body',
+                    'key'         => 'phone',
+                    'value'       => '',
+                    'placeholder' => '15417543010',
+                ],
+                [
+                    'field'       => 'text',
+                    'key'         => 'text',
                     'value'       => '',
                     'placeholder' => __( 'Message ...', 'mobile-contact-bar' ),
                 ],
             ],
-            'custom'      => abmcb( Input::class )->default_customization(),
+            'custom'      => self::default_customization(),
             'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
             'desc_uri'    => __( 'URI desc', 'mobile-contact-bar' ),
         ];

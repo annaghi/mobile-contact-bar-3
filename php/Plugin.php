@@ -16,6 +16,7 @@ use ReflectionClass;
  * @property string $slug
  * @property string $capability
  * @property string $page_suffix;
+ * @property string $schemes;
 */
 final class Plugin extends Container
 {
@@ -23,6 +24,7 @@ final class Plugin extends Container
     const SLUG = 'mobile-contact-bar';
     const CAPABILITY = 'manage_options';
     const PAGE_SUFFIX = 'settings_page_mobile-contact-bar';
+    const SCHEMES = ['viber', 'tel', 'sms', 'skype', 'mailto', 'https', 'http'];
 
     public $file = '';
     public $languages = '';
@@ -47,6 +49,7 @@ final class Plugin extends Container
      */
     public $option_bar = [];
 
+    
     /**
      * Controllers
      */
@@ -278,7 +281,7 @@ final class Plugin extends Container
         $this->install();
 
         $this->option_version = get_option( self::ID . '_version' );
-        $this->option_bar = abmcb( Options::class )->get_option( self::ID, 'sanitize_option_bar' );
+        $this->option_bar = abmcb( Option::class )->get_option( self::ID, 'sanitize_option_bar' );
     }
 
 
@@ -301,7 +304,7 @@ final class Plugin extends Container
         }
         elseif ( ! $version )
         {
-            update_option( self::ID, abmcb( Options::class )->default_option_bar() );
+            update_option( self::ID, abmcb( Option::class )->default_option_bar() );
             update_option( self::ID . '_version', $this->version );
         }
         elseif ( $version && version_compare( $version, $this->version, '<' ))
@@ -321,7 +324,7 @@ final class Plugin extends Container
     {
         $contact_types = [];
 
-        $dir = plugin_dir_path( $this->file ) . 'php/Contacts/Type';
+        $dir = plugin_dir_path( $this->file ) . 'php/ContactTypes';
 
         if ( is_dir( $dir ))
         {
@@ -331,7 +334,7 @@ final class Plugin extends Container
                 if ( 'file' === $fileinfo->getType() )
                 {
                     $contact_type = str_replace( '.php', '', $fileinfo->getFilename() );
-                    $contact_type_class = Helper::build_class_name( $contact_type, 'Contacts\Type');
+                    $contact_type_class = Helper::build_class_name( $contact_type, 'ContactTypes');
                     if ( class_exists( $contact_type_class ) && ! ( new ReflectionClass( $contact_type_class ))->isAbstract() )
                     {
                         $contact_types[strtolower( $contact_type )] = abmcb( $contact_type_class );

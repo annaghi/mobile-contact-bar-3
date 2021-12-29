@@ -2,8 +2,6 @@
 
 namespace MobileContactBar\Settings;
 
-use MobileContactBar\Settings;
-
 
 final class View
 {
@@ -14,7 +12,7 @@ final class View
      */
     public function add()
     {
-        $input_fields = abmcb( Settings\Input::class )->input_fields();
+        $input_fields = abmcb( Input::class )->input_fields();
 
         foreach ( $input_fields as $section_key => $section )
         {

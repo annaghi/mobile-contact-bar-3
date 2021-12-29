@@ -2,13 +2,13 @@
 
 namespace MobileContactBar\Contacts;
 
-use MobileContactBar\Helper;
+use MobileContactBar\ContactTypes;
 
 
 final class View
 {
     /**
-     * Adds Contact List metabox to the options page.
+     * Adds Contact List meta box to the options page.
      * 
      * @return void
      */
@@ -49,7 +49,7 @@ final class View
                 <ul>
                     <?php
                     $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/tabler-sprite.svg';
-                    $icons = array_slice( Input::ti_icons(), 0, 30 );
+                    $icons = array_slice( abmcb( Input::class )->ti_icons(), 0, 30 );
                     foreach ( $icons as $icon ) :
                         ?>
                         <li data-icon="<?php echo $icon; ?>">
@@ -175,11 +175,11 @@ final class View
         }
         else
         {
-            $uri = Validator::escape_contact_uri( $contact['uri'] );
+            $uri = $contact['uri'];
             $out .= sprintf(
                 '<div class="mcb-summary-uri%s">%s</div>',
                 empty( $uri ) ? '' : ' mcb-monospace',
-                empty( $uri ) ? esc_attr__( '(no URI)', 'mobile-contact-bar' ) : $uri
+                empty( $uri ) ? esc_attr__( '(no URI)', 'mobile-contact-bar' ) : esc_url( $uri, abmcb()->schemes )
             );
         }
 
@@ -358,7 +358,7 @@ final class View
             // 'URI' hidden
             $out .= sprintf(
                 '<input type="hidden" name="' . $prefix . '[uri]" value="%1$s">',
-                Validator::escape_contact_uri( $contact['uri'] )
+                esc_url( $contact['uri'], abmcb()->schemes )
             );
 
             // 'URI' visible
@@ -390,7 +390,7 @@ final class View
                 esc_attr__( 'Contact URI', 'mobile-contact-bar' ),
                 esc_attr( $contact_type['desc_uri'] ),
                 esc_attr( $contact_type['placeholder'] ),
-                Validator::escape_contact_uri( $contact['uri'] )
+                esc_url( $contact['uri'], abmcb()->schemes )
             );
         }
 
@@ -412,7 +412,7 @@ final class View
 
         $out = '';
 
-        if ( 'link' === $contact['type'] && isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
+        if ( 'link' === $contact['type'] )
         {
             $out .= sprintf(
                 '<div class="mcb-row mcb-custom-parameters">
@@ -439,7 +439,7 @@ final class View
                 );
             }
         }
-        elseif ( isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
+        elseif ( isset( $contact['parameters'] ))
         {
             $out .= sprintf(
                 '<div class="mcb-row mcb-builtin-parameters">
@@ -652,7 +652,7 @@ final class View
         $out = '';
 
         $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_key ) . ']';
-        $input_fields = abmcb( Input::class )->custom_input_fields();
+        $input_fields = ContactTypes\ContactType::custom_input_fields();
 
         // 'id' input
         $out .= sprintf(
@@ -709,13 +709,13 @@ final class View
     public function output_close_contact()
     {
         $out = sprintf(
-            '<div class="mcb-row mcb-close-contact">
+            '<div class="mcb-row mcb-close-details">
                 <div class="mcb-label"></div>
                 <div class="mcb-input">
-                    <button type="button" class="button mcb-action-close-contact" title="%1$s">%1$s</button>
+                    <button type="button" class="button mcb-action-close-details" title="%1$s">%1$s</button>
                 </div>
             </div>',
-            esc_attr__( 'Close Contact', 'mobile-contact-bar' )
+            esc_attr__( 'Close details', 'mobile-contact-bar' )
         );
 
         return $out;

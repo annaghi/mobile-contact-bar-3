@@ -7,7 +7,7 @@ use MobileContactBar\Contacts;
 use MobileContactBar\Styles;
 
 
-final class Options
+final class Option
 {
     public function get_option( $path, $sanitize_option_method )
     {

@@ -2,7 +2,7 @@
 
 namespace MobileContactBar\Controllers;
 
-use MobileContactBar\Options;
+use MobileContactBar\Option;
 use MobileContactBar\Settings;
 use MobileContactBar\Contacts;
 use MobileContactBar\Styles;
@@ -119,7 +119,7 @@ final class AdminController
      */
     public function callback_sanitize_option( $input )
     {
-        return abmcb( Options::class )->sanitize_option_bar( $input );
+        return abmcb( Option::class )->sanitize_option_bar( $input );
     }
 
 
@@ -504,8 +504,8 @@ final class AdminController
                 [
                     'nonce'    => wp_create_nonce( abmcb()->id ),
                     'page_url' => plugin_dir_url( abmcb()->file ),
-                    'ti_icons' => Contacts\Input::ti_icons(),
-                    'fa_icons' => Contacts\Input::fa_icons(),
+                    'ti_icons' => abmcb( Contacts\Input::class )->ti_icons(),
+                    'fa_icons' => abmcb( Contacts\Input::class )->fa_icons(),
                     'l10n'     => $this->l10n,
                 ]
             );

@@ -265,7 +265,7 @@ final class CSS
 
 
         // Toggle
-        if ( $toggle && $toggle['is_render'] && $bar['is_fixed'] )
+        if ( $toggle && $toggle['is_render'] && $bar['is_sticky'] )
         {
             if ( $toggle['is_animation'] )
             {
@@ -367,7 +367,7 @@ final class CSS
 
         // bottom
         // fixed
-        if ( 'bottom' === $bar['vertical_alignment'] && $bar['is_fixed'] )
+        if ( 'bottom' === $bar['vertical_alignment'] && $bar['is_sticky'] )
         {
             if ( $bar['placeholder_height'] > 0 )
             {
@@ -386,7 +386,7 @@ final class CSS
 
         // top
         // fixed
-        if ( 'top' === $bar['vertical_alignment'] && $bar['is_fixed'] )
+        if ( 'top' === $bar['vertical_alignment'] && $bar['is_sticky'] )
         {
             if ( $bar['placeholder_height'] > 0 )
             {
@@ -420,7 +420,7 @@ final class CSS
 
         // bottom
         // not fixed
-        if ( 'bottom' === $bar['vertical_alignment'] && ! $bar['is_fixed'] )
+        if ( 'bottom' === $bar['vertical_alignment'] && ! $bar['is_sticky'] )
         {
             if ( $bar['placeholder_height'] > 0 )
             {
@@ -447,7 +447,7 @@ final class CSS
 
         // top
         // not fixed
-        if ( 'top' === $bar['vertical_alignment'] && ! $bar['is_fixed'] )
+        if ( 'top' === $bar['vertical_alignment'] && ! $bar['is_sticky'] )
         {
             if ( $bar['placeholder_height'] > 0 )
             {

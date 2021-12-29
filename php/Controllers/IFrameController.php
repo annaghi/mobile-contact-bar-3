@@ -2,8 +2,6 @@
 
 namespace MobileContactBar\Controllers;
 
-use MobileContactBar\Contacts;
-
 
 final class IFrameController
 {
@@ -42,7 +40,7 @@ final class IFrameController
         {
             wp_enqueue_script(
                 abmcb()->slug,
-                plugin_dir_url( abmcb()->file ) . 'assets/js/public.min.js',
+                plugin_dir_url( abmcb()->file ) . 'assets/js/public.js',
                 [],
                 abmcb()->version,
                 true
@@ -113,7 +111,7 @@ final class IFrameController
 
         $out .= '<div id="mobile-contact-bar">';
 
-        if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] )
+        if ( $settings['toggle']['is_render'] && $settings['bar']['is_sticky'] )
         {
             $checked = isset( $settings['toggle']['is_closed'] ) && $settings['toggle']['is_closed'] ? 'checked' : '';
             $out .= '<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox"' . $checked . '>';
@@ -157,27 +155,29 @@ final class IFrameController
                 ? sprintf( 'id="%s"', esc_attr( $contact['id'] ))
                 : '';
 
-            $uri = Contacts\Validator::escape_contact_uri( $contact['uri'] );
+            $uri = $contact['uri'];
 
-            if ( ! empty( $uri ) && ! empty( $contact['parameters'] ) && is_array( $contact['parameters'] ))
+            if ( $uri && ! empty( $contact['parameters'] ) && is_array( $contact['parameters'] ))
             {
                 $query_arg = [];
 
                 foreach ( $contact['parameters'] as $parameter )
                 {
-                    if ( $parameter['value'] )
+                    $key = sanitize_key( $parameter['key'] );
+                    $value = urlencode( $parameter['value'] );
+
+                    if ( $key && $value )
                     {
-                        $key             = sanitize_key( $parameter['key'] );
-                        $query_arg[$key] = urlencode( $parameter['value'] );
+                        $query_arg[$key] = $value;
                     }
                 }
                 $uri = add_query_arg( $query_arg, $uri );
             }
 
             $badge = apply_filters( 'mcb_public_add_badge', '', $contact['type'] );
-            $label = ( ! empty( $contact['label'] )) ? sprintf( '<span class="mobile-contact-bar-label">%s</span>', str_replace( '\n', '<br />', esc_attr( $contact['label'] ))) : '';
+            $label = ( $contact['label'] ) ? sprintf( '<span class="mobile-contact-bar-label">%s</span>', str_replace( '\n', '<br />', esc_attr( $contact['label'] ))) : '';
 
-            // TODO move validation to Options
+            // TODO move validation to Option
             if ( 'fa' === $contact['brand'] )
             {
                 $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg';
@@ -198,7 +198,7 @@ final class IFrameController
             }
 
             $out .= sprintf( '<li class="mobile-contact-bar-item" %s>', $id );
-            // $out .= sprintf( '<a href="%s" %s>', esc_url( $uri ), $new_tab );
+            // $out .= sprintf( '<a href="%s" %s>', esc_url( $uri, abmcb()->schemes ), $new_tab );
             $out .= sprintf( '<a href="%s" %s>', '', $new_tab );
             if ( $settings['icons_labels']['label_position'] === 'below' )
             {

@@ -1,11 +1,9 @@
 <?php
 
-namespace MobileContactBar\Contacts\Type;
-
-use MobileContactBar\Contacts\Input;
+namespace MobileContactBar\ContactTypes;
 
 
-final class ScrollToTop extends TypeAbstract
+final class ScrollToTop extends ContactType
 {
     public function __construct()
     {
@@ -27,7 +25,7 @@ final class ScrollToTop extends TypeAbstract
             'label'       => __( 'Scroll To Top', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'some placeholder',
-            'custom'      => abmcb( Input::class )->default_customization(),
+            'custom'      => self::default_customization(),
             'desc_type'   => __( 'Inline JavaScript handles the scrolling.', 'mobile-contact-bar' ),
             'desc_uri'    => '',
         ];

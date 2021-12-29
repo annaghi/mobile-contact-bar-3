@@ -174,6 +174,27 @@
         }
     };
 
+    $.fn.blankIcon = function () {
+        this.find('input[name$="[brand]"]')
+            .val('')
+            .end()
+            .find('input[name$="[group]"]')
+            .val('')
+            .end()
+            .find('input[name$="[icon]"]')
+            .val('')
+            .end()
+            .find('.mcb-summary-icon')
+            .removeClass('mcb-fa')
+            .addClass('mcb-blank-icon')
+            .text('--')
+            .end()
+            .find('.mcb-details-icon span')
+            .removeClass('mcb-fa')
+            .addClass('mcb-blank-icon')
+            .text('--');
+    };
+
     var filtered_icons = function (icons, searchTerm) {
         return searchTerm === ''
             ? icons
@@ -356,12 +377,13 @@
                 $(this).toggleAriaExpanded().closest('.mcb-contact').toggleClass('mcb-opened');
             });
 
-            // Close contact
-            option.contactList.on('click', '.mcb-action-close-contact', function (event) {
+            // Close details
+            option.contactList.on('click', '.mcb-action-close-details', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
                 $(this).closest('.mcb-contact').removeClass('mcb-opened').find('.mcb-action-toggle-details').attr('aria-expanded', 'false');
+                document.getElementById('mcb-section-contacts').scrollIntoView();
             });
 
             // Order higher
@@ -416,9 +438,9 @@
                         return false;
                     }
 
-                    ['historyback', 'historyforward', 'scrolltotop'].includes(data.contact_type.type)
+                    [('historyback', 'historyforward', 'scrolltotop')].includes(data.contact_type.type)
                         ? contact.find('.mcb-summary-uri').text('#')
-                        : contact.find('.mcb-summary-uri').text('(no URI)');
+                        : contact.find('.mcb-summary-uri').text(!!data.contact_type.uri ? data.contact_type.uri : '(no URI)');
                     contact.find('.mcb-details-uri').replaceWith($(data.uri));
                     contact.find('.mcb-builtin-parameters, .mcb-custom-parameters, .mcb-builtin-parameter, .mcb-custom-parameter').detach();
                     contact.find('.mcb-details-uri').after($(data.parameters));
@@ -469,12 +491,18 @@
                         event.preventDefault();
                         event.stopPropagation();
 
+                        var brand = $(this).attr('data-brand');
+
                         $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
                         $(this).addClass('mcb-icon-brand-active');
 
-                        if ('ti' === $(this).attr('data-brand')) {
+                        if ('ti' === brand) {
                             ti_update_picker_window(iconList, ti_path, ti_filtered_icons, 0);
+                        } else if ('fa' === brand) {
+                            fa_update_picker_window(iconList, fa_path, fa_filtered_icons, 0);
                         } else {
+                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
+                            $('#mcb-icon-picker-container').find('button[data-brand="fa"]').addClass('mcb-icon-brand-active');
                             fa_update_picker_window(iconList, fa_path, fa_filtered_icons, 0);
                         }
                     });
@@ -490,6 +518,17 @@
                         var icon = $(this).closest('li').attr('data-icon');
                         var names = 'fa' === brand ? icon.split(' ') : ['', icon];
 
+                        $('#mcb-icon-picker-container').remove();
+
+                        if (
+                            !['ti', 'fa'].includes(brand) ||
+                            ('ti' === brand && !ti_icons.includes(icon)) ||
+                            ('fa' === brand && !fa_icons.includes(icon))
+                        ) {
+                            contact.blankIcon();
+                            return false;
+                        }
+
                         $.ajax({
                             url: ajaxurl,
                             method: 'POST',
@@ -502,29 +541,12 @@
                             }
                         }).done(function (response) {
                             if (!response) {
+                                contact.blankIcon();
                                 return false;
                             }
                             var svg = JSON.parse(response);
                             if (svg.length <= 0) {
-                                contact
-                                    .find('input[name$="[brand]"]')
-                                    .val('')
-                                    .end()
-                                    .find('input[name$="[group]"]')
-                                    .val('')
-                                    .end()
-                                    .find('input[name$="[icon]"]')
-                                    .val('')
-                                    .end()
-                                    .find('.mcb-summary-icon')
-                                    .removeClass('mcb-fa')
-                                    .addClass('mcb-blank-icon')
-                                    .text('--')
-                                    .end()
-                                    .find('.mcb-details-icon span')
-                                    .removeClass('mcb-fa')
-                                    .addClass('mcb-blank-icon')
-                                    .text('--');
+                                contact.blankIcon();
                                 return false;
                             }
 
@@ -557,8 +579,6 @@
                                     .addClass('mcb-fa');
                             }
                         });
-
-                        $('#mcb-icon-picker-container').remove();
                     });
 
                 // Paginate icons
@@ -582,6 +602,10 @@
                             } else {
                                 circular_window_forward(iconList, fa_path, fa_filtered_icons, fa_update_picker_window);
                             }
+                        } else {
+                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
+                            $('#mcb-icon-picker-container').find('button[data-brand="fa"]').addClass('mcb-icon-brand-active');
+                            fa_update_picker_window(iconList, fa_path, fa_filtered_icons, 0);
                         }
                     });
 
@@ -601,6 +625,10 @@
                         if ('ti' === brand) {
                             ti_update_picker_window(iconList, ti_path, ti_filtered_icons, 0);
                         } else if ('fa' === brand) {
+                            fa_update_picker_window(iconList, fa_path, fa_filtered_icons, 0);
+                        } else {
+                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
+                            $('#mcb-icon-picker-container').find('button[data-brand="fa"]').addClass('mcb-icon-brand-active');
                             fa_update_picker_window(iconList, fa_path, fa_filtered_icons, 0);
                         }
                     });

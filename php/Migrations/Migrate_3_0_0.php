@@ -2,10 +2,7 @@
 
 namespace MobileContactBar\Migrations;
 
-use MobileContactBar\Helper;
-use MobileContactBar\Settings;
-use MobileContactBar\Contacts;
-use MobileContactBar\Styles;
+use MobileContactBar\ContactTypes;
 
 
 final class Migrate_3_0_0
@@ -51,11 +48,6 @@ final class Migrate_3_0_0
         {
             $settings_v2 = $this->option_bar_v2['settings'];
 
-            $settings['bar']['placeholder_height']                           = 0;
-            $settings['toggle']['label']                                     = '';
-            $settings['icons_labels']['secondary_colors']['hover']           = 0;
-            $settings['icons_labels']['secondary_colors']['focus']           = 0;
-            $settings['icons_labels']['secondary_colors']['active']          = 0;
             $settings['icons_labels']['background_color']['secondary']       = '';
             $settings['icons_labels']['icon_color']['secondary']             = '';
             $settings['icons_labels']['label_color']['secondary']            = '';
@@ -65,6 +57,10 @@ final class Migrate_3_0_0
 
             if ( isset( $settings_v2['bar'] ))
             {
+                if ( isset( $settings_v2['bar']['is_fixed'] ))
+                {
+                    $settings['bar']['is_sticky']                            = $settings_v2['bar']['is_fixed'];
+                }
                 if ( isset( $settings_v2['bar']['horizontal_position'] ))
                 {
                     $settings['bar']['horizontal_alignment']                 = $settings_v2['bar']['horizontal_position'];
@@ -161,10 +157,6 @@ final class Migrate_3_0_0
                 {
                     $settings['toggle']['font_size']                         = $settings_v2['toggle']['size'];
                 }
-                if ( isset( $settings_v2['toggle']['label'] ))
-                {
-                    $settings['toggle']['label']                             = $settings_v2['toggle']['label'];
-                }
             }
 
             if ( isset( $settings_v2['badges'] ))
@@ -191,11 +183,11 @@ final class Migrate_3_0_0
         if ( isset( $this->option_bar_v2['contacts'] ) && is_array( $this->option_bar_v2['contacts'] ))
         {
             $contacts_v2 = $this->option_bar_v2['contacts'];
-            $default_customization = abmcb( Contacts\Input::class )->default_customization();
+            $default_customization = ContactTypes\ContactType::default_customization();
 
             foreach ( $contacts_v2 as $contact_v2 )
             {
-                if ( ! isset( $contact_v2['type'], $contact_v2['title'], $contact_v2['placeholder'], $contact_v2['uri'] )
+                if ( ! isset( $contact_v2['type'], $contact_v2['title'], $contact_v2['uri'], $contact_v2['placeholder'] )
                     || ! in_array( $contact_v2['type'], ['Custom', 'Email', 'Sample', 'ScrollTop', 'Text', 'WhatsApp', 'WooCommerce'] ))
                 {
                     continue;
@@ -207,16 +199,28 @@ final class Migrate_3_0_0
                     continue;
                 }
 
-                $contact = [];
-                $contact['type'] = $contact_type;
-                $contact['id'] = '';
-                $contact['checked'] = $contact_v2['checked'];
-                $contact['brand'] = 'fa';
-                $contact['group'] = $this->migrate_group( $contact_v2['icon'] ); 
-                $contact['icon'] = $this->migrate_icon( $contact_v2['icon'] );
-                $contact['label'] = '';
-                $contact['uri'] = ( $contact_v2['uri'] === '#' ) ? '' : $contact_v2['uri'];
-                $contact['custom'] = $default_customization;
+                $contact            = [];
+                $contact['type']    = $contact_type;
+                $contact['id']      = '';
+                $contact['checked'] = ( isset( $contact_v2['checked'] )) ? $contact_v2['checked'] : 0;
+                $contact['brand']   = '';
+                $contact['group']   = ''; 
+                $contact['icon']    = '';
+                if ( isset( $contact_v2['icon'] ))
+                {
+                    $group = $this->migrate_group( $contact_v2['icon'] );
+                    $icon  = $this->migrate_icon( $contact_v2['icon'] );
+
+                    if ( ! empty( $group ) && ! empty( $icon ))
+                    {
+                        $contact['brand'] = 'fa';
+                        $contact['group'] = $group; 
+                        $contact['icon']  = $icon;
+                    }
+                }
+                $contact['label']   = '';
+                $contact['uri']     = ( $contact_v2['uri'] === '#' ) ? '' : $contact_v2['uri'];
+                $contact['custom']  = $default_customization;
 
                 if ( isset( $contact_v2['parameters'] ) && is_array( $contact_v2['parameters'] ))
                 {
@@ -224,10 +228,9 @@ final class Migrate_3_0_0
 
                     foreach ( $contact_v2['parameters'] as $parameter_v2 )
                     {
-                        $parameter = [];
-                        $parameter = $parameter_v2;
-                        unset( $parameter['type'] );
-                        unset( $parameter['placeholder'] );
+                        $parameter          = [];
+                        $parameter['key']   = ( isset( $parameter_v2['key'] )) ? $parameter_v2['key'] : '';
+                        $parameter['value'] = ( isset( $parameter_v2['value'] )) ? $parameter_v2['value'] : '';
 
                         $contact['parameters'][] = $parameter;
                     }
@@ -285,10 +288,8 @@ final class Migrate_3_0_0
             return 'whatsapp';
         }
 
-        $schemes = ['tel', 'sms', 'skype', 'mailto', 'https', 'http'];
-
         $scheme = array_reduce(
-            $schemes,
+            abmcb()->schemes,
             function ( $acc, $scheme ) use ( $uri ) { return ( strpos( $uri, $scheme ) > -1 ) ? $scheme : $acc; },
             ''
         );

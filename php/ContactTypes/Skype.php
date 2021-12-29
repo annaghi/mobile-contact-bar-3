@@ -1,11 +1,9 @@
 <?php
 
-namespace MobileContactBar\Contacts\Type;
-
-use MobileContactBar\Contacts\Input;
+namespace MobileContactBar\ContactTypes;
 
 
-final class Skype extends TypeAbstract
+final class Skype extends ContactType
 {
     public function __construct()
     {
@@ -26,7 +24,7 @@ final class Skype extends TypeAbstract
             'label'       => 'Skype',
             'uri'         => '',
             'placeholder' => 'skype:username?chat or skype:username?call',
-            'custom'      => abmcb( Input::class )->default_customization(),
+            'custom'      => self::default_customization(),
             'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
             'desc_uri'    => __( 'Use skype:username?call or skype:username?chat', 'mobile-contact-bar' ),
         ];

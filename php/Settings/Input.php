@@ -43,10 +43,10 @@ final class Input
                         'bottom' => __( 'bottom', 'mobile-contact-bar' ),
                     ],
                 ],
-                'is_fixed' => [
+                'is_sticky' => [
                     'type'     => 'checkbox',
                     'default'  => 1,
-                    'title'    => __( 'Fixed Position', 'mobile-contact-bar' ),
+                    'title'    => __( 'Sticky Position', 'mobile-contact-bar' ),
                     'label'    => __( 'Fix bar at its position relative to the viewport', 'mobile-contact-bar' ),
                 ],
                 'height' => [

@@ -1,11 +1,9 @@
 <?php
 
-namespace MobileContactBar\Contacts\Type;
-
-use MobileContactBar\Contacts\Input;
+namespace MobileContactBar\ContactTypes;
 
 
-final class Email extends TypeAbstract
+final class Email extends ContactType
 {
     public function __construct()
     {
@@ -52,7 +50,7 @@ final class Email extends TypeAbstract
                     'placeholder' => __( 'example1@domain.com,example2@domain.net', 'mobile-contact-bar' ),
                 ],
             ],
-            'custom'      => abmcb( Input::class )->default_customization(),
+            'custom'      => self::default_customization(),
             'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
             'desc_uri'    => __( 'URI desc', 'mobile-contact-bar' ),
         ];
