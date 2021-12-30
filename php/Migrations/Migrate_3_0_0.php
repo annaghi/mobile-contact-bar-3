@@ -17,6 +17,7 @@ final class Migrate_3_0_0
     {
         $this->option_bar_v2 = get_option( abmcb()->id );
         $this->migrate_bar();
+        $this->migrate_user_meta();
 
         return true;
     }
@@ -219,6 +220,7 @@ final class Migrate_3_0_0
                     }
                 }
                 $contact['label']   = '';
+                $contact['text']    = '';
                 $contact['uri']     = ( $contact_v2['uri'] === '#' ) ? '' : $contact_v2['uri'];
                 $contact['custom']  = $default_customization;
 
@@ -352,5 +354,42 @@ final class Migrate_3_0_0
         }
 
         return str_replace( 'fa-', '', $names[1] );
+    }
+
+
+    private function migrate_user_meta()
+    {
+        $user_id = get_current_user_id();
+
+        // No hidden meta box
+        update_user_meta( $user_id, 'metaboxhidden_' . abmcb()->page_suffix, [] );
+        
+        // Update closed meta boxes
+        $closed_meta_boxes = get_user_meta( $user_id, 'closedpostboxes_' . abmcb()->page_suffix, true );
+
+        if ( $closed_meta_boxes )
+        {
+            $closed_meta_boxes = array_diff( $closed_meta_boxes, ['mcb-section-model'] );
+            if ( in_array( 'mcb-section-icons', $closed_meta_boxes ))
+            {
+                $closed_meta_boxes = array_diff( $closed_meta_boxes, ['mcb-section-icons'] );
+                $closed_meta_boxes = array_merge( $closed_meta_boxes, ['mcb-section-icons_labels'] );
+            }
+            update_user_meta( $user_id, 'closedpostboxes_' . abmcb()->page_suffix, $closed_meta_boxes );
+        }
+
+        // Reorder meta boxes
+        $order_meta_boxes = [];
+        if ( class_exists( 'WooCommerce' ))
+        {
+            $order_meta_boxes['advanced'] = 'mcb-section-bar,mcb-section-icons_labels,mcb-section-badges,mcb-section-toggle,mcb-section-contacts';
+            $order_meta_boxes['side'] = 'mcb-section-live-preview';
+        }
+        else
+        {
+            $order_meta_boxes['advanced'] = 'mcb-section-bar,mcb-section-icons_labels,mcb-section-toggle,mcb-section-contacts';
+            $order_meta_boxes['side'] = 'mcb-section-live-preview';
+        }
+        update_user_meta( $user_id, 'meta-box-order_' . abmcb()->page_suffix, $order_meta_boxes );
     }
 }

@@ -2,6 +2,7 @@
 
 namespace MobileContactBar\Contacts;
 
+use MobileContactBar\Icons;
 use MobileContactBar\ContactTypes;
 
 
@@ -49,7 +50,7 @@ final class View
                 <ul>
                     <?php
                     $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/tabler-sprite.svg';
-                    $icons = array_slice( abmcb( Input::class )->ti_icons(), 0, 30 );
+                    $icons = array_slice( Icons::ti_icons(), 0, 30 );
                     foreach ( $icons as $icon ) :
                         ?>
                         <li data-icon="<?php echo $icon; ?>">
@@ -143,13 +144,13 @@ final class View
         $out .= '<div class="mcb-summary-icon-label">';
 
         // 'icon'
-        if ( 'ti' === $contact['brand'] && abmcb( Input::class )->ti_in_icons( $contact['icon'] ))
+        if ( 'ti' === $contact['brand'] && Icons::is_ti_icon( $contact['icon'] ))
         {
             $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg';
             $svg = file_get_contents( $path );
             $out .= sprintf( '<div class="mcb-summary-icon">%s</div>', $svg );
         }
-        elseif ( 'fa' === $contact['brand'] && abmcb( Input::class )->fa_in_icons( $contact['group'], $contact['icon'] ))
+        elseif ( 'fa' === $contact['brand'] && Icons::is_fa_icon( $contact['group'], $contact['icon'] ))
         {
             $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg';
             $svg = file_get_contents( $path );
@@ -282,13 +283,13 @@ final class View
         );
 
         // 'icon' visible
-        if ( 'ti' === $contact['brand'] && abmcb( Input::class )->ti_in_icons( $contact['icon'] ))
+        if ( 'ti' === $contact['brand'] && Icons::is_ti_icon( $contact['icon'] ))
         {
             $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg';
             $svg = file_get_contents( $path );
             $icon = sprintf( '<span>%s</span>', $svg );
         }
-        elseif ( 'fa' === $contact['brand'] && abmcb( Input::class )->fa_in_icons( $contact['group'], $contact['icon'] ))
+        elseif ( 'fa' === $contact['brand'] && Icons::is_fa_icon( $contact['group'], $contact['icon'] ))
         {
             $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg';
             $svg = file_get_contents( $path );
@@ -331,6 +332,20 @@ final class View
             esc_attr__( 'Contact Label', 'mobile-contact-bar' ),
             esc_attr__( 'Use \n for new lines' ),
             esc_html( $contact['label'] )
+        );
+
+        // 'text' input
+        $out .= sprintf(
+            '<div class="mcb-row mcb-details-text">
+                <div class="mcb-label">
+                    <label for="' . $prefix . '[text]">%s</label>
+                </div>
+                <div class="mcb-input">
+                    <input type="text" name="' . $prefix . '[text]" id="' . $prefix . '[text]" value="%s">
+                </div>
+            </div>',
+            esc_attr__( 'Screen Reader Text', 'mobile-contact-bar' ),
+            esc_html( $contact['text'] )
         );
 
         $out .= $this->output_details_uri( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_type' => $contact_type] );
@@ -415,7 +430,7 @@ final class View
         if ( 'link' === $contact['type'] )
         {
             $out .= sprintf(
-                '<div class="mcb-row mcb-custom-parameters">
+                '<div class="mcb-row mcb-link-parameters">
                     <div class="mcb-label">
                         <label>%s</label>
                     </div>
@@ -488,7 +503,7 @@ final class View
         $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_key ) . '][parameters][' . esc_attr( $parameter_key ) . ']';
 
         $out .= sprintf(
-            '<div class="mcb-custom-parameter" data-parameter-key="%d">',
+            '<div class="mcb-link-parameter" data-parameter-key="%d">',
             esc_attr( $parameter_key )
         );
     
@@ -676,30 +691,31 @@ final class View
         foreach( $input_fields as $custom_key => $custom )
         {
             $out .= sprintf(
-                '<div class="mcb-row mcb-custom mcb-custom-%4$s">
+                '<div class="mcb-row mcb-custom mcb-custom-%s">
                     <div class="mcb-label">
-                        <label>%1$s</label>
-                        <p class="mcb-description">%2$s</p>
+                        <label>%s</label>
+                        <p class="mcb-description">%s</p>
                     </div>
-                    <div class="mcb-input">
-                        <div class="mcb-custom-colors">
-                            <span>%3$s</span>
-                            <input type="text" class="color-picker" name="' . $prefix . '[custom][%4$s][primary]" data-alpha-enabled="true" value="%5$s">
-                        </div>
-                        <div class="mcb-custom-colors">
-                            <span>%6$s</span>
-                            <input type="text" class="color-picker" name="' . $prefix . '[custom][%4$s][secondary]" data-alpha-enabled="true" value="%7$s">
-                        </div>
-                    </div>
-                </div>',
-                esc_attr( $custom['title'] ),
-                esc_attr__( 'Long', 'mobile-contact-bar' ),
-                esc_attr__( 'primary', 'mobile-contact-bar' ),
+                    <div class="mcb-input">',
                 esc_attr( $custom_key ),
-                esc_attr( $contact['custom'][$custom_key]['primary'] ),
-                esc_attr__( 'secondary', 'mobile-contact-bar' ),
-                esc_attr( $contact['custom'][$custom_key]['secondary'] )
+                esc_attr( $custom['title'] ),
+                esc_attr__( 'Long', 'mobile-contact-bar' )
             );
+            foreach ( $custom['options'] as $option_key => $option )
+            {
+                $out .= sprintf(
+                    '<div class="mcb-custom-colors">
+                        <span>%s</span>
+                        <input type="text" class="color-picker" name="' . $prefix . '[custom][%s][%s]" data-alpha-enabled="true" value="%s">
+                    </div>',
+                    esc_attr( $option['desc'] ),
+                    esc_attr( $custom_key ),
+                    esc_attr( $option_key ),
+                    esc_attr( $contact['custom'][$custom_key][$option_key] )
+                );
+            }
+            $out .= '</div>';
+            $out .= '</div>';
         }
 
         return $out;

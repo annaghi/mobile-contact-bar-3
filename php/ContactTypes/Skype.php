@@ -22,6 +22,7 @@ final class Skype extends ContactType
             'group'       => 'brands',
             'icon'        => 'skype',
             'label'       => 'Skype',
+            'text'        => 'Skype',
             'uri'         => '',
             'placeholder' => 'skype:username?chat or skype:username?call',
             'custom'      => self::default_customization(),

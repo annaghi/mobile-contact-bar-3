@@ -2,6 +2,8 @@
 
 namespace MobileContactBar\Controllers;
 
+use MobileContactBar\Icons;
+
 
 final class IFrameController
 {
@@ -101,6 +103,8 @@ final class IFrameController
 
         $settings = abmcb()->option_bar['settings'];
         $contacts = $this->checked_contacts;
+
+        $dir_url = plugin_dir_url( abmcb()->file );
            
         $paths = [
             'top_rounded'    => '<path d="M 550 0 L 496.9 137.2 C 490.4 156.8 474.1 170 451.4 170 H 98.6 C 77.9 170 59.6 156.8 53.1 137.2 L 0 0 z">',
@@ -111,12 +115,12 @@ final class IFrameController
 
         $out .= '<div id="mobile-contact-bar">';
 
-        if ( $settings['toggle']['is_render'] && $settings['bar']['is_sticky'] )
+        if ( $settings['toggle']['is_render'] && $settings['bar']['is_sticky'] && in_array( $settings['bar']['vertical_alignment'], ['bottom', 'top'] ))
         {
-            $checked = isset( $settings['toggle']['is_closed'] ) && $settings['toggle']['is_closed'] ? 'checked' : '';
+            $checked = ( $settings['toggle']['is_closed'] ) ? 'checked' : '';
             $out .= '<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox"' . $checked . '>';
             $out .= '<label for="mobile-contact-bar-toggle-checkbox" id="mobile-contact-bar-toggle">';
-            $out .= ( $settings['toggle']['label'] ) ? '<span>' . esc_attr( $settings['toggle']['label'] ) . '</span>' : '';
+            $out .= ( $settings['toggle']['label'] ) ? '<span>' . esc_html( $settings['toggle']['label'] ) . '</span>' : '';
 
             $out .= '<svg viewBox="0 0 550 170" width="110" height="34">';
             if ( 'bottom' === $settings['bar']['vertical_alignment'] )
@@ -151,13 +155,10 @@ final class IFrameController
 
         foreach ( $contacts as $contact )
         {
-            $id = isset( $contact['id'] )
-                ? sprintf( 'id="%s"', esc_attr( $contact['id'] ))
-                : '';
+            $id = ( $contact['id'] ) ? sprintf( 'id="%s"', esc_attr( $contact['id'] )) : '';
 
             $uri = $contact['uri'];
-
-            if ( $uri && ! empty( $contact['parameters'] ) && is_array( $contact['parameters'] ))
+            if ( $uri && ! empty( $contact['parameters'] ))
             {
                 $query_arg = [];
 
@@ -175,22 +176,25 @@ final class IFrameController
             }
 
             $badge = apply_filters( 'mcb_public_add_badge', '', $contact['type'] );
-            $label = ( $contact['label'] ) ? sprintf( '<span class="mobile-contact-bar-label">%s</span>', str_replace( '\n', '<br />', esc_attr( $contact['label'] ))) : '';
+            $label = ( esc_attr( $contact['label'] ))
+                ? sprintf( '<span class="mobile-contact-bar-label">%s</span>', str_replace( '\n', '<br />', esc_attr( $contact['label'] )))
+                : '';
 
-            // TODO move validation to Option
-            if ( 'fa' === $contact['brand'] )
+            if ( 'fa' === $contact['brand'] && Icons::is_fa_icon( $contact['group'], $contact['icon'] ))
             {
-                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg';
-                $svg = file_get_contents( $path );
-
-                $icon = sprintf( '<span class="mobile-contact-bar-icon mobile-contact-bar-fa">%s%s</span>', $svg, $badge );
+                $icon = sprintf(
+                    '<span class="mobile-contact-bar-icon mobile-contact-bar-fa">%s%s</span>',
+                    file_get_contents( $dir_url . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' ),
+                    $badge
+                );
             }
-            elseif ( 'ti' === $contact['brand'] )
+            elseif ( 'ti' === $contact['brand'] && Icons::is_ti_icon( $contact['icon'] ))
             {
-                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg';
-                $svg = file_get_contents( $path );
-
-                $icon = sprintf( '<span class="mobile-contact-bar-icon">%s%s</span>', $svg, $badge );
+                $icon = sprintf(
+                    '<span class="mobile-contact-bar-icon">%s%s</span>',
+                    file_get_contents( $dir_url . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg' ),
+                    $badge
+                );
             }
             else
             {
@@ -210,6 +214,7 @@ final class IFrameController
                 $out .= $label;
                 $out .= $icon;
             }
+            $out .= sprintf( '<span class="screen-reader-text">%s</span>', esc_html( $contact['text'] ));
             $out .= '</a>';
 
             ob_start();
@@ -224,6 +229,9 @@ final class IFrameController
         $out .= '</nav>';
 
         $out .= '</div>';
+
+        unset( $settings );
+        unset( $contacts );
 
         return $out;
     }

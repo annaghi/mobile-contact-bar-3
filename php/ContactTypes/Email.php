@@ -22,6 +22,7 @@ final class Email extends ContactType
             'group'       => 'regular',
             'icon'        => 'envelope',
             'label'       => __( 'Email', 'mobile-contact-bar' ),
+            'text'        => __( 'Send email', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'mailto:username@example.com',
             'parameters'  => [

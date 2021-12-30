@@ -2,6 +2,7 @@
 
 namespace MobileContactBar\Controllers;
 
+use MobileContactBar\Icons;
 use MobileContactBar\Contacts;
 
 
@@ -154,7 +155,7 @@ final class AJAXController
             && isset( $_POST['brand'], $_POST['group'], $_POST['icon'] )
             && in_array( $_POST['brand'], ['fa', 'ti'] ))
         {
-            if ( 'ti' === $_POST['brand'] && abmcb( Contacts\Input::class )->ti_in_icons( $_POST['icon'] ))
+            if ( 'ti' === $_POST['brand'] && Icons::is_ti_icon( $_POST['icon'] ))
             {
                 $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $_POST['icon'] . '.svg';
                 $data = file_get_contents( $path );
@@ -165,7 +166,7 @@ final class AJAXController
                     echo $response;
                 }
             }
-            elseif ( 'fa' === $_POST['brand'] && abmcb( Contacts\Input::class )->fa_in_icons( $_POST['group'], $_POST['icon'] ))
+            elseif ( 'fa' === $_POST['brand'] && Icons::is_fa_icon( $_POST['group'], $_POST['icon'] ))
             {
                 $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/'. $_POST['group'] . '/' . $_POST['icon'] . '.svg';
                 $data = file_get_contents( $path );

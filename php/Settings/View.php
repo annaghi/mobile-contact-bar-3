@@ -150,7 +150,7 @@ final class View
                         esc_attr( $section_key ),
                         esc_attr( $setting_key ),
                         esc_attr( $option_key ),
-                        esc_html( $option['label'] ),
+                        esc_html( $option['desc'] ),
                         esc_attr( $value[$option_key] )
                     );
                     echo '</fieldset>';

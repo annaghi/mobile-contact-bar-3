@@ -271,21 +271,32 @@
 
     var option = {
         init: function () {
-            // bind toggle postbox event
-            postboxes.add_postbox_toggles(pagenow);
-
-            // bind toggle child-settings
+            // Bind toggle child-settings
             $('#mcb-table-bar tbody, #mcb-table-icons_labels tbody, #mcb-table-toggle tbody').initSettings();
 
-            // init contact list
+            // Init contact list
             option.contactList = $('#mcb-contacts');
             option.contactList.initSortableContacts();
+
+            // Bind save-to-database on toggle postbox
+            postboxes.add_postbox_toggles(pagenow);
+
+            // Close contact details on Contact List meta box closed
+            postboxes.pbhide = function (id) {
+                if ('mcb-section-contacts' === id) {
+                    option.contactList
+                        .find('.mcb-contact')
+                        .removeClass('mcb-opened')
+                        .find('.mcb-action-toggle-details')
+                        .attr('aria-expanded', 'false');
+                }
+            };
 
             option.onReady();
         },
 
         onReady: function () {
-            // Icon lists
+            // Generate icon lists
             var ti_icons = mobile_contact_bar.ti_icons;
             var fa_icons = [];
             $.each(mobile_contact_bar.fa_icons, function (section, icons) {
@@ -440,9 +451,11 @@
 
                     [('historyback', 'historyforward', 'scrolltotop')].includes(data.contact_type.type)
                         ? contact.find('.mcb-summary-uri').text('#')
-                        : contact.find('.mcb-summary-uri').text(!!data.contact_type.uri ? data.contact_type.uri : '(no URI)');
+                        : contact
+                              .find('.mcb-summary-uri')
+                              .text(!!data.contact_type.uri ? data.contact_type.uri : mobile_contact_bar.l10n.no_URI);
                     contact.find('.mcb-details-uri').replaceWith($(data.uri));
-                    contact.find('.mcb-builtin-parameters, .mcb-custom-parameters, .mcb-builtin-parameter, .mcb-custom-parameter').detach();
+                    contact.find('.mcb-builtin-parameters, .mcb-link-parameters, .mcb-builtin-parameter, .mcb-link-parameter').detach();
                     contact.find('.mcb-details-uri').after($(data.parameters));
                     contact.find('.mcb-details-type .mcb-description').text(data.contact_type.desc_type);
                 });
@@ -708,7 +721,7 @@
                 event.stopPropagation();
 
                 var contact = $(this).closest('.mcb-contact');
-                var parameters = contact.find('.mcb-custom-parameter');
+                var parameters = contact.find('.mcb-link-parameter');
 
                 var contactKey = contact.attr('data-contact-key'),
                     parameterKey = parameters.maxKey('parameter') + 1;
@@ -731,7 +744,7 @@
                         return false;
                     }
 
-                    contact.find('.mcb-custom-parameters').after($(parameter));
+                    contact.find('.mcb-link-parameters').after($(parameter));
                 });
             });
 
@@ -740,7 +753,7 @@
                 event.preventDefault();
                 event.stopPropagation();
 
-                $(this).closest('.mcb-custom-parameter').remove();
+                $(this).closest('.mcb-link-parameter').remove();
             });
         }
     };

@@ -35,6 +35,7 @@ final class WooCommerce extends ContactType
             'group'       => 'solid',
             'icon'        => 'shopping-cart',
             'label'       => __( 'Cart', 'mobile-contact-bar' ),
+            'text'        => __( 'Go to cart', 'mobile-contact-bar' ),
             'uri'         => get_site_url() . '/cart',
             'placeholder' => is_ssl() ? 'https://mysite.com/cart' : 'http://mysite.com/cart',
             'custom'      => self::default_customization(),

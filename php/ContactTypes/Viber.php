@@ -22,6 +22,7 @@ final class Viber extends ContactType
             'group'       => 'brands',
             'icon'        => 'viber',
             'label'       => 'Viber',
+            'text'        => 'Viber',
             'uri'         => 'viber://pa?chatURI=your_URI',
             'placeholder' => 'viber://pa?chatURI=your_URI',
             'parameters'  => [

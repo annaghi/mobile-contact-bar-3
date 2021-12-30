@@ -23,6 +23,7 @@ final class HistoryForward extends ContactType
             'group'       => 'solid',
             'icon'        => 'long-arrow-alt-right',
             'label'       => '',
+            'text'        => __( 'Go forward one page', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => '',
             'custom'      => self::default_customization(),

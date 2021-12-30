@@ -22,6 +22,7 @@ final class WhatsApp extends ContactType
             'group'       => 'brands',
             'icon'        => 'whatsapp',
             'label'       => 'WhatsApp',
+            'text'        => 'WhatsApp',
             'uri'         => 'https://api.whatsapp.com/send',
             'placeholder' => 'place',
             'parameters'  => [

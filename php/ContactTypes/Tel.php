@@ -22,6 +22,7 @@ final class Tel extends ContactType
             'group'       => 'solid',
             'icon'        => 'phone',
             'label'       => __( 'Call Us', 'mobile-contact-bar' ),
+            'text'        => __( 'Make a call', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'tel:15417543010 or tel:+15417543010',
             'custom'      => self::default_customization(),

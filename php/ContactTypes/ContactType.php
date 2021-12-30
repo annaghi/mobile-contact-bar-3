@@ -31,7 +31,7 @@ abstract class ContactType
         unset( $keys['desc_type'] );
         unset( $keys['desc_uri'] );
 
-        if ( isset( $keys['parameters'] ))
+        if ( isset( $keys['parameters'] ) && is_array( $keys['parameters'] ))
         {
             $keys['parameters'] = array_map(
                 function( &$parameter )
@@ -56,51 +56,74 @@ abstract class ContactType
      */
     public static function custom_input_fields()
     {
+        $primary_color = __( 'primary', 'mobile-contact-bar' );
+        $secondary_color = __( 'secondary', 'mobile-contact-bar' );
+
         return
         [
             'background_color' => [
+                'type'      => 'color-picker-group',
                 'title'     => __( 'Background Color', 'mobile-contact-bar' ),
-                'primary'   => [
-                    'type'    => 'color-picker',
-                    'default' => '',
+                'options'   => [
+                    'primary'   => [
+                        'type'    => 'color-picker',
+                        'default' => '',
+                        'desc'    => $primary_color,
+                    ],
+                    'secondary' => [
+                        'type'    => 'color-picker',
+                        'default' => '',
+                        'desc'    => $secondary_color,
+                    ],
                 ],
-                'secondary' => [
-                    'type'    => 'color-picker',
-                    'default' => '',
-                ]
             ],
             'icon_color' => [
+                'type'      => 'color-picker-group',
                 'title'     => __( 'Icon Color', 'mobile-contact-bar' ),
-                'primary'   => [
-                    'type'    => 'color-picker',
-                    'default' => '',
+                'options'   => [
+                    'primary'   => [
+                        'type'    => 'color-picker',
+                        'default' => '',
+                        'desc'    => $primary_color,
+                    ],
+                    'secondary' => [
+                        'type'    => 'color-picker',
+                        'default' => '',
+                        'desc'    => $secondary_color,
+                    ],
                 ],
-                'secondary' => [
-                    'type'    => 'color-picker',
-                    'default' => '',
-                ]
             ],
             'label_color' => [
+                'type'      => 'color-picker-group',
                 'title'     => __( 'Label Color', 'mobile-contact-bar' ),
-                'primary'   => [
-                    'type'    => 'color-picker',
-                    'default' => '',
-                ],
-                'secondary' => [
-                    'type'    => 'color-picker',
-                    'default' => '',
-                ]
+                'options'   => [
+                    'primary'   => [
+                        'type'    => 'color-picker',
+                        'default' => '',
+                        'desc'    => $primary_color,
+                    ],
+                    'secondary' => [
+                        'type'    => 'color-picker',
+                        'default' => '',
+                        'desc'    => $secondary_color,
+                    ],
+            ],
             ],
             'border_color' => [
+                'type'      => 'color-picker-group',
                 'title'     => __( 'Border Color', 'mobile-contact-bar' ),
-                'primary'   => [
-                    'type'    => 'color-picker',
-                    'default' => '',
+                'options'   => [
+                    'primary'   => [
+                        'type'    => 'color-picker',
+                        'default' => '',
+                        'desc'    => $primary_color,
+                    ],
+                    'secondary' => [
+                        'type'    => 'color-picker',
+                        'default' => '',
+                        'desc'    => $secondary_color,
+                    ],
                 ],
-                'secondary' => [
-                    'type'    => 'color-picker',
-                    'default' => '',
-                ]
             ],
         ]; 
     }
@@ -119,11 +142,11 @@ abstract class ContactType
 
         foreach ( $input_fields as $custom_key => $custom )
         {
-            foreach ( $custom as $field_key => $field )
+            foreach ( $custom['options'] as $option_key => $option )
             {
-                if ( isset( $field['default'] ))
+                if ( isset( $option['default'] ))
                 {
-                    $defaults[$custom_key][$field_key] = $field['default'];
+                    $defaults[$custom_key][$option_key] = $option['default'];
                 }
             }
         }
@@ -144,11 +167,11 @@ abstract class ContactType
 
         foreach ( $input_fields as $custom_key => $custom )
         {
-            foreach ( $custom as $field_key => $field )
+            foreach ( $custom['options'] as $option_key => $option )
             {
-                if ( isset( $field['default'] ))
+                if ( isset( $option['default'] ))
                 {
-                    $defaults[$custom_key][$field_key] = '';
+                    $defaults[$custom_key][$option_key] = '';
                 }
             }
         }

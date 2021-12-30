@@ -14,6 +14,9 @@ final class Input
      */
     public function input_fields()
     {
+        $primary_color = __( 'primary', 'mobile-contact-bar' );
+        $secondary_color = __( 'secondary', 'mobile-contact-bar' );
+
         return
         [
             'bar' => [
@@ -257,12 +260,12 @@ final class Input
                         'primary'   => [
                             'type'    => 'color-picker',
                             'default' => '#252832',
-                            'label'   => __( 'primary', 'mobile-contact-bar' ),
+                            'desc'    => $primary_color,
                         ],
                         'secondary' => [
                             'type'    => 'color-picker',
                             'default' => '#32373c',
-                            'label'   => __( 'secondary', 'mobile-contact-bar' ),
+                            'desc'    => $secondary_color,
                         ],
                     ],
                 ],
@@ -273,12 +276,12 @@ final class Input
                         'primary' => [
                             'type'    => 'color-picker',
                             'default' => '#f1f4f8',
-                            'label'   => __( 'primary', 'mobile-contact-bar' ),
+                            'desc'    => $primary_color,
                         ],
                         'secondary' => [
                             'type'    => 'color-picker',
                             'default' => '#d32f2f',
-                            'label'   => __( 'secondary', 'mobile-contact-bar' ),
+                            'desc'    => $secondary_color,
                         ],
                     ],
                 ],
@@ -289,12 +292,12 @@ final class Input
                         'primary'   => [
                             'type'    => 'color-picker',
                             'default' => '#f1f4f8',
-                            'label'   => __( 'primary', 'mobile-contact-bar' ),
+                            'desc'    => $primary_color,
                         ],
                         'secondary' => [
                             'type'    => 'color-picker',
                             'default' => '#d32f2f',
-                            'label'   => __( 'secondary', 'mobile-contact-bar' ),
+                            'desc'    => $secondary_color,
                         ],
                     ],
                 ],
@@ -305,12 +308,12 @@ final class Input
                         'primary'   => [
                             'type'    => 'color-picker',
                             'default' => '',
-                            'label'   => __( 'primary', 'mobile-contact-bar' ),
+                            'desc'    => $primary_color,
                         ],
                         'secondary' => [
                             'type'    => 'color-picker',
                             'default' => '',
-                            'label'   => __( 'secondary', 'mobile-contact-bar' ),
+                            'desc'    => $secondary_color,
                         ],
                     ],
                 ],

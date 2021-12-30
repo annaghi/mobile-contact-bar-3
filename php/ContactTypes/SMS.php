@@ -21,7 +21,8 @@ final class SMS extends ContactType
             'brand'       => 'fa',
             'group'       => 'solid',
             'icon'        => 'sms',
-            'label'       => __( 'Phone Number for texting', 'mobile-contact-bar' ),
+            'label'       => 'SMS',
+            'text'        => __( 'Send SMS text', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'sms:15417543010 or sms:+15417543010',
             'parameters'  => [

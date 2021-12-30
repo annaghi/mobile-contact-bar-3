@@ -23,6 +23,7 @@ final class HistoryBack extends ContactType
             'group'       => 'solid',
             'icon'        => 'long-arrow-alt-left',
             'label'       => '',
+            'text'        => __( 'Go back one page', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => '',
             'custom'      => self::default_customization(),

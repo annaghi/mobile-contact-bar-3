@@ -22,6 +22,7 @@ final class Link extends ContactType
             'group'       => 'solid',
             'icon'        => 'external-link-square-alt',
             'label'       => '',
+            'text'        => __( 'Go to this link', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'http(s)://www.somesite.com/path',
             'parameters'  => [],

@@ -2,6 +2,7 @@
 
 namespace MobileContactBar\Controllers;
 
+use MobileContactBar\Icons;
 use MobileContactBar\Option;
 use MobileContactBar\Settings;
 use MobileContactBar\Contacts;
@@ -24,6 +25,7 @@ final class AdminController
         $this->l10n = [
             'disabled' => __( 'disabled', 'mobile-contact-bar' ),
             'enabled'  => __( 'enabled', 'mobile-contact-bar' ),
+            'no_URI'   => __( '(no URI)', 'mobile-contact-bar' ),
         ];
 
         add_options_page(
@@ -169,16 +171,29 @@ final class AdminController
 
         // Close all meta boxes for the first time user
         $user_id = get_current_user_id();
-        $closed_meta_boxes = get_user_meta( $user_id, 'closedpostboxes_' . abmcb()->page_suffix );
-
+        $closed_meta_boxes = get_user_meta( $user_id, 'closedpostboxes_' . abmcb()->page_suffix, true );
         if ( ! $closed_meta_boxes )
         {
             $meta_boxes = array_merge( array_keys( $wp_settings_sections[abmcb()->id] ), ['mcb-section-live-preview'] );
-            update_user_meta( $user_id, 'closedpostboxes_' . abmcb()->page_suffix, $meta_boxes, true );
-            foreach( $meta_boxes as $meta_box )
+            update_user_meta( $user_id, 'closedpostboxes_' . abmcb()->page_suffix, $meta_boxes );
+        }
+
+        // Define meta box order for the first time user
+        $order_meta_boxes = get_user_meta( $user_id, 'meta-box-order_' . abmcb()->page_suffix, true );
+        if ( ! $order_meta_boxes )
+        {
+            $order_meta_boxes = [];
+            if ( class_exists( 'WooCommerce' ))
             {
-                add_filter( 'postbox_classes_' . abmcb()->page_suffix . '_' . $meta_box, [$this, 'postbox_classes_closed'] );
+                $order_meta_boxes['advanced'] = 'mcb-section-bar,mcb-section-icons_labels,mcb-section-badges,mcb-section-toggle,mcb-section-contacts';
+                $order_meta_boxes['side'] = 'mcb-section-live-preview';
             }
+            else
+            {
+                $order_meta_boxes['advanced'] = 'mcb-section-bar,mcb-section-icons_labels,mcb-section-toggle,mcb-section-contacts';
+                $order_meta_boxes['side'] = 'mcb-section-live-preview';
+            }
+            update_user_meta( $user_id, 'meta-box-order_' . abmcb()->page_suffix, $order_meta_boxes );
         }
     }
 
@@ -244,19 +259,6 @@ final class AdminController
     public function postbox_classes_mcb_settings( $classes )
     {
         $classes[] = 'mcb-settings';
-        return $classes;
-    }
-
-
-    /**
-     * Adds 'closed' class to Live Preview meta box.
-     *
-     * @param  array $classes Array of classes
-     * @return array          Updated array of classes
-     */
-    public function postbox_classes_closed( $classes )
-    {
-        $classes[] = 'closed';
         return $classes;
     }
 
@@ -504,8 +506,8 @@ final class AdminController
                 [
                     'nonce'    => wp_create_nonce( abmcb()->id ),
                     'page_url' => plugin_dir_url( abmcb()->file ),
-                    'ti_icons' => abmcb( Contacts\Input::class )->ti_icons(),
-                    'fa_icons' => abmcb( Contacts\Input::class )->fa_icons(),
+                    'ti_icons' => Icons::ti_icons(),
+                    'fa_icons' => Icons::fa_icons(),
                     'l10n'     => $this->l10n,
                 ]
             );
