@@ -128,7 +128,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Upgrade] Replace icon fonts with SVG icons
 * [Upgrade] Reimplement plugin
 * [Rename] `#mobile-contact-bar-outer` to `#mobile-contact-bar-nav`
-* [Add] Introduce Tabler Icons 1.48.0
+* [Add] Introduce Tabler Icons 1.50.0
 * [Add] Browser history back and forward buttons
 + [Add] viber [viber-chat](https://wordpress.org/support/topic/problem-whit-link/)
 * [Add] CSS ID selector and color customization
