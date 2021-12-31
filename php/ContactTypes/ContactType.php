@@ -17,7 +17,7 @@ abstract class ContactType
     }
 
 
-    protected function contact()
+    protected function field()
     {
         return [];
     }
@@ -25,7 +25,7 @@ abstract class ContactType
 
     public function keys()
     {
-        $keys = Helper::array_keys_recursive( $this->contact() );
+        $keys = Helper::array_keys_recursive( $this->field() );
         unset( $keys['title'] );
         unset( $keys['placeholder'] );
         unset( $keys['desc_type'] );
@@ -50,11 +50,11 @@ abstract class ContactType
 
 
     /**
-     * Defines the input fields for custom settings fields.
+     * Defines the input fields for contact['custom'].
      *
      * @return array Multidimensional array
      */
-    public static function custom_input_fields()
+    public static function custom_fields()
     {
         $primary_color = __( 'primary', 'mobile-contact-bar' );
         $secondary_color = __( 'secondary', 'mobile-contact-bar' );
@@ -66,12 +66,10 @@ abstract class ContactType
                 'title'     => __( 'Background Color', 'mobile-contact-bar' ),
                 'options'   => [
                     'primary'   => [
-                        'type'    => 'color-picker',
                         'default' => '',
                         'desc'    => $primary_color,
                     ],
                     'secondary' => [
-                        'type'    => 'color-picker',
                         'default' => '',
                         'desc'    => $secondary_color,
                     ],
@@ -82,12 +80,10 @@ abstract class ContactType
                 'title'     => __( 'Icon Color', 'mobile-contact-bar' ),
                 'options'   => [
                     'primary'   => [
-                        'type'    => 'color-picker',
                         'default' => '',
                         'desc'    => $primary_color,
                     ],
                     'secondary' => [
-                        'type'    => 'color-picker',
                         'default' => '',
                         'desc'    => $secondary_color,
                     ],
@@ -98,12 +94,10 @@ abstract class ContactType
                 'title'     => __( 'Label Color', 'mobile-contact-bar' ),
                 'options'   => [
                     'primary'   => [
-                        'type'    => 'color-picker',
                         'default' => '',
                         'desc'    => $primary_color,
                     ],
                     'secondary' => [
-                        'type'    => 'color-picker',
                         'default' => '',
                         'desc'    => $secondary_color,
                     ],
@@ -114,12 +108,10 @@ abstract class ContactType
                 'title'     => __( 'Border Color', 'mobile-contact-bar' ),
                 'options'   => [
                     'primary'   => [
-                        'type'    => 'color-picker',
                         'default' => '',
                         'desc'    => $primary_color,
                     ],
                     'secondary' => [
-                        'type'    => 'color-picker',
                         'default' => '',
                         'desc'    => $secondary_color,
                     ],
@@ -129,18 +121,17 @@ abstract class ContactType
     }
 
 
-
     /**
-     * Retrieves the custom settings fields with default values.
+     * Retrieves the contact['custom'] with default values.
      *
      * @return array
      */
     public static function default_customization()
     {
         $defaults = [];
-        $input_fields = self::custom_input_fields();
+        $custom_fields = self::custom_fields();
 
-        foreach ( $input_fields as $custom_key => $custom )
+        foreach ( $custom_fields as $custom_key => $custom )
         {
             foreach ( $custom['options'] as $option_key => $option )
             {
@@ -156,16 +147,16 @@ abstract class ContactType
 
 
     /**
-     * Retrieves the custom settings fields with empty default values.
+     * Retrieves the contact['custom'] with empty default values.
      *
      * @return array
      */
     public static function empty_default_customization()
     {
         $defaults = [];
-        $input_fields = self::custom_input_fields();
+        $custom_fields = self::custom_fields();
 
-        foreach ( $input_fields as $custom_key => $custom )
+        foreach ( $custom_fields as $custom_key => $custom )
         {
             foreach ( $custom['options'] as $option_key => $option )
             {

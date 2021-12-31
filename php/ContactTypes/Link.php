@@ -11,7 +11,7 @@ final class Link extends ContactType
     }
 
     
-    public function contact()
+    public function field()
     {
         return [
             'type'        => $this->type,

@@ -12,7 +12,7 @@ final class HistoryForward extends ContactType
     }
 
     
-    public function contact()
+    public function field()
     {
         return [
             'type'        => $this->type,

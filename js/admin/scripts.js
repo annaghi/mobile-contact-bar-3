@@ -184,12 +184,20 @@
             .find('input[name$="[icon]"]')
             .val('')
             .end()
+            .find('.mcb-summary-brand')
+            .addClass('mcb-blank-icon')
+            .text('--')
+            .end()
             .find('.mcb-summary-icon')
             .removeClass('mcb-fa')
             .addClass('mcb-blank-icon')
             .text('--')
             .end()
-            .find('.mcb-details-icon span')
+            .find('.mcb-details-brand')
+            .addClass('mcb-blank-icon')
+            .text('--')
+            .end()
+            .find('.mcb-details-icon')
             .removeClass('mcb-fa')
             .addClass('mcb-blank-icon')
             .text('--');
@@ -272,7 +280,7 @@
     var option = {
         init: function () {
             // Bind toggle child-settings
-            $('#mcb-table-bar tbody, #mcb-table-icons_labels tbody, #mcb-table-toggle tbody').initSettings();
+            $('#mcb-section-bar tbody, #mcb-section-icons_labels tbody, #mcb-section-toggle tbody').initSettings();
 
             // Init contact list
             option.contactList = $('#mcb-contacts');
@@ -283,7 +291,7 @@
 
             // Close contact details on Contact List meta box closed
             postboxes.pbhide = function (id) {
-                if ('mcb-section-contacts' === id) {
+                if ('mcb-meta-box-contacts' === id) {
                     option.contactList
                         .find('.mcb-contact')
                         .removeClass('mcb-opened')
@@ -394,7 +402,7 @@
                 event.stopPropagation();
 
                 $(this).closest('.mcb-contact').removeClass('mcb-opened').find('.mcb-action-toggle-details').attr('aria-expanded', 'false');
-                document.getElementById('mcb-section-contacts').scrollIntoView();
+                document.getElementById('mcb-meta-box-contacts').scrollIntoView();
             });
 
             // Order higher
@@ -435,7 +443,7 @@
                     url: ajaxurl,
                     method: 'POST',
                     data: {
-                        action: 'mcb_ajax_get_contact_type',
+                        action: 'mcb_ajax_get_contact_field',
                         nonce: mobile_contact_bar.nonce,
                         contact_key: contactKey,
                         contact_type: $(this).val()
@@ -445,19 +453,21 @@
                         return false;
                     }
                     var data = JSON.parse(response);
-                    if (!data.hasOwnProperty('contact_type') || !data.hasOwnProperty('uri') || !data.hasOwnProperty('parameters')) {
+                    if (!data.hasOwnProperty('contact_field') || !data.hasOwnProperty('uri') || !data.hasOwnProperty('parameters')) {
                         return false;
                     }
 
-                    [('historyback', 'historyforward', 'scrolltotop')].includes(data.contact_type.type)
+                    [('historyback', 'historyforward', 'scrolltotop')].includes(data.contact_field.type)
                         ? contact.find('.mcb-summary-uri').text('#')
                         : contact
                               .find('.mcb-summary-uri')
-                              .text(!!data.contact_type.uri ? data.contact_type.uri : mobile_contact_bar.l10n.no_URI);
+                              .text(!!data.contact_field.uri ? data.contact_field.uri : mobile_contact_bar.l10n.no_URI);
+
+                    contact.find('.mcb-details-text input').val(data.contact_field.text);
                     contact.find('.mcb-details-uri').replaceWith($(data.uri));
                     contact.find('.mcb-builtin-parameters, .mcb-link-parameters, .mcb-builtin-parameter, .mcb-link-parameter').detach();
                     contact.find('.mcb-details-uri').after($(data.parameters));
-                    contact.find('.mcb-details-type .mcb-description').text(data.contact_type.desc_type);
+                    contact.find('.mcb-details-type .mcb-description').text(data.contact_field.desc_type);
                 });
             });
 
@@ -471,8 +481,8 @@
                 }, 100);
 
                 var iconList,
-                    ti_path = mobile_contact_bar.page_url + 'assets/icons/ti/tabler-sprite.svg',
-                    fa_path = mobile_contact_bar.page_url + 'assets/icons/fa/sprites/',
+                    ti_path = mobile_contact_bar.plugin_url + 'assets/icons/ti/tabler-sprite.svg',
+                    fa_path = mobile_contact_bar.plugin_url + 'assets/icons/fa/sprites/',
                     ti_filtered_icons = [],
                     fa_filtered_icons = [],
                     searchTerm = '',
@@ -506,16 +516,16 @@
 
                         var brand = $(this).attr('data-brand');
 
-                        $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
-                        $(this).addClass('mcb-icon-brand-active');
+                        $('#mcb-icon-picker-container').find('button').removeClass('mcb-brand-active');
+                        $(this).addClass('mcb-brand-active');
 
                         if ('ti' === brand) {
                             ti_update_picker_window(iconList, ti_path, ti_filtered_icons, 0);
                         } else if ('fa' === brand) {
                             fa_update_picker_window(iconList, fa_path, fa_filtered_icons, 0);
                         } else {
-                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
-                            $('#mcb-icon-picker-container').find('button[data-brand="fa"]').addClass('mcb-icon-brand-active');
+                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-brand-active');
+                            $('#mcb-icon-picker-container').find('button[data-brand="fa"]').addClass('mcb-brand-active');
                             fa_update_picker_window(iconList, fa_path, fa_filtered_icons, 0);
                         }
                     });
@@ -527,7 +537,7 @@
                         event.preventDefault();
                         event.stopPropagation();
 
-                        var brand = $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand');
+                        var brand = $('#mcb-icon-picker-container').find('button.mcb-brand-active').attr('data-brand');
                         var icon = $(this).closest('li').attr('data-icon');
                         var names = 'fa' === brand ? icon.split(' ') : ['', icon];
 
@@ -573,23 +583,26 @@
                                 .find('input[name$="[icon]"]')
                                 .val(names[1])
                                 .end()
+                                .find('.mcb-summary-brand')
+                                .removeClass('mcb-blank-icon')
+                                .text(brand.toUpperCase())
+                                .end()
                                 .find('.mcb-summary-icon')
                                 .removeClass(['mcb-blank-icon', 'mcb-fa'])
                                 .empty()
                                 .append(svg)
                                 .end()
-                                .find('.mcb-details-icon span')
+                                .find('.mcb-details-brand')
+                                .removeClass('mcb-blank-icon')
+                                .text(brand.toUpperCase())
+                                .end()
+                                .find('.mcb-details-icon')
                                 .removeClass(['mcb-blank-icon', 'mcb-fa'])
                                 .empty()
                                 .append(svg);
 
                             if ('fa' === brand) {
-                                contact
-                                    .find('.mcb-summary-icon')
-                                    .addClass('mcb-fa')
-                                    .end()
-                                    .find('.mcb-details-icon span')
-                                    .addClass('mcb-fa');
+                                contact.find('.mcb-summary-icon').addClass('mcb-fa').end().find('.mcb-details-icon').addClass('mcb-fa');
                             }
                         });
                     });
@@ -601,7 +614,7 @@
                         event.preventDefault();
                         event.stopPropagation();
 
-                        var brand = $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand');
+                        var brand = $('#mcb-icon-picker-container').find('button.mcb-brand-active').attr('data-brand');
 
                         if ('ti' === brand) {
                             if ('back' === $(this).attr('data-direction')) {
@@ -616,8 +629,8 @@
                                 circular_window_forward(iconList, fa_path, fa_filtered_icons, fa_update_picker_window);
                             }
                         } else {
-                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
-                            $('#mcb-icon-picker-container').find('button[data-brand="fa"]').addClass('mcb-icon-brand-active');
+                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-brand-active');
+                            $('#mcb-icon-picker-container').find('button[data-brand="fa"]').addClass('mcb-brand-active');
                             fa_update_picker_window(iconList, fa_path, fa_filtered_icons, 0);
                         }
                     });
@@ -629,7 +642,7 @@
                         event.preventDefault();
                         event.stopPropagation();
 
-                        var brand = $('#mcb-icon-picker-container').find('button.mcb-icon-brand-active').attr('data-brand');
+                        var brand = $('#mcb-icon-picker-container').find('button.mcb-brand-active').attr('data-brand');
 
                         searchTerm = $(this).val();
                         ti_filtered_icons = filtered_icons(ti_icons, searchTerm);
@@ -640,8 +653,8 @@
                         } else if ('fa' === brand) {
                             fa_update_picker_window(iconList, fa_path, fa_filtered_icons, 0);
                         } else {
-                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-icon-brand-active');
-                            $('#mcb-icon-picker-container').find('button[data-brand="fa"]').addClass('mcb-icon-brand-active');
+                            $('#mcb-icon-picker-container').find('button').removeClass('mcb-brand-active');
+                            $('#mcb-icon-picker-container').find('button[data-brand="fa"]').addClass('mcb-brand-active');
                             fa_update_picker_window(iconList, fa_path, fa_filtered_icons, 0);
                         }
                     });
@@ -677,24 +690,7 @@
                 event.preventDefault();
                 event.stopPropagation();
 
-                var contact = $(this).closest('.mcb-contact');
-
-                contact
-                    .find('input[name$="[brand]"]')
-                    .val('')
-                    .end()
-                    .find('input[name$="[icon]"]')
-                    .val('')
-                    .end()
-                    .find('.mcb-summary-icon')
-                    .removeClass('mcb-fa')
-                    .addClass('mcb-blank-icon')
-                    .text('--')
-                    .end()
-                    .find('.mcb-details-icon span')
-                    .removeClass('mcb-fa')
-                    .addClass('mcb-blank-icon')
-                    .text('--');
+                $(this).closest('.mcb-contact').blankIcon();
             });
 
             // Update label

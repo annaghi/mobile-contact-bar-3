@@ -144,9 +144,9 @@ final class AdminController
         global $wp_settings_sections;
 
         add_meta_box(
-            'mcb-section-live-preview',
+            'mcb-meta-box-preview',
             __( 'Live Preview' ),
-            [$this, 'callback_render_live_preview'],
+            [$this, 'callback_render_meta_box_preview'],
             abmcb()->page_suffix,
             'side',
             'default'
@@ -157,13 +157,13 @@ final class AdminController
             add_meta_box(
                 $section['id'],
                 $section['title'],
-                [$this, 'callback_render_section'],
+                [$this, 'callback_render_meta_box'],
                 abmcb()->page_suffix,
                 'advanced',
                 'default'
             );
 
-            if ( 'mcb-section-contacts' !== $section['id'] )
+            if ( 'mcb-meta-box-contacts' !== $section['id'] )
             {
                 add_filter( 'postbox_classes_' . abmcb()->page_suffix . '_' . $section['id'], [$this, 'postbox_classes_mcb_settings'] );
             }
@@ -174,8 +174,8 @@ final class AdminController
         $closed_meta_boxes = get_user_meta( $user_id, 'closedpostboxes_' . abmcb()->page_suffix, true );
         if ( ! $closed_meta_boxes )
         {
-            $meta_boxes = array_merge( array_keys( $wp_settings_sections[abmcb()->id] ), ['mcb-section-live-preview'] );
-            update_user_meta( $user_id, 'closedpostboxes_' . abmcb()->page_suffix, $meta_boxes );
+            $closed_meta_boxes = array_merge( array_keys( $wp_settings_sections[abmcb()->id] ), ['mcb-meta-box-preview'] );
+            update_user_meta( $user_id, 'closedpostboxes_' . abmcb()->page_suffix, $closed_meta_boxes );
         }
 
         // Define meta box order for the first time user
@@ -185,13 +185,13 @@ final class AdminController
             $order_meta_boxes = [];
             if ( class_exists( 'WooCommerce' ))
             {
-                $order_meta_boxes['advanced'] = 'mcb-section-bar,mcb-section-icons_labels,mcb-section-badges,mcb-section-toggle,mcb-section-contacts';
-                $order_meta_boxes['side'] = 'mcb-section-live-preview';
+                $order_meta_boxes['advanced'] = 'mcb-meta-box-bar,mcb-meta-box-icons_labels,mcb-meta-box-badges,mcb-meta-box-toggle,mcb-meta-box-contacts';
+                $order_meta_boxes['side'] = 'mcb-meta-box-preview';
             }
             else
             {
-                $order_meta_boxes['advanced'] = 'mcb-section-bar,mcb-section-icons_labels,mcb-section-toggle,mcb-section-contacts';
-                $order_meta_boxes['side'] = 'mcb-section-live-preview';
+                $order_meta_boxes['advanced'] = 'mcb-meta-box-bar,mcb-meta-box-icons_labels,mcb-meta-box-toggle,mcb-meta-box-contacts';
+                $order_meta_boxes['side'] = 'mcb-meta-box-preview';
             }
             update_user_meta( $user_id, 'meta-box-order_' . abmcb()->page_suffix, $order_meta_boxes );
         }
@@ -199,18 +199,18 @@ final class AdminController
 
 
     /**
-     * Renders Live Preview meta box.
+     * Renders Preview meta box.
      * 
      * @return void
      */
-    public function callback_render_live_preview()
+    public function callback_render_meta_box_preview()
     {
         ?>
-        <div id="mcb-live-preview">
+        <div id="mcb-section-preview">
             <iframe src="<?php echo add_query_arg( [abmcb()->slug . '-iframe' => true], get_home_url() ); ?>" title="<?php esc_attr_e( 'Live Preview' ); ?>"></iframe>
             <script>
             (function() {
-                jQuery('#mcb-live-preview iframe').on('load', function () {
+                jQuery('#mcb-section-preview iframe').on('load', function () {
                     jQuery(this).contents().find('html').css({ 'pointer-events': 'none' });
                     jQuery(this).contents().find('body').css({ 'pointer-events': 'none' });
                     jQuery(this).contents().find('#mobile-contact-bar').css({ 'pointer-events': 'all' });
@@ -229,18 +229,18 @@ final class AdminController
      * @param  array  $section Passed from add_meta_box as sixth parameter
      * @return void
      */
-    public function callback_render_section( $object, $section )
+    public function callback_render_meta_box( $object, $section )
     {
-        $table_id = str_replace( '-section-', '-table-', $section['id'] );
+        $section_name = str_replace( '-meta-box-', '-section-', $section['id'] );
 
-        if ( 'mcb-table-contacts' === $table_id )
+        if ( 'mcb-section-contacts' === $section_name )
         {
-            echo abmcb( Contacts\View::class )->render_contact_list();
+            echo abmcb( Contacts\View::class )->render_contacts();
         }
         else
         {
             ?>
-            <table id="<?php esc_attr_e( $table_id ); ?>" class="form-table">
+            <table id="<?php esc_attr_e( $section_name ); ?>" class="form-table">
                 <tbody>
                     <?php do_settings_fields( abmcb()->id, $section['id'] ); ?>
                 </tbody>
@@ -504,11 +504,11 @@ final class AdminController
                 abmcb()->slug . '-admin',
                 abmcb()->id,
                 [
-                    'nonce'    => wp_create_nonce( abmcb()->id ),
-                    'page_url' => plugin_dir_url( abmcb()->file ),
-                    'ti_icons' => Icons::ti_icons(),
-                    'fa_icons' => Icons::fa_icons(),
-                    'l10n'     => $this->l10n,
+                    'nonce'      => wp_create_nonce( abmcb()->id ),
+                    'plugin_url' => plugin_dir_url( abmcb()->file ),
+                    'ti_icons'   => Icons::ti_icons(),
+                    'fa_icons'   => Icons::fa_icons(),
+                    'l10n'       => $this->l10n,
                 ]
             );
         }

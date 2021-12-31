@@ -16,8 +16,8 @@ final class AJAXController
     public $admin_actions = [
         'ajax_get_contact',
         'ajax_get_parameter',
-        'ajax_get_contact_type',
-        'ajax_get_icon'
+        'ajax_get_contact_field',
+        'ajax_get_icon',
     ];
 
 
@@ -36,19 +36,20 @@ final class AJAXController
         {
             $data = [];
 
-            $contact = abmcb()->contact_types['link']->contact();
+            $contact_key = (int) $_POST['contact_key'];
+            $contact_field = abmcb()->contact_types['link']->field();
     
             $data['summary'] = abmcb( Contacts\View::class )->output_summary(
                 [
-                    'contact_key' => $_POST['contact_key'],
-                    'contact' => $contact
+                    'contact_key' => $contact_key,
+                    'contact'     => $contact_field,
                 ]
             );
 
             $data['details'] = abmcb( Contacts\View::class )->output_details(
                 [
-                    'contact_key' => $_POST['contact_key'],
-                    'contact' => $contact
+                    'contact_key' => $contact_key,
+                    'contact'     => $contact_field,
                 ]
             );
     
@@ -76,12 +77,15 @@ final class AJAXController
             && (int) $_POST['contact_key'] >= 0
             && (int) $_POST['parameter_key'] >= 0 )
         {
+            $contact_key = (int) $_POST['contact_key'];
+            $parameter_key = (int) $_POST['parameter_key'];
+
             $data = abmcb( Contacts\View::class )->output_link_parameter(
                 [
-                    'contact_key'    => $_POST['contact_key'],
+                    'contact_key'    => $contact_key,
                     'parameter_type' => ['field' => 'text'],
-                    'parameter_key'  => $_POST['parameter_key'],
-                    'parameter'      => ['key' => '', 'value' => '']
+                    'parameter_key'  => $parameter_key,
+                    'parameter'      => ['key' => '', 'value' => ''],
                 ]
             );
 
@@ -102,7 +106,7 @@ final class AJAXController
      *
      * @uses $_POST
      */
-    public function ajax_get_contact_type()
+    public function ajax_get_contact_field()
     {
         $contact_types = abmcb()->contact_types;
 
@@ -113,22 +117,23 @@ final class AJAXController
         {
             $data = [];
 
-            $contact_type = $contact_types[$_POST['contact_type']]->contact();
+            $contact_key = (int) $_POST['contact_key'];
+            $contact_field = $contact_types[$_POST['contact_type']]->field();
 
-            $data['contact_type'] = $contact_type;
+            $data['contact_field'] = $contact_field;
             $data['uri'] = abmcb( Contacts\View::class )->output_details_uri(
                 [
-                    'contact_key' => $_POST['contact_key'],
-                    'contact' => $contact_type,
-                    'contact_type' => $contact_type
+                    'contact_key'   => $contact_key,
+                    'contact'       => $contact_field,
+                    'contact_field' => $contact_field,
                 ]
             );
 
             $data['parameters'] = abmcb( Contacts\View::class )->output_parameters(
                 [
-                    'contact_key' => $_POST['contact_key'],
-                    'contact' => $contact_type,
-                    'contact_type' => $contact_type
+                    'contact_key'   => $contact_key,
+                    'contact'       => $contact_field,
+                    'contact_field' => $contact_field,
                 ]
             );
     
@@ -151,27 +156,25 @@ final class AJAXController
      */
     public function ajax_get_icon()
     {
-        if ( $this->verify_nonce()
-            && isset( $_POST['brand'], $_POST['group'], $_POST['icon'] )
-            && in_array( $_POST['brand'], ['fa', 'ti'] ))
+        if ( $this->verify_nonce() && isset( $_POST['brand'], $_POST['group'], $_POST['icon'] ))
         {
-            if ( 'ti' === $_POST['brand'] && Icons::is_ti_icon( $_POST['icon'] ))
-            {
-                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/icons/'. $_POST['icon'] . '.svg';
-                $data = file_get_contents( $path );
+            clearstatcache();
 
-                $response = json_encode( $data );
+            if ( 'ti' === $_POST['brand'] && '' === $_POST['group']
+                && Icons::is_ti_icon( $_POST['icon'] )
+                && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/icons/ti/icons/'. $_POST['icon'] . '.svg' ))
+            {
+                $response = json_encode( file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/icons/ti/icons/'. $_POST['icon'] . '.svg' ));
                 if ( $response )
                 {
                     echo $response;
                 }
             }
-            elseif ( 'fa' === $_POST['brand'] && Icons::is_fa_icon( $_POST['group'], $_POST['icon'] ))
+            elseif ( 'fa' === $_POST['brand']
+                && Icons::is_fa_icon( $_POST['group'], $_POST['icon'] )
+                && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/' . $_POST['group'] . '/' . $_POST['icon'] . '.svg' ))
             {
-                $path = plugin_dir_url( abmcb()->file ) . 'assets/icons/fa/svgs/'. $_POST['group'] . '/' . $_POST['icon'] . '.svg';
-                $data = file_get_contents( $path );
-
-                $response = json_encode( $data );
+                $response = json_encode( file_get_contents(  plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/'. $_POST['group'] . '/' . $_POST['icon'] . '.svg' ));
                 if ( $response )
                 {
                     echo $response;

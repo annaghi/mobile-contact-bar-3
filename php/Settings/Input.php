@@ -12,7 +12,7 @@ final class Input
      *
      * @return array Multidimensional array
      */
-    public function input_fields()
+    public function fields()
     {
         $primary_color = __( 'primary', 'mobile-contact-bar' );
         $secondary_color = __( 'secondary', 'mobile-contact-bar' );
@@ -93,14 +93,12 @@ final class Input
                     'title'    => __( 'Borders', 'mobile-contact-bar' ),
                     'options'  => [
                         'top' => [
-                            'type'     => 'checkbox',
-                            'default'  => 0,
-                            'label'    => __( 'top', 'mobile-contact-bar' ),
+                            'default' => 0,
+                            'label'   => __( 'top', 'mobile-contact-bar' ),
                         ],
                         'bottom' => [
-                            'type'     => 'checkbox',
-                            'default'  => 0,
-                            'label'    => __( 'bottom', 'mobile-contact-bar' ),
+                            'default' => 0,
+                            'label'   => __( 'bottom', 'mobile-contact-bar' ),
                         ],
                     ],
                     'trigger'  => '==true',
@@ -201,24 +199,20 @@ final class Input
                     'title'    => __( 'Borders', 'mobile-contact-bar' ),
                     'options'  => [
                         'top' => [
-                            'type'     => 'checkbox',
-                            'default'  => 0,
-                            'label'    => __( 'top', 'mobile-contact-bar' ),
+                            'default' => 0,
+                            'label'   => __( 'top', 'mobile-contact-bar' ),
                         ],
                         'right' => [
-                            'type'     => 'checkbox',
-                            'default'  => 0,
-                            'label'    => __( 'right', 'mobile-contact-bar' ),
+                            'default' => 0,
+                            'label'   => __( 'right', 'mobile-contact-bar' ),
                         ],
                         'bottom' => [
-                            'type'     => 'checkbox',
-                            'default'  => 0,
-                            'label'    => __( 'bottom', 'mobile-contact-bar' ),
+                            'default' => 0,
+                            'label'   => __( 'bottom', 'mobile-contact-bar' ),
                         ],
                         'left' => [
-                            'type'     => 'checkbox',
-                            'default'  => 0,
-                            'label'    => __( 'left', 'mobile-contact-bar' ),
+                            'default' => 0,
+                            'label'   => __( 'left', 'mobile-contact-bar' ),
                         ],
                     ],
                     'trigger'  => '==true',
@@ -232,24 +226,21 @@ final class Input
                     'postfix'  => 'px',
                     'parent'   => 'is_borders',
                 ],
-                'secondary_colors' => [
+                'is_secondary_colors' => [
                     'type'     => 'checkbox-group',
                     'title'    => __( 'Use Secondary Colors', 'mobile-contact-bar' ),
                     'options'  => [
                         'focus' => [
-                            'type'     => 'checkbox',
-                            'default'  => 1,
-                            'label'    => __( 'on focus', 'mobile-contact-bar' ),
+                            'default' => 1,
+                            'label'   => __( 'on focus', 'mobile-contact-bar' ),
                         ],
                         'hover' => [
-                            'type'     => 'checkbox',
-                            'default'  => 1,
-                            'label'    => __( 'on hover', 'mobile-contact-bar' ),
+                            'default' => 1,
+                            'label'   => __( 'on hover', 'mobile-contact-bar' ),
                         ],
                         'active' => [
-                            'type'     => 'checkbox',
-                            'default'  => 1,
-                            'label'    => __( 'when active', 'mobile-contact-bar' ),
+                            'default' => 1,
+                            'label'   => __( 'when active', 'mobile-contact-bar' ),
                         ],
                     ],
                 ],
@@ -258,12 +249,10 @@ final class Input
                     'title'     => __( 'Background Color', 'mobile-contact-bar' ),
                     'options'   => [
                         'primary'   => [
-                            'type'    => 'color-picker',
                             'default' => '#252832',
                             'desc'    => $primary_color,
                         ],
                         'secondary' => [
-                            'type'    => 'color-picker',
                             'default' => '#32373c',
                             'desc'    => $secondary_color,
                         ],
@@ -274,12 +263,10 @@ final class Input
                     'title'     => __( 'Icon Color', 'mobile-contact-bar' ),
                     'options'   => [
                         'primary' => [
-                            'type'    => 'color-picker',
                             'default' => '#f1f4f8',
                             'desc'    => $primary_color,
                         ],
                         'secondary' => [
-                            'type'    => 'color-picker',
                             'default' => '#d32f2f',
                             'desc'    => $secondary_color,
                         ],
@@ -290,12 +277,10 @@ final class Input
                     'title'     => __( 'Label Color', 'mobile-contact-bar' ),
                     'options'   => [
                         'primary'   => [
-                            'type'    => 'color-picker',
                             'default' => '#f1f4f8',
                             'desc'    => $primary_color,
                         ],
                         'secondary' => [
-                            'type'    => 'color-picker',
                             'default' => '#d32f2f',
                             'desc'    => $secondary_color,
                         ],
@@ -306,12 +291,10 @@ final class Input
                     'title'     => __( 'Border Color', 'mobile-contact-bar' ),
                     'options'   => [
                         'primary'   => [
-                            'type'    => 'color-picker',
                             'default' => '',
                             'desc'    => $primary_color,
                         ],
                         'secondary' => [
-                            'type'    => 'color-picker',
                             'default' => '',
                             'desc'    => $secondary_color,
                         ],
@@ -449,9 +432,9 @@ final class Input
     public function default_settings()
     {
         $defaults = [];
-        $input_fields = $this->input_fields();
+        $fields = $this->fields();
 
-        foreach ( $input_fields as $section_key => $section )
+        foreach ( $fields as $section_key => $section )
         {
             foreach ( $section as $setting_key => $setting )
             {
@@ -484,9 +467,9 @@ final class Input
     public function empty_default_settings()
     {
         $defaults = [];
-        $input_fields = $this->input_fields();
+        $fields = $this->fields();
 
-        foreach ( $input_fields as $section_key => $section )
+        foreach ( $fields as $section_key => $section )
         {
             foreach ( $section as $setting_key => $setting )
             {
@@ -502,7 +485,7 @@ final class Input
                 {
                     foreach ( $setting['options'] as $option_key => $option )
                     {
-                        if ( isset( $option['default'] ) && 'checkbox' === $option['type'] )
+                        if ( isset( $option['default'] ) && 'checkbox-group' === $setting['type'] )
                         {
                             $defaults[$section_key][$setting_key][$option_key] = 0;
                         }
@@ -540,8 +523,8 @@ final class Input
             $empty_default_settings
         );
 
-        $input_fields = $this->input_fields();
-        foreach ( $input_fields as $section_key => $section )
+        $fields = $this->fields();
+        foreach ( $fields as $section_key => $section )
         {
             foreach ( $section as $setting_key => $setting )
             {

@@ -225,19 +225,27 @@ final class Input
             }
 
             // remove contact if invalid 'brand' but leave empty
-            if ( '' !== $contact['brand'] && ! in_array( $contact['brand'], ['fa', 'ti'] ))
+            if ( '' !== $contact['brand'] && ! in_array( $contact['brand'], ['ti', 'fa'] ))
             {
                 unset( $contacts[$contact_key] );
                 continue;
             }
 
-            // remove contact if 'brand', 'group' and 'icon' do not match
-            if ( 'ti' === $contact['brand'] && '' !== $contact['group'] && ! Icons::is_ti_icon( $contact['icon'] ))
+            // remove contact if 'brand', 'group', or 'icon' do not match
+            if ( abmcb()->is_admin() )
+            {
+                clearstatcache();
+            }
+            if ( 'ti' === $contact['brand'] && '' !== $contact['group']
+                && ! ( Icons::is_ti_icon( $contact['icon'] )
+                    && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg' )))
             {
                 unset( $contacts[$contact_key] );
                 continue;
             }
-            if ( 'fa' === $contact['brand'] && ! Icons::is_fa_icon( $contact['group'], $contact['icon'] ))
+            if ( 'fa' === $contact['brand']
+                && ! ( Icons::is_fa_icon( $contact['group'], $contact['icon'] )
+                    && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' )))
             {
                 unset( $contacts[$contact_key] );
                 continue;
@@ -305,7 +313,7 @@ final class Input
             {
                 $sanitized_contact['parameters'] = [];
 
-                $contact_type = $contact_types[$contact['type']]->contact();
+                $contact_field = $contact_types[$contact['type']]->field();
 
                 foreach ( $contact['parameters'] as $parameter_key => $parameter )
                 {
@@ -315,8 +323,8 @@ final class Input
                     }
                     else
                     {
-                        $parameter_index = array_search( $parameter['key'], array_column( $contact_type['parameters'], 'key' ));
-                        $parameter_type = $contact_type['parameters'][$parameter_index];
+                        $parameter_index = array_search( $parameter['key'], array_column( $contact_field['parameters'], 'key' ));
+                        $parameter_type = $contact_field['parameters'][$parameter_index];
                         $field = $parameter_type['field'];
                     }
 

@@ -343,7 +343,7 @@ final class Plugin extends Container
             }
         }
 
-        uasort( $contact_types, function ( $a, $b ) { return strcmp( $a->contact()['title'], $b->contact()['title'] ); });
+        uasort( $contact_types, function ( $a, $b ) { return strcmp( $a->field()['title'], $b->field()['title'] ); });
         $this->contact_types = $contact_types;
     }
 

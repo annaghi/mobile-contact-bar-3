@@ -12,9 +12,9 @@ final class View
      */
     public function add()
     {
-        $input_fields = abmcb( Input::class )->input_fields();
+        $fields = abmcb( Input::class )->fields();
 
-        foreach ( $input_fields as $section_key => $section )
+        foreach ( $fields as $section_key => $section )
         {
             if ( 'badges' === $section_key && ! class_exists( 'WooCommerce' ))
             {
@@ -24,7 +24,7 @@ final class View
             $title = ucwords( str_replace( '_', ' & ', $section_key ), ' &');
 
             add_settings_section(
-                'mcb-section-' . $section_key,
+                'mcb-meta-box-' . $section_key,
                 __( $title, 'mobile-contact-bar' ),
                 false,
                 abmcb()->id
@@ -61,7 +61,7 @@ final class View
                     $this->output_setting_th( $section_key, $setting_key, $setting ),
                     [$this, 'callback_render_setting_td'],
                     abmcb()->id,
-                    'mcb-section-' . $section_key,
+                    'mcb-meta-box-' . $section_key,
                     $args
                 );
             }

@@ -12,7 +12,7 @@ final class ScrollToTop extends ContactType
     }
 
 
-    public function contact()
+    public function field()
     {
         return [
             'type'        => $this->type,

@@ -199,19 +199,19 @@ final class CSS
         // Hover over item, active item
         if ( ! empty( $items['background_color']['secondary'] ))
         {
-            if ( $items['secondary_colors']['focus'] )
+            if ( $items['is_secondary_colors']['focus'] )
             {
                 $styles .= '.mobile-contact-bar-item:focus{';
                 $styles .= 'background-color:' . $items['background_color']['secondary'] . ';';
                 $styles .= '}';
             }
-            if ( $items['secondary_colors']['hover'] )
+            if ( $items['is_secondary_colors']['hover'] )
             {
                 $styles .= '.mobile-contact-bar-item:hover{';
                 $styles .= 'background-color:' . $items['background_color']['secondary'] . ';';
                 $styles .= '}';
             }
-            if ( $items['secondary_colors']['active'] )
+            if ( $items['is_secondary_colors']['active'] )
             {
                 $styles .= '.mobile-contact-bar-item.mobile-contact-bar-active{';
                 $styles .= 'background-color:' . $items['background_color']['secondary'] . ';';
@@ -221,19 +221,19 @@ final class CSS
 
         if ( ! empty( $items['icon_color']['secondary'] ))
         {
-            if ( $items['secondary_colors']['focus'] )
+            if ( $items['is_secondary_colors']['focus'] )
             {
                 $styles .= '.mobile-contact-bar-item:focus .mobile-contact-bar-icon svg{';
                 $styles .= 'color:' . $items['icon_color']['secondary'] . ';';
                 $styles .= '}';
             }
-            if ( $items['secondary_colors']['hover'] )
+            if ( $items['is_secondary_colors']['hover'] )
             {
                 $styles .= '.mobile-contact-bar-item:hover .mobile-contact-bar-icon svg{';
                 $styles .= 'color:' . $items['icon_color']['secondary'] . ';';
                 $styles .= '}';
             }
-            if ( $items['secondary_colors']['active'] )
+            if ( $items['is_secondary_colors']['active'] )
             {
                 $styles .= '.mobile-contact-bar-item.mobile-contact-bar-active .mobile-contact-bar-icon svg{';
                 $styles .= 'color:' . $items['icon_color']['secondary'] . ';';
@@ -243,19 +243,19 @@ final class CSS
 
         if ( ! empty( $items['label_color']['secondary'] ))
         {
-            if ( $items['secondary_colors']['focus'] )
+            if ( $items['is_secondary_colors']['focus'] )
             {
                 $styles .= '.mobile-contact-bar-item:focus .mobile-contact-bar-label{';
                 $styles .= 'color:' . $items['label_color']['secondary'] . ';';
                 $styles .= '}';
             }
-            if ( $items['secondary_colors']['hover'] )
+            if ( $items['is_secondary_colors']['hover'] )
             {
                 $styles .= '.mobile-contact-bar-item:hover .mobile-contact-bar-label{';
                 $styles .= 'color:' . $items['label_color']['secondary'] . ';';
                 $styles .= '}';
             }
-            if ( $items['secondary_colors']['active'] )
+            if ( $items['is_secondary_colors']['active'] )
             {
                 $styles .= '.mobile-contact-bar-item.mobile-contact-bar-active .mobile-contact-bar-label{';
                 $styles .= 'color:' . $items['label_color']['secondary'] . ';';

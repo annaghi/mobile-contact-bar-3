@@ -2,8 +2,6 @@
 
 namespace MobileContactBar\Controllers;
 
-use MobileContactBar\Icons;
-
 
 final class IFrameController
 {
@@ -104,8 +102,6 @@ final class IFrameController
         $settings = abmcb()->option_bar['settings'];
         $contacts = $this->checked_contacts;
 
-        $dir_url = plugin_dir_url( abmcb()->file );
-           
         $paths = [
             'top_rounded'    => '<path d="M 550 0 L 496.9 137.2 C 490.4 156.8 474.1 170 451.4 170 H 98.6 C 77.9 170 59.6 156.8 53.1 137.2 L 0 0 z">',
             'top_sharp'      => '<path d="M 550 0 L 494.206 170 H 65.794 L 0 0 z">',
@@ -180,19 +176,19 @@ final class IFrameController
                 ? sprintf( '<span class="mobile-contact-bar-label">%s</span>', str_replace( '\n', '<br />', esc_attr( $contact['label'] )))
                 : '';
 
-            if ( 'fa' === $contact['brand'] && Icons::is_fa_icon( $contact['group'], $contact['icon'] ))
-            {
-                $icon = sprintf(
-                    '<span class="mobile-contact-bar-icon mobile-contact-bar-fa">%s%s</span>',
-                    file_get_contents( $dir_url . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' ),
-                    $badge
-                );
-            }
-            elseif ( 'ti' === $contact['brand'] && Icons::is_ti_icon( $contact['icon'] ))
+            if ( 'ti' === $contact['brand'] )
             {
                 $icon = sprintf(
                     '<span class="mobile-contact-bar-icon">%s%s</span>',
-                    file_get_contents( $dir_url . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg' ),
+                    file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg' ),
+                    $badge
+                );
+            }
+            elseif ( 'fa' === $contact['brand'] )
+            {
+                $icon = sprintf(
+                    '<span class="mobile-contact-bar-icon mobile-contact-bar-fa">%s%s</span>',
+                    file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' ),
                     $badge
                 );
             }
