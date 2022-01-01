@@ -34,10 +34,10 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 
 
 
-= Special Icons =
+= Special Actions =
 
-* Browser History Back and Forward buttons
-* Scroll to Top button
+* Go Back and Forward in Browser History
+* Scroll to Top of the page
 * WooCommerce Cart with Item Counter
 
 
