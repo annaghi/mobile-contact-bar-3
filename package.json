@@ -10,12 +10,6 @@
     "author": "Anna Bansaghi",
     "devDependencies": {
         "clean-css-cli": "^5.5.0",
-        "eslint": "^8.5.0",
-        "eslint-config-standard": "^16.0.3",
-        "eslint-plugin-import": "^2.25.3",
-        "eslint-plugin-node": "^11.1.0",
-        "eslint-plugin-promise": "^6.0.0",
-        "eslint-plugin-standard": "^4.1.0",
         "npm-run-all": "^4.1.5",
         "onchange": "^7.1.0",
         "run-for-every-file": "^1.1.0",
@@ -25,7 +19,6 @@
     },
     "scripts": {
         "watch": "run-p watch:**",
-        "test": "run-p lint:*",
         "build": "run-p build:*",
         "build:js": "run-s clean:js uglify:js concat:js",
         "build:css": "run-s minify:css",
@@ -52,9 +45,6 @@
         "concat:js": "run-p concat:js:*",
         "concat:js:admin": "run-for-every-file --src \"./js/admin/\" --dest \"./assets/js/\" --file=\"**/*.min.js\" --run \"shx cat {{src-file}} >> {{dest}}admin.js\"",
         "concat:js:notices": "run-for-every-file --src \"./js/notices/\" --dest \"./assets/js/\" --file=\"**/*.min.js\" --run \"shx cat {{src-file}} >> {{dest}}notices.js\"",
-        "concat:js:public": "run-for-every-file --src \"./js/public/\" --dest \"./assets/js/\" --file=\"**/*.min.js\" --run \"shx cat {{src-file}} >> {{dest}}public.js\"",
-        "lint:js": "eslint --fix \"./js/**/!(*.min).js\"",
-        "ci": "run-p ci:*",
-        "ci:js": "eslint \"./js/**/!(*.min).js\""
+        "concat:js:public": "run-for-every-file --src \"./js/public/\" --dest \"./assets/js/\" --file=\"**/*.min.js\" --run \"shx cat {{src-file}} >> {{dest}}public.js\""
     }
 }
