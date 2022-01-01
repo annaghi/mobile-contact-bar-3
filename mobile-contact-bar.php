@@ -52,6 +52,7 @@ if (( new MobileContactBar_Plugin_Check( __FILE__ ))->can_proceed())
     }
 
     $mobile_contact_bar_plugin = MobileContactBar\Plugin::load( __FILE__ );
-    register_activation_hook( __FILE__, [$mobile_contact_bar_plugin, 'activate'] );   
+    register_activation_hook( __FILE__, [$mobile_contact_bar_plugin, 'activate'] );
+    register_deactivation_hook( __FILE__, [$mobile_contact_bar_plugin, 'deactivate'] );
     add_action( 'plugins_loaded', [$mobile_contact_bar_plugin, 'plugins_loaded'] );
 }

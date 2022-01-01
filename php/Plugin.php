@@ -4,6 +4,7 @@ namespace MobileContactBar;
 
 use MobileContactBar\Controllers\AdminController;
 use MobileContactBar\Controllers\AJAXController;
+use MobileContactBar\Controllers\CronController;
 use MobileContactBar\Controllers\IFrameController;
 use MobileContactBar\Controllers\NoticeController;
 use MobileContactBar\Controllers\PublicController;
@@ -17,6 +18,7 @@ use ReflectionClass;
  * @property string $capability
  * @property string $page_suffix;
  * @property string $schemes;
+ * @property string $wp_cron_hook;
 */
 final class Plugin extends Container
 {
@@ -25,6 +27,8 @@ final class Plugin extends Container
     const CAPABILITY = 'manage_options';
     const PAGE_SUFFIX = 'settings_page_mobile-contact-bar';
     const SCHEMES = ['viber', 'tel', 'sms', 'skype', 'mailto', 'https', 'http'];
+    const WP_CRON_HOOK = 'mobile_contact_bar_weekly_scheduled_events';
+
 
     public $file = '';
     public $languages = '';
@@ -55,6 +59,7 @@ final class Plugin extends Container
      */
     protected $admin  = null;
     protected $ajax   = null;
+    protected $cron   = null;
     protected $iframe = null;
     protected $notice = null;
     protected $public = null;
@@ -140,26 +145,53 @@ final class Plugin extends Container
      *
      * @param  bool $network_wide Whether to enable the plugin for all sites in the network or just for the current site
      * @return void
-     *
-     * @global $wpdb
      */
     public function activate( $network_wide = false )
     {
         if ( is_multisite() && $network_wide )
         {
-            global $wpdb;
+            $site_ids = get_sites( ['fields' => 'ids'] );
 
-            $blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs LIMIT 100" );
-            foreach ( $blog_ids as $blog_id )
+            remove_action( 'switch_blog', 'wp_switch_roles_and_user', 1 );
+            foreach ( $site_ids as $site_id )
             {
-                switch_to_blog( $blog_id );
+                switch_to_blog( $site_id );
                 $this->install();
                 restore_current_blog();
             }
+            add_action( 'switch_blog', 'wp_switch_roles_and_user', 1, 2 );
         }
         else
         {
             $this->install();
+        }
+    }
+
+
+    /**
+     * Runs the plugin suspension during the plugin deactivation.
+     *
+     * @param  bool $network_wide Whether to enable the plugin for all sites in the network or just for the current site
+     * @return void
+     */
+    public function deactivate( $network_wide = false )
+    {
+        if ( is_multisite() && $network_wide )
+        {
+            $site_ids = get_sites( ['fields' => 'ids'] );
+
+            remove_action( 'switch_blog', 'wp_switch_roles_and_user', 1 );
+            foreach ( $site_ids as $site_id )
+            {
+                switch_to_blog( $site_id );
+                $this->unschedule_cron_events();
+                restore_current_blog();
+            }
+            add_action( 'switch_blog', 'wp_switch_roles_and_user', 1, 2 );
+        }
+        else
+        {
+            $this->unschedule_cron_events();
         }
     }
 
@@ -196,7 +228,12 @@ final class Plugin extends Container
             add_action( 'wp_initialize_site', [$this, 'wp_initialize_site'] );
         }
 
-        if ( $this->is_admin() )
+        $this->cron = abmcb( CronController::class );
+        add_filter( 'cron_schedules', [$this->cron, 'cron_schedules'] );
+        add_action( 'wp',  [$this->cron, 'wp'] );
+        add_action( self::WP_CRON_HOOK, [$this->cron, 'clear_stat_cache'] );
+
+        if ( is_admin() )
         {
             $this->notice = abmcb( NoticeController::class );
             add_action( 'admin_enqueue_scripts', [$this->notice, 'admin_enqueue_scripts'] );
@@ -225,7 +262,7 @@ final class Plugin extends Container
             add_action( 'init', [$this->iframe, 'init'] );
         }
 
-        if ( ! $this->is_admin() && ! wp_doing_ajax() && ! isset( $_GET[self::SLUG . '-iframe'] ))
+        if ( ! is_admin() && ! wp_doing_ajax() && ! isset( $_GET[self::SLUG . '-iframe'] ))
         {
             $this->public = abmcb( PublicController::class );
             add_action( 'init', [$this->public, 'init'] );
@@ -349,12 +386,13 @@ final class Plugin extends Container
 
 
     /**
-     * Checks if the current request is on an administrative page.
+     * Unschedule cron events.
      * 
-     * @return bool
+     * @return void
      */
-    public function is_admin()
+    private function unschedule_cron_events()
     {
-        return ( is_admin() || is_network_admin() );
+        $timestamp = wp_next_scheduled( self::WP_CRON_HOOK );
+        wp_unschedule_event( $timestamp, self::WP_CRON_HOOK );
     }
 }

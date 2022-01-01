@@ -3,37 +3,35 @@
 defined( 'ABSPATH' ) and defined( 'WP_UNINSTALL_PLUGIN' ) || exit();
 
 
+global $wpdb;
+
 /**
- * Cleans database from all plugin related data.
+ * Cleans the database from all plugin related data.
+ * Clears plugin related cron events.
  *
  * @global $wpdb
  */
+function abmcb_uninstall() {
+    $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '%mobile_contact_bar%'" );
+    $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE '%mobile_contact_bar%'" );
+    wp_clear_scheduled_hook( 'mobile_contact_bar_weekly_scheduled_events' );
+}
 
-global $wpdb;
 
-if( is_multisite() )
+if ( is_multisite() )
 {
-    $blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
-    foreach( $blog_ids as $blog_id )
+    $site_ids = get_sites( ['fields' => 'ids'] );
+
+    remove_action( 'switch_blog', 'wp_switch_roles_and_user', 1 );
+    foreach ( $site_ids as $site_id )
     {
-        switch_to_blog( $blog_id );
-
-        $plugin_options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE '%mobile_contact_bar%'" );
-        foreach( $plugin_options as $option )
-        {
-            delete_option( $option->option_name );
-        }
-        $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE '%mobile_contact_bar%'" );
-
+        switch_to_blog( $site_id );
+        abmcb_uninstall();
         restore_current_blog();
     }
+    add_action( 'switch_blog', 'wp_switch_roles_and_user', 1, 2 );
 }
 else
 {
-    $plugin_options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE '%mobile_contact_bar%'" );
-    foreach( $plugin_options as $option )
-    {
-        delete_option( $option->option_name );
-        $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE '%mobile_contact_bar%'" );
-    }
+    abmcb_uninstall();
 }
