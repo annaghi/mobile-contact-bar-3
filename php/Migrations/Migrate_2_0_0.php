@@ -18,7 +18,7 @@ final class Migrate_2_0_0
         if ( $option_bar_v1 && is_array( $option_bar_v1 ))
         {
             $this->option_bar_v1 = $option_bar_v1;
-            $this->migrate_bar();
+            $this->migrate_option_bar();
             delete_option( 'mcb_option' );
 
             return true;
@@ -28,7 +28,10 @@ final class Migrate_2_0_0
     }
 
 
-    public function migrate_bar()
+    /**
+     * @return void
+     */
+    public function migrate_option_bar()
     {
         $settings = $this->migrate_settings();
         $contacts = $this->migrate_contacts();
@@ -44,6 +47,9 @@ final class Migrate_2_0_0
     }
 
 
+    /**
+     * @return array
+     */
     private function migrate_settings()
     {
         $settings = [];
@@ -125,6 +131,9 @@ final class Migrate_2_0_0
     }
 
 
+    /**
+     * @return array
+     */
     private function migrate_contacts()
     {
         $contacts = [];

@@ -8,7 +8,6 @@ final class HistoryBack extends ContactType
     public function __construct()
     {
         parent::__construct();
-        add_action( 'mcb_public_add_script', [$this, 'mcb_public_add_script'] );
     }
 
     
@@ -33,13 +32,8 @@ final class HistoryBack extends ContactType
     }
 
 
-    public function mcb_public_add_script( $type )
+    public function script()
     {
-        if ( $type !== $this->type )
-        {
-            return;
-        }
-
         ?>
         <script id="<?php echo abmcb()->slug, '-', esc_attr( $this->type ); ?>">
         (function() {

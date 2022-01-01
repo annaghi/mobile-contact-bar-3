@@ -10,7 +10,6 @@ final class WooCommerce extends ContactType
         if( class_exists( 'WooCommerce' ))
         {
             parent::__construct();
-            add_filter( 'mcb_public_add_badge', [$this, 'mcb_public_add_badge'], 10, 2 );
 
             if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.3', '>=' ))
             {
@@ -45,11 +44,9 @@ final class WooCommerce extends ContactType
     }
 
 
-    public function mcb_public_add_badge( $badge = '', $type )
+    public function badge()
     {
-        return ( $type === $this->type )
-            ? $this->badge()
-            : '';
+        return $this->output_badge();
     }
 
 
@@ -57,13 +54,13 @@ final class WooCommerce extends ContactType
     {
         global $woocommerce;
 
-        $fragments['.mobile-contact-bar-badge'] = $this->badge();
+        $fragments['.mobile-contact-bar-badge'] = $this->output_badge();
 
         return $fragments;
     }
 
 
-    private function badge()
+    private function output_badge()
     {
         if ( class_exists( 'WooCommerce' ))
         {

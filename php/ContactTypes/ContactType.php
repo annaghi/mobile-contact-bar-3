@@ -49,6 +49,18 @@ abstract class ContactType
     }
 
 
+    public function badge()
+    {
+        return '';
+    }
+
+
+    public function script()
+    {
+        return '';
+    }
+
+
     /**
      * Defines the input fields for contact['custom'].
      *

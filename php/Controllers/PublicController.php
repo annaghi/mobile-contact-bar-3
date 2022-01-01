@@ -159,8 +159,7 @@ final class PublicController
             $uri = $contact['uri'];
             if ( $uri && ! empty( $contact['parameters'] ))
             {
-                $query_arg = [];
-
+                $query_args = [];
                 foreach ( $contact['parameters'] as $parameter )
                 {
                     $key = sanitize_key( $parameter['key'] );
@@ -168,13 +167,13 @@ final class PublicController
 
                     if ( $key && $value )
                     {
-                        $query_arg[$key] = $value;
+                        $query_args[$key] = $value;
                     }
                 }
-                $uri = add_query_arg( $query_arg, $uri );
+                $uri = add_query_arg( $query_args, $uri );
             }
 
-            $badge = apply_filters( 'mcb_public_add_badge', '', $contact['type'] );
+            $badge = abmcb()->contact_types[$contact['type']]->badge();
             $label = ( esc_attr( $contact['label'] ))
                 ? sprintf( '<span class="mobile-contact-bar-label">%s</span>', str_replace( '\n', '<br />', esc_attr( $contact['label'] )))
                 : '';
@@ -216,7 +215,7 @@ final class PublicController
             $out .= '</a>';
 
             ob_start();
-            echo do_action( 'mcb_public_add_script', $contact['type'] );
+            echo abmcb()->contact_types[$contact['type']]->script();
             $out .= ob_get_contents();
             ob_end_clean();
 

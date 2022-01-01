@@ -158,8 +158,6 @@ final class AJAXController
     {
         if ( $this->verify_nonce() && isset( $_POST['brand'], $_POST['group'], $_POST['icon'] ))
         {
-            clearstatcache();
-
             if ( 'ti' === $_POST['brand'] && '' === $_POST['group']
                 && Icons::is_ti_icon( $_POST['icon'] )
                 && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/icons/ti/icons/'. $_POST['icon'] . '.svg' ))

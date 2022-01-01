@@ -292,6 +292,8 @@
             // Close contact details on Contact List meta box closed
             postboxes.pbhide = function (id) {
                 if ('mcb-meta-box-contacts' === id) {
+                    document.activeElement.blur();
+
                     option.contactList
                         .find('.mcb-contact')
                         .removeClass('mcb-opened')

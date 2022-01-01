@@ -16,14 +16,17 @@ final class Migrate_3_0_0
     public function run()
     {
         $this->option_bar_v2 = get_option( abmcb()->id );
-        $this->migrate_bar();
+        $this->migrate_option_bar();
         $this->migrate_user_meta();
 
         return true;
     }
 
 
-    public function migrate_bar()
+    /**
+     * @return void
+     */
+    public function migrate_option_bar()
     {
         $settings = $this->migrate_settings();
         $contacts = $this->migrate_contacts();
@@ -41,6 +44,9 @@ final class Migrate_3_0_0
 
     // TODO migrate icon size
     // TODO migrate badge size
+    /**
+     * @return array
+     */
     private function migrate_settings()
     {
         $settings = [];
@@ -180,6 +186,9 @@ final class Migrate_3_0_0
     }
 
 
+    /**
+     * @return array
+     */
     private function migrate_contacts()
     {
         $contacts = [];
@@ -254,6 +263,12 @@ final class Migrate_3_0_0
     }
 
 
+    /**
+     * @param  string $contact_type
+     * @param  string $uri
+     * @param  string $placeholder
+     * @return string
+     */
     private function migrate_contact_type( $contact_type, $uri, $placeholder )
     {
         if ( $contact_type === 'whatsapp' || ( untrailingslashit( $uri ) === 'https://api.whatsapp.com/send' ))
@@ -286,6 +301,10 @@ final class Migrate_3_0_0
     }
 
 
+    /**
+     * @param  string $uri
+     * @return string
+     */
     private function migrate_general_contact_type( $uri )
     {
         if ( untrailingslashit( $uri ) === 'https://api.whatsapp.com/send' )
@@ -323,6 +342,10 @@ final class Migrate_3_0_0
     }
 
 
+    /**
+     * @param  string $icon
+     * @return string
+     */
     private function migrate_group( $icon )
     {
         $names = preg_split( '/\s+/', $icon, -1, PREG_SPLIT_NO_EMPTY );
@@ -348,6 +371,10 @@ final class Migrate_3_0_0
     }
 
 
+    /**
+     * @param  string $icon
+     * @return string
+     */
     private function migrate_icon( $icon )
     {
         $names = preg_split( '/\s+/', $icon, -1, PREG_SPLIT_NO_EMPTY );

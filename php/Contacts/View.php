@@ -52,17 +52,15 @@ final class View
                     $sprite = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/tabler-sprite.svg';
                     $icons = array_slice( Icons::ti_icons(), 0, 30 );
                     foreach ( $icons as $icon ) :
-                        ?>
+                    ?>
                         <li data-icon="<?php echo $icon; ?>">
                             <a href="#" title="<?php echo $icon; ?>">
                                 <svg class="mcb-icon">
-                                    <use xlink:href="<?php echo $sprite; ?>#<?php echo 'tabler-' . $icon; ?>"></use>
+                                    <use xlink:href="<?php echo $sprite, '#', 'tabler-', $icon; ?>"></use>
                                 </svg>
                             </a>
                         </li>
-                        <?php
-                    endforeach;
-                    ?>
+                    <?php endforeach; ?>
                 </ul>
             </div>
         </script>
@@ -83,14 +81,14 @@ final class View
         ?>
         <div id="mcb-section-contacts">
             <div id="mcb-contacts">
-            <?php foreach ( $contacts as $contact_key => $contact ) { ?>
+            <?php foreach ( $contacts as $contact_key => $contact ) : ?>
                 <div class="mcb-contact<?php echo ( $contact['checked'] ) ? ' mcb-checked' : ''?>" data-contact-key="<?php echo $contact_key; ?>">
                 <?php
                     echo $this->output_summary( ['contact_key' => $contact_key, 'contact' => $contact] );
                     echo $this->output_details( ['contact_key' => $contact_key, 'contact' => $contact] );
                 ?>
                 </div>
-            <?php } ?>
+            <?php endforeach; ?>
             </div>
             <div id="mcb-footer-contacts">
                 <button type="button" class="button button-primary" id="mcb-add-contact" title="<?php echo esc_attr__( 'Add New Contact', 'mobile-contact-bar' ); ?>">
@@ -360,7 +358,16 @@ final class View
         $out .= $this->output_parameters( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_field' => $contact_field] );
         $out .= $this->output_customization( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_field' => $contact_field] );
 
-        $out .= $this->output_close_contact();
+        // Close details button
+        $out .= sprintf(
+            '<div class="mcb-row mcb-close-details">
+                <div class="mcb-label"></div>
+                <div class="mcb-input">
+                    <button type="button" class="button mcb-action-close-details" title="%1$s">%1$s</button>
+                </div>
+            </div>',
+            esc_attr__( 'Close details', 'mobile-contact-bar' )
+        );
 
         $out .= '</div>';
 
@@ -725,22 +732,6 @@ final class View
             $out .= '</div>';
             $out .= '</div>';
         }
-
-        return $out;
-    }
-
-
-    public function output_close_contact()
-    {
-        $out = sprintf(
-            '<div class="mcb-row mcb-close-details">
-                <div class="mcb-label"></div>
-                <div class="mcb-input">
-                    <button type="button" class="button mcb-action-close-details" title="%1$s">%1$s</button>
-                </div>
-            </div>',
-            esc_attr__( 'Close details', 'mobile-contact-bar' )
-        );
 
         return $out;
     }

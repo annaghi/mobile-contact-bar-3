@@ -10,27 +10,18 @@ final class CSS
      *
      * @param  array  $settings
      * @param  array  $contacts
-     * @return string           HTML
+     * @return string           CSS
      */
     public static function output( $settings = [], $contacts = [] )
     {
         $styles = '';
 
-        $bar = ( isset( $settings['bar'] ) && is_array( $settings['bar'] )) ? $settings['bar'] : false;
-        $items = ( isset( $settings['icons_labels'] ) && is_array( $settings['icons_labels'] )) ? $settings['icons_labels'] : false;
-        $toggle = ( isset( $settings['toggle'] ) && is_array( $settings['toggle'] )) ? $settings['toggle'] : false;
-        $badges = ( isset( $settings['badges'] ) && is_array( $settings['badges'] )) ? $settings['badges'] : false;
+        $bar    = $settings['bar'];
+        $item   = $settings['icons_labels'];
+        $toggle = $settings['toggle'];
+        $badge  = $settings['badges'];
 
-
-        if ( ! $bar || ! $items )
-        {
-            return $styles;
-        }
-
-        $checked_contacts = array_filter(
-            $contacts,
-            function ( $contact ) { return $contact['checked']; }
-        );
+        $checked_contacts = array_filter( $contacts, function ( $contact ) { return $contact['checked']; } );
         $checked_contacts_count = count( $checked_contacts );
 
 
@@ -86,15 +77,15 @@ final class CSS
 
         // Items
         $styles .= '.mobile-contact-bar-item{';
-        $styles .= ( empty( $items['background_color']['primary'] )) ? '' : 'background-color:' . $items['background_color']['primary'] . ';';
+        $styles .= ( empty( $item['background_color']['primary'] )) ? '' : 'background-color:' . $item['background_color']['primary'] . ';';
         // $styles .= 'box-sizing:border-box;';
         $styles .= 'margin:0;';
         $styles .= 'padding:0;';
         // $styles .= 'text-align:center;';
-        switch ( $items['alignment'] )
+        switch ( $item['alignment'] )
         {
             case 'centered':
-                $styles .= 'width:' . $items['width'] . 'px;';
+                $styles .= 'width:' . $item['width'] . 'px;';
                 break;
 
             case 'justified':
@@ -117,33 +108,33 @@ final class CSS
         // }
         $styles .= '}';
 
-        $items_border_color = empty( $items['border_color']['primary'] ) ? 'transparent' : $items['border_color']['primary'];
-        if ( $items['is_borders']['top'] )
+        $item_border_color = empty( $item['border_color']['primary'] ) ? 'transparent' : $item['border_color']['primary'];
+        if ( $item['is_borders']['top'] )
         {
             $styles .= '.mobile-contact-bar-item{';
-            $styles .= 'border-top:' . $items['border_width'] . 'px solid ' . $items_border_color . ';';
+            $styles .= 'border-top:' . $item['border_width'] . 'px solid ' . $item_border_color . ';';
             $styles .= '}';
         }
-        if ( $items['is_borders']['bottom'] )
+        if ( $item['is_borders']['bottom'] )
         {
             $styles .= '.mobile-contact-bar-item{';
-            $styles .= 'border-bottom:' . $items['border_width'] . 'px solid ' . $items_border_color . ';';
+            $styles .= 'border-bottom:' . $item['border_width'] . 'px solid ' . $item_border_color . ';';
             $styles .= '}';
         }
-        if ( $items['is_borders']['left'] && $items['is_borders']['right'] )
+        if ( $item['is_borders']['left'] && $item['is_borders']['right'] )
         {
             $styles .= '.mobile-contact-bar-item{';
-            $styles .= 'border-left:' . $items['border_width'] . 'px solid ' . $items_border_color . ';';
+            $styles .= 'border-left:' . $item['border_width'] . 'px solid ' . $item_border_color . ';';
             $styles .= '}';
 
             $styles .= '.mobile-contact-bar-item:last-child{';
-            $styles .= 'border-right:' . $items['border_width'] . 'px solid ' . $items_border_color . ';';
+            $styles .= 'border-right:' . $item['border_width'] . 'px solid ' . $item_border_color . ';';
             $styles .= '}';
         }
-        if (( $items['is_borders']['left'] && ! $items['is_borders']['right'] ) || ( ! $items['is_borders']['left'] && $items['is_borders']['right'] ))
+        if (( $item['is_borders']['left'] && ! $item['is_borders']['right'] ) || ( ! $item['is_borders']['left'] && $item['is_borders']['right'] ))
         {
             $styles .= '.mobile-contact-bar-item{';
-            $styles .= 'border-left:' . $items['border_width'] . 'px solid ' . $items_border_color . ';';
+            $styles .= 'border-left:' . $item['border_width'] . 'px solid ' . $item_border_color . ';';
             $styles .= '}';
 
             $styles .= '.mobile-contact-bar-item:first-child{';
@@ -158,7 +149,7 @@ final class CSS
         $styles .= 'flex-direction:column;';
         $styles .= 'justify-content:center;';
         $styles .= 'align-items:center;';
-        $styles .= 'gap:' . $items['gap'] . 'em;';
+        $styles .= 'gap:' . $item['gap'] . 'em;';
         $styles .= 'height:100%;';
         // $styles .= 'z-index:9998;';
         $styles .= '}';
@@ -178,7 +169,7 @@ final class CSS
         $styles .= '.mobile-contact-bar-icon svg{';
         $styles .= 'width:2em;';
         $styles .= 'height:2em;';
-        // $styles .= 'font-size:' . $items['icon_size'] . 'em;';
+        // $styles .= 'font-size:' . $item['icon_size'] . 'em;';
         $styles .= '}';
 
         $styles .= '.mobile-contact-bar-fa svg{';
@@ -186,86 +177,86 @@ final class CSS
         $styles .= '}';
 
         $styles .= '.mobile-contact-bar-icon{';
-        $styles .= ( empty( $items['icon_color']['primary'] )) ? '' : 'color:' . $items['icon_color']['primary'] . ';';
+        $styles .= ( empty( $item['icon_color']['primary'] )) ? '' : 'color:' . $item['icon_color']['primary'] . ';';
         $styles .= '}';
 
         $styles .= '.mobile-contact-bar-label{';
-        $styles .= ( empty( $items['label_color']['primary'] )) ? '' : 'color:' . $items['label_color']['primary'] . ';';
-        $styles .= 'font-size:' . $items['label_size'] . 'em;';
+        $styles .= ( empty( $item['label_color']['primary'] )) ? '' : 'color:' . $item['label_color']['primary'] . ';';
+        $styles .= 'font-size:' . $item['label_size'] . 'em;';
         $styles .= 'line-height:1;';
         $styles .= '}';
 
 
         // Hover over item, active item
-        if ( ! empty( $items['background_color']['secondary'] ))
+        if ( ! empty( $item['background_color']['secondary'] ))
         {
-            if ( $items['is_secondary_colors']['focus'] )
+            if ( $item['is_secondary_colors']['focus'] )
             {
                 $styles .= '.mobile-contact-bar-item:focus{';
-                $styles .= 'background-color:' . $items['background_color']['secondary'] . ';';
+                $styles .= 'background-color:' . $item['background_color']['secondary'] . ';';
                 $styles .= '}';
             }
-            if ( $items['is_secondary_colors']['hover'] )
+            if ( $item['is_secondary_colors']['hover'] )
             {
                 $styles .= '.mobile-contact-bar-item:hover{';
-                $styles .= 'background-color:' . $items['background_color']['secondary'] . ';';
+                $styles .= 'background-color:' . $item['background_color']['secondary'] . ';';
                 $styles .= '}';
             }
-            if ( $items['is_secondary_colors']['active'] )
+            if ( $item['is_secondary_colors']['active'] )
             {
                 $styles .= '.mobile-contact-bar-item.mobile-contact-bar-active{';
-                $styles .= 'background-color:' . $items['background_color']['secondary'] . ';';
+                $styles .= 'background-color:' . $item['background_color']['secondary'] . ';';
                 $styles .= '}';
             }
         }
 
-        if ( ! empty( $items['icon_color']['secondary'] ))
+        if ( ! empty( $item['icon_color']['secondary'] ))
         {
-            if ( $items['is_secondary_colors']['focus'] )
+            if ( $item['is_secondary_colors']['focus'] )
             {
                 $styles .= '.mobile-contact-bar-item:focus .mobile-contact-bar-icon svg{';
-                $styles .= 'color:' . $items['icon_color']['secondary'] . ';';
+                $styles .= 'color:' . $item['icon_color']['secondary'] . ';';
                 $styles .= '}';
             }
-            if ( $items['is_secondary_colors']['hover'] )
+            if ( $item['is_secondary_colors']['hover'] )
             {
                 $styles .= '.mobile-contact-bar-item:hover .mobile-contact-bar-icon svg{';
-                $styles .= 'color:' . $items['icon_color']['secondary'] . ';';
+                $styles .= 'color:' . $item['icon_color']['secondary'] . ';';
                 $styles .= '}';
             }
-            if ( $items['is_secondary_colors']['active'] )
+            if ( $item['is_secondary_colors']['active'] )
             {
                 $styles .= '.mobile-contact-bar-item.mobile-contact-bar-active .mobile-contact-bar-icon svg{';
-                $styles .= 'color:' . $items['icon_color']['secondary'] . ';';
+                $styles .= 'color:' . $item['icon_color']['secondary'] . ';';
                 $styles .= '}';
             }
         }
 
-        if ( ! empty( $items['label_color']['secondary'] ))
+        if ( ! empty( $item['label_color']['secondary'] ))
         {
-            if ( $items['is_secondary_colors']['focus'] )
+            if ( $item['is_secondary_colors']['focus'] )
             {
                 $styles .= '.mobile-contact-bar-item:focus .mobile-contact-bar-label{';
-                $styles .= 'color:' . $items['label_color']['secondary'] . ';';
+                $styles .= 'color:' . $item['label_color']['secondary'] . ';';
                 $styles .= '}';
             }
-            if ( $items['is_secondary_colors']['hover'] )
+            if ( $item['is_secondary_colors']['hover'] )
             {
                 $styles .= '.mobile-contact-bar-item:hover .mobile-contact-bar-label{';
-                $styles .= 'color:' . $items['label_color']['secondary'] . ';';
+                $styles .= 'color:' . $item['label_color']['secondary'] . ';';
                 $styles .= '}';
             }
-            if ( $items['is_secondary_colors']['active'] )
+            if ( $item['is_secondary_colors']['active'] )
             {
                 $styles .= '.mobile-contact-bar-item.mobile-contact-bar-active .mobile-contact-bar-label{';
-                $styles .= 'color:' . $items['label_color']['secondary'] . ';';
+                $styles .= 'color:' . $item['label_color']['secondary'] . ';';
                 $styles .= '}';
             }
         }
 
 
         // Toggle
-        if ( $toggle && $toggle['is_render'] && $bar['is_sticky'] )
+        if ( $toggle['is_render'] && $bar['is_sticky'] )
         {
             if ( $toggle['is_animation'] )
             {
@@ -316,54 +307,52 @@ final class CSS
 
 
         // Badges
-        if ( $badges )
+        $styles .= '.mobile-contact-bar-badge{';
+        $styles .= ( empty( $badge['background_color'] )) ? '' : 'background-color:' . $badge['background_color'] . ';';
+        $styles .= 'border-radius:100%;';
+        $styles .= ( empty( $badge['font_color'] )) ? '' : 'color:' . $badge['font_color'] . ';';
+        $styles .= 'display:flex;';
+        $styles .= 'align-items:center;';
+        $styles .= 'justify-content:center;';
+        $styles .= 'font-size:1em;';
+        $styles .= 'height:1.5em;';
+        $styles .= 'width:1.5em;';
+        $styles .= 'line-height:1.5;';
+        $styles .= 'text-indent:0;';
+        $styles .= 'position:absolute;';
+
+        switch ( $badge['position'] )
         {
-            $styles .= '.mobile-contact-bar-badge{';
-            $styles .= ( empty( $badges['background_color'] )) ? '' : 'background-color:' . $badges['background_color'] . ';';
-            $styles .= 'border-radius:100%;';
-            $styles .= ( empty( $badges['font_color'] )) ? '' : 'color:' . $badges['font_color'] . ';';
-            $styles .= 'display:flex;';
-            $styles .= 'align-items:center;';
-            $styles .= 'justify-content:center;';
-            $styles .= 'font-size:1em;';
-            $styles .= 'height:1.5em;';
-            $styles .= 'width:1.5em;';
-            $styles .= 'line-height:1.5;';
-            $styles .= 'text-indent:0;';
-            $styles .= 'position:absolute;';
+            case 'top-right':
+                $styles .= 'top:0;';
+                $styles .= 'right:0;';
+                $styles .= 'transform-origin:top right;';
+                $styles .= 'transform:scale(' . $badge['font_size'] . ') translate(' . $badge['font_size'] . 'em,' . (-1) * $badge['font_size'] . 'em);';
+                break;
 
-            switch ( $badges['position'] )
-            {
-                case 'top-right':
-                    $styles .= 'top:0;';
-                    $styles .= 'right:0;';
-                    $styles .= 'transform-origin:top right;';
-                    $styles .= 'transform:scale(' . $badges['font_size'] . ') translate(' . $badges['font_size'] . 'em,' . (-1) * $badges['font_size'] . 'em);';
-                    break;
+            case 'bottom-right':
+                $styles .= 'bottom:0;';
+                $styles .= 'right:0;';
+                $styles .= 'transform-origin:bottom right;';
+                $styles .= 'transform:scale(' . $badge['font_size'] . ') translate(' . $badge['font_size'] . 'em,' . $badge['font_size'] . 'em);';
+                break;
 
-                case 'bottom-right':
-                    $styles .= 'bottom:0;';
-                    $styles .= 'right:0;';
-                    $styles .= 'transform-origin:bottom right;';
-                    $styles .= 'transform:scale(' . $badges['font_size'] . ') translate(' . $badges['font_size'] . 'em,' . $badges['font_size'] . 'em);';
-                    break;
+            case 'bottom-left':
+                $styles .= 'bottom:0;';
+                $styles .= 'left:0;';
+                $styles .= 'transform-origin:bottom left;';
+                $styles .= 'transform:scale(' . $badge['font_size'] . ') translate(' . (-1) * $badge['font_size'] . 'em,' . $badge['font_size'] . 'em);';
 
-                case 'bottom-left':
-                    $styles .= 'bottom:0;';
-                    $styles .= 'left:0;';
-                    $styles .= 'transform-origin:bottom left;';
-                    $styles .= 'transform:scale(' . $badges['font_size'] . ') translate(' . (-1) * $badges['font_size'] . 'em,' . $badges['font_size'] . 'em);';
-
-                    break;
-                case 'top-left':
-                    $styles .= 'top:0;';
-                    $styles .= 'left:0;';
-                    $styles .= 'transform-origin:top left;';
-                    $styles .= 'transform:scale(' . $badges['font_size'] . ') translate(' . (-1) * $badges['font_size'] . 'em,' . (-1) * $badges['font_size'] . 'em);';
-                    break;
-            }
-            $styles .= '}';
+                break;
+            case 'top-left':
+                $styles .= 'top:0;';
+                $styles .= 'left:0;';
+                $styles .= 'transform-origin:top left;';
+                $styles .= 'transform:scale(' . $badge['font_size'] . ') translate(' . (-1) * $badge['font_size'] . 'em,' . (-1) * $badge['font_size'] . 'em);';
+                break;
         }
+        $styles .= '}';
+
 
         // bottom
         // fixed
@@ -407,7 +396,7 @@ final class CSS
                 $styles .= ( $bar['space_height'] > 0 ) ? 'top:' . ($bar['space_height'] + 46) . 'px;' : 'top:46px;';
                 $styles .= '}';
 
-            if ( ! empty( $toggle ) && $toggle['is_render'] )
+            if ( $toggle['is_render'] )
             {
                 $styles .= '#mobile-contact-bar-toggle{';
                 $styles .= 'position:absolute;';
@@ -486,7 +475,7 @@ final class CSS
         }
 
 
-        foreach ( $contacts as $contact )
+        foreach ( $checked_contacts as $contact )
         {
             if ( $contact['id'] )
             {
@@ -511,13 +500,13 @@ final class CSS
                     $styles .= '}';
                 }
 
-                if ( $items['is_borders']['top'] && ! empty( $contact['custom']['border_color']['primary'] ))
+                if ( $item['is_borders']['top'] && ! empty( $contact['custom']['border_color']['primary'] ))
                 {
                     $styles .= '#' . $contact['id'] . '.mobile-contact-bar-item{';
                     $styles .= 'border-top-color:' . $contact['custom']['border_color']['primary'] . ';';
                     $styles .= '}';
                 }
-                if ( $items['is_borders']['bottom'] && ! empty( $contact['custom']['border_color']['primary'] ))
+                if ( $item['is_borders']['bottom'] && ! empty( $contact['custom']['border_color']['primary'] ))
                 {
                     $styles .= '#' . $contact['id'] . '.mobile-contact-bar-item{';
                     $styles .= 'border-bottom-color:' . $contact['custom']['border_color']['primary'] . ';';

@@ -232,10 +232,6 @@ final class Input
             }
 
             // remove contact if 'brand', 'group', or 'icon' do not match
-            if ( abmcb()->is_admin() )
-            {
-                clearstatcache();
-            }
             if ( 'ti' === $contact['brand'] && '' !== $contact['group']
                 && ! ( Icons::is_ti_icon( $contact['icon'] )
                     && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg' )))
@@ -343,8 +339,7 @@ final class Input
     }
 
 
-
-   /**
+    /**
      * Sanitizes the contact URI.
      *
      * @param  string $uri Contact URI (URL, phone number, email address, etc.)

@@ -34,13 +34,20 @@ final class Migrate
     }
 
 
+    /**
+     * @return void
+     */
     public function run()
     {
+        clearstatcache();
         $this->run_all();
         $this->refresh_option_bar();
     }
 
 
+    /**
+     * @return void
+     */
     private function run_all()
     {
         foreach ( $this->needed_migrations as $migration => $success )
