@@ -8,8 +8,8 @@ Requires at least: 4.9
 Tested up to: 5.8
 Requires PHP: 5.6.20
 Stable tag: 3.0.0
-License: GPLv2
-License URI: https://www.gnu.org/licenses/gpl-2.0.en.html
+License: GPLv3
+License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
 
 Allow your visitors to contact you via mobile phones, or access your site's pages instantly.
 

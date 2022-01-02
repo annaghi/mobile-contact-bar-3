@@ -2,7 +2,7 @@
     "name": "mobile-contact-bar",
     "version": "3.0.0",
     "homepage": "https://wordpress.org/plugins/mobile-contact-bar/",
-    "license": "GPL-2.0",
+    "license": "GPL-3.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/annaghi/mobile-contact-bar.git"
