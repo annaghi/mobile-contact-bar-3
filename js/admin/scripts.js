@@ -1,6 +1,6 @@
 /*!
  * Mobile Contact Bar 3.0.0 by Anna Bansaghi - http://mobilecontactbar.com
- * License GPL-2.0 - https://www.gnu.org/licenses/gpl-2.0.en.html
+ * License GPLv3 - https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 /* global isRtl, ajaxurl, pagenow, postboxes, mobile_contact_bar */
@@ -709,8 +709,14 @@
                 event.preventDefault();
                 event.stopPropagation();
 
+                var uri = $(this).val();
                 var contact = $(this).closest('.mcb-contact');
-                contact.find('.mcb-summary-uri').text($(this).val());
+
+                if ('' === uri) {
+                    contact.find('.mcb-summary-uri').removeClass('mcb-monospace').text(mobile_contact_bar.l10n.no_URI);
+                } else {
+                    contact.find('.mcb-summary-uri').addClass('mcb-monospace').text(uri);
+                }
             });
 
             // Add parameter

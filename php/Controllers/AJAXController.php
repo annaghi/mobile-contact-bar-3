@@ -172,7 +172,7 @@ final class AJAXController
                 && Icons::is_fa_icon( $_POST['group'], $_POST['icon'] )
                 && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/' . $_POST['group'] . '/' . $_POST['icon'] . '.svg' ))
             {
-                $response = json_encode( file_get_contents(  plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/'. $_POST['group'] . '/' . $_POST['icon'] . '.svg' ));
+                $response = json_encode( file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/'. $_POST['group'] . '/' . $_POST['icon'] . '.svg' ));
                 if ( $response )
                 {
                     echo $response;

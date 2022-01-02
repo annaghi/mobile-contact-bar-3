@@ -1,5 +1,5 @@
 /*!
  * Mobile Contact Bar 3.0.0 by Anna Bansaghi - http://mobilecontactbar.com
- * License GPL-2.0 - https://www.gnu.org/licenses/gpl-2.0.en.html
+ * License GPLv3 - https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 !function($,document){"use strict";var notice_init=function(){$(".mobile-contact-bar-notice[data-dismiss]").on("click.wp-dismiss-notice",function(event){($(event.target).hasClass("notice-dismiss")||$(event.target).closest("a").hasClass("mobile-contact-bar-whats-new"))&&$.ajax({url:ajaxurl,method:"POST",data:{action:"mcb_ajax_dismiss_notice",nonce:mobile_contact_bar.nonce,notice:$(event.currentTarget).closest(".mobile-contact-bar-notice").data("dismiss")}})}),$(".mobile-contact-bar-notice[data-dismiss]").on("click",".mobile-contact-bar-whats-new",function(event){$(event.currentTarget).closest(".mobile-contact-bar-notice").remove()})};$(document).ready(notice_init)}(jQuery,document);

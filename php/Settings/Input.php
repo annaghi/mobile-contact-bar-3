@@ -88,6 +88,24 @@ final class Input
                     'step'     => 0.05,
                     'title'    => __( 'Bar Opacity', 'mobile-contact-bar' ),
                 ],
+                'is_secondary_colors' => [
+                    'type'     => 'checkbox-group',
+                    'title'    => __( 'Use Secondary Colors', 'mobile-contact-bar' ),
+                    'options'  => [
+                        'focus' => [
+                            'default' => 1,
+                            'label'   => __( 'on focus', 'mobile-contact-bar' ),
+                        ],
+                        'hover' => [
+                            'default' => 1,
+                            'label'   => __( 'on hover', 'mobile-contact-bar' ),
+                        ],
+                        'active' => [
+                            'default' => 1,
+                            'label'   => __( 'when active', 'mobile-contact-bar' ),
+                        ],
+                    ],
+                ],
                 'is_borders' => [
                     'type'     => 'checkbox-group',
                     'title'    => __( 'Borders', 'mobile-contact-bar' ),
@@ -140,6 +158,15 @@ final class Input
             ],
 
             'icons_labels' => [
+                'label_position' => [
+                    'type'     => 'radio',
+                    'default'  => 'below',
+                    'title'    => __( 'Label Position', 'mobile-contact-bar' ),
+                    'options'  => [
+                        'above' => __( 'above the icon', 'mobile-contact-bar' ),
+                        'below' => __( 'below the icon', 'mobile-contact-bar' ),
+                    ],
+                ],
                 'alignment' => [
                     'type'     => 'radio',
                     'default'  => 'justified',
@@ -157,15 +184,6 @@ final class Input
                     'title'    => __( 'Item Width', 'mobile-contact-bar' ),
                     'postfix'  => 'px',
                     'parent'   => 'alignment',
-                ],
-                'label_position' => [
-                    'type'     => 'radio',
-                    'default'  => 'below',
-                    'title'    => __( 'Label Position', 'mobile-contact-bar' ),
-                    'options'  => [
-                        'above' => __( 'above the icon', 'mobile-contact-bar' ),
-                        'below' => __( 'below the icon', 'mobile-contact-bar' ),
-                    ],
                 ],
                 'gap' => [
                     'type'     => 'slider',
@@ -225,24 +243,6 @@ final class Input
                     'title'    => __( 'Border Width', 'mobile-contact-bar' ),
                     'postfix'  => 'px',
                     'parent'   => 'is_borders',
-                ],
-                'is_secondary_colors' => [
-                    'type'     => 'checkbox-group',
-                    'title'    => __( 'Use Secondary Colors', 'mobile-contact-bar' ),
-                    'options'  => [
-                        'focus' => [
-                            'default' => 1,
-                            'label'   => __( 'on focus', 'mobile-contact-bar' ),
-                        ],
-                        'hover' => [
-                            'default' => 1,
-                            'label'   => __( 'on hover', 'mobile-contact-bar' ),
-                        ],
-                        'active' => [
-                            'default' => 1,
-                            'label'   => __( 'when active', 'mobile-contact-bar' ),
-                        ],
-                    ],
                 ],
                 'background_color' => [
                     'type'      => 'color-picker-group',
@@ -410,14 +410,32 @@ final class Input
                     'desc'     => __( 'Transforms the badge size according to the scaling value.', 'mobile-contact-bar' ),
                 ],
                 'background_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '#ff8e00',
-                    'title'    => __( 'Background Color', 'mobile-contact-bar' ),
+                    'type'      => 'color-picker-group',
+                    'title'     => __( 'Background Color', 'mobile-contact-bar' ),
+                    'options'   => [
+                        'primary' => [
+                            'default' => '#ff8e00',
+                            'desc'    => $primary_color,
+                        ],
+                        'secondary' => [
+                            'default' => '',
+                            'desc'    => $secondary_color,
+                        ],
+                    ],
                 ],
                 'font_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '#252832',
-                    'title'    => __( 'Font Color', 'mobile-contact-bar' ),
+                    'type'      => 'color-picker-group',
+                    'title'     => __( 'Font Color', 'mobile-contact-bar' ),
+                    'options'   => [
+                        'primary' => [
+                            'default' => '#252832',
+                            'desc'    => $primary_color,
+                        ],
+                        'secondary' => [
+                            'default' => '',
+                            'desc'    => $secondary_color,
+                        ],
+                    ],
                 ],
             ],
         ];

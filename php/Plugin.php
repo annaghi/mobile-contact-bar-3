@@ -2,12 +2,6 @@
 
 namespace MobileContactBar;
 
-use MobileContactBar\Controllers\AdminController;
-use MobileContactBar\Controllers\AJAXController;
-use MobileContactBar\Controllers\CronController;
-use MobileContactBar\Controllers\IFrameController;
-use MobileContactBar\Controllers\NoticeController;
-use MobileContactBar\Controllers\PublicController;
 use DirectoryIterator;
 use ReflectionClass;
 
@@ -54,17 +48,6 @@ final class Plugin extends Container
     public $option_bar = [];
 
     
-    /**
-     * Controllers
-     */
-    protected $admin  = null;
-    protected $ajax   = null;
-    protected $cron   = null;
-    protected $iframe = null;
-    protected $notice = null;
-    protected $public = null;
-
-
     /**
      * Plugin instance
      * 
@@ -197,25 +180,11 @@ final class Plugin extends Container
 
 
     /**
-     * Loads the plugin's translated strings.
-     * Hooks WordPress's actions and filters.
+     * Hooks plugin into WordPress's actions and filters.
      * 
      * @return void
      */
     public function plugins_loaded()
-    {
-        load_plugin_textdomain( self::ID, false, plugin_basename( $this->file ) . '/languages' );
-
-        $this->hook_actions_filters();
-    }
-
-
-    /**
-     * Hooks WordPress's actions and filters in 4 main areas: admin, notice, ajax, public.
-     * 
-     * @return void
-     */
-    public function hook_actions_filters()
     {
         add_action( 'init', [$this, 'init'] );
 
@@ -228,45 +197,7 @@ final class Plugin extends Container
             add_action( 'wp_initialize_site', [$this, 'wp_initialize_site'] );
         }
 
-        $this->cron = abmcb( CronController::class );
-        add_filter( 'cron_schedules', [$this->cron, 'cron_schedules'] );
-        add_action( 'wp',  [$this->cron, 'wp'] );
-        add_action( self::WP_CRON_HOOK, [$this->cron, 'clear_stat_cache'] );
-
-        if ( is_admin() )
-        {
-            $this->notice = abmcb( NoticeController::class );
-            add_action( 'admin_enqueue_scripts', [$this->notice, 'admin_enqueue_scripts'] );
-            add_action( 'admin_notices', [$this->notice, 'admin_notices'] );
-            add_action( 'wp_ajax_mcb_ajax_dismiss_notice', [$this->notice, 'ajax_dismiss_notice'] );
-
-            $this->admin = abmcb( AdminController::class );
-            add_action( 'admin_menu', [$this->admin, 'admin_menu'] );
-            add_action( 'admin_init', [$this->admin, 'admin_init'] );
-            add_action( 'add_meta_boxes', [$this->admin, 'add_meta_boxes'] );
-            add_action( 'admin_enqueue_scripts', [$this->admin, 'admin_enqueue_scripts'] );
-            add_action( 'admin_footer', [$this->admin, 'admin_footer'] );
-            add_filter( 'pre_update_option_' . self::ID, [$this->admin, 'pre_update_option'], 10, 2 );
-            add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), [$this->admin, 'plugin_action_links'] );
-
-            $this->ajax = abmcb( AJAXController::class );
-            foreach ( $this->ajax->admin_actions as $admin_action )
-            {
-                add_action( 'wp_ajax_mcb_' . $admin_action, [$this->ajax, $admin_action], 1 );
-            }
-        }
-
-        if ( isset( $_GET[self::SLUG . '-iframe'] ))
-        {
-            $this->iframe = abmcb( IFrameController::class );
-            add_action( 'init', [$this->iframe, 'init'] );
-        }
-
-        if ( ! is_admin() && ! wp_doing_ajax() && ! isset( $_GET[self::SLUG . '-iframe'] ))
-        {
-            $this->public = abmcb( PublicController::class );
-            add_action( 'init', [$this->public, 'init'] );
-        }
+        abmcb( Hooks::class )->add();
     }
 
 

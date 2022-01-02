@@ -1,6 +1,6 @@
 /*!
  * Mobile Contact Bar 3.0.0 by Anna Bansaghi - http://mobilecontactbar.com
- * License GPL-2.0 - https://www.gnu.org/licenses/gpl-2.0.en.html
+ * License GPLv3 - https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 /* HELP TABS */
@@ -31,10 +31,21 @@
     flex-flow: row wrap;
     align-items: center;
     gap: 10px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ccd0d4;
+    padding: 10px 20px;
+}
+.mcb-header h2 {
+    font-size: 14px;
+    line-height: 2.5714285714;
+    display: inline-block;
+    padding: 5px 0;
+    margin: 0;
 }
 
 #mcb-badge-length {
     font-size: 13px;
+    font-weight: normal;
     line-height: 1;
     border-radius: 50%;
     display: inline-block;
@@ -45,6 +56,7 @@
 
 #mcb-badge-display {
     font-size: 13px;
+    font-weight: normal;
     line-height: 1;
     border-radius: 10px;
     display: inline-block;
@@ -63,6 +75,30 @@
 }
 
 /* WP related styles */
+
+#wpbody-content {
+    position: relative;
+}
+#screen-meta-links {
+    position: absolute;
+    top: -30px;
+    right: 0;
+}
+#screen-meta-links .show-settings {
+    border-radius: 4px 4px 0 0;
+    border: 1px solid #c3c4c7;
+}
+#screen-meta-links .show-settings.screen-meta-active {
+    border-bottom: none;
+}
+
+#wpcontent .mcb-header {
+    margin-left: -20px;
+}
+
+#poststuff {
+    padding: 0;
+}
 
 #poststuff #post-body.columns-2 {
     margin-right: 400px;
@@ -107,6 +143,35 @@
     .screen-layout,
     .columns-prefs {
         display: none;
+    }
+}
+
+@media only screen and (max-width: 782px) {
+    #screen-meta-links {
+        top: -40px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    #wpbody {
+        padding-top: 0;
+    }
+    #wpbody-content {
+        position: static;
+    }
+    #screen-meta-links {
+        position: static;
+    }
+    #screen-meta-links .show-settings {
+        border-radius: 0 0 4px 4px;
+        border-top: none;
+    }
+    #screen-meta-links .show-settings.screen-meta-active {
+        border-bottom: 1px solid #c3c4c7;
+    }
+
+    .mcb-header {
+        padding-top: 46px;
     }
 }
 
@@ -234,6 +299,7 @@
 }
 .mcb-summary-uri {
     word-break: break-word;
+    font-style: italic;
 }
 
 .mcb-left-actions {
@@ -488,6 +554,7 @@
 
 .mcb-monospace {
     font-family: Consolas, Monaco, monospace;
+    font-style: normal;
 }
 
 .mcb-checked .mcb-summary {
@@ -775,7 +842,9 @@
 .mcb-setting-icons_labels-background_color td,
 .mcb-setting-icons_labels-icon_color td,
 .mcb-setting-icons_labels-label_color td,
-.mcb-setting-icons_labels-border_color td {
+.mcb-setting-icons_labels-border_color td,
+.mcb-setting-badges-background_color td,
+.mcb-setting-badges-font_color td {
     display: flex;
     flex-flow: row nowrap;
     gap: 20px;
@@ -816,7 +885,9 @@
     .mcb-setting-icons_labels-background_color td,
     .mcb-setting-icons_labels-icon_color td,
     .mcb-setting-icons_labels-label_color td,
-    .mcb-setting-icons_labels-border_color td {
+    .mcb-setting-icons_labels-border_color td,
+    .mcb-setting-badges-background_color td,
+    .mcb-setting-badges-font_color td {
         flex-flow: column nowrap;
     }
 }

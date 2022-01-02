@@ -55,13 +55,15 @@ final class Migrate_3_0_0
         {
             $settings_v2 = $this->option_bar_v2['settings'];
 
-            $settings['icons_labels']['is_secondary_colors']['focus']        = 1;
-            $settings['icons_labels']['is_secondary_colors']['hover']        = 1;
-            $settings['icons_labels']['is_secondary_colors']['active']       = 1;
+            $settings['bar']['is_secondary_colors']['focus']                 = 1;
+            $settings['bar']['is_secondary_colors']['hover']                 = 1;
+            $settings['bar']['is_secondary_colors']['active']                = 1;
             $settings['icons_labels']['background_color']['secondary']       = '';
             $settings['icons_labels']['icon_color']['secondary']             = '';
             $settings['icons_labels']['label_color']['secondary']            = '';
             $settings['icons_labels']['border_color']['secondary']           = '';
+            $settings['badges']['background_color']['secondary']             = '';
+            $settings['badges']['font_color']['secondary']                   = '';
             
             $settings = array_replace_recursive( $settings, $settings_v2 );
 
@@ -178,6 +180,14 @@ final class Migrate_3_0_0
                 if ( isset( $settings_v2['badges']['size'] ))
                 {
                     $settings['badges']['font_size']                         = $settings_v2['badges']['size'];
+                }
+                if ( isset( $settings_v2['badges']['background_color'] ))
+                {
+                    $settings['badges']['background_color']['primary']       = $settings_v2['badges']['background_color'];
+                }
+                if ( isset( $settings_v2['badges']['font_color'] ))
+                {
+                    $settings['badges']['font_color']['primary']             = $settings_v2['badges']['font_color'];
                 }
             }
         }

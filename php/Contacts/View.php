@@ -178,11 +178,11 @@ final class View
         }
         else
         {
-            $uri = $contact['uri'];
+            $uri = esc_url( $contact['uri'], abmcb()->schemes );
             $out .= sprintf(
                 '<div class="mcb-summary-uri%s">%s</div>',
                 empty( $uri ) ? '' : ' mcb-monospace',
-                empty( $uri ) ? esc_attr__( '(no URI)', 'mobile-contact-bar' ) : esc_url( $uri, abmcb()->schemes )
+                empty( $uri ) ? esc_attr__( '(no URI)', 'mobile-contact-bar' ) : $uri
             );
         }
 

@@ -42,23 +42,15 @@ final class AdminController
 
 
     /**
-     * Renders the option page skeleton.
+     * Renders the plugin's option page content.
      * 
      * @return void
      */
     public function callback_render_page()
     {
-        $checked_contacts = array_filter( abmcb()->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
-        $bar_device = ( 'none' === abmcb()->option_bar['settings']['bar']['device'] ) ? $this->l10n['disabled'] : $this->l10n['enabled'];
-        $badge_length = ( 0 == count( $checked_contacts )) ? 'mcb-badge-disabled' : 'mcb-badge-enabled';
-        $badge_display = ( 'none' === abmcb()->option_bar['settings']['bar']['device'] ) ? 'mcb-badge-disabled' : 'mcb-badge-enabled';
         ?>
         <div class="wrap">
-            <h2 class="mcb-header">
-                <?php esc_html_e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?>
-                <span id="mcb-badge-length" class="<?php echo $badge_length; ?>"><?php echo count( $checked_contacts ); ?></span>
-                <span id="mcb-badge-display" class="<?php echo $badge_display; ?>"><?php echo esc_html( $bar_device ); ?></span>
-            </h2>
+            <hr class="wp-header-end">
 
             <form id="mcb-form" action="options.php" method="post">
                 <?php
@@ -91,6 +83,37 @@ final class AdminController
 
         </div>
         <div class="clear"></div>
+        <?php
+    }
+
+
+    /**
+     * Renders the plugin's option page header.
+     * 
+     * @return void
+     * 
+     * @global $plugin_page
+     */
+    public function in_admin_header()
+    {
+        global $plugin_page;
+
+        if ( abmcb()->slug !== $plugin_page )
+        {
+            return;
+        }
+
+        $checked_contacts = array_filter( abmcb()->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
+        $bar_device = ( 'none' === abmcb()->option_bar['settings']['bar']['device'] ) ? $this->l10n['disabled'] : $this->l10n['enabled'];
+        $badge_length = ( 0 == count( $checked_contacts )) ? 'mcb-badge-disabled' : 'mcb-badge-enabled';
+        $badge_display = ( 'none' === abmcb()->option_bar['settings']['bar']['device'] ) ? 'mcb-badge-disabled' : 'mcb-badge-enabled';
+
+        ?>
+        <div class="mcb-header">
+            <h2><?php esc_html_e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?></h2>
+            <span id="mcb-badge-length" class="<?php echo $badge_length; ?>"><?php echo count( $checked_contacts ); ?></span>
+            <span id="mcb-badge-display" class="<?php echo $badge_display; ?>"><?php echo esc_html( $bar_device ); ?></span>
+        </div>
         <?php
     }
 
@@ -131,17 +154,17 @@ final class AdminController
      * 
      * @return void
      *
+     * @global $plugin_page
      * @global $wp_settings_sections
      */
     public function add_meta_boxes()
     {
-        $screen = get_current_screen();
-        if ( $screen->base !== abmcb()->page_suffix )
+        global $plugin_page, $wp_settings_sections;
+        
+        if ( abmcb()->slug !== $plugin_page )
         {
             return;
         }
-
-        global $wp_settings_sections;
 
         add_meta_box(
             'mcb-meta-box-preview',
@@ -459,8 +482,9 @@ final class AdminController
     public function output_help_sidebar()
     {
         $out  = '';
-        $out .= '<h4>' . esc_html__( 'More info', 'mobile-contact-bar' ) . '</h4>';
-        $out .= '<p><a href="'. esc_url( 'https://en.wikipedia.org/wiki/Uniform_Resource_Identifier' ) . '" target="_blank" rel="noopener">' . esc_html__( 'Uniform Resource Identifier', 'mobile-contact-bar' ) . '</a></p>';
+        $out .= '<h4>' . esc_html__( 'About', 'mobile-contact-bar' ) . '</h4>';
+        $out .= '<p><span class="dashicons dashicons-admin-plugins"></span> ' . sprintf( __( 'Version %s', 'mobile-contact-bar' ), abmcb()->version ) . '</p>';
+        $out .= '<p><span class="dashicons dashicons-wordpress"></span> <a href="https://wordpress.org/plugins/mobile-contact-bar/" target="_blank">' . __( 'View details', 'mobile-contact-bar' ) . '</a></p>';
 
         return $out;
     }
@@ -519,9 +543,18 @@ final class AdminController
      * Renders HTML template elements.
      * 
      * @return void
+     * 
+     * @global $plugin_page
      */
     public function admin_footer()
     {
+        global $plugin_page;
+
+        if ( abmcb()->slug !== $plugin_page )
+        {
+            return;
+        }
+
         abmcb( Contacts\View::class )->render_icon_picker_template();
     }
 

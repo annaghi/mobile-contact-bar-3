@@ -1,6 +1,6 @@
 /*!
  * Mobile Contact Bar 3.0.0 by Anna Bansaghi - http://mobilecontactbar.com
- * License GPL-2.0 - https://www.gnu.org/licenses/gpl-2.0.en.html
+ * License GPLv3 - https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 (function (document) {
