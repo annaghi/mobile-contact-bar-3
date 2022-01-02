@@ -25,11 +25,9 @@ final class Plugin extends Container
 
 
     public $file = '';
-    public $languages = '';
     public $name = '';
     public $version = '';
     public $plugin_uri = '';
-    public $description = '';
 
     public $contact_types = [];
 
@@ -83,11 +81,9 @@ final class Plugin extends Container
         $plugin_data = get_file_data(
             $file,
             [
-                'languages'   => 'Domain Path',
                 'name'        => 'Plugin Name',
                 'version'     => 'Version',
                 'plugin_uri'  => 'Plugin URI',
-                'description' => 'Description',
             ],
             'plugin'
         );

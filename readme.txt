@@ -27,7 +27,7 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 
 * SVG icons for social media, call-to-actions, or any links to web pages
 * Simple and intuitive editing with live preview
-* Built-in icon picker with [Font Awesome 5](https://fontawesome.com/) and [Tabler Icons](https://tabler-icons.io/) integration
+* Built-in icon picker with [Font Awesome 5](https://fontawesome.com/) (CC BY 4.0 License) and [Tabler Icons](https://tabler-icons.io/) (MIT License) integration
 * Customizable URLs using query string parameters
 * No data collection from your website's visitors
 * Super easy to use, no coding required!
@@ -70,14 +70,6 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 
 
 
-= Credits =
-
-* [Font Awesome](https://fontawesome.com) SVG, font, and CSS framework (CC BY 4.0 License)
-* [Tabler Icons](https://tabler-icons.io/) Free SVG icons (MIT License)
-* [WP Color Picker Alpha](https://github.com/kallookoo/wp-color-picker-alpha) (GPL 2.0 License)
-
-
-
 == Installation ==
 
 = First time Mobile Contact Bar user =
@@ -104,7 +96,7 @@ Open the *Icons*, *Badges*, or *Toggle* box and set options for icons, badges, o
 The plugin works fine without JavaScript on the front-end of your site.
 We use JavaScript on the front-end in two cases:
 1. if the toggle is activated, then the plugin has an option for saving the toggle state in a cookie, and
-2. if the *Scroll to Top* icon is added, then the scrolling position is calculated in an inline script.
+2. the *Scroll to Top*, *Back in History*, or *Forward in History* actions use inline JavaScript for their functionality.
 
 = Cookies =
 You have full control over the single cookie which is called *mobile_contact_bar_toggle*.

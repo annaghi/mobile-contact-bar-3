@@ -32,4 +32,3 @@ final class Link extends ContactType
         ];
     }
 }
-

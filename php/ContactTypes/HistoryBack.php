@@ -48,4 +48,3 @@ final class HistoryBack extends ContactType
         <?php
     }
 }
-

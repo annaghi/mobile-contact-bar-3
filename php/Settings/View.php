@@ -263,10 +263,9 @@ final class View
                 break;
         }
 
-        if ( isset( $setting['desc'] ))
+        if ( ! empty( $setting['desc'] ))
         {
             printf( '<p class="mcb-description">%s</p>', esc_html( $setting['desc'] ));
         }
     }
 }
-    

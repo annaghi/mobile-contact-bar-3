@@ -3,27 +3,6 @@
  * License GPLv3 - https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-/* HELP TABS */
-
-.mcb-tab-status-green {
-    color: #46b450;
-}
-.mcb-tab-status-yellow {
-    color: #ffb900;
-}
-.help-tab-content ul li {
-    list-style-type: none;
-    margin-left: 0;
-}
-.mcb-query-parameter-key {
-    display: inline-block;
-    font-weight: 500;
-    min-width: 55px;
-}
-.contextual-help-sidebar a {
-    text-decoration: none;
-}
-
 /* HEADER */
 
 .mcb-header {
@@ -72,6 +51,25 @@
     color: #ffffff;
     background-color: #d63638;
     border: 2px solid #d63638;
+}
+
+.mcb-tab-status-green {
+    color: #46b450;
+}
+.mcb-tab-status-yellow {
+    color: #ffb900;
+}
+.help-tab-content ul li {
+    list-style-type: none;
+    margin-left: 0;
+}
+.mcb-query-parameter-key {
+    display: inline-block;
+    font-weight: 500;
+    min-width: 55px;
+}
+.contextual-help-sidebar a {
+    text-decoration: none;
 }
 
 /* WP related styles */
@@ -149,6 +147,13 @@
 @media only screen and (max-width: 782px) {
     #screen-meta-links {
         top: -40px;
+    }
+
+    .notice,
+    .wrap div.updated,
+    .wrap div.error,
+    .media-upload-form div.error {
+        margin-top: 0;
     }
 }
 
@@ -532,6 +537,7 @@
 
 .mcb-details-cta .mcb-input {
     display: flex;
+    flex-flow: row wrap;
     align-items: center;
     gap: 15px;
 }
@@ -618,6 +624,7 @@
             'cta cta'
             'uri uri';
         align-items: start;
+        padding-left: 20px;
     }
 
     .mcb-sortable-draggable {
@@ -844,7 +851,9 @@
 .mcb-setting-icons_labels-label_color td,
 .mcb-setting-icons_labels-border_color td,
 .mcb-setting-badges-background_color td,
-.mcb-setting-badges-font_color td {
+.mcb-setting-badges-font_color td,
+.mcb-setting-toggle-background_color td,
+.mcb-setting-toggle-font_color td {
     display: flex;
     flex-flow: row nowrap;
     gap: 20px;
@@ -887,7 +896,9 @@
     .mcb-setting-icons_labels-label_color td,
     .mcb-setting-icons_labels-border_color td,
     .mcb-setting-badges-background_color td,
-    .mcb-setting-badges-font_color td {
+    .mcb-setting-badges-font_color td,
+    .mcb-setting-toggle-background_color td,
+    .mcb-setting-toggle-font_color td {
         flex-flow: column nowrap;
     }
 }

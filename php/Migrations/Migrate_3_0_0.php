@@ -3,6 +3,7 @@
 namespace MobileContactBar\Migrations;
 
 use MobileContactBar\ContactTypes;
+use MobileContactBar\Settings;
 
 
 final class Migrate_3_0_0
@@ -54,18 +55,21 @@ final class Migrate_3_0_0
         if ( isset( $this->option_bar_v2['settings'] ) && is_array( $this->option_bar_v2['settings'] ))
         {
             $settings_v2 = $this->option_bar_v2['settings'];
+            $settings = $settings_v2;
 
             $settings['bar']['is_secondary_colors']['focus']                 = 1;
             $settings['bar']['is_secondary_colors']['hover']                 = 1;
             $settings['bar']['is_secondary_colors']['active']                = 1;
+
             $settings['icons_labels']['background_color']['secondary']       = '';
             $settings['icons_labels']['icon_color']['secondary']             = '';
             $settings['icons_labels']['label_color']['secondary']            = '';
             $settings['icons_labels']['border_color']['secondary']           = '';
+
+            $settings['badges']['background_color']                          = [];
+            $settings['badges']['font_color']                                = [];
             $settings['badges']['background_color']['secondary']             = '';
             $settings['badges']['font_color']['secondary']                   = '';
-            
-            $settings = array_replace_recursive( $settings, $settings_v2 );
 
             if ( isset( $settings_v2['bar'] ))
             {
@@ -155,7 +159,7 @@ final class Migrate_3_0_0
                 {
                     $settings['icons_labels']['icon_color']['primary']       = $settings_v2['icons']['color'];
                     $settings['icons_labels']['label_color']['primary']      = $settings_v2['icons']['color'];
-                    $settings['toggle']['font_color']                        = $settings_v2['icons']['color'];
+                    $settings['toggle']['font_color']['primary']             = $settings_v2['icons']['color'];
                 }
             }
 
@@ -163,7 +167,7 @@ final class Migrate_3_0_0
             {
                 if ( isset( $settings_v2['toggle']['color'] ))
                 {
-                    $settings['toggle']['background_color']                  = $settings_v2['toggle']['color'];
+                    $settings['toggle']['background_color']['primary']       = $settings_v2['toggle']['color'];
                 }
                 if ( isset( $settings_v2['toggle']['size'] ))
                 {
@@ -399,34 +403,35 @@ final class Migrate_3_0_0
 
     /**
      * @return void
-     * 
-     * @global $wp_settings_sections
      */
     private function migrate_user_meta()
     {
-        global $wp_settings_sections;
+        $meta_boxes = array_merge(
+            array_map( function( $section ) { return 'mcb-meta-box-' . $section; }, abmcb( Settings\Input::class )->sections() ),
+            ['mcb-meta-box-contacts']
+        );
 
+        if ( ! class_exists( 'WooCommerce' ))
+        {
+            $meta_boxes = array_diff( $meta_boxes, 'mcb-meta-box-badges' );
+        }
+        
         $user_id = get_current_user_id();
 
         // No hidden meta boxes
         update_user_meta( $user_id, 'metaboxhidden_' . abmcb()->page_suffix, [] );
         
         // Close all meta boxes
-        $closed_meta_boxes = array_merge( array_keys( $wp_settings_sections[abmcb()->id] ), ['mcb-meta-box-preview'] );
+        $closed_meta_boxes = array_merge( $meta_boxes, ['mcb-meta-box-preview'] );
         update_user_meta( $user_id, 'closedpostboxes_' . abmcb()->page_suffix, $closed_meta_boxes );
 
         // Reorder meta boxes
         $order_meta_boxes = [];
-        if ( class_exists( 'WooCommerce' ))
-        {
-            $order_meta_boxes['advanced'] = 'mcb-meta-box-bar,mcb-meta-box-icons_labels,mcb-meta-box-badges,mcb-meta-box-toggle,mcb-meta-box-contacts';
-            $order_meta_boxes['side'] = 'mcb-meta-box-preview';
-        }
-        else
-        {
-            $order_meta_boxes['advanced'] = 'mcb-meta-box-bar,mcb-meta-box-icons_labels,mcb-meta-box-toggle,mcb-meta-box-contacts';
-            $order_meta_boxes['side'] = 'mcb-meta-box-preview';
-        }
+        $order_meta_boxes['advanced'] = implode( ',', $meta_boxes );
+        $order_meta_boxes['side'] = 'mcb-meta-box-preview';
         update_user_meta( $user_id, 'meta-box-order_' . abmcb()->page_suffix, $order_meta_boxes );
+
+        // Set 2 column layout
+        update_user_meta( $user_id, 'screen_layout_' . abmcb()->page_suffix, 2 );
     }
 }

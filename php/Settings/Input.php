@@ -61,15 +61,16 @@ final class Input
                 ],
                 'width' => [
                     'type'     => 'number',
+                    'trigger'  => '<100',
                     'default'  => 100,
                     'min'      => 0,
                     'max'      => 100,
                     'title'    => __( 'Bar Width', 'mobile-contact-bar' ),
                     'postfix'  => '%',
-                    'trigger'  => '<100',
                 ],
                 'horizontal_alignment' => [
                     'type'     => 'radio',
+                    'parent'   => 'width',
                     'default'  => 'center',
                     'title'    => __( 'Horizontal Alignment', 'mobile-contact-bar' ),
                     'desc'     => __( 'It has effect if Bar Width is smaller than 100%.', 'mobile-contact-bar' ),
@@ -78,7 +79,6 @@ final class Input
                         'center' => __( 'center', 'mobile-contact-bar' ),
                         'right'  => __( 'right', 'mobile-contact-bar' ),
                     ],
-                    'parent'   => 'width',
                 ],
                 'opacity' => [
                     'type'     => 'slider',
@@ -108,6 +108,7 @@ final class Input
                 ],
                 'is_borders' => [
                     'type'     => 'checkbox-group',
+                    'trigger'  => '==true',
                     'title'    => __( 'Borders', 'mobile-contact-bar' ),
                     'options'  => [
                         'top' => [
@@ -119,22 +120,21 @@ final class Input
                             'label'   => __( 'bottom', 'mobile-contact-bar' ),
                         ],
                     ],
-                    'trigger'  => '==true',
                 ],
                 'border_color' => [
                     'type'     => 'color-picker',
+                    'parent'   => 'is_borders',
                     'default'  => '#174b38',
                     'title'    => __( 'Border Color', 'mobile-contact-bar' ),
-                    'parent'   => 'is_borders',
                 ],
                 'border_width' => [
                     'type'     => 'number',
+                    'parent'   => 'is_borders',
                     'default'  => 1,
                     'min'      => 0,
                     'max'      => 100,
                     'title'    => __( 'Border Width', 'mobile-contact-bar' ),
                     'postfix'  => 'px',
-                    'parent'   => 'is_borders',
                 ],
                 'space_height' => [
                     'type'     => 'number',
@@ -169,21 +169,21 @@ final class Input
                 ],
                 'alignment' => [
                     'type'     => 'radio',
+                    'trigger'  => '==centered',
                     'default'  => 'justified',
                     'title'    => __( 'Alignment', 'mobile-contact-bar' ),
                     'options'  => [
                         'justified' => __( 'justified', 'mobile-contact-bar' ),
                         'centered'  => __( 'centered', 'mobile-contact-bar' ),
                     ],
-                    'trigger'  => '==centered',
                 ],
                 'width' => [
                     'type'     => 'number',
+                    'parent'   => 'alignment',
                     'default'  => 70,
                     'min'      => 0,
                     'title'    => __( 'Item Width', 'mobile-contact-bar' ),
                     'postfix'  => 'px',
-                    'parent'   => 'alignment',
                 ],
                 'gap' => [
                     'type'     => 'slider',
@@ -214,6 +214,7 @@ final class Input
                 ],
                 'is_borders' => [
                     'type'     => 'checkbox-group',
+                    'trigger'  => '==true',
                     'title'    => __( 'Borders', 'mobile-contact-bar' ),
                     'options'  => [
                         'top' => [
@@ -233,21 +234,20 @@ final class Input
                             'label'   => __( 'left', 'mobile-contact-bar' ),
                         ],
                     ],
-                    'trigger'  => '==true',
                 ],
                 'border_width' => [
                     'type'     => 'number',
+                    'parent'   => 'is_borders',
                     'default'  => 1,
                     'min'      => 0,
                     'max'      => 100,
                     'title'    => __( 'Border Width', 'mobile-contact-bar' ),
                     'postfix'  => 'px',
-                    'parent'   => 'is_borders',
                 ],
                 'background_color' => [
-                    'type'      => 'color-picker-group',
-                    'title'     => __( 'Background Color', 'mobile-contact-bar' ),
-                    'options'   => [
+                    'type'     => 'color-picker-group',
+                    'title'    => __( 'Background Color', 'mobile-contact-bar' ),
+                    'options'  => [
                         'primary'   => [
                             'default' => '#252832',
                             'desc'    => $primary_color,
@@ -259,9 +259,9 @@ final class Input
                     ],
                 ],
                 'icon_color' => [
-                    'type'      => 'color-picker-group',
-                    'title'     => __( 'Icon Color', 'mobile-contact-bar' ),
-                    'options'   => [
+                    'type'     => 'color-picker-group',
+                    'title'    => __( 'Icon Color', 'mobile-contact-bar' ),
+                    'options'  => [
                         'primary' => [
                             'default' => '#f1f4f8',
                             'desc'    => $primary_color,
@@ -273,9 +273,9 @@ final class Input
                     ],
                 ],
                 'label_color' => [
-                    'type'      => 'color-picker-group',
-                    'title'     => __( 'Label Color', 'mobile-contact-bar' ),
-                    'options'   => [
+                    'type'     => 'color-picker-group',
+                    'title'    => __( 'Label Color', 'mobile-contact-bar' ),
+                    'options'  => [
                         'primary'   => [
                             'default' => '#f1f4f8',
                             'desc'    => $primary_color,
@@ -287,9 +287,9 @@ final class Input
                     ],
                 ],
                 'border_color' => [
-                    'type'      => 'color-picker-group',
-                    'title'     => __( 'Border Color', 'mobile-contact-bar' ),
-                    'options'   => [
+                    'type'     => 'color-picker-group',
+                    'title'    => __( 'Border Color', 'mobile-contact-bar' ),
+                    'options'  => [
                         'primary'   => [
                             'default' => '',
                             'desc'    => $primary_color,
@@ -300,26 +300,6 @@ final class Input
                         ],
                     ],
                 ],
-                // 'size' => [
-                //     'type'     => 'select',
-                //     'default'  => 'lg',
-                //     'title'    => __( 'Icon Size', 'mobile-contact-bar' ),
-                //     'options'  => [
-                //         'xs'  => 'xs',
-                //         'sm'  => 'sm',
-                //         'lg'  => 'lg',
-                //         '1x'  => '1x',
-                //         '2x'  => '2x',
-                //         '3x'  => '3x',
-                //         '4x'  => '4x',
-                //         '5x'  => '5x',
-                //         '6x'  => '6x',
-                //         '7x'  => '7x',
-                //         '8x'  => '8x',
-                //         '9x'  => '9x',
-                //         '10x' => '10x',
-                //     ],
-                // ],
             ],
 
             'toggle' => [
@@ -358,32 +338,50 @@ final class Input
                     'label'    => __( 'Slow down toggle animation', 'mobile-contact-bar' ),
                 ],
                 'background_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '#444444',
+                    'type'     => 'color-picker-group',
                     'title'    => __( 'Background Color', 'mobile-contact-bar' ),
+                    'options'  => [
+                        'primary' => [
+                            'default' => '#444444',
+                            'desc'    => $primary_color,
+                        ],
+                        'secondary' => [
+                            'default' => '',
+                            'desc'    => $secondary_color,
+                        ],
+                    ],
                 ],
                 'label' => [
                     'type'     => 'text',
+                    'trigger'  => '!=',
                     'default'  => 'Contact Us',
                     'title'    => __( 'Short label', 'mobile-contact-bar' ),
                     'desc'     => __( 'Display a short label on the toggle.', 'mobile-contact-bar' ),
-                    'trigger'  => '!=',
                 ],
                 'font_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '#f1f4f8',
-                    'title'    => __( 'Font Color', 'mobile-contact-bar' ),
+                    'type'     => 'color-picker-group',
                     'parent'   => 'label',
+                    'title'    => __( 'Font Color', 'mobile-contact-bar' ),
+                    'options'  => [
+                        'primary' => [
+                            'default' => '#f1f4f8',
+                            'desc'    => $primary_color,
+                        ],
+                        'secondary' => [
+                            'default' => '',
+                            'desc'    => $secondary_color,
+                        ],
+                    ],
                 ],
                 'font_size' => [
                     'type'     => 'slider',
+                    'parent'   => 'label',
                     'default'  => 0.9,
                     'min'      => 0,
                     'max'      => 3,
                     'step'     => 0.05,
                     'postfix'  => 'em',
                     'title'    => __( 'Font Size', 'mobile-contact-bar' ),
-                    'parent'   => 'label',
                 ],
             ],
 
@@ -405,14 +403,13 @@ final class Input
                     'min'      => 0,
                     'max'      => 2,
                     'step'     => 0.05,
-                    'postfix'  => 'em',
                     'title'    => __( 'Badge Scale', 'mobile-contact-bar' ),
                     'desc'     => __( 'Transforms the badge size according to the scaling value.', 'mobile-contact-bar' ),
                 ],
                 'background_color' => [
-                    'type'      => 'color-picker-group',
-                    'title'     => __( 'Background Color', 'mobile-contact-bar' ),
-                    'options'   => [
+                    'type'     => 'color-picker-group',
+                    'title'    => __( 'Background Color', 'mobile-contact-bar' ),
+                    'options'  => [
                         'primary' => [
                             'default' => '#ff8e00',
                             'desc'    => $primary_color,
@@ -424,9 +421,9 @@ final class Input
                     ],
                 ],
                 'font_color' => [
-                    'type'      => 'color-picker-group',
-                    'title'     => __( 'Font Color', 'mobile-contact-bar' ),
-                    'options'   => [
+                    'type'     => 'color-picker-group',
+                    'title'    => __( 'Font Color', 'mobile-contact-bar' ),
+                    'options'  => [
                         'primary' => [
                             'default' => '#252832',
                             'desc'    => $primary_color,
@@ -517,6 +514,15 @@ final class Input
         }
 
         return $defaults;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function sections()
+    {
+        return array_keys( $this->fields() );
     }
 
 

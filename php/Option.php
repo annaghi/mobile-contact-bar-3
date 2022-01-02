@@ -81,7 +81,7 @@ final class Option
     {
        $settings = abmcb( Settings\Input::class )->default_settings();
        $contacts = abmcb( Contacts\Input::class )->sample_contacts();
-       $styles   = Styles\CSS::output( $settings, $contacts );
+       $styles   = abmcb( Styles\CSS::class )->output( $settings, $contacts );
 
        return [
            'settings' => $settings,

@@ -484,7 +484,7 @@ final class AdminController
         $out  = '';
         $out .= '<h4>' . esc_html__( 'About', 'mobile-contact-bar' ) . '</h4>';
         $out .= '<p><span class="dashicons dashicons-admin-plugins"></span> ' . sprintf( __( 'Version %s', 'mobile-contact-bar' ), abmcb()->version ) . '</p>';
-        $out .= '<p><span class="dashicons dashicons-wordpress"></span> <a href="https://wordpress.org/plugins/mobile-contact-bar/" target="_blank">' . __( 'View details', 'mobile-contact-bar' ) . '</a></p>';
+        $out .= '<p><span class="dashicons dashicons-wordpress"></span> <a href="' . esc_url( abmcb()->plugin_uri ) . '" target="_blank">' . __( 'View details', 'mobile-contact-bar' ) . '</a></p>';
 
         return $out;
     }
@@ -500,7 +500,7 @@ final class AdminController
     {
         if ( abmcb()->page_suffix === $hook_suffix )
         {
-            // WordPress's postboxes logic
+            // WordPress's postboxes scripts
             wp_enqueue_script( 'postbox' );
 
             // WordPress's color picker styles and scripts
@@ -568,7 +568,7 @@ final class AdminController
      */
     public function pre_update_option( $new_value, $old_value = [] )
     {
-        $new_value['styles'] = Styles\CSS::output( $new_value['settings'], $new_value['contacts'] );
+        $new_value['styles'] = abmcb( Styles\CSS::class )->output( $new_value['settings'], $new_value['contacts'] );
         return $new_value;
     }
 

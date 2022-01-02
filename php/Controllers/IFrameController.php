@@ -118,7 +118,7 @@ final class IFrameController
             $out .= '<label for="mobile-contact-bar-toggle-checkbox" id="mobile-contact-bar-toggle">';
             $out .= ( $settings['toggle']['label'] ) ? '<span>' . esc_html( $settings['toggle']['label'] ) . '</span>' : '';
 
-            $out .= '<svg viewBox="0 0 550 170" width="110" height="34">';
+            $out .= '<svg viewBox="0 0 550 170" width="110" height="34" fill="currentColor">';
             if ( 'bottom' === $settings['bar']['vertical_alignment'] )
             {
                 if ( 'rounded' === $settings['toggle']['shape'] )
@@ -151,8 +151,6 @@ final class IFrameController
 
         foreach ( $contacts as $contact )
         {
-            $id = ( $contact['id'] ) ? sprintf( 'id="%s"', esc_attr( $contact['id'] )) : '';
-
             $uri = $contact['uri'];
             if ( $uri && ! empty( $contact['parameters'] ))
             {
@@ -196,9 +194,10 @@ final class IFrameController
                 $icon = '';
             }
 
-            $out .= sprintf( '<li class="mobile-contact-bar-item" %s>', $id );
-            // $out .= sprintf( '<a href="%s" %s>', esc_url( $uri, abmcb()->schemes ), $new_tab );
-            $out .= sprintf( '<a href="%s" %s>', '', $new_tab );
+            $id = esc_attr( $contact['id'] );
+            $out .= sprintf( '<li%s>', ( $id ) ? sprintf( ' id="%s"', $id ) : '' );
+
+            $out .= sprintf( '<a class="mobile-contact-bar-item" href="%s" %s>', '', $new_tab );
             if ( $settings['icons_labels']['label_position'] === 'below' )
             {
                 $out .= $icon;

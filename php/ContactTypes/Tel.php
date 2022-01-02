@@ -31,4 +31,3 @@ final class Tel extends ContactType
         ];
     }
 }
-
