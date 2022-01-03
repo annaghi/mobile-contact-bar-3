@@ -109,7 +109,7 @@ class MobileContactBar_Plugin_Check
                 $notice_template,
                 sprintf( $messages[0], $plugin_name ),
                 sprintf( $messages[1], $messages[3] . ' ' . $this->versions['wp'] ),
-                $rollback_message . ' ' . $messages[6] . ' ' . sprintf( '<a href="%s">%s</a>', admin_url( 'update-core.php' ), $messages[8] )
+                $rollback_message . ' ' . $messages[6] . ' ' . sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'update-core.php' )), $messages[8] )
             );
         }
     }
