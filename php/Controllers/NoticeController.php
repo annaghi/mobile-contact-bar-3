@@ -134,7 +134,7 @@ final class NoticeController
             <p>
                 <a href="<?php echo esc_url( abmcb()->plugin_uri . '#developers' ); ?>" target="_blank" rel="noopener" class="button mobile-contact-bar-whats-new">
                     <span class="mobile-contact-bar-whats-new-icon">
-                        <?php include_once plugin_dir_path( abmcb()->file ) . 'assets/images/whats-new-icon.svg'; ?>
+                        <?php include_once plugin_dir_path( abmcb()->file ) . 'assets/img/whats-new-icon.svg'; ?>
                     </span>
                     <span><?php echo _x( 'See What\'s New', 'admin-text', 'mobile-contact-bar' ); ?></span>
                 </a>

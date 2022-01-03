@@ -65,39 +65,38 @@ final class Input
                 'custom'      => $default_customization,
             ],
             [
-                'type'        => 'whatsapp',
+                'type'        => 'any',
                 'id'          => '',
-                'checked'     => 0,
+                'checked'     => 1,
                 'brand'       => 'fa',
-                'group'       => 'brands',
-                'icon'        => 'whatsapp',
-                'label'       => 'WhatsApp',
-                'text'        => 'WhatsApp',
-                'uri'         => 'https://api.whatsapp.com/send',
-                'parameters'  => [
+                'group'       => 'solid',
+                'icon'        => 'star',
+                'label'       => '',
+                'text'        => __( 'Rate the plugin', 'mobile-contact-bar' ),
+                'uri'         => 'https://wordpress.org/support/plugin/mobile-contact-bar/reviews/?filter=5#new-post',
+                'custom'      => array_merge( $default_customization,
                     [
-                        'key'   => 'phone',
-                        'value' => '',
-                    ],
-                    [
-                        'key'   => 'text',
-                        'value' => '',
-                    ],
-                ],
-                'custom'      => $default_customization,
+                        'icon_color' => ['primary' => '#ffb900', 'secondary' => '#ff9529'],
+                    ]
+                ),
             ],
             [
                 'type'        => 'link',
                 'id'          => '',
                 'checked'     => 1,
                 'brand'       => 'fa',
-                'group'       => 'solid',
-                'icon'        => 'map-marker-alt',
-                'label'       => __( 'Map' ),
-                'text'        => __( 'Show map', 'mobile-contact-bar' ),
-                'uri'         => 'https://google.com/maps/place/Dacre+St,+London+UK/',
+                'group'       => 'brands',
+                'icon'        => 'wordpress',
+                'label'       => '',
+                'text'        => 'WordPress',
+                'uri'         => 'https://wordpress.org/plugins/mobile-contact-bar/',
                 'parameters'  => [],
-                'custom'      => $default_customization,
+                'custom'      => array_merge( $default_customization,
+                    [
+                        'background_color' => ['primary' => '#0073aa', 'secondary' => '#00a0d2'],
+                        'icon_color'       => ['primary' => '#ffffff', 'secondary' => '#ffffff'],
+                    ]
+                ),
             ],
             [
                 'type'        => 'scrolltotop',
@@ -163,103 +162,88 @@ final class Input
         $contact_types_keys = array_keys( $contact_types );
         $empty_default_customization = ContactTypes\ContactType::empty_default_customization();
 
-        foreach ( $contacts as $contact_key => &$contact )
+        foreach ( $contacts as $contact_key => $contact )
         {
+            $sanitized_contact = [];
+
             // remove contact if invalid 'type'
             if ( ! in_array( $contact['type'], $contact_types_keys ))
             {
-                unset( $contacts[$contact_key] );
                 continue;
-            }
-
-            // add 'parameters' for 'link' contact type if it was empty
-            if ( 'link' === $contact['type'] && ! isset( $contact['parameters'] ))
-            {
-                $contacts[$contact_key]['parameters'] = [];
             }
 
             // remove contact if invalid 'parameters'
             if ( isset( $contact['parameters'] ) && ! is_array( $contact['parameters'] ))
             {
-                unset( $contacts[$contact_key] );
                 continue;
             }
 
-            // add empty 'checked'
-            if ( ! isset( $contact['checked'] ))
-            {
-                $contacts[$contact_key]['checked'] = 0;
-            }
-
-            $contacts[$contact_key]['custom'] = Helper::array_intersect_key_recursive(
+            // Difference can only be with 'parameters' in Link contact type
+            $contact['custom'] = Helper::array_intersect_key_recursive(
                 array_replace_recursive( $empty_default_customization, $contact['custom'] ),
                 $empty_default_customization
             );
-
-            // Difference can only be with 'parameters' in Link contact type
             $diff_contact = Helper::array_minus_key_recursive( Helper::array_keys_recursive( $contact ), $contact_types[$contact['type']]->keys());
-
+            // remove contact if invalid contact keys
             if ( ! empty( $diff_contact ) && ( ['parameters'] !== array_keys( $diff_contact ) || 'link' !== $contact['type'] ))
             {
-                unset( $contacts[$contact_key] );
                 continue;
             }
 
+            // remove contact if invalid parameter keys
             if ( isset( $diff_contact['parameters'] ))
             {
                 $diff_parameters = array_filter(
                     $diff_contact['parameters'],
-                    function( $parameter ) { return ( count( $parameter ) !== 2 || ! isset( $parameter['key'], $parameter['value'] )); }
+                    function ( $parameter ) { return ( count( $parameter ) !== 2 || ! isset( $parameter['key'], $parameter['value'] )); }
                 );
                 if ( ! empty( $diff_parameters ))
                 {
-                    unset( $contacts[$contact_key] );
                     continue;
                 }
-            }
-
-            // reindex 'parameters'
-            if ( isset( $contact['parameters'] ) && ! empty( $contact['parameters'] ))
-            {
-                $contacts[$contact_key]['parameters'] = array_values( $contacts[$contact_key]['parameters'] );
             }
 
             // remove contact if invalid 'brand' but leave empty
             if ( '' !== $contact['brand'] && ! in_array( $contact['brand'], ['ti', 'fa'] ))
             {
-                unset( $contacts[$contact_key] );
                 continue;
             }
 
             // remove contact if 'brand', 'group', or 'icon' do not match
             if ( 'ti' === $contact['brand'] && '' !== $contact['group']
                 && ! ( Icons::is_ti_icon( $contact['icon'] )
-                    && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg' )))
+                    && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. $contact['icon'] . '.svg' )))
             {
-                unset( $contacts[$contact_key] );
                 continue;
             }
             if ( 'fa' === $contact['brand']
                 && ! ( Icons::is_fa_icon( $contact['group'], $contact['icon'] )
-                    && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' )))
+                    && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' )))
             {
-                unset( $contacts[$contact_key] );
                 continue;
             }
-        }
-        unset( $contact );
-
-
-        // sanitize contacts
-        foreach ( $contacts as $contact_key => $contact )
-        {
-            $sanitized_contact = [];
 
             // 'type' is already sanitized
             $sanitized_contact['type'] = $contact['type'];
 
+            // sanitize 'id'
+            $is_any_color = array_filter(
+                $contact['custom'],
+                function ( $color ) { return ! empty( $color['primary'] || ! empty( $color['secondary'] )); }
+            );
+            $value = sanitize_key( str_replace( ['#', '.'], '', $contact['id'] ));
+            if ( '' === $value && $is_any_color )
+            {
+                $sanitized_contact['id'] = 'mcb-sample-id-' . ( $this->max_key( $contacts, $sanitized_contacts ) + 1 );
+            }
+            else
+            {
+                $sanitized_contact['id'] = $value;
+            }
+
             // sanitize 'checked'
-            $sanitized_contact['checked'] = (int) $contact['checked'];
+            $sanitized_contact['checked'] = ( isset( $contact['checked'] ) && ( 0 === (int) $contact['checked'] || 1 === (int) $contact['checked'] ))
+                ? $contact['checked'] : 0;
 
             // 'brand' is already sanitized
             $sanitized_contact['brand'] = $contact['brand'];
@@ -277,32 +261,7 @@ final class Input
             $sanitized_contact['text'] = sanitize_text_field( $contact['text'] );
 
             // sanitize 'uri'
-            $sanitized_contact['uri'] = $this->sanitize_contact_uri( $contact['uri'] );
-
-            // sanitize 'id'
-            $is_any_color = array_filter(
-                $contact['custom'],
-                function ( $color ) { return ! empty( $color['primary'] || ! empty( $color['secondary'] )); }
-            );
-
-            $value = sanitize_key( str_replace( ['#', '.'], '', $contact['id'] ));
-            if ( '' === $value && $is_any_color )
-            {
-                $sanitized_contact['id'] = 'mcb-sample-id-' . ( $this->max_key( $contacts ) + 1 );
-            }
-            else
-            {
-                $sanitized_contact['id'] = $value;
-            }
-
-            // sanitize customization
-            foreach ( $contact['custom'] as $custom_key => $custom )
-            {  
-                foreach ( $custom as $option_key => $option )
-                {
-                    $sanitized_contact['custom'][$custom_key][$option_key] = abmcb( Settings\Input::class )->sanitize_color( $option );
-                }
-            }
+            $sanitized_contact['uri'] = $this->sanitize_contact_uri( $contact['type'], $contact['uri'] );
 
             // sanitize 'parameters'
             if ( isset( $contact['parameters'] ))
@@ -325,12 +284,32 @@ final class Input
                     }
 
                     // sanitize 'key'
-                    $sanitized_contact['parameters'][$parameter_key]['key'] = sanitize_key( $parameter['key'] );
+                    $sanitized_contact['parameters'][$parameter_key]['key'] = $this->sanitize_parameter( $parameter['key'], 'text' );
 
                     // santitize 'value'
-                    $sanitized_contact['parameters'][$parameter_key]['value'] = $this->sanitize_parameter_value( $parameter['value'], $field );
+                    $sanitized_contact['parameters'][$parameter_key]['value'] = $this->sanitize_parameter( $parameter['value'], $field );
                 }
             }
+            // add 'parameters' for 'link' contact type if it was empty
+            if ( 'link' === $contact['type'] && ! isset( $contact['parameters'] ))
+            {
+                $sanitized_contact['parameters'] = [];
+            }
+            // reindex 'parameters'
+            if ( isset( $sanitized_contact['parameters'] ) && ! empty( $sanitized_contact['parameters'] ))
+            {
+                $sanitized_contact['parameters'] = array_values( $sanitized_contact['parameters'] );
+            }
+
+            // sanitize customization
+            foreach ( $contact['custom'] as $custom_key => $custom )
+            {  
+                foreach ( $custom as $option_key => $option )
+                {
+                    $sanitized_contact['custom'][$custom_key][$option_key] = abmcb( Settings\Input::class )->sanitize_color( $option );
+                }
+            }
+
             $sanitized_contacts[$contact_key] = $sanitized_contact;
         }
 
@@ -342,12 +321,13 @@ final class Input
     /**
      * Sanitizes the contact URI.
      *
-     * @param  string $uri Contact URI (URL, phone number, email address, etc.)
-     * @return string      Sanitized URI
+     * @param  string $contact_type
+     * @param  string $uri          Contact URI (URL, phone number, email address, etc.)
+     * @return string               Sanitized URI
      */
-    public function sanitize_contact_uri( $uri )
+    public function sanitize_contact_uri( $contact_type, $uri )
     {
-        if ( '' === $uri )
+        if ( '' === $uri || 'any' === $contact_type )
         {
             return $uri;
         }
@@ -388,30 +368,30 @@ final class Input
 
                 if ( isset( $parsed_uri['path'] ))
                 {
-                    $new_uri = esc_url_raw( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] . $parsed_uri['path'] );
+                    $new_uri = $parsed_uri['scheme'] . '://' . $parsed_uri['host'] . $parsed_uri['path'];
                 }
                 else
                 {
-                    $new_uri = esc_url_raw( $parsed_uri['scheme'] . '://' . $parsed_uri['host'] );
+                    $new_uri = $parsed_uri['scheme'] . '://' . $parsed_uri['host'];
                 }
                 break;
 
             default:
                 $new_uri = '';
         }
-
+    
         return $new_uri;
     }
 
 
     /**
-     * Sanitizes the value part of a query string parameter.
+     * Sanitizes the key and value part of a query string parameter.
      *
-     * @param  string $value Parameter value
+     * @param  string $value Parameter key or value
      * @param  string $type  Parameter type (text, textarea)
-     * @return string        Sanitized parameter value
+     * @return string        Sanitized parameter key or value
      */
-    public function sanitize_parameter_value( $value, $field )
+    public function sanitize_parameter( $value, $field )
     {
         $sanitized_value = '';
 
@@ -571,9 +551,10 @@ final class Input
 
     /**
      * @param  array $contacts
+     * @param  array $sanitized_contacts
      * @return int
      */
-    public function max_key( $contacts )
+    public function max_key( $contacts, $sanitized_contacts )
     {
         $key = -1;
         if ( 0 === count( $contacts ))
@@ -582,7 +563,7 @@ final class Input
         }
         else
         {
-            $ids = array_column( $contacts, 'id' );
+            $ids = array_merge( array_column( $contacts, 'id' ), array_column( $sanitized_contacts, 'id' ));
 
             foreach( $ids as $id )
             {

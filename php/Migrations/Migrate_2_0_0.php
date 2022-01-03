@@ -175,7 +175,7 @@ final class Migrate_2_0_0
 
                         if( isset( $contact_v1['parameters'], $contact_v1['parameters']['body'] ))
                         {
-                            $contact['parameters'][0]['value'] = urldecode( $contact_v1['parameters']['body'] );
+                            $contact['parameters'][0]['value'] = rawurlencode( rawurldecode( $contact_v1['parameters']['body'] ));
                         }
                         break;
 
@@ -217,7 +217,7 @@ final class Migrate_2_0_0
 
                             if( isset( $contact_v1['parameters'] ) && isset( $contact_v1['parameters'][$key] ))
                             {
-                                $parameter['value'] = urldecode( $contact_v1['parameters'][$key] );
+                                $parameter['value'] = rawurlencode( rawurldecode( $contact_v1['parameters'][$key] ));
                             }
                         }
                         unset( $parameter );
@@ -345,6 +345,6 @@ final class Migrate_2_0_0
                 break;
         }
 
-        return $uri;
+        return esc_url_raw( rawurldecode( $uri ), abmcb()->schemes );
     }
 }

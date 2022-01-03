@@ -12,22 +12,23 @@ final class Option
     public function get_option( $path, $sanitize_option_method )
     {
         $option = get_option( $path );
-        return call_user_func( [$this, $sanitize_option_method], $option );
+        return call_user_func( [$this, $sanitize_option_method], $option, 'decode' );
     }
 
 
     public function update_option( $option, $path, $sanitize_option_method )
     {
-        $sanitized_option = call_user_func( [$this, $sanitize_option_method], $option );
+        $sanitized_option = call_user_func( [$this, $sanitize_option_method], $option, 'encode' );
         update_option( $path, $sanitized_option );
     }
 
 
     /**
-     * @param  mixed $option
+     * @param  mixed       $option
+     * @param  string|null $form   'encode' / 'decode'
      * @return array
      */
-    public function sanitize_option_bar( $option )
+    public function sanitize_option_bar( $option, $form = null )
     {
         if ( $option && is_array( $option ) && isset( $option['settings'] ))
         {
@@ -40,7 +41,21 @@ final class Option
 
         if ( $option && is_array( $option ) && isset( $option['contacts'] ))
         {
-            $contacts = abmcb( Contacts\Input::class )->sanitize( $option['contacts'] );
+            switch ( $form )
+            {
+                case 'decode':
+                    $contacts = $this->decode_contacts( $option['contacts'] );
+                    $contacts = abmcb( Contacts\Input::class )->sanitize( $contacts );
+                    break;
+
+                case 'encode':
+                    $contacts = abmcb( Contacts\Input::class )->sanitize( $option['contacts'] );
+                    $contacts = $this->encode_contacts( $contacts );
+                    break;
+
+                default:
+                    $contacts = [];
+            }
         }
         else
         {
@@ -56,10 +71,11 @@ final class Option
 
 
     /**
-     * @param  mixed $option
+     * @param  mixed       $option
+     * @param  string|null $form   'encode' / 'decode'
      * @return array
      */
-    public function sanitize_option_migrations( $option )
+    public function sanitize_option_migrations( $option, $form = null )
     {
         if ( $option && is_array( $option ))
         {
@@ -69,6 +85,64 @@ final class Option
         {
             return [];
         }
+    }
+
+
+    /**
+     * @param  array $contacts
+     * @return array
+     */
+    public function decode_contacts( $contacts )
+    {
+        if ( is_array( $contacts ))
+        {
+            foreach ( $contacts as &$contact )
+            {
+                $contact['uri'] = rawurldecode( $contact['uri'] );
+
+                if ( isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
+                {
+                    foreach ( $contact['parameters'] as &$parameter )
+                    {
+                        $parameter['key']   = rawurldecode( $parameter['key'] );
+                        $parameter['value'] = rawurldecode( $parameter['value'] );
+                    }
+                    unset( $parameter );
+                }
+            }
+            unset( $contact );
+        }
+
+        return $contacts;
+    }
+
+
+    /**
+     * @param  array $contacts
+     * @return array
+     */
+    public function encode_contacts( $contacts )
+    {
+        if ( is_array( $contacts ))
+        {
+            foreach ( $contacts as &$contact )
+            {
+                $contact['uri'] = esc_url_raw( rawurldecode( $contact['uri'] ), abmcb()->schemes );
+
+                if ( isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
+                {
+                    foreach ( $contact['parameters'] as &$parameter )
+                    {
+                        $parameter['key']   = rawurlencode( rawurldecode( $parameter['key'] ));
+                        $parameter['value'] = rawurlencode( rawurldecode( $parameter['value'] ));
+                    }
+                    unset( $parameter );
+                }
+            }
+            unset( $contact );
+        }
+
+        return $contacts;
     }
 
 

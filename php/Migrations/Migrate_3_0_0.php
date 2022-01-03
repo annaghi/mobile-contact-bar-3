@@ -247,7 +247,7 @@ final class Migrate_3_0_0
                 }
                 $contact['label']   = '';
                 $contact['text']    = $contact_v2['title'];
-                $contact['uri']     = ( $contact_v2['uri'] === '#' ) ? '' : $contact_v2['uri'];
+                $contact['uri']     = ( $contact_v2['uri'] === '#' ) ? '' : esc_url_raw( rawurldecode( $contact_v2['uri'] ), abmcb()->schemes );
                 $contact['custom']  = $default_customization;
 
                 if ( isset( $contact_v2['parameters'] ) && is_array( $contact_v2['parameters'] ))
@@ -257,8 +257,8 @@ final class Migrate_3_0_0
                     foreach ( $contact_v2['parameters'] as $parameter_v2 )
                     {
                         $parameter          = [];
-                        $parameter['key']   = ( isset( $parameter_v2['key'] )) ? $parameter_v2['key'] : '';
-                        $parameter['value'] = ( isset( $parameter_v2['value'] )) ? $parameter_v2['value'] : '';
+                        $parameter['key']   = ( isset( $parameter_v2['key'] ))   ? rawurlencode( rawurldecode( $parameter_v2['key'] ))   : '';
+                        $parameter['value'] = ( isset( $parameter_v2['value'] )) ? rawurlencode( rawurldecode( $parameter_v2['value'] )) : '';
 
                         $contact['parameters'][] = $parameter;
                     }
@@ -407,7 +407,7 @@ final class Migrate_3_0_0
     private function migrate_user_meta()
     {
         $meta_boxes = array_merge(
-            array_map( function( $section ) { return 'mcb-meta-box-' . $section; }, abmcb( Settings\Input::class )->sections() ),
+            array_map( function ( $section ) { return 'mcb-meta-box-' . $section; }, abmcb( Settings\Input::class )->sections() ),
             ['mcb-meta-box-contacts']
         );
 

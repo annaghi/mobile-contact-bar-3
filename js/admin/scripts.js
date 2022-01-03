@@ -483,8 +483,8 @@
                 }, 100);
 
                 var iconList,
-                    ti_path = mobile_contact_bar.plugin_url + 'assets/icons/ti/tabler-sprite.svg',
-                    fa_path = mobile_contact_bar.plugin_url + 'assets/icons/fa/sprites/',
+                    ti_path = mobile_contact_bar.plugin_url + 'assets/svg/ti/tabler-sprite.svg',
+                    fa_path = mobile_contact_bar.plugin_url + 'assets/svg/fa/sprites/',
                     ti_filtered_icons = [],
                     fa_filtered_icons = [],
                     searchTerm = '',

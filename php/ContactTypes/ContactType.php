@@ -34,7 +34,7 @@ abstract class ContactType
         if ( isset( $keys['parameters'] ) && is_array( $keys['parameters'] ))
         {
             $keys['parameters'] = array_map(
-                function( &$parameter )
+                function ( &$parameter )
                 {
                     unset( $parameter['field'] );
                     unset( $parameter['placeholder'] );

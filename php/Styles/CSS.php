@@ -136,7 +136,7 @@ final class CSS
 
         $styles .= $this->badge( $badge );
 
-        $styles .= $this->pseudo_classes( $bar, $item, $badge, $toggle );
+        $styles .= $this->pseudo_classes( $bar, $item, $toggle, $badge );
 
        
         $styles .= $this->bar_position( $bar, $toggle );
@@ -437,10 +437,12 @@ final class CSS
     }
 
 
-    private function pseudo_classes( $bar, $item, $badge, $toggle )
+    private function pseudo_classes( $bar, $item, $toggle, $badge )
     {
         $styles = '';
 
+
+        // Item
         if ( ! empty( $item['background_color']['secondary'] ))
         {
             if ( $bar['is_secondary_colors']['focus'] )
@@ -507,6 +509,8 @@ final class CSS
             }
         }
 
+
+        // Item borders
         $border_color = empty( $item['border_color']['secondary'] ) ? 'transparent' : $item['border_color']['secondary'];
         if ( $bar['is_secondary_colors']['focus'] )
         {
@@ -555,6 +559,7 @@ final class CSS
         }
 
 
+        // Badge
         if ( ! empty( $badge['background_color']['secondary'] ))
         {
             if ( $bar['is_secondary_colors']['focus'] )
@@ -576,7 +581,6 @@ final class CSS
                 $styles .= '}';
             }
         }
-
         if ( ! empty( $badge['font_color']['secondary'] ))
         {
             if ( $bar['is_secondary_colors']['focus'] )
@@ -600,6 +604,7 @@ final class CSS
         }
 
 
+        // Toggle
         if ( ! empty( $toggle['background_color']['secondary'] ))
         {
             if ( $bar['is_secondary_colors']['focus'] )
@@ -615,7 +620,6 @@ final class CSS
                 $styles .= '}';
             }
         }
-
         if ( ! empty( $toggle['font_color']['secondary'] ))
         {
             if ( $bar['is_secondary_colors']['focus'] )

@@ -49,7 +49,7 @@ final class View
                 </div>
                 <ul>
                     <?php
-                    $sprite = plugin_dir_url( abmcb()->file ) . 'assets/icons/ti/tabler-sprite.svg';
+                    $sprite = plugin_dir_url( abmcb()->file ) . 'assets/svg/ti/tabler-sprite.svg';
                     $icons = array_slice( Icons::ti_icons(), 0, 30 );
                     foreach ( $icons as $icon ) :
                     ?>
@@ -147,7 +147,7 @@ final class View
             $out .= sprintf(
                 '<div class="mcb-summary-brand">%s</div><div class="mcb-summary-icon">%s</div>',
                 strtoupper( $contact['brand'] ),
-                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg' )
+                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. $contact['icon'] . '.svg' )
             );
         }
         elseif ( 'fa' === $contact['brand'] )
@@ -155,7 +155,7 @@ final class View
             $out .= sprintf(
                 '<div class="mcb-summary-brand">%s</div><div class="mcb-summary-icon mcb-fa">%s</div>',
                 strtoupper( $contact['brand'] ),
-                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' )
+                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' )
             );
         }
         else
@@ -178,7 +178,7 @@ final class View
         }
         else
         {
-            $uri = esc_url( $contact['uri'], abmcb()->schemes );
+            $uri = esc_attr( $contact['uri'] );
             $out .= sprintf(
                 '<div class="mcb-summary-uri%s">%s</div>',
                 empty( $uri ) ? '' : ' mcb-monospace',
@@ -290,7 +290,7 @@ final class View
             $icon = sprintf(
                 '<span class="mcb-details-brand">%s</span><span class="mcb-details-icon">%s</span>',
                 strtoupper( $contact['brand'] ),
-                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg' )
+                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. $contact['icon'] . '.svg' )
             );
         }
         elseif ( 'fa' === $contact['brand'] )
@@ -298,7 +298,7 @@ final class View
             $icon = sprintf(
                 '<span class="mcb-details-brand">%s</span><span class="mcb-details-icon mcb-fa">%s</span>',
                 strtoupper( $contact['brand'] ),
-                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' )
+                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' )
             );
         }
         else
@@ -388,7 +388,7 @@ final class View
             // 'URI' hidden
             $out .= sprintf(
                 '<input type="hidden" name="' . $prefix . '[uri]" value="%1$s">',
-                esc_url( $contact['uri'], abmcb()->schemes )
+                esc_attr( $contact['uri'] )
             );
 
             // 'URI' visible
@@ -420,7 +420,7 @@ final class View
                 esc_attr__( 'Contact URI', 'mobile-contact-bar' ),
                 esc_attr( $contact_field['desc_uri'] ),
                 esc_attr( $contact_field['placeholder'] ),
-                esc_url( $contact['uri'], abmcb()->schemes )
+                esc_attr( $contact['uri'] )
             );
         }
 

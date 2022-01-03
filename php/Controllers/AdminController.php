@@ -137,14 +137,15 @@ final class AdminController
 
 
     /**
-     * Sanitizes the bar option.
+     * Sanitizes the bar option before writing it to the database.
      *
      * @param  array $input Multidimensional array of the bar-option
      * @return array
      */
     public function callback_sanitize_option( $input )
     {
-        return abmcb( Option::class )->sanitize_option_bar( $input );
+        $sanitized_option = abmcb( Option::class )->sanitize_option_bar( $input, 'encode' );
+        return $sanitized_option;
     }
 
 

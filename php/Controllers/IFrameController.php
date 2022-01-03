@@ -146,19 +146,19 @@ final class IFrameController
         }
 
         $out .= '<nav id="mobile-contact-bar-nav">';
-        $out .= '<ul>';
-        $new_tab = ( $settings['bar']['is_new_tab'] ) ? 'target="_blank" rel="noopener"' : '';
+        $out .= '<ul>' . PHP_EOL;
+        $new_tab = ( $settings['bar']['is_new_tab'] ) ? ' target="_blank" rel="noopener"' : '';
 
         foreach ( $contacts as $contact )
         {
             $uri = $contact['uri'];
-            if ( $uri && ! empty( $contact['parameters'] ))
+            if ( $uri && 'any' !== $contact['type'] && ! empty( $contact['parameters'] ))
             {
                 $query_args = [];
                 foreach ( $contact['parameters'] as $parameter )
                 {
-                    $key = sanitize_key( $parameter['key'] );
-                    $value = urlencode( $parameter['value'] );
+                    $key   = rawurlencode( $parameter['key'] );
+                    $value = rawurlencode( $parameter['value'] );
 
                     if ( $key && $value )
                     {
@@ -177,7 +177,7 @@ final class IFrameController
             {
                 $icon = sprintf(
                     '<span class="mobile-contact-bar-icon">%s%s</span>',
-                    file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/icons/ti/icons/'. $contact['icon'] . '.svg' ),
+                    file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. $contact['icon'] . '.svg' ),
                     $badge
                 );
             }
@@ -185,7 +185,7 @@ final class IFrameController
             {
                 $icon = sprintf(
                     '<span class="mobile-contact-bar-icon mobile-contact-bar-fa">%s%s</span>',
-                    file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' ),
+                    file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' ),
                     $badge
                 );
             }
@@ -197,7 +197,7 @@ final class IFrameController
             $id = esc_attr( $contact['id'] );
             $out .= sprintf( '<li%s>', ( $id ) ? sprintf( ' id="%s"', $id ) : '' );
 
-            $out .= sprintf( '<a class="mobile-contact-bar-item" href="%s" %s>', '', $new_tab );
+            $out .= sprintf( '<a class="mobile-contact-bar-item" href="%s"%s>', '', $new_tab );
             if ( $settings['icons_labels']['label_position'] === 'below' )
             {
                 $out .= $icon;
@@ -216,7 +216,7 @@ final class IFrameController
             $out .= ob_get_contents();
             ob_end_clean();
 
-            $out .= '</li>';
+            $out .= '</li>' . PHP_EOL;
         }
 
         $out .= '</ul>';

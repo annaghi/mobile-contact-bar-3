@@ -158,21 +158,20 @@ final class AJAXController
     {
         if ( $this->verify_nonce() && isset( $_POST['brand'], $_POST['group'], $_POST['icon'] ))
         {
-            if ( 'ti' === $_POST['brand'] && '' === $_POST['group']
-                && Icons::is_ti_icon( $_POST['icon'] )
-                && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/icons/ti/icons/'. $_POST['icon'] . '.svg' ))
+            $ti_svg = plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. $_POST['icon'] . '.svg';
+            $fa_svg = plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . $_POST['group'] . '/' . $_POST['icon'] . '.svg';
+
+            if ( 'ti' === $_POST['brand'] && '' === $_POST['group'] && Icons::is_ti_icon( $_POST['icon'] ) && file_exists( $ti_svg ))
             {
-                $response = json_encode( file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/icons/ti/icons/'. $_POST['icon'] . '.svg' ));
+                $response = json_encode( file_get_contents( $ti_svg ));
                 if ( $response )
                 {
                     echo $response;
                 }
             }
-            elseif ( 'fa' === $_POST['brand']
-                && Icons::is_fa_icon( $_POST['group'], $_POST['icon'] )
-                && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/' . $_POST['group'] . '/' . $_POST['icon'] . '.svg' ))
+            elseif ( 'fa' === $_POST['brand'] && Icons::is_fa_icon( $_POST['group'], $_POST['icon'] ) && file_exists( $fa_svg ))
             {
-                $response = json_encode( file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/icons/fa/svgs/'. $_POST['group'] . '/' . $_POST['icon'] . '.svg' ));
+                $response = json_encode( file_get_contents( $fa_svg ));
                 if ( $response )
                 {
                     echo $response;

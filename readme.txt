@@ -3,7 +3,7 @@
 === Mobile Contact Bar ===
 Contributors: anna.bansaghi
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YXJAZ7Q5EJFUA
-Tags: social media, icon, contact, mobile, woocommerce cart
+Tags: social media, icon, cta, call to action, woocommerce cart
 Requires at least: 4.9
 Tested up to: 5.8
 Requires PHP: 5.6.20
@@ -19,7 +19,7 @@ Allow your visitors to contact you via mobile phones, or access your site's page
 
 Mobile Contact Bar is a compact and highly customizable plugin, which allows your visitors to contact you directly via mobile phones, or access your site's pages instantly.
 
-The settings page is available under the *Settings &rarr; Mobile Contact Bar* menu in the WordPress dashboard.
+The settings page is available under the *Settings / Mobile Contact Bar* menu in the WordPress admin.
 
 
 
@@ -27,7 +27,9 @@ The settings page is available under the *Settings &rarr; Mobile Contact Bar* me
 
 * SVG icons for social media, call-to-actions, or any links to web pages
 * Simple and intuitive editing with live preview
-* Built-in icon picker with [Font Awesome 5](https://fontawesome.com/) (CC BY 4.0 License) and [Tabler Icons](https://tabler-icons.io/) (MIT License) integration
+* Built-in icon picker with
+    * [Font Awesome 5](https://fontawesome.com/) (CC BY 4.0 License) and
+    * [Tabler Icons](https://tabler-icons.io/) (MIT License) integration
 * Customizable URLs using query string parameters
 * No data collection from your website's visitors
 * Super easy to use, no coding required!
@@ -121,12 +123,13 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Upgrade] Reimplement plugin
 * [Rename] `#mobile-contact-bar-outer` to `#mobile-contact-bar-nav`
 * [Add] Introduce Tabler Icons 1.50.0
-* [Add] Browser history back and forward buttons
+* [Add] Browser history back and forward actions
 + [Add] viber [viber-chat](https://wordpress.org/support/topic/problem-whit-link/)
 * [Add] CSS ID selector and color customization
-* [Add] Display label above, below, and instead of the icon - [text-below-icon](https://wordpress.org/support/topic/text-below-icon/), [add-label-under-icons](https://wordpress.org/support/topic/add-label-under-icons/)
-* [Add] Option for setting the bar to be closed as default - [toggle-state](https://wordpress.org/support/topic/toggle-state-4/), [default-toggle-state](https://wordpress.org/support/topic/default-toggle-state/)
-* [Add] Let the + sign be optional in tel and sms protocols - [telephone-remove](https://wordpress.org/support/topic/telephone-remove/)
+* [Add] Display label above, below, and instead of the icon [text-below-icon](https://wordpress.org/support/topic/text-below-icon/), [add-label-under-icons](https://wordpress.org/support/topic/add-label-under-icons/)
+* [Add] Option for setting the bar to be closed as default [toggle-state](https://wordpress.org/support/topic/toggle-state-4/), [default-toggle-state](https://wordpress.org/support/topic/default-toggle-state/)
+* [Add] Let the + sign be optional in tel and sms protocols [telephone-remove](https://wordpress.org/support/topic/telephone-remove/)
+* [Fix] Decode / encode query string parameters properly [e-mail-body](https://wordpress.org/support/topic/e-mail-body/)
 * [Fix] Move migration process to `init` in order to run it on both admin and public pages
 * [Update] Font Awesome 5.15.4
 
@@ -134,10 +137,10 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Fix] Missing contact field "checked" notice
 
 = 2.0.8 =
-* [Fix] Add `rel="noopener"` for links opening in new tab - [links-to-cross-origin-destinations-are-unsafe](https://wordpress.org/support/topic/links-to-cross-origin-destinations-are-unsafe-7/)
+* [Fix] Add `rel="noopener"` for links opening in new tab [links-to-cross-origin-destinations-are-unsafe](https://wordpress.org/support/topic/links-to-cross-origin-destinations-are-unsafe-7/)
 
 = 2.0.7 =
-* [Fix] Do not show meta boxes on foreign pages - [menu-bar-settings-appearing-for-ohter-users-than-admin](https://wordpress.org/support/topic/menu-bar-settings-appearing-for-ohter-users-than-admin/)
+* [Fix] Do not show meta boxes on foreign pages [menu-bar-settings-appearing-for-ohter-users-than-admin](https://wordpress.org/support/topic/menu-bar-settings-appearing-for-ohter-users-than-admin/)
 
 = 2.0.6 =
 * [Fix] Domain Path
@@ -154,38 +157,38 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Update] Font Awesome 5.13.0
 
 = 2.0.2 =
-* [Fix] Forgotten log message in source - [your-update-just-broke-my-site](https://wordpress.org/support/topic/your-update-just-broke-my-site-2/)
+* [Fix] Forgotten log message in source [your-update-just-broke-my-site](https://wordpress.org/support/topic/your-update-just-broke-my-site-2/)
 
 = 2.0.1 =
 * [Fix] Extracted cookie into an option Toggle:Cookie
-* [Fix] Restored Bar:Opacity option - [a-few-more-minor-things-in-2-0](https://wordpress.org/support/topic/a-few-more-minor-things-in-2-0/)
+* [Fix] Restored Bar:Opacity option [a-few-more-minor-things-in-2-0](https://wordpress.org/support/topic/a-few-more-minor-things-in-2-0/)
 * [Update] Font Awesome 5.0.13
 
 = 2.0.0 =
 * [Upgrade] Reimplement plugin with new options in the database
-* [Upgrade] Font Awesome 5.0.12 - [can-add-support-fontawesome-v5-0-8](https://wordpress.org/support/topic/can-add-support-fontawesome-v5-0-8/)
+* [Upgrade] Font Awesome 5.0.12 [can-add-support-fontawesome-v5-0-8](https://wordpress.org/support/topic/can-add-support-fontawesome-v5-0-8/)
 * [Rename] `mcb_front_render_html` to `mcb_public_render_html`
 * [Remove] `mcb_admin_update_contacts` and `mcb_admin_update_settings` filters
-* [Add] UI for managing contacts and their parameters (add, delete, modify) - [a-couple-of-more-feature-suggestions](https://wordpress.org/support/topic/a-couple-of-more-feature-suggestions/)
-* [Add] Option for setting label on the toggle - [a-couple-of-more-feature-suggestions](https://wordpress.org/support/topic/a-couple-of-more-feature-suggestions/)
-* [Add] Option for adding space above/below the bar - [contact-bar-overlaying-footer-credits-on-site](https://wordpress.org/support/topic/contact-bar-overlaying-footer-credits-on-site/), [position](https://wordpress.org/support/topic/position-20/), [hidding-menu](https://wordpress.org/support/topic/hidding-menu/)
-* [Add] Storing toggle state in a cookie - [toggle-state](https://wordpress.org/support/topic/toggle-state/), [toggle-issue](https://wordpress.org/support/topic/toggle-issue/)
-* [Add] WhatsApp - [a-couple-of-feature-ideas](https://wordpress.org/support/topic/a-couple-of-feature-ideas/), [whatsapp-chat](https://wordpress.org/support/topic/whatsapp-chat/)
-* [Add] WooCommerce Cart with Item Counter - [a-couple-of-feature-ideas](https://wordpress.org/support/topic/a-couple-of-feature-ideas/)
+* [Add] UI for managing contacts and their parameters (add, delete, modify) [a-couple-of-more-feature-suggestions](https://wordpress.org/support/topic/a-couple-of-more-feature-suggestions/)
+* [Add] Option for setting label on the toggle [a-couple-of-more-feature-suggestions](https://wordpress.org/support/topic/a-couple-of-more-feature-suggestions/)
+* [Add] Option for adding space above/below the bar [contact-bar-overlaying-footer-credits-on-site](https://wordpress.org/support/topic/contact-bar-overlaying-footer-credits-on-site/), [position](https://wordpress.org/support/topic/position-20/), [hidding-menu](https://wordpress.org/support/topic/hidding-menu/)
+* [Add] Storing toggle state in a cookie [toggle-state](https://wordpress.org/support/topic/toggle-state/), [toggle-issue](https://wordpress.org/support/topic/toggle-issue/)
+* [Add] WhatsApp [a-couple-of-feature-ideas](https://wordpress.org/support/topic/a-couple-of-feature-ideas/), [whatsapp-chat](https://wordpress.org/support/topic/whatsapp-chat/)
+* [Add] WooCommerce Cart with Item Counter action [a-couple-of-feature-ideas](https://wordpress.org/support/topic/a-couple-of-feature-ideas/)
 
 = 1.4.1 =
 * [Fix] Bar width and bar alignment issues
 
 = 1.4.0 =
-* [Add] Option for setting bar width - [bar-width-2](https://wordpress.org/support/topic/bar-width/)
-* [Add] Icon for Instagram - [no-instagram-icon](https://wordpress.org/support/topic/no-instagram-icon/)
+* [Add] Option for setting bar width [bar-width-2](https://wordpress.org/support/topic/bar-width/)
+* [Add] Icon for Instagram [no-instagram-icon](https://wordpress.org/support/topic/no-instagram-icon/)
 * [Fix] Plugin upgrade on network
 
 = 1.3.1 =
 * [Test] Tested up to WordPress 4.9
 
 = 1.3.0 =
-* [Add] Icon for texting (sms) - [text-with-pre-filled-option](https://wordpress.org/support/topic/text-with-pre-filled-option/)
+* [Add] Icon for texting (sms) [text-with-pre-filled-option](https://wordpress.org/support/topic/text-with-pre-filled-option/)
 
 = 1.2.3 =
 * [Fix] array_filter() issue
@@ -198,14 +201,14 @@ You have full control over the single cookie which is called *mobile_contact_bar
 
 = 1.2.0 =
 * [Add] UI for sorting contacts
-* [Add] Option for setting subject, body, cc, bcc of email - [add-subject-and-body-to-email](https://wordpress.org/support/topic/add-subject-and-body-to-email/)
+* [Add] Option for setting subject, body, cc, bcc of email [add-subject-and-body-to-email](https://wordpress.org/support/topic/add-subject-and-body-to-email/)
 * [Add] Refreshed option page UI using meta boxes
 * [Fix] Prepared plugin for localization
 * [Fix] Sanitized phone number and add a plus sign (+) prefix
 * [Update] Font Awesome 4.7.0
 
 = 1.1.2 =
-* [Fix] Left aligned icons in the CSS - [does-your-plugin-support-the-hemingway-theme](https://wordpress.org/support/topic/does-your-plugin-support-the-hemingway-theme/)
+* [Fix] Left aligned icons in the CSS [does-your-plugin-support-the-hemingway-theme](https://wordpress.org/support/topic/does-your-plugin-support-the-hemingway-theme/)
 * [Update] Font Awesome 4.6.3
 
 = 1.1.1 =
@@ -214,7 +217,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Update] Font Awesome 4.6.1
 
 = 1.1.0 =
-* [Add] Option for Bar:Opening links in a new tab - [no-instagram-icon](https://wordpress.org/support/topic/no-instagram-icon/)
+* [Add] Option for Bar:Opening links in a new tab [no-instagram-icon](https://wordpress.org/support/topic/no-instagram-icon/)
 
 = 1.0.1 =
 * [Fix] Improved setting and contact validation (sanitization)
