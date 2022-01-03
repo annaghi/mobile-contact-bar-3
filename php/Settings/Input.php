@@ -335,7 +335,7 @@ final class Input
                     'type'     => 'checkbox',
                     'default'  => 1,
                     'title'    => __( 'Animation', 'mobile-contact-bar' ),
-                    'label'    => __( 'Slow down toggle animation', 'mobile-contact-bar' ),
+                    'label'    => __( 'Slow down toggle with animation', 'mobile-contact-bar' ),
                 ],
                 'background_color' => [
                     'type'     => 'color-picker-group',

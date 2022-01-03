@@ -97,10 +97,16 @@ final class PublicController
 
     /**
      * @return string HTML
+     * 
+     * @global $wp
      */
     public function output()
     {
+        global $wp;
+
         $out = '';
+
+        $current_url = home_url( add_query_arg( [], $wp->request ));
 
         $settings = abmcb()->option_bar['settings'];
         $contacts = $this->checked_contacts;
@@ -200,7 +206,8 @@ final class PublicController
             $id = esc_attr( $contact['id'] );
             $out .= sprintf( '<li%s>', ( $id ) ? sprintf( ' id="%s"', $id ) : '' );
 
-            $out .= sprintf( '<a class="mobile-contact-bar-item" href="%s"%s>', esc_url( $uri, abmcb()->schemes ), $new_tab );
+            $active = ( $uri == $current_url ) ? ' mobile-contact-bar-active' : '';
+            $out .= sprintf( '<a class="mobile-contact-bar-item%s" href="%s"%s>', $active, esc_url( $uri, abmcb()->schemes ), $new_tab );
             if ( $settings['icons_labels']['label_position'] === 'below' )
             {
                 $out .= $icon;

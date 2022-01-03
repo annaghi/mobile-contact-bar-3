@@ -25,7 +25,7 @@ final class Option
 
     /**
      * @param  mixed       $option
-     * @param  string|null $form   'encode' / 'decode'
+     * @param  string|null $form   'encode' | 'decode'
      * @return array
      */
     public function sanitize_option_bar( $option, $form = null )
@@ -72,7 +72,7 @@ final class Option
 
     /**
      * @param  mixed       $option
-     * @param  string|null $form   'encode' / 'decode'
+     * @param  string|null $form   'encode' | 'decode'
      * @return array
      */
     public function sanitize_option_migrations( $option, $form = null )
@@ -98,7 +98,7 @@ final class Option
         {
             foreach ( $contacts as &$contact )
             {
-                $contact['uri'] = rawurldecode( $contact['uri'] );
+                $contact['uri'] = untrailingslashit( rawurldecode( $contact['uri'] ));
 
                 if ( isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
                 {
@@ -127,7 +127,7 @@ final class Option
         {
             foreach ( $contacts as &$contact )
             {
-                $contact['uri'] = esc_url_raw( rawurldecode( $contact['uri'] ), abmcb()->schemes );
+                $contact['uri'] = esc_url_raw( untrailingslashit( rawurldecode( $contact['uri'] )), abmcb()->schemes );
 
                 if ( isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
                 {

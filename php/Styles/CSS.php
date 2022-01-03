@@ -119,8 +119,8 @@ final class CSS
         $styles .= '}';
 
         $styles .= '.mobile-contact-bar-icon svg{';
-        $styles .= 'width:1.5em;';
-        $styles .= 'height:1.5em;';
+        $styles .= 'width:1em;';
+        $styles .= 'height:1em;';
         $styles .= 'font-size:' . $item['icon_size'] . 'em;';
         $styles .= '}';
 
@@ -199,7 +199,8 @@ final class CSS
                 $styles .= '#mobile-contact-bar{';
                 $styles .= 'position:fixed;';
                 $styles .= 'left:0;';
-                $styles .= ( $bar['space_height'] > 0 ) ? 'top:' . ($bar['space_height'] + 46) . 'px;' : 'top:46px;';
+                // $styles .= ( $bar['space_height'] > 0 ) ? 'top:' . ($bar['space_height'] + 46) . 'px;' : 'top:46px;';
+                $styles .= ( $bar['space_height'] > 0 ) ? 'top:' . $bar['space_height'] . 'px;' : 'top:0;';
                 $styles .= '}';
 
             if ( $toggle['is_render'] )
@@ -334,14 +335,90 @@ final class CSS
         {
             if ( $toggle['is_animation'] )
             {
+                if ( 0 === $bar['space_height'] && 'bottom' === $bar['vertical_alignment'] )
+                {
+                    $styles .= '#mobile-contact-bar-nav{';
+                    $styles .= 'transition:bottom 1s ease;';
+                    $styles .= '}';
+
+                    $styles .= '#mobile-contact-bar-toggle{';
+                    $styles .= 'transition:bottom 1s ease;';
+                    $styles .= '}';
+                }
+                elseif ( 0 === $bar['space_height'] && 'top' === $bar['vertical_alignment'] )
+                {
+                    $styles .= '#mobile-contact-bar-nav{';
+                    $styles .= 'transition:top 1s ease;';
+                    $styles .= '}';
+
+                    $styles .= '#mobile-contact-bar-toggle{';
+                    $styles .= 'transition:top 1s ease;';
+                    $styles .= '}';
+                }
+                else
+                {
+                    $styles .= '#mobile-contact-bar-nav{';
+                    $styles .= 'transition:height 1s ease;';
+                    $styles .= '}';
+
+                    $styles .= '.mobile-contact-bar-icon,';
+                    $styles .= '.mobile-contact-bar-label,';
+                    $styles .= '.mobile-contact-bar-badge{';
+                    $styles .= 'opacity:1;';
+                    $styles .= 'transition:opacity 0.5s ease;';
+                    $styles .= '}';
+                }
+            }
+            if ( 0 === $bar['space_height'] && 'bottom' === $bar['vertical_alignment'] )
+            {
                 $styles .= '#mobile-contact-bar-nav{';
-                $styles .= 'transition:height 1s ease;';
+                $styles .= 'position:relative;';
+                $styles .= 'bottom:0;';
+                $styles .= '}';
+
+                $styles .= '#mobile-contact-bar-toggle{';
+                $styles .= 'bottom:0;';
+                $styles .= '}';
+
+                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
+                $styles .= 'bottom:-' . $bar['height'] . 'px;';
+                $styles .= '}';
+
+                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-toggle{';
+                $styles .= 'bottom:-' . $bar['height'] . 'px;';
                 $styles .= '}';
             }
+            elseif ( 0 === $bar['space_height'] && 'top' === $bar['vertical_alignment'] )
+            {
+                $styles .= '#mobile-contact-bar-nav{';
+                $styles .= 'position:relative;';
+                $styles .= 'top:0;';
+                $styles .= '}';
 
-            $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
-            $styles .= 'height:0;';
-            $styles .= '}';
+                $styles .= '#mobile-contact-bar-toggle{';
+                $styles .= 'top:' . $bar['height'] . 'px;';
+                $styles .= '}';
+
+                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
+                $styles .= 'top:-' . $bar['height'] . 'px;';
+                $styles .= '}';
+
+                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-toggle{';
+                $styles .= 'top:0;';
+                $styles .= '}';
+            }
+            else
+            {
+                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
+                $styles .= 'height:0;';
+                $styles .= '}';
+    
+                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav .mobile-contact-bar-icon,';
+                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav .mobile-contact-bar-label,';
+                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav .mobile-contact-bar-badge{';
+                $styles .= 'opacity:0;';
+                $styles .= '}';
+            }
 
             $styles .= '#mobile-contact-bar-toggle-checkbox{';
             $styles .= 'display:none;';
