@@ -64,6 +64,15 @@ final class CSS
         $styles .= 'display:flex;';
         $styles .= 'flex-flow:row nowrap;';
         $styles .= 'justify-content:center;';
+        switch ( $item['alignment'] )
+        {
+            case 'centered':
+                $styles .= ( empty( $item['bar_color'] )) ? '' : 'background-color:' . $item['bar_color'] . ';';
+                break;
+
+            case 'justified':
+                break;
+        }
         if ( $bar['is_borders']['top'] )
         {
             $bar_border_color = empty( $bar['border_color'] ) ? 'transparent' : $bar['border_color'];
@@ -93,7 +102,6 @@ final class CSS
         }
         $styles .= '}';
 
-
         $styles .= '.mobile-contact-bar-item{';
         $styles .= ( empty( $item['background_color']['primary'] )) ? '' : 'background-color:' . $item['background_color']['primary'] . ';';
         $styles .= 'text-decoration:none;';
@@ -109,13 +117,12 @@ final class CSS
 
         $styles .= $this->item_border( $item );
 
-
         $styles .= '.mobile-contact-bar-icon{';
         $styles .= 'display:inline-flex;';
         $styles .= 'position:relative;';
-        $styles .= 'font-size: 100%;';
-        $styles .= 'line-height: 50%;';
+        $styles .= 'line-height:50%;';
         $styles .= ( empty( $item['icon_color']['primary'] )) ? '' : 'color:' . $item['icon_color']['primary'] . ';';
+        $styles .= 'padding:0 5px;';
         $styles .= '}';
 
         $styles .= '.mobile-contact-bar-icon svg{';
@@ -136,9 +143,9 @@ final class CSS
 
         $styles .= $this->badge( $badge );
 
-        $styles .= $this->pseudo_classes( $bar, $item, $toggle, $badge );
+        $styles .= $this->item_pseudo_classes( $bar, $item, $toggle, $badge );
 
-       
+
         $styles .= $this->bar_position( $bar, $toggle );
 
 
@@ -147,8 +154,8 @@ final class CSS
         {
             if ( $contact['id'] )
             {
-                $styles .= $this->custom_colors( $item, $contact );
-                $styles .= $this->pseudo_classes_custom_colors( $bar, $item, $contact );
+                $styles .= $this->item_custom_colors( $item, $contact );
+                $styles .= $this->item_pseudo_classes_custom_colors( $bar, $item, $contact );
             }
         }
 
@@ -467,14 +474,14 @@ final class CSS
         $styles .= '.mobile-contact-bar-badge{';
         $styles .= ( empty( $badge['background_color']['primary'] )) ? '' : 'background-color:' . $badge['background_color']['primary'] . ';';
         $styles .= ( empty( $badge['font_color']['primary'] )) ? '' : 'color:' . $badge['font_color']['primary'] . ';';
-        $styles .= 'border-radius:100%;';
+        $styles .= 'border-radius:2em;';
         $styles .= 'display:flex;';
         $styles .= 'align-items:center;';
         $styles .= 'justify-content:center;';
         $styles .= 'font-size:1em;';
-        $styles .= 'height:1.5em;';
-        $styles .= 'width:1.5em;';
-        $styles .= 'line-height:1.5;';
+        $styles .= 'height:1.75em;';
+        $styles .= 'min-width:1.75em;';
+        $styles .= 'padding:0 5px;';
         $styles .= 'text-indent:0;';
         $styles .= 'position:absolute;';
 
@@ -484,28 +491,28 @@ final class CSS
                 $styles .= 'top:0;';
                 $styles .= 'right:0;';
                 $styles .= 'transform-origin:top right;';
-                $styles .= 'transform:scale(' . $badge['font_size'] . ') translate(' . $badge['font_size'] . 'em,' . (-1) * $badge['font_size'] . 'em);';
+                $styles .= 'transform:scale(' . $badge['size'] . ') translate(' . $badge['size'] . 'em,' . (-1) * $badge['size'] . 'em);';
                 break;
 
             case 'bottom-right':
                 $styles .= 'bottom:0;';
                 $styles .= 'right:0;';
                 $styles .= 'transform-origin:bottom right;';
-                $styles .= 'transform:scale(' . $badge['font_size'] . ') translate(' . $badge['font_size'] . 'em,' . $badge['font_size'] . 'em);';
+                $styles .= 'transform:scale(' . $badge['size'] . ') translate(' . $badge['size'] . 'em,' . $badge['size'] . 'em);';
                 break;
 
             case 'bottom-left':
                 $styles .= 'bottom:0;';
                 $styles .= 'left:0;';
                 $styles .= 'transform-origin:bottom left;';
-                $styles .= 'transform:scale(' . $badge['font_size'] . ') translate(' . (-1) * $badge['font_size'] . 'em,' . $badge['font_size'] . 'em);';
-
+                $styles .= 'transform:scale(' . $badge['size'] . ') translate(' . (-1) * $badge['size'] . 'em,' . $badge['size'] . 'em);';
                 break;
+
             case 'top-left':
                 $styles .= 'top:0;';
                 $styles .= 'left:0;';
                 $styles .= 'transform-origin:top left;';
-                $styles .= 'transform:scale(' . $badge['font_size'] . ') translate(' . (-1) * $badge['font_size'] . 'em,' . (-1) * $badge['font_size'] . 'em);';
+                $styles .= 'transform:scale(' . $badge['size'] . ') translate(' . (-1) * $badge['size'] . 'em,' . (-1) * $badge['size'] . 'em);';
                 break;
         }
         $styles .= '}';
@@ -514,10 +521,9 @@ final class CSS
     }
 
 
-    private function pseudo_classes( $bar, $item, $toggle, $badge )
+    private function item_pseudo_classes( $bar, $item, $toggle, $badge )
     {
         $styles = '';
-
 
         // Item
         if ( ! empty( $item['background_color']['secondary'] ))
@@ -717,7 +723,7 @@ final class CSS
     }
 
 
-    private function custom_colors( $item, $contact )
+    private function item_custom_colors( $item, $contact )
     {
         $styles = '';
 
@@ -759,7 +765,7 @@ final class CSS
     }
 
 
-    private function pseudo_classes_custom_colors( $bar, $item, $contact )
+    private function item_pseudo_classes_custom_colors( $bar, $item, $contact )
     {
         $styles = '';
 

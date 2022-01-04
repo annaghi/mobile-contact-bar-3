@@ -177,6 +177,12 @@ final class Input
                         'centered'  => __( 'centered', 'mobile-contact-bar' ),
                     ],
                 ],
+                'bar_color' => [
+                    'type'     => 'color-picker',
+                    'parent'   => 'alignment',
+                    'default'  => '',
+                    'title'    => __( 'Bar Color', 'mobile-contact-bar' ),
+                ],
                 'width' => [
                     'type'     => 'number',
                     'parent'   => 'alignment',
@@ -189,7 +195,7 @@ final class Input
                     'type'     => 'slider',
                     'default'  => 0.4,
                     'min'      => 0,
-                    'max'      => 2,
+                    'max'      => 3,
                     'step'     => 0.2,
                     'postfix'  => 'em',
                     'title'    => __( 'Gap between Icon and Label', 'mobile-contact-bar' ),
@@ -397,14 +403,14 @@ final class Input
                         'top-left'     => __( 'top-left', 'mobile-contact-bar' ),
                     ],
                 ],
-                'font_size' => [
+                'size' => [
                     'type'     => 'slider',
                     'default'  => 0.8,
                     'min'      => 0,
-                    'max'      => 2,
+                    'max'      => 1,
                     'step'     => 0.05,
                     'title'    => __( 'Badge Scale', 'mobile-contact-bar' ),
-                    'desc'     => __( 'Transforms the badge size according to the scaling value.', 'mobile-contact-bar' ),
+                    'desc'     => __( 'Transforms the badge size according to this scaling value.', 'mobile-contact-bar' ),
                 ],
                 'background_color' => [
                     'type'     => 'color-picker-group',

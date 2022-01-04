@@ -43,8 +43,6 @@ final class Migrate_3_0_0
     }
 
 
-    // TODO migrate icon size
-    // TODO migrate badge size
     /**
      * @return array
      */
@@ -112,6 +110,7 @@ final class Migrate_3_0_0
                 }
                 if ( isset( $settings_v2['bar']['color'] ))
                 {
+                    $settings['icons_labels']['bar_color']                   = $settings_v2['bar']['color'];
                     $settings['icons_labels']['background_color']['primary'] = $settings_v2['bar']['color'];
                 }
             }
@@ -153,7 +152,7 @@ final class Migrate_3_0_0
                 }
                 if ( isset( $settings_v2['icons']['size'] ))
                 {
-                    $settings['icons_labels']['icon_size']                   = $settings_v2['icons']['size'];
+                    $settings['icons_labels']['icon_size']                   = $this->migrate_icon_size( $settings_v2['icons']['size'] );
                 }
                 if ( isset( $settings_v2['icons']['color'] ))
                 {
@@ -183,7 +182,7 @@ final class Migrate_3_0_0
                 }
                 if ( isset( $settings_v2['badges']['size'] ))
                 {
-                    $settings['badges']['font_size']                         = $settings_v2['badges']['size'];
+                    $settings['badges']['size']                              = round( floor( $settings_v2['badges']['size'] * 1.25 * 200 ) / 10, 0, PHP_ROUND_HALF_DOWN ) / 20;
                 }
                 if ( isset( $settings_v2['badges']['background_color'] ))
                 {
@@ -197,6 +196,45 @@ final class Migrate_3_0_0
         }
 
         return $settings;
+    }
+
+
+    /**
+     * @param  string $size_v2
+     * @return float
+     */
+    private function migrate_icon_size( $size_v2 )
+    {
+        switch ( $size_v2 )
+        {
+            case 'xs':
+                return 0.75;
+
+            case 'sm':
+                return 0.9;
+
+            case 'lg':
+                return 1.35;
+
+            case '1x':
+                return 1;
+
+            case '2x':
+                return 2;
+
+            case '3x':
+            case '4x':
+            case '5x':
+            case '6x':
+            case '7x':
+            case '8x':
+            case '9x':
+            case '10x':
+                return 3;
+
+            default:
+                return 1;
+        }
     }
 
 
@@ -278,24 +316,24 @@ final class Migrate_3_0_0
 
 
     /**
-     * @param  string $contact_type
-     * @param  string $uri
-     * @param  string $placeholder
+     * @param  string $contact_type_v2
+     * @param  string $uri_v2
+     * @param  string $placeholder_v2
      * @return string
      */
-    private function migrate_contact_type( $contact_type, $uri, $placeholder )
+    private function migrate_contact_type( $contact_type_v2, $uri_v2, $placeholder_v2 )
     {
-        if ( $contact_type === 'whatsapp' || ( untrailingslashit( $uri ) === 'https://api.whatsapp.com/send' ))
+        if ( $contact_type_v2 === 'whatsapp' || ( untrailingslashit( $uri_v2 ) === 'https://api.whatsapp.com/send' ))
         {
             return 'whatsapp';
         }
 
-        switch ( $contact_type )
+        switch ( $contact_type_v2 )
         {
             case 'email':
             case 'whatsapp':
             case 'woocommerce':
-                return $contact_type;
+                return $contact_type_v2;
 
             case 'scrolltop':
                 return 'scrolltotop';
@@ -304,10 +342,10 @@ final class Migrate_3_0_0
                 return 'sms';
 
             case 'custom':
-                return $this->migrate_general_contact_type( $uri );
+                return $this->migrate_general_contact_type( $uri_v2 );
 
             case 'sample':
-                return $this->migrate_general_contact_type( $placeholder );
+                return $this->migrate_general_contact_type( $placeholder_v2 );
 
             default:
                 return '';
@@ -316,19 +354,19 @@ final class Migrate_3_0_0
 
 
     /**
-     * @param  string $uri
+     * @param  string $uri_v2
      * @return string
      */
-    private function migrate_general_contact_type( $uri )
+    private function migrate_general_contact_type( $uri_v2 )
     {
-        if ( untrailingslashit( $uri ) === 'https://api.whatsapp.com/send' )
+        if ( untrailingslashit( $uri_v2 ) === 'https://api.whatsapp.com/send' )
         {
             return 'whatsapp';
         }
 
         $scheme = array_reduce(
             abmcb()->schemes,
-            function ( $acc, $scheme ) use ( $uri ) { return ( strpos( $uri, $scheme ) > -1 ) ? $scheme : $acc; },
+            function ( $acc, $scheme ) use ( $uri_v2 ) { return ( strpos( $uri_v2, $scheme ) > -1 ) ? $scheme : $acc; },
             ''
         );
 
@@ -357,12 +395,12 @@ final class Migrate_3_0_0
 
 
     /**
-     * @param  string $icon
+     * @param  string $icon_v2
      * @return string
      */
-    private function migrate_group( $icon )
+    private function migrate_group( $icon_v2 )
     {
-        $names = preg_split( '/\s+/', $icon, -1, PREG_SPLIT_NO_EMPTY );
+        $names = preg_split( '/\s+/', $icon_v2, -1, PREG_SPLIT_NO_EMPTY );
         if ( ! is_array( $names ) || count( $names ) !== 2 )
         {
             return '';
@@ -386,12 +424,12 @@ final class Migrate_3_0_0
 
 
     /**
-     * @param  string $icon
+     * @param  string $icon_v2
      * @return string
      */
-    private function migrate_icon( $icon )
+    private function migrate_icon( $icon_v2 )
     {
-        $names = preg_split( '/\s+/', $icon, -1, PREG_SPLIT_NO_EMPTY );
+        $names = preg_split( '/\s+/', $icon_v2, -1, PREG_SPLIT_NO_EMPTY );
         if ( ! is_array( $names ) || count( $names ) !== 2 )
         {
             return '';
