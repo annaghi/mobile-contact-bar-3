@@ -4,22 +4,21 @@ namespace MobileContactBar;
 
 use MobileContactBar\Settings;
 use MobileContactBar\Contacts;
-use MobileContactBar\Styles;
 
 
 final class Option
 {
-    public function get_option( $path, $sanitize_option_method )
-    {
-        $option = get_option( $path );
-        return call_user_func( [$this, $sanitize_option_method], $option, 'decode' );
-    }
-
-
     public function update_option( $option, $path, $sanitize_option_method )
     {
         $sanitized_option = call_user_func( [$this, $sanitize_option_method], $option, 'encode' );
         update_option( $path, $sanitized_option );
+    }
+
+
+    public function get_option( $path, $sanitize_option_method )
+    {
+        $option = get_option( $path );
+        return call_user_func( [$this, $sanitize_option_method], $option, 'decode' );
     }
 
 
@@ -43,14 +42,14 @@ final class Option
         {
             switch ( $form )
             {
-                case 'decode':
-                    $contacts = $this->decode_contacts( $option['contacts'] );
-                    $contacts = abmcb( Contacts\Input::class )->sanitize( $contacts );
-                    break;
-
                 case 'encode':
                     $contacts = abmcb( Contacts\Input::class )->sanitize( $option['contacts'] );
                     $contacts = $this->encode_contacts( $contacts );
+                    break;
+
+                case 'decode':
+                    $contacts = $this->decode_contacts( $option['contacts'] );
+                    $contacts = abmcb( Contacts\Input::class )->sanitize( $contacts );
                     break;
 
                 default:
@@ -62,10 +61,11 @@ final class Option
             $contacts = [];
         }
 
+        // abmcb( Styles\CSS::class )->write( $settings, $contacts );
+
         return [
             'settings' => $settings,
             'contacts' => $contacts,
-            'styles'   => abmcb( Styles\CSS::class )->output( $settings, $contacts ),
         ];
     }
 
@@ -85,35 +85,6 @@ final class Option
         {
             return [];
         }
-    }
-
-
-    /**
-     * @param  array $contacts
-     * @return array
-     */
-    public function decode_contacts( $contacts )
-    {
-        if ( is_array( $contacts ))
-        {
-            foreach ( $contacts as &$contact )
-            {
-                $contact['uri'] = untrailingslashit( rawurldecode( $contact['uri'] ));
-
-                if ( isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
-                {
-                    foreach ( $contact['parameters'] as &$parameter )
-                    {
-                        $parameter['key']   = rawurldecode( $parameter['key'] );
-                        $parameter['value'] = rawurldecode( $parameter['value'] );
-                    }
-                    unset( $parameter );
-                }
-            }
-            unset( $contact );
-        }
-
-        return $contacts;
     }
 
 
@@ -147,20 +118,47 @@ final class Option
 
 
     /**
+     * @param  array $contacts
+     * @return array
+     */
+    public function decode_contacts( $contacts )
+    {
+        if ( is_array( $contacts ))
+        {
+            foreach ( $contacts as &$contact )
+            {
+                $contact['uri'] = untrailingslashit( rawurldecode( $contact['uri'] ));
+
+                if ( isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
+                {
+                    foreach ( $contact['parameters'] as &$parameter )
+                    {
+                        $parameter['key']   = rawurldecode( $parameter['key'] );
+                        $parameter['value'] = rawurldecode( $parameter['value'] );
+                    }
+                    unset( $parameter );
+                }
+            }
+            unset( $contact );
+        }
+
+        return $contacts;
+    }
+
+
+    /**
      * Returns the default bar-option.
      *
-     * @return array Option initialized with default settings, contacts, and generated styles
+     * @return array Option initialized with default settings, contacts
      */
     public function default_option_bar()
     {
        $settings = abmcb( Settings\Input::class )->default_settings();
        $contacts = abmcb( Contacts\Input::class )->sample_contacts();
-       $styles   = abmcb( Styles\CSS::class )->output( $settings, $contacts );
 
        return [
            'settings' => $settings,
            'contacts' => $contacts,
-           'styles'   => $styles,
        ];
     }
 }

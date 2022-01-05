@@ -27,6 +27,7 @@ The settings page is available under the *Settings / Mobile Contact Bar* menu in
 
 * SVG icons for social media, call-to-actions, or any links to web pages
 * Simple and intuitive editing with live preview
+* Serve the generated CSS file from the `uploads` folder
 * Built-in icon picker with
     * [Font Awesome 5](https://fontawesome.com/) (CC BY 4.0 License) and
     * [Tabler Icons](https://tabler-icons.io/) (MIT License) integration
@@ -124,6 +125,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Rename] `#mobile-contact-bar-outer` to `#mobile-contact-bar-nav`
 * [Add] Introduce Tabler Icons 1.50.0
 * [Add] Browser history back and forward actions
+* [Add] Save CSS to file, and enqueue it [css-in-css-file](https://wordpress.org/support/topic/css-in-css-file/)
 + [Add] viber [viber-chat](https://wordpress.org/support/topic/problem-whit-link/)
 * [Add] CSS ID selector and color customization
 * [Add] Display label above, below, and instead of the icon [text-below-icon](https://wordpress.org/support/topic/text-below-icon/), [add-label-under-icons](https://wordpress.org/support/topic/add-label-under-icons/)
@@ -168,7 +170,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Upgrade] Reimplement plugin with new options in the database
 * [Upgrade] Font Awesome 5.0.12 [can-add-support-fontawesome-v5-0-8](https://wordpress.org/support/topic/can-add-support-fontawesome-v5-0-8/)
 * [Rename] `mcb_front_render_html` to `mcb_public_render_html`
-* [Remove] `mcb_admin_update_contacts` and `mcb_admin_update_settings` filters
+* [Deprecate] `mcb_admin_update_contacts` and `mcb_admin_update_settings` filters
 * [Add] UI for managing contacts and their parameters (add, delete, modify) [a-couple-of-more-feature-suggestions](https://wordpress.org/support/topic/a-couple-of-more-feature-suggestions/)
 * [Add] Option for setting label on the toggle [a-couple-of-more-feature-suggestions](https://wordpress.org/support/topic/a-couple-of-more-feature-suggestions/)
 * [Add] Option for adding space above/below the bar [contact-bar-overlaying-footer-credits-on-site](https://wordpress.org/support/topic/contact-bar-overlaying-footer-credits-on-site/), [position](https://wordpress.org/support/topic/position-20/), [hidding-menu](https://wordpress.org/support/topic/hidding-menu/)

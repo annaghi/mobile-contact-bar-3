@@ -24,7 +24,6 @@ final class PublicController
             
             if (( $is_mobile && 'mobile' === $device ) || ( ! $is_mobile && 'desktop' === $device ) || ( 'both' === $device ))
             {
-                add_action( 'wp_head', [$this, 'wp_head'], 7 );
                 add_action( 'wp_enqueue_scripts', [$this, 'wp_enqueue_scripts'] );
                 add_action( 'wp_footer', [$this, 'wp_footer'] );
             }
@@ -33,12 +32,21 @@ final class PublicController
 
 
     /**
-     * Loads scripts for the plugin - when needed.
+     * Loads styles and optional scripts for the plugin.
      * 
      * @return void
      */
     public function wp_enqueue_scripts()
     {
+        $wp_upload_dir = wp_get_upload_dir();
+        wp_enqueue_style(
+            abmcb()->slug . '-base',
+            $wp_upload_dir['baseurl'] . '/' . abmcb()->slug . '/' . abmcb()->base_css,
+            [],
+            abmcb()->version,
+            'all'
+        );
+
         if ( abmcb()->option_bar['settings']['toggle']['is_render'] && abmcb()->option_bar['settings']['toggle']['is_cookie'] )
         {
             wp_enqueue_script(
@@ -49,19 +57,6 @@ final class PublicController
                 true
             );
         }
-    }
-
-
-    /**
-     * Renders the plugin generated CSS styles.
-     * 
-     * @return void
-     */
-    public function wp_head()
-    {
-        ?>
-        <style id="<?php echo abmcb()->slug, '-css'; ?>" type="text/css" media="screen"><?php echo strip_tags( abmcb()->option_bar['styles'] ); ?></style>
-        <?php
     }
 
 

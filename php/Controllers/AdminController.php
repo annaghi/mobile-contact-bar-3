@@ -3,10 +3,10 @@
 namespace MobileContactBar\Controllers;
 
 use MobileContactBar\Icons;
+use MobileContactBar\File;
 use MobileContactBar\Option;
 use MobileContactBar\Settings;
 use MobileContactBar\Contacts;
-use MobileContactBar\Styles;
 
 
 final class AdminController
@@ -561,15 +561,15 @@ final class AdminController
 
 
     /**
-     * Injects re-generated styles to bar-option before update.
+     * Writes generated styles to the /uploads folder.
      *
      * @param  array $new_value The new value
      * @param  array $old_value The old value
-     * @return array            The updated bar-option
+     * @return array
      */
     public function pre_update_option( $new_value, $old_value = [] )
     {
-        $new_value['styles'] = abmcb( Styles\CSS::class )->output( $new_value['settings'], $new_value['contacts'] );
+        abmcb( File::class )->write( $new_value );
         return $new_value;
     }
 

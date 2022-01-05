@@ -6,7 +6,7 @@ namespace MobileContactBar\Styles;
 final class CSS
 {
     /**
-     * Outputs the public 'styles' generated from 'settings' and 'contacts'.
+     * Outputs the base styles generated from 'settings' and 'contacts'.
      *
      * @param  array  $settings
      * @param  array  $contacts

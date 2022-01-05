@@ -2,6 +2,7 @@
 
 namespace MobileContactBar\Migrations;
 
+use MobileContactBar\File;
 use MobileContactBar\ContactTypes;
 use MobileContactBar\Settings;
 
@@ -20,6 +21,8 @@ final class Migrate_3_0_0
         $this->migrate_option_bar();
         $this->migrate_user_meta();
 
+        abmcb( File::class )->create();
+
         return true;
     }
 
@@ -31,15 +34,8 @@ final class Migrate_3_0_0
     {
         $settings = $this->migrate_settings();
         $contacts = $this->migrate_contacts();
-        $styles   = '';
 
-        $option_bar = [
-            'settings' => $settings,
-            'contacts' => $contacts,
-            'styles'   => $styles,
-        ];
-
-        update_option( abmcb()->id, $option_bar );
+        update_option( abmcb()->id, ['settings' => $settings, 'contacts' => $contacts] );
     }
 
 
@@ -73,7 +69,7 @@ final class Migrate_3_0_0
             {
                 if ( isset( $settings_v2['bar']['is_fixed'] ))
                 {
-                    $settings['bar']['is_sticky']                            = $settings_v2['bar']['is_fixed'];
+                    $settings['bar']['is_sticky']                            = (int) $settings_v2['bar']['is_fixed'];
                 }
                 if ( isset( $settings_v2['bar']['horizontal_position'] ))
                 {
@@ -82,10 +78,6 @@ final class Migrate_3_0_0
                 if ( isset( $settings_v2['bar']['vertical_position'] ))
                 {
                     $settings['bar']['vertical_alignment']                   = $settings_v2['bar']['vertical_position'];    
-                }
-                if ( isset( $settings_v2['bar']['placeholder_height'] ))
-                {
-                    $settings['bar']['placeholder_height']                   = $settings_v2['bar']['placeholder_height'];
                 }
                 if ( isset( $settings_v2['bar']['vertical_alignment'], $settings_v2['bar']['is_border'] ))
                 {
@@ -123,7 +115,7 @@ final class Migrate_3_0_0
                 }
                 if ( isset( $settings_v2['icons']['width'] ))
                 {
-                    $settings['icons_labels']['width']                       = $settings_v2['icons']['width'];
+                    $settings['icons_labels']['width']                       = (int) $settings_v2['icons']['width'];
                 }
                 if ( isset( $settings_v2['icons']['is_border'] ))
                 {
@@ -148,7 +140,7 @@ final class Migrate_3_0_0
                 }
                 if ( isset( $settings_v2['icons']['border_width'] ))
                 {
-                    $settings['icons_labels']['border_width']                = $settings_v2['icons']['border_width'];
+                    $settings['icons_labels']['border_width']                = (int) $settings_v2['icons']['border_width'];
                 }
                 if ( isset( $settings_v2['icons']['size'] ))
                 {
@@ -170,7 +162,7 @@ final class Migrate_3_0_0
                 }
                 if ( isset( $settings_v2['toggle']['size'] ))
                 {
-                    $settings['toggle']['font_size']                         = $settings_v2['toggle']['size'];
+                    $settings['toggle']['font_size']                         = (float) $settings_v2['toggle']['size'];
                 }
             }
 
@@ -233,7 +225,7 @@ final class Migrate_3_0_0
                 return 3;
 
             default:
-                return 1;
+                return 1.35;
         }
     }
 

@@ -40,8 +40,17 @@ final class Migrate
     public function run()
     {
         clearstatcache();
+
         $this->run_all();
-        $this->refresh_option_bar();
+
+        $option_bar = abmcb( Option::class )->get_option( abmcb()->id, 'sanitize_option_bar' );
+        if ( empty( $option_bar['contacts'] ))
+        {
+            $option_bar['contacts'] = abmcb( Contacts\Input::class )->unchecked_sample_contacts();
+        }
+        abmcb( Option::class )->update_option( $option_bar, abmcb()->id, 'sanitize_option_bar' );
+
+        abmcb( File::class )->write( abmcb( Option::class )->get_option( abmcb()->id, 'sanitize_option_bar' ) );
     }
 
 
@@ -104,22 +113,6 @@ final class Migrate
         );
 
         return array_fill_keys( $needed_migrations, false );
-    }
-
-
-    /**
-     * @return void
-     */
-    private function refresh_option_bar()
-    {
-        $option_bar = abmcb( Option::class )->get_option( abmcb()->id, 'sanitize_option_bar' );
-
-        if ( empty( $option_bar['contacts'] ))
-        {
-            $option_bar['contacts'] = abmcb( Contacts\Input::class )->unchecked_sample_contacts();
-        }
-
-        abmcb( Option::class )->update_option( $option_bar, abmcb()->id, 'sanitize_option_bar' );
     }
 
 

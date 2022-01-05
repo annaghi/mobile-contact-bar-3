@@ -140,13 +140,14 @@ final class View
                 foreach ( $setting['options'] as $option_key => $option )
                 {
                     printf(
-                        '<fieldset class="mcb-color-picker-group" id="mcb-%s-%s">',
+                        '<fieldset class="mcb-color-picker-group" id="mcb-%s-%s--%s">',
                         esc_attr( $section_key ),
-                        esc_attr( $setting_key )
+                        esc_attr( $setting_key ),
+                        esc_attr( $option_key )
                     );
                     printf(
-                        '<label class="mcb-color-picker-label" for="mcb-%1$s-%2$s--%3$s">%4$s</label>
-                        <input type="text" class="color-picker" id="mcb-%1$s-%2$s--%3$s" name="' . $prefix . '[%1$s][%2$s][%3$s]" data-alpha-enabled="true" value="%5$s">',
+                        '<label class="mcb-color-picker-label">%4$s</label>
+                        <input type="text" class="color-picker" name="' . $prefix . '[%1$s][%2$s][%3$s]" data-alpha-enabled="true" value="%5$s">',
                         esc_attr( $section_key ),
                         esc_attr( $setting_key ),
                         esc_attr( $option_key ),

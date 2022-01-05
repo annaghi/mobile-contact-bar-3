@@ -35,15 +35,8 @@ final class Migrate_2_0_0
     {
         $settings = $this->migrate_settings();
         $contacts = $this->migrate_contacts();
-        $styles   = '';
 
-        $option_bar = [
-            'settings' => $settings,
-            'contacts' => $contacts,
-            'styles'   => $styles,
-        ];
-
-        update_option( abmcb()->id, $option_bar );
+        update_option( abmcb()->id, ['settings' => $settings, 'contacts' => $contacts] );
     }
 
 
@@ -63,15 +56,15 @@ final class Migrate_2_0_0
 
             if ( isset( $settings_v1['bar_max_screen_width'] ))
             {
-                $settings['bar']['device']              = ( $settings_v1['bar_max_screen_width'] > 1400 ) ? 'both' : 'mobile';
+                $settings['bar']['device']              = ( (int) $settings_v1['bar_max_screen_width'] > 1400 ) ? 'both' : 'mobile';
             }
             if ( isset( $settings_v1['bar_is_active'], $settings['bar']['device'] ))
             {
-                $settings['bar']['device']              = ( $settings_v1['bar_is_active'] ) ? $settings['bar']['device'] : 'none';    
+                $settings['bar']['device']              = ( (int) $settings_v1['bar_is_active'] ) ? $settings['bar']['device'] : 'none';    
             }
             if ( isset( $settings_v1['bar_is_new_tab'] ))
             {
-                $settings['bar']['is_new_tab']          = $settings_v1['bar_is_new_tab'];
+                $settings['bar']['is_new_tab']          = (int) $settings_v1['bar_is_new_tab'];
             }
             if ( isset( $settings_v1['bar_horizontal_align'] ))
             {
@@ -83,11 +76,11 @@ final class Migrate_2_0_0
             }
             if ( isset( $settings_v1['bar_is_fixed'] ))
             {
-                $settings['bar']['is_fixed']            = $settings_v1['bar_is_fixed'];
+                $settings['bar']['is_fixed']            = (int) $settings_v1['bar_is_fixed'];
             }
             if ( isset( $settings_v1['bar_height'] ))
             {
-                $settings['bar']['height']              = $settings_v1['bar_height'];
+                $settings['bar']['height']              = (int) $settings_v1['bar_height'];
             }
             if ( isset( $settings_v1['bar_color'] ))
             {
@@ -95,7 +88,7 @@ final class Migrate_2_0_0
             }
             if ( isset( $settings_v1['bar_opacity'] ))
             {
-                $settings['bar']['opacity']             = $settings_v1['bar_opacity'];
+                $settings['bar']['opacity']             = (float) $settings_v1['bar_opacity'];
             }
             if ( isset( $settings_v1['icon_size'] ))
             {
@@ -115,11 +108,11 @@ final class Migrate_2_0_0
             }
             if ( isset( $settings_v1['icon_border_width'] ))
             {
-                $settings['icons']['border_width']      = $settings_v1['icon_border_width'];
+                $settings['icons']['border_width']      = (int) $settings_v1['icon_border_width'];
             }
             if ( isset( $settings_v1['bar_is_toggle'] ))
             {
-                $settings['toggle']['is_render']        = $settings_v1['bar_is_toggle'];
+                $settings['toggle']['is_render']        = (int) $settings_v1['bar_is_toggle'];
             }
             if ( isset( $settings_v1['bar_toggle_color'] ))
             {

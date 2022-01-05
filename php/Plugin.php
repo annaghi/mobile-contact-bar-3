@@ -29,7 +29,17 @@ final class Plugin extends Container
     public $version = '';
     public $plugin_uri = '';
 
+
+    /**
+     * @var array
+     */
     public $contact_types = [];
+
+
+    /**
+     * @var string
+     */
+    public $base_css = 'css/mcb-base.css';
 
 
     /**
@@ -39,7 +49,7 @@ final class Plugin extends Container
 
     
     /**
-     * Multidimensional array of the plugin's option, divided into sections: 'settings', 'contacts', 'styles'.
+     * Multidimensional array of the plugin's option, divided into sections: 'settings', 'contacts'.
      *
      * @var array
      */
@@ -135,14 +145,14 @@ final class Plugin extends Container
             foreach ( $site_ids as $site_id )
             {
                 switch_to_blog( $site_id );
-                $this->install();
+                $this->install( 'activate' );
                 restore_current_blog();
             }
             add_action( 'switch_blog', 'wp_switch_roles_and_user', 1, 2 );
         }
         else
         {
-            $this->install();
+            $this->install( 'activate' );
         }
     }
 
@@ -255,7 +265,7 @@ final class Plugin extends Container
      * 
      * @return void
      */
-    private function install()
+    private function install( $activate = '' )
     {
         $this->register_contact_types();
 
@@ -268,13 +278,19 @@ final class Plugin extends Container
         }
         elseif ( ! $version )
         {
-            update_option( self::ID, abmcb( Option::class )->default_option_bar() );
+            abmcb( Option::class )->update_option( abmcb( Option::class )->default_option_bar(), self::ID, 'sanitize_option_bar' );
+            abmcb( File::class )->create();
+            abmcb( File::class )->write( abmcb( Option::class )->get_option( self::ID, 'sanitize_option_bar' ) );
             update_option( self::ID . '_version', $this->version );
         }
         elseif ( $version && version_compare( $version, $this->version, '<' ))
         {
             abmcb( Migrate::class )->run();
             update_option( self::ID . '_version', $this->version );
+        }
+        elseif ( 'activate' === $activate )
+        {
+            abmcb( Migrate::class )->run();
         }
     }
 
