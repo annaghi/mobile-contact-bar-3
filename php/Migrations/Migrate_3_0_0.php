@@ -215,14 +215,18 @@ final class Migrate_3_0_0
                 return 2;
 
             case '3x':
+                return 3;
+
             case '4x':
+                return 4;
+
             case '5x':
             case '6x':
             case '7x':
             case '8x':
             case '9x':
             case '10x':
-                return 3;
+                return 5;
 
             default:
                 return 1.35;

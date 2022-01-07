@@ -42,6 +42,12 @@ final class Hooks
             add_action( 'admin_notices', [$this->notice, 'admin_notices'] );
             add_action( 'wp_ajax_mcb_ajax_dismiss_notice', [$this->notice, 'ajax_dismiss_notice'] );
 
+            $this->ajax = abmcb( AJAXController::class );
+            foreach ( $this->ajax->admin_actions as $admin_action )
+            {
+                add_action( 'wp_ajax_mcb_' . $admin_action, [$this->ajax, $admin_action], 1 );
+            }
+
             $this->admin = abmcb( AdminController::class );
             add_action( 'admin_menu', [$this->admin, 'admin_menu'] );
             add_action( 'admin_init', [$this->admin, 'admin_init'] );
@@ -51,12 +57,6 @@ final class Hooks
             add_action( 'admin_footer', [$this->admin, 'admin_footer'] );
             add_filter( 'pre_update_option_' . abmcb()->id, [$this->admin, 'pre_update_option'], 10, 2 );
             add_filter( 'plugin_action_links_' . plugin_basename( abmcb()->file ), [$this->admin, 'plugin_action_links'] );
-
-            $this->ajax = abmcb( AJAXController::class );
-            foreach ( $this->ajax->admin_actions as $admin_action )
-            {
-                add_action( 'wp_ajax_mcb_' . $admin_action, [$this->ajax, $admin_action], 1 );
-            }
         }
 
         if ( isset( $_GET[abmcb()->slug . '-iframe'] ))

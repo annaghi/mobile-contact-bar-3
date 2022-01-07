@@ -2,8 +2,8 @@
 
 namespace MobileContactBar\Controllers;
 
-use MobileContactBar\Icons;
 use MobileContactBar\Contacts;
+use MobileContactBar\Icons;
 
 
 final class AJAXController

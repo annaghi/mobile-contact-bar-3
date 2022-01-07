@@ -50,7 +50,7 @@ final class Migrate
         }
         abmcb( Option::class )->update_option( $option_bar, abmcb()->id, 'sanitize_option_bar' );
 
-        abmcb( File::class )->write( abmcb( Option::class )->get_option( abmcb()->id, 'sanitize_option_bar' ) );
+        abmcb( File::class )->write( abmcb( Option::class )->get_option( abmcb()->id, 'sanitize_option_bar' ));
     }
 
 

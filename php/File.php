@@ -44,7 +44,7 @@ final class File
 
 
     /**
-     * Writes the base styles to the /uploads folder.
+     * Writes the base styles to the uploads/ folder.
      *
      * @param  array $option_bar
      * @return void

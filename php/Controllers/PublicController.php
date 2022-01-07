@@ -94,6 +94,8 @@ final class PublicController
      * @return string HTML
      * 
      * @global $wp
+     * 
+     * @return string
      */
     public function output()
     {

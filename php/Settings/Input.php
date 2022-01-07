@@ -204,7 +204,7 @@ final class Input
                     'type'     => 'slider',
                     'default'  => 1.35,
                     'min'      => 0,
-                    'max'      => 3,
+                    'max'      => 5,
                     'step'     => 0.05,
                     'postfix'  => 'em',
                     'title'    => __( 'Icon Size', 'mobile-contact-bar' ),
@@ -213,7 +213,7 @@ final class Input
                     'type'     => 'slider',
                     'default'  => 0.8,
                     'min'      => 0,
-                    'max'      => 3,
+                    'max'      => 5,
                     'step'     => 0.05,
                     'postfix'  => 'em',
                     'title'    => __( 'Label Font Size', 'mobile-contact-bar' ),
@@ -562,12 +562,9 @@ final class Input
 
                 switch ( $setting['type'] )
                 {
-                    case 'select':
                     case 'radio':
-                        $sanitized_settings[$section_key][$setting_key] =
-                            ( in_array( $value, array_keys( $setting['options'] )))
-                            ? $value
-                            : $setting['default'];
+                    case 'select':
+                        $sanitized_settings[$section_key][$setting_key] = $this->sanitize_radio_select( $setting, $value );
                         break;
 
                     case 'color-picker':
@@ -582,30 +579,18 @@ final class Input
                         break;
 
                     case 'checkbox':
-                        $value = (int) $value;
-                        $sanitized_settings[$section_key][$setting_key] =
-                            ( 0 === $value || 1 === $value )
-                            ? $value
-                            : $setting['default'];
+                        $sanitized_settings[$section_key][$setting_key] = $this->sanitize_zero_one( $setting, $value );
                         break;
 
                     case 'checkbox-group':
                         foreach( $setting['options'] as $option_key => $option )
                         {
-                            $value_ = (int) $value[$option_key];
-                            $sanitized_settings[$section_key][$setting_key][$option_key] =
-                                ( 0 === $value_ || 1 === $value_ )
-                                ? $value_
-                                : $option['default'];
+                            $sanitized_settings[$section_key][$setting_key][$option_key] = $this->sanitize_zero_one( $option, $value[$option_key] );
                         }
                         break;
 
                     case 'number':
-                        $value = (int) $value;
-                        $sanitized_settings[$section_key][$setting_key] =
-                            (( isset( $setting['min'] ) && $value < $setting['min'] ) || ( isset( $setting['max'] ) && $value > $setting['max'] ))
-                            ? $setting['default']
-                            : $value;
+                        $sanitized_settings[$section_key][$setting_key] = $this->sanitize_int( $setting, $value );
                         break;
 
                     case 'text':
@@ -613,11 +598,7 @@ final class Input
                         break;
 
                     case 'slider':
-                        $value = (float) $value;
-                        $sanitized_settings[$section_key][$setting_key] =
-                            ( $setting['min'] <= $value || $value <= $setting['max'] )
-                            ? $value
-                            : $setting['default'];
+                        $sanitized_settings[$section_key][$setting_key] = $this->sanitize_float( $setting, $value );
                         break;
                 }
             }
@@ -627,23 +608,55 @@ final class Input
     }
 
 
+    public function sanitize_zero_one( $setting, $value )
+    {
+        return ( 0 === (int) $value || 1 === (int) $value )
+            ? (int) $value
+            : $setting['default'];
+    }
+
+
+    public function sanitize_int( $setting, $value )
+    {
+        return (( isset( $setting['min'] ) && (int) $value < $setting['min'] ) || ( isset( $setting['max'] ) && (int) $value > $setting['max'] ))
+            ? $setting['default']
+            : (int) $value;
+    }
+
+
+    public function sanitize_float( $setting, $value )
+    {
+        return ( $setting['min'] <= (float) $value || (float) $value <= $setting['max'] )
+            ? (float) $value
+            : $setting['default'];
+    }
+
+
+    public function sanitize_radio_select( $setting, $value )
+    {
+        return ( in_array( $value, array_keys( $setting['options'] )))
+            ? $value
+            : $setting['default'];
+    }
+
+
     /**
      * Sanitizes color code.
      *
-     * @param  string $color Color code (Hex, RGB, or RGBA)
+     * @param  string $value Color code (Hex, RGB, or RGBA)
      * @return string        Filtered color code
      */
-    public function sanitize_color( $color )
+    public function sanitize_color( $value )
     {
-        $sanitized_color = $this->sanitize_hex_color( $color );
+        $sanitized_color = $this->sanitize_hex_color( $value );
 
         if ( ! $sanitized_color )
         {
-            $sanitized_color = $this->sanitize_rgb_color( $color );
+            $sanitized_color = $this->sanitize_rgb_color( $value );
         }
         if ( ! $sanitized_color )
         {
-            $sanitized_color = $this->sanitize_rgba_color( $color );
+            $sanitized_color = $this->sanitize_rgba_color( $value );
         }
 
         return $sanitized_color;
@@ -653,16 +666,16 @@ final class Input
     /**
      * Sanitizes hexadecimal color code.
      *
-     * @param  string $hex_color Color code
-     * @return string            Filtererd color code
+     * @param  string $value Color code
+     * @return string        Filtererd color code
      *
      * @see https://developer.wordpress.org/reference/functions/sanitize_hex_color/
      */
-    private function sanitize_hex_color( $hex_color )
+    private function sanitize_hex_color( $value )
     {
-        if ( preg_match( '/^#([A-Fa-f0-9]{3}){1,2}$/', $hex_color ))
+        if ( preg_match( '/^#([A-Fa-f0-9]{3}){1,2}$/', $value ))
         {
-            return $hex_color;
+            return $value;
         }
 
         return '';
@@ -672,14 +685,14 @@ final class Input
     /**
      * Sanitizes RGB color code.
      *
-     * @param  string $rgb_color Color code
-     * @return string            Filtererd color code
+     * @param  string $value Color code
+     * @return string        Filtererd color code
      */
-    private function sanitize_rgb_color( $rgb_color )
+    private function sanitize_rgb_color( $value )
     {
-        if ( preg_match( '/^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/i', $rgb_color ))
+        if ( preg_match( '/^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/i', $value ))
         {
-            return $rgb_color;
+            return $value;
         }
 
         return '';
@@ -689,14 +702,14 @@ final class Input
     /**
      * Sanitizes RGBA color code.
      *
-     * @param  string $rgba_color Color code
-     * @return string             Filtererd color code
+     * @param  string $value Color code
+     * @return string        Filtererd color code
      */
-    private function sanitize_rgba_color( $rgba_color )
+    private function sanitize_rgba_color( $value )
     {
-        if ( preg_match( '/^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/i', $rgba_color ))
+        if ( preg_match( '/^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/i', $value ))
         {
-            return $rgba_color;
+            return $value;
         }
 
         return '';

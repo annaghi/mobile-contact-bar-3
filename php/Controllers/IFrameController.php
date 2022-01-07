@@ -91,6 +91,8 @@ final class IFrameController
      * @return string HTML
      * 
      * @global $wp
+     * 
+     * @return string
      */
     public function output()
     {

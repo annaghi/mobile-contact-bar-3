@@ -280,7 +280,10 @@
     var option = {
         init: function () {
             // Bind toggle child-settings
-            $('#mcb-section-bar tbody, #mcb-section-icons_labels tbody, #mcb-section-toggle tbody').initSettings();
+            option.settings = $(
+                '#mcb-section-bar tbody, #mcb-section-icons_labels tbody, #mcb-section-toggle tbody, #mcb-section-badge tbody'
+            );
+            option.settings.initSettings();
 
             // Init contact list
             option.contactList = $('#mcb-contacts');
@@ -345,6 +348,22 @@
                 'mcb-bar-device--none' === $(this).attr('id')
                     ? $('#mcb-badge-display').removeClass().addClass('mcb-badge-disabled').text(mobile_contact_bar.l10n.disabled)
                     : $('#mcb-badge-display').removeClass().addClass('mcb-badge-enabled').text(mobile_contact_bar.l10n.enabled);
+            });
+
+            // Close color picker on ESC
+            option.settings.on('keydown', function (event) {
+                if (27 !== event.which) {
+                    return;
+                }
+
+                var pickerContainers = option.settings.find('.wp-picker-container');
+
+                pickerContainers.each(function () {
+                    if ($(this).hasClass('wp-picker-active')) {
+                        $(this).find('.color-picker').wpColorPicker('close');
+                        $(this).find('.wp-color-result').focus();
+                    }
+                });
             });
 
             // Add contact
