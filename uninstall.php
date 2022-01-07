@@ -8,10 +8,12 @@ require_once ABSPATH . '/wp-admin/includes/file.php';
 /**
  * Cleans the database from all plugin related data.
  * Clears plugin related cron events.
- * Deletes plugin's folder from /uploads.
+ * Deletes plugin's folder from uploads/.
  *
  * @global $wpdb
  * @global $wp_filesystem
+ * 
+ * @return void
  */
 function abmcb_uninstall()
 {
