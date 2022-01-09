@@ -31,7 +31,6 @@ The settings page is available under the *Settings / Mobile Contact Bar* menu in
 * Built-in icon picker with
     * [Font Awesome 5](https://fontawesome.com/) (CC BY 4.0 License) and
     * [Tabler Icons](https://tabler-icons.io/) (MIT License) integration
-* Customizable URLs using query string parameters
 * No data collection from your website's visitors
 * Super easy to use, no coding required!
 
@@ -131,7 +130,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Add] Display label above, below, and instead of the icon [text-below-icon](https://wordpress.org/support/topic/text-below-icon/), [add-label-under-icons](https://wordpress.org/support/topic/add-label-under-icons/)
 * [Add] Option for setting the bar to be closed as default [toggle-state](https://wordpress.org/support/topic/toggle-state-4/), [default-toggle-state](https://wordpress.org/support/topic/default-toggle-state/)
 * [Add] Let the + sign be optional in tel and sms protocols [telephone-remove](https://wordpress.org/support/topic/telephone-remove/)
-* [Fix] Decode / encode query string parameters properly [e-mail-body](https://wordpress.org/support/topic/e-mail-body/)
+* [Fix] Decode / encode query string properly [e-mail-body](https://wordpress.org/support/topic/e-mail-body/)
 * [Fix] Move migration process to `init` in order to run it on both admin and public pages
 * [Update] Font Awesome 5.15.4
 
@@ -171,7 +170,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Upgrade] Font Awesome 5.0.12 [can-add-support-fontawesome-v5-0-8](https://wordpress.org/support/topic/can-add-support-fontawesome-v5-0-8/)
 * [Rename] `mcb_front_render_html` to `mcb_public_render_html`
 * [Deprecate] `mcb_admin_update_contacts` and `mcb_admin_update_settings` filters
-* [Add] UI for managing contacts and their parameters (add, delete, modify) [a-couple-of-more-feature-suggestions](https://wordpress.org/support/topic/a-couple-of-more-feature-suggestions/)
+* [Add] UI for managing contacts and details (add, delete, modify) [a-couple-of-more-feature-suggestions](https://wordpress.org/support/topic/a-couple-of-more-feature-suggestions/)
 * [Add] Option for setting label on the toggle [a-couple-of-more-feature-suggestions](https://wordpress.org/support/topic/a-couple-of-more-feature-suggestions/)
 * [Add] Option for adding space above/below the bar [contact-bar-overlaying-footer-credits-on-site](https://wordpress.org/support/topic/contact-bar-overlaying-footer-credits-on-site/), [position](https://wordpress.org/support/topic/position-20/), [hidding-menu](https://wordpress.org/support/topic/hidding-menu/)
 * [Add] Storing toggle state in a cookie [toggle-state](https://wordpress.org/support/topic/toggle-state/), [toggle-issue](https://wordpress.org/support/topic/toggle-issue/)
