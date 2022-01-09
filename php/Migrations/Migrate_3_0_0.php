@@ -286,7 +286,7 @@ final class Migrate_3_0_0
 
                 if ( isset( $contact_v2['parameters'] ) && is_array( $contact_v2['parameters'] ))
                 {
-                    $contact['parameters'] = [];
+                    $contact['query'] = [];
 
                     foreach ( $contact_v2['parameters'] as $parameter_v2 )
                     {
@@ -294,13 +294,13 @@ final class Migrate_3_0_0
                         $parameter['key']   = ( isset( $parameter_v2['key'] ))   ? rawurlencode( rawurldecode( $parameter_v2['key'] ))   : '';
                         $parameter['value'] = ( isset( $parameter_v2['value'] )) ? rawurlencode( rawurldecode( $parameter_v2['value'] )) : '';
 
-                        $contact['parameters'][] = $parameter;
+                        $contact['query'][] = $parameter;
                     }
                 }
 
-                if ( 'link' === $contact['type'] && ! isset( $contact['parameters'] ))
+                if ( 'link' === $contact['type'] && ! isset( $contact['query'] ))
                 {
-                    $contact['parameters'] = [];
+                    $contact['query'] = [];
                 }
 
                 $contacts[] = $contact;

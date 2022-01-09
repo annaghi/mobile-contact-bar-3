@@ -31,18 +31,18 @@ abstract class ContactType
         unset( $keys['desc_type'] );
         unset( $keys['desc_uri'] );
 
-        if ( isset( $keys['parameters'] ) && is_array( $keys['parameters'] ))
+        if ( isset( $keys['query'] ) && is_array( $keys['query'] ))
         {
-            $keys['parameters'] = array_map(
-                function ( &$parameter )
+            $keys['query'] = array_map(
+                function ( $parameter )
                 {
-                    unset( $parameter['field'] );
-                    unset( $parameter['placeholder'] );
-                    return $parameter;
+                    $parameter_keys = $parameter;
+                    unset( $parameter_keys['field'] );
+                    unset( $parameter_keys['placeholder'] );
+                    return $parameter_keys;
                 },
-                $keys['parameters']
+                $keys['query']
             );
-            unset( $parameter );
         }
 
         return $keys;

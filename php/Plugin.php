@@ -16,18 +16,18 @@ use ReflectionClass;
 */
 final class Plugin extends Container
 {
-    const ID = 'mobile_contact_bar';
-    const SLUG = 'mobile-contact-bar';
-    const CAPABILITY = 'manage_options';
-    const PAGE_SUFFIX = 'settings_page_mobile-contact-bar';
-    const SCHEMES = ['viber', 'tel', 'sms', 'skype', 'mailto', 'https', 'http'];
+    const ID           = 'mobile_contact_bar';
+    const SLUG         = 'mobile-contact-bar';
+    const CAPABILITY   = 'manage_options';
+    const PAGE_SUFFIX  = 'settings_page_mobile-contact-bar';
+    const SCHEMES      = ['viber', 'tel', 'sms', 'skype', 'mailto', 'https', 'http'];
     const WP_CRON_HOOK = 'mobile_contact_bar_weekly_scheduled_events';
 
 
     public $file = '';
     public $name = '';
-    public $version = '';
     public $plugin_uri = '';
+    public $version = '';
 
 
     /**
@@ -92,8 +92,8 @@ final class Plugin extends Container
             $file,
             [
                 'name'        => 'Plugin Name',
-                'version'     => 'Version',
                 'plugin_uri'  => 'Plugin URI',
+                'version'     => 'Version',
             ],
             'plugin'
         );

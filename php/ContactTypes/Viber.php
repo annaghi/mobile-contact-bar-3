@@ -25,7 +25,7 @@ final class Viber extends ContactType
             'text'        => 'Viber',
             'uri'         => 'viber://pa?chatURI=your_URI',
             'placeholder' => 'viber://pa?chatURI=your_URI',
-            'parameters'  => [
+            'query'       => [
                 [
                     'field'       => 'text',
                     'key'         => 'context',

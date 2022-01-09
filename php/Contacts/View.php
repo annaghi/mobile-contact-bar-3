@@ -355,7 +355,7 @@ final class View
         );
 
         $out .= $this->output_details_uri( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_field' => $contact_field] );
-        $out .= $this->output_parameters( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_field' => $contact_field] );
+        $out .= $this->output_query( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_field' => $contact_field] );
         $out .= $this->output_customization( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_field' => $contact_field] );
 
         // Close details button
@@ -387,7 +387,7 @@ final class View
         {
             // 'URI' hidden
             $out .= sprintf(
-                '<input type="hidden" name="' . $prefix . '[uri]" value="%1$s">',
+                '<input type="hidden" name="' . $prefix . '[uri]" value="%s">',
                 esc_attr( $contact['uri'] )
             );
 
@@ -429,14 +429,14 @@ final class View
 
 
     /**
-     * Outputs parameters head row.
+     * Outputs query head row.
      *
      * @param  array  $args
      * 	       string $contact_key
      * 	       array  $contact
      * @return string              HTML
      */
-    public function output_parameters( $args )
+    public function output_query( $args )
     {
         extract( $args );
 
@@ -445,19 +445,19 @@ final class View
         if ( 'link' === $contact['type'] )
         {
             $out .= sprintf(
-                '<div class="mcb-row mcb-link-parameters">
+                '<div class="mcb-row mcb-link-query">
                     <div class="mcb-label">
                         <label>%s</label>
                     </div>
                     <div class="mcb-input">
-                        <button type="button" class="button mcb-action-add-parameter" title="%2$s">%2$s</button>
+                        <button type="button" class="button button-secondary mcb-action-add-parameter" title="%2$s">%2$s</button>
                     </div>
                 </div>',
-                esc_attr__( 'Query String Parameters', 'mobile-contact-bar' ),
+                esc_attr__( 'Query String', 'mobile-contact-bar' ),
                 esc_attr__( 'Add Parameter', 'mobile-contact-bar' )
             );
             
-            foreach ( $contact['parameters'] as $parameter_key => $parameter )
+            foreach ( $contact['query'] as $parameter_key => $parameter )
             {
                 $out .= $this->output_link_parameter(
                     [
@@ -469,22 +469,22 @@ final class View
                 );
             }
         }
-        elseif ( isset( $contact['parameters'] ))
+        elseif ( isset( $contact['query'] ))
         {
             $out .= sprintf(
-                '<div class="mcb-row mcb-builtin-parameters">
+                '<div class="mcb-row mcb-builtin-query">
                     <div class="mcb-label">
                         <label>%s</label>
                     </div>
                     <div class="mcb-input"></div>
                 </div>',
-                esc_attr__( 'Query String Parameters', 'mobile-contact-bar' )
+                esc_attr__( 'Query String', 'mobile-contact-bar' )
             );
 
-            foreach ( $contact['parameters'] as $parameter_key => $parameter )
+            foreach ( $contact['query'] as $parameter_key => $parameter )
             {
-                $parameter_index = array_search( $parameter['key'], array_column( $contact_field['parameters'], 'key' ));
-                $parameter_type = $contact_field['parameters'][$parameter_index];
+                $parameter_index = array_search( $parameter['key'], array_column( $contact_field['query'], 'key' ));
+                $parameter_type = $contact_field['query'][$parameter_index];
                 $out .= $this->output_builtin_parameter(
                     [
                         'contact_key'    => $contact_key,
@@ -515,7 +515,7 @@ final class View
 
         $out = '';
 
-        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_key ) . '][parameters][' . esc_attr( $parameter_key ) . ']';
+        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_key ) . '][query][' . esc_attr( $parameter_key ) . ']';
 
         $out .= sprintf(
             '<div class="mcb-link-parameter" data-parameter-key="%d">',
@@ -606,7 +606,7 @@ final class View
 
         $out = '';
 
-        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_key ) . '][parameters][' . esc_attr( $parameter_key ) . ']';
+        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_key ) . '][query][' . esc_attr( $parameter_key ) . ']';
 
         $out .= '<div class="mcb-builtin-parameter">';
 

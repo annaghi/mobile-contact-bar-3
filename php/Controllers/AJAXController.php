@@ -129,7 +129,7 @@ final class AJAXController
                 ]
             );
 
-            $data['parameters'] = abmcb( Contacts\View::class )->output_parameters(
+            $data['query'] = abmcb( Contacts\View::class )->output_query(
                 [
                     'contact_key'   => $contact_key,
                     'contact'       => $contact_field,

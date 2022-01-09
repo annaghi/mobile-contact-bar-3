@@ -25,7 +25,7 @@ final class WhatsApp extends ContactType
             'text'        => 'WhatsApp',
             'uri'         => 'https://api.whatsapp.com/send',
             'placeholder' => 'place',
-            'parameters'  => [
+            'query'       => [
                 [
                     'field'       => 'text',
                     'key'         => 'phone',

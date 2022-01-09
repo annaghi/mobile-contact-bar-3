@@ -203,6 +203,39 @@
             .text('--');
     };
 
+    $.fn.loadingIcon = function (fa_path) {
+        var svg = '<svg class="mcb-icon mcb-loading-icon"><use xlink:href="' + fa_path + 'solid.svg#spinner"></use></svg>';
+
+        this.find('input[name$="[brand]"]')
+            .val('')
+            .end()
+            .find('input[name$="[group]"]')
+            .val('')
+            .end()
+            .find('input[name$="[icon]"]')
+            .val('')
+            .end()
+            .find('.mcb-summary-brand')
+            .addClass('mcb-blank-icon')
+            .text('--')
+            .end()
+            .find('.mcb-summary-icon')
+            .removeClass('mcb-blank-icon')
+            .addClass('mcb-fa')
+            .empty()
+            .append(svg)
+            .end()
+            .find('.mcb-details-brand')
+            .addClass('mcb-blank-icon')
+            .text('--')
+            .end()
+            .find('.mcb-details-icon')
+            .removeClass('mcb-blank-icon')
+            .addClass('mcb-fa')
+            .empty()
+            .append(svg);
+    };
+
     var filtered_icons = function (icons, searchTerm) {
         return searchTerm === ''
             ? icons
@@ -380,33 +413,51 @@
                         action: 'mcb_ajax_get_contact',
                         nonce: mobile_contact_bar.nonce,
                         contact_key: contactKey
-                    }
-                }).done(function (response) {
-                    if (!response) {
-                        return false;
-                    }
-                    var data = JSON.parse(response);
-                    if (!data.hasOwnProperty('summary') || !data.hasOwnProperty('details')) {
-                        return false;
-                    }
+                    },
 
-                    var contact = document.createElement('div');
-                    $(contact).addClass(['mcb-contact', 'mcb-opened']).attr('data-contact-key', contactKey);
-                    $(contact).append($(data.summary)).append($(data.details));
+                    beforeSend: function () {
+                        $('#mcb-add-contact').addClass('mcb-loading');
+                    },
 
-                    $(contact).find('.color-picker').wpColorPicker();
-                    $(contact).find('.mcb-action-toggle-details').attr('aria-expanded', 'true');
+                    complete: function () {
+                        $('#mcb-add-contact').removeClass('mcb-loading');
+                    }
+                })
+                    .done(function (response) {
+                        if (!response) {
+                            return false;
+                        }
+                        var data = JSON.parse(response);
+                        if (!data.hasOwnProperty('summary') || !data.hasOwnProperty('details')) {
+                            return false;
+                        }
 
-                    option.contactList.append(contact);
-                });
+                        var contact = document.createElement('div');
+                        $(contact).addClass(['mcb-contact', 'mcb-opened']).attr('data-contact-key', contactKey);
+                        $(contact).append($(data.summary)).append($(data.details));
+
+                        $(contact).find('.color-picker').wpColorPicker();
+                        $(contact).find('.mcb-action-toggle-details').attr('aria-expanded', 'true');
+
+                        option.contactList.append(contact);
+                    })
+                    .always(function () {
+                        $('#mcb-add-contact').removeClass('mcb-loading');
+                    });
             });
 
             // Delete contact
+            // Update badge-length
             option.contactList.on('click', '.mcb-action-delete-contact', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
                 $(this).closest('.mcb-contact').remove();
+
+                var checked_contacts_length = option.contactList.find('.mcb-checked').length;
+                0 === checked_contacts_length
+                    ? $('#mcb-badge-length').removeClass().addClass('mcb-badge-disabled').text(0)
+                    : $('#mcb-badge-length').removeClass().addClass('mcb-badge-enabled').text(checked_contacts_length);
             });
 
             // Toggle details
@@ -457,6 +508,7 @@
                 event.preventDefault();
                 event.stopPropagation();
 
+                var input = $(this);
                 var contact = $(this).closest('.mcb-contact');
                 var contactKey = contact.attr('data-contact-key');
 
@@ -468,28 +520,40 @@
                         nonce: mobile_contact_bar.nonce,
                         contact_key: contactKey,
                         contact_type: $(this).val()
-                    }
-                }).done(function (response) {
-                    if (!response) {
-                        return false;
-                    }
-                    var data = JSON.parse(response);
-                    if (!data.hasOwnProperty('contact_field') || !data.hasOwnProperty('uri') || !data.hasOwnProperty('parameters')) {
-                        return false;
-                    }
+                    },
 
-                    [('historyback', 'historyforward', 'scrolltotop')].includes(data.contact_field.type)
-                        ? contact.find('.mcb-summary-uri').text('#')
-                        : contact
-                              .find('.mcb-summary-uri')
-                              .text(!!data.contact_field.uri ? data.contact_field.uri : mobile_contact_bar.l10n.no_URI);
+                    beforeSend: function () {
+                        input.addClass('mcb-loading');
+                    },
 
-                    contact.find('.mcb-details-text input').val(data.contact_field.text);
-                    contact.find('.mcb-details-uri').replaceWith($(data.uri));
-                    contact.find('.mcb-builtin-parameters, .mcb-link-parameters, .mcb-builtin-parameter, .mcb-link-parameter').detach();
-                    contact.find('.mcb-details-uri').after($(data.parameters));
-                    contact.find('.mcb-details-type .mcb-description').text(data.contact_field.desc_type);
-                });
+                    complete: function () {
+                        input.removeClass('mcb-loading');
+                    }
+                })
+                    .done(function (response) {
+                        if (!response) {
+                            return false;
+                        }
+                        var data = JSON.parse(response);
+                        if (!data.hasOwnProperty('contact_field') || !data.hasOwnProperty('uri') || !data.hasOwnProperty('query')) {
+                            return false;
+                        }
+
+                        [('historyback', 'historyforward', 'scrolltotop')].includes(data.contact_field.type)
+                            ? contact.find('.mcb-summary-uri').text('#')
+                            : contact
+                                  .find('.mcb-summary-uri')
+                                  .text(!!data.contact_field.uri ? data.contact_field.uri : mobile_contact_bar.l10n.no_URI);
+
+                        contact.find('.mcb-details-text input').val(data.contact_field.text);
+                        contact.find('.mcb-details-uri').replaceWith($(data.uri));
+                        contact.find('.mcb-builtin-query, .mcb-link-query, .mcb-builtin-parameter, .mcb-link-parameter').detach();
+                        contact.find('.mcb-details-uri').after($(data.query));
+                        contact.find('.mcb-details-type .mcb-description').text(data.contact_field.desc_type);
+                    })
+                    .always(function () {
+                        input.removeClass('mcb-loading');
+                    });
             });
 
             // Pick icon
@@ -582,6 +646,10 @@
                                 brand: brand,
                                 group: names[0],
                                 icon: names[1]
+                            },
+
+                            beforeSend: function () {
+                                contact.loadingIcon(fa_path);
                             }
                         }).done(function (response) {
                             if (!response) {
@@ -743,6 +811,7 @@
                 event.preventDefault();
                 event.stopPropagation();
 
+                var input = $(this);
                 var contact = $(this).closest('.mcb-contact');
                 var parameters = contact.find('.mcb-link-parameter');
 
@@ -757,18 +826,30 @@
                         nonce: mobile_contact_bar.nonce,
                         contact_key: contactKey,
                         parameter_key: parameterKey
-                    }
-                }).done(function (response) {
-                    if (!response) {
-                        return false;
-                    }
-                    var parameter = JSON.parse(response);
-                    if (parameter.length <= 0) {
-                        return false;
-                    }
+                    },
 
-                    contact.find('.mcb-link-parameters').after($(parameter));
-                });
+                    beforeSend: function () {
+                        input.addClass('mcb-loading');
+                    },
+
+                    complete: function () {
+                        input.removeClass('mcb-loading');
+                    }
+                })
+                    .done(function (response) {
+                        if (!response) {
+                            return false;
+                        }
+                        var parameter = JSON.parse(response);
+                        if (parameter.length <= 0) {
+                            return false;
+                        }
+
+                        contact.find('.mcb-link-query').after($(parameter));
+                    })
+                    .always(function () {
+                        input.removeClass('mcb-loading');
+                    });
             });
 
             // Delete parameter

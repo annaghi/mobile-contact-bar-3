@@ -61,8 +61,6 @@ final class Option
             $contacts = [];
         }
 
-        // abmcb( Styles\CSS::class )->write( $settings, $contacts );
-
         return [
             'settings' => $settings,
             'contacts' => $contacts,
@@ -100,9 +98,9 @@ final class Option
             {
                 $contact['uri'] = esc_url_raw( untrailingslashit( rawurldecode( $contact['uri'] )), abmcb()->schemes );
 
-                if ( isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
+                if ( isset( $contact['query'] ) && is_array( $contact['query'] ))
                 {
-                    foreach ( $contact['parameters'] as &$parameter )
+                    foreach ( $contact['query'] as &$parameter )
                     {
                         $parameter['key']   = rawurlencode( rawurldecode( $parameter['key'] ));
                         $parameter['value'] = rawurlencode( rawurldecode( $parameter['value'] ));
@@ -129,9 +127,9 @@ final class Option
             {
                 $contact['uri'] = untrailingslashit( rawurldecode( $contact['uri'] ));
 
-                if ( isset( $contact['parameters'] ) && is_array( $contact['parameters'] ))
+                if ( isset( $contact['query'] ) && is_array( $contact['query'] ))
                 {
-                    foreach ( $contact['parameters'] as &$parameter )
+                    foreach ( $contact['query'] as &$parameter )
                     {
                         $parameter['key']   = rawurldecode( $parameter['key'] );
                         $parameter['value'] = rawurldecode( $parameter['value'] );

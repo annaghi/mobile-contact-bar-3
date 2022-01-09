@@ -25,7 +25,7 @@ final class Email extends ContactType
             'text'        => __( 'Send email', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'mailto:username@example.com',
-            'parameters'  => [
+            'query'       => [
                 [
                     'field'       => 'text',
                     'key'         => 'subject',

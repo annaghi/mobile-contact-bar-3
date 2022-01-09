@@ -26,6 +26,9 @@ final class AdminController
             'disabled' => __( 'disabled', 'mobile-contact-bar' ),
             'enabled'  => __( 'enabled', 'mobile-contact-bar' ),
             'no_URI'   => __( '(no URI)', 'mobile-contact-bar' ),
+            'success'  => __( 'Settings saved.' ),
+            'warning'  => __( 'Settings saved, however couple of URIs and/or parameters were malformed, so they were cleared out.', 'mobile-contact-bar' ),
+            'error'    => __( 'Server error, settings are not saved.' ),
         ];
 
         add_options_page(
@@ -160,11 +163,7 @@ final class AdminController
      */
     public function admin_init()
     {
-        register_setting(
-            abmcb()->id . '_group',
-            abmcb()->id,
-            [$this, 'callback_sanitize_option']
-        );
+        register_setting( abmcb()->id . '_group', abmcb()->id, [$this, 'callback_sanitize_option'] );
 
         abmcb( Settings\View::class )->add();
         abmcb( Contacts\View::class )->add();
@@ -365,8 +364,7 @@ final class AdminController
      */
     public function callback_sanitize_option( $input )
     {
-        $sanitized_option = abmcb( Option::class )->sanitize_option_bar( $input, 'encode' );
-        return $sanitized_option;
+        return abmcb( Option::class )->sanitize_option_bar( $input, 'encode' );
     }
 
 
@@ -481,7 +479,7 @@ final class AdminController
         <code>http://domain.com</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>http://domain.com/path/to/page</code>
         <p><?php _e( 'For secure websites using SSL to encrypt data and authenticate the website use the <code>https</code> protocol:', 'mobile-contact-bar' ); ?></p>
         <code>https://domain.com</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>https://domain.com/path/to/page</code>
-        <p><?php _e( 'You can append query parameters to URLs using the', 'mobile-contact-bar' ); ?> <span class="mcb-tab-button button">&nbsp;<?php _e( 'Add Parameter', 'mobile-contact-bar' ); ?></span> <?php _e( 'button', 'mobile-contact-bar' ); ?></p>
+        <p><?php _e( 'You can append query string parameters to URLs using the', 'mobile-contact-bar' ); ?> <span class="mcb-tab-button button">&nbsp;<?php _e( 'Add Parameter', 'mobile-contact-bar' ); ?></span> <?php _e( 'button', 'mobile-contact-bar' ); ?></p>
         <p class="mcb-tab-status-green"><?php _e( 'Standardised protocol', 'mobile-contact-bar' ); ?></p>
         <?php
     }
@@ -498,21 +496,21 @@ final class AdminController
         <h4><?php _e( 'Sending emails to email addresses', 'mobile-contact-bar' ); ?></h4>
         <code>mailto:someone@domain.com</code>
         <p><?php _e( 'Optional query parameters:', 'mobile-contact-bar' ); ?></p>
-        <ul class="mcb-query-parameters">
+        <ul>
             <li>
-                <span class="mcb-query-parameter-key">subject</span>
+                <span class="mcb-tab-query-parameter-key">subject</span>
                 <span><?php _e( 'Text to appear in the subject line of the message.', 'mobile-contact-bar' ); ?></span>
             </li>
             <li>
-                <span class="mcb-query-parameter-key">body</span>
+                <span class="mcb-tab-query-parameter-key">body</span>
                 <span><?php _e( 'Text to appear in the body of the message.', 'mobile-contact-bar' ); ?></span>
             </li>
             <li>
-                <span class="mcb-query-parameter-key">cc</span>
+                <span class="mcb-tab-query-parameter-key">cc</span>
                 <span><?php _e( 'Addresses to be included in the carbon copy section of the message. Separate addresses with commas.', 'mobile-contact-bar' ); ?></span>
             </li>
             <li>
-                <span class="mcb-query-parameter-key">bcc</span>
+                <span class="mcb-tab-query-parameter-key">bcc</span>
                 <span><?php _e( 'Addresses to be included in the blind carbon copy section of the message. Separate addresses with commas.', 'mobile-contact-bar' ); ?></span>
             </li>
         </ul>
@@ -549,9 +547,9 @@ final class AdminController
         <code>sms:15417543010</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>sms:+15417543010</code>
         <p><?php _e( 'Use the international dialing format: the plus sign (<code>+</code>), country code, area code, and number. You can separate each segment of the number with a hyphen (<code>-</code>) for easier reading.', 'mobile-contact-bar' ); ?></p>
         <p><?php _e( 'Optional query parameter:', 'mobile-contact-bar' ); ?></p>
-        <ul class="mcb-query-parameters">
+        <ul>
             <li>
-                <span class="mcb-query-parameter-key">body</span>
+                <span class="mcb-tab-query-parameter-key">body</span>
                 <span><?php _e( 'Text message to appear in the body of the message (it does not always work).', 'mobile-contact-bar' ); ?></span>
             </li>
         </ul>

@@ -104,25 +104,4 @@ final class Helper
             ? $diff
             : [];
     }
-
-
-    /**
-     * Finds item by key and value - multidimensional array search.
-     *
-     * @param  string     $key   Item key
-     * @param  string     $value Item value at that key
-     * @param  array      $array Multidimensional array
-     * @return array|bool        Item or false
-     */
-    public static function array_search_by_key_value( $key, $value, $array )
-    {
-        foreach ( $array as $id => $item )
-        {
-            if ( $item[$key] === $value )
-            {
-                return $item;
-            }
-        }
-        return false;
-    }
 }

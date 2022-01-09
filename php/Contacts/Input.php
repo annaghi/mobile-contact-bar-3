@@ -22,29 +22,29 @@ final class Input
         return
         [
             [
-                'type'        => 'link',
-                'id'          => '',
-                'checked'     => 1,
-                'brand'       => 'fa',
-                'group'       => 'solid',
-                'icon'        => 'home',
-                'label'       => __( 'Home' ),
-                'text'        => __( 'Go to Home' ),
-                'uri'         => get_site_url(),
-                'parameters'  => [],
-                'custom'      => $default_customization,
+                'type'    => 'link',
+                'id'      => '',
+                'checked' => 1,
+                'brand'   => 'fa',
+                'group'   => 'solid',
+                'icon'    => 'home',
+                'label'   => __( 'Home' ),
+                'text'    => __( 'Go to Home' ),
+                'uri'     => get_site_url(),
+                'query'   => [],
+                'custom'  => $default_customization,
             ],
             [
-                'type'        => 'email',
-                'id'          => '',
-                'checked'     => 1,
-                'brand'       => 'fa',
-                'group'       => 'regular',
-                'icon'        => 'envelope',
-                'label'       => __( 'Email' ),
-                'text'        => __( 'Send email', 'mobile-contact-bar' ),
-                'uri'         => $this->email(),
-                'parameters'  => [
+                'type'    => 'email',
+                'id'      => '',
+                'checked' => 1,
+                'brand'   => 'fa',
+                'group'   => 'regular',
+                'icon'    => 'envelope',
+                'label'   => __( 'Email' ),
+                'text'    => __( 'Send email', 'mobile-contact-bar' ),
+                'uri'     => $this->email(),
+                'query'   => [
                     [
                         'key'   => 'subject',
                         'value' => '',
@@ -62,36 +62,37 @@ final class Input
                         'value' => '',
                     ],
                 ],
-                'custom'      => $default_customization,
+                'custom'  => $default_customization,
             ],
             [
-                'type'        => 'any',
-                'id'          => '',
-                'checked'     => 1,
-                'brand'       => 'fa',
-                'group'       => 'solid',
-                'icon'        => 'star',
-                'label'       => '',
-                'text'        => __( 'Rate the plugin', 'mobile-contact-bar' ),
-                'uri'         => 'https://wordpress.org/support/plugin/mobile-contact-bar/reviews/?filter=5#new-post',
-                'custom'      => array_merge( $default_customization,
+                'type'    => 'link',
+                'id'      => '',
+                'checked' => 1,
+                'brand'   => 'fa',
+                'group'   => 'solid',
+                'icon'    => 'star',
+                'label'   => '',
+                'text'    => __( 'Rate the plugin', 'mobile-contact-bar' ),
+                'uri'     => 'https://wordpress.org/support/plugin/mobile-contact-bar/reviews/?filter=5#new-post',
+                'query'   => [],
+                'custom'  => array_merge( $default_customization,
                     [
                         'icon_color' => ['primary' => '#ffb900', 'secondary' => '#ff9529'],
                     ]
                 ),
             ],
             [
-                'type'        => 'link',
-                'id'          => '',
-                'checked'     => 1,
-                'brand'       => 'fa',
-                'group'       => 'brands',
-                'icon'        => 'wordpress',
-                'label'       => '',
-                'text'        => 'WordPress',
-                'uri'         => 'https://wordpress.org/plugins/mobile-contact-bar/',
-                'parameters'  => [],
-                'custom'      => array_merge( $default_customization,
+                'type'    => 'link',
+                'id'      => '',
+                'checked' => 1,
+                'brand'   => 'fa',
+                'group'   => 'brands',
+                'icon'    => 'wordpress',
+                'label'   => '',
+                'text'    => 'WordPress',
+                'uri'     => 'https://wordpress.org/plugins/mobile-contact-bar/',
+                'query'   => [],
+                'custom'  => array_merge( $default_customization,
                     [
                         'background_color' => ['primary' => '#0073aa', 'secondary' => '#00a0d2'],
                         'icon_color'       => ['primary' => '#ffffff', 'secondary' => '#ffffff'],
@@ -99,16 +100,16 @@ final class Input
                 ),
             ],
             [
-                'type'        => 'scrolltotop',
-                'id'          => '',
-                'checked'     => 1,
-                'brand'       => 'fa',
-                'group'       => 'solid',
-                'icon'        => 'chevron-up',
-                'label'       => '',
-                'text'        => __( 'Scroll to top', 'mobile-contact-bar' ),
-                'uri'         => '',
-                'custom'      => $default_customization,
+                'type'    => 'scrolltotop',
+                'id'      => '',
+                'checked' => 1,
+                'brand'   => 'fa',
+                'group'   => 'solid',
+                'icon'    => 'chevron-up',
+                'label'   => '',
+                'text'    => __( 'Scroll to top', 'mobile-contact-bar' ),
+                'uri'     => '',
+                'custom'  => $default_customization,
             ],
         ];
     }
@@ -166,38 +167,44 @@ final class Input
         {
             $sanitized_contact = [];
 
+            // remove contact if invalid 'query'
+            if ( isset( $contact['query'] ) && ! is_array( $contact['query'] ))
+            {
+                continue;
+            }
+
+            // remove contact if 'custom' does not exist or invalid
+            if ( ! isset( $contact['custom'] ) || ! is_array( $contact['custom'] ))
+            {
+                continue;
+            }
+
             // remove contact if invalid 'type'
-            if ( ! in_array( $contact['type'], $contact_types_keys ))
+            if ( ! isset( $contact['type'] ) || ! in_array( $contact['type'], $contact_types_keys ))
             {
                 continue;
             }
 
-            // remove contact if invalid 'parameters'
-            if ( isset( $contact['parameters'] ) && ! is_array( $contact['parameters'] ))
-            {
-                continue;
-            }
-
-            // Difference can only be with 'parameters' in Link contact type
+            // Difference can only be with 'query' in Link contact type
             $contact['custom'] = Helper::array_intersect_key_recursive(
                 array_replace_recursive( $empty_default_customization, $contact['custom'] ),
                 $empty_default_customization
             );
             $diff_contact = Helper::array_minus_key_recursive( Helper::array_keys_recursive( $contact ), $contact_types[$contact['type']]->keys());
             // remove contact if invalid contact keys
-            if ( ! empty( $diff_contact ) && ( ['parameters'] !== array_keys( $diff_contact ) || 'link' !== $contact['type'] ))
+            if ( ! empty( $diff_contact ) && ['query'] !== array_keys( $diff_contact ))
             {
                 continue;
             }
 
             // remove contact if invalid parameter keys
-            if ( isset( $diff_contact['parameters'] ))
+            if ( isset( $diff_contact['query'] ))
             {
-                $diff_parameters = array_filter(
-                    $diff_contact['parameters'],
+                $diff_query = array_filter(
+                    $diff_contact['query'],
                     function ( $parameter ) { return ( count( $parameter ) !== 2 || ! isset( $parameter['key'], $parameter['value'] )); }
                 );
-                if ( ! empty( $diff_parameters ))
+                if ( ! empty( $diff_query ))
                 {
                     continue;
                 }
@@ -263,14 +270,14 @@ final class Input
             // sanitize 'uri'
             $sanitized_contact['uri'] = $this->sanitize_contact_uri( $contact['type'], $contact['uri'] );
 
-            // sanitize 'parameters'
-            if ( isset( $contact['parameters'] ))
+            // sanitize 'query'
+            if ( isset( $contact['query'] ))
             {
-                $sanitized_contact['parameters'] = [];
+                $sanitized_contact['query'] = [];
 
                 $contact_field = $contact_types[$contact['type']]->field();
 
-                foreach ( $contact['parameters'] as $parameter_key => $parameter )
+                foreach ( $contact['query'] as $parameter_key => $parameter )
                 {
                     if ( 'link' === $contact['type'] )
                     {
@@ -278,27 +285,27 @@ final class Input
                     }
                     else
                     {
-                        $parameter_index = array_search( $parameter['key'], array_column( $contact_field['parameters'], 'key' ));
-                        $parameter_type = $contact_field['parameters'][$parameter_index];
+                        $parameter_index = array_search( $parameter['key'], array_column( $contact_field['query'], 'key' ));
+                        $parameter_type = $contact_field['query'][$parameter_index];
                         $field = $parameter_type['field'];
                     }
 
                     // sanitize 'key'
-                    $sanitized_contact['parameters'][$parameter_key]['key'] = $this->sanitize_parameter( $parameter['key'], 'text' );
+                    $sanitized_contact['query'][$parameter_key]['key'] = $this->sanitize_parameter( $parameter['key'], 'text' );
 
                     // santitize 'value'
-                    $sanitized_contact['parameters'][$parameter_key]['value'] = $this->sanitize_parameter( $parameter['value'], $field );
+                    $sanitized_contact['query'][$parameter_key]['value'] = $this->sanitize_parameter( $parameter['value'], $field );
                 }
             }
-            // add 'parameters' for 'link' contact type if it was empty
-            if ( 'link' === $contact['type'] && ! isset( $contact['parameters'] ))
+            // add 'query' for 'link' contact type if it was empty
+            if ( ( 'link' === $contact['type'] ) && ! isset( $contact['query'] ))
             {
-                $sanitized_contact['parameters'] = [];
+                $sanitized_contact['query'] = [];
             }
-            // reindex 'parameters'
-            if ( isset( $sanitized_contact['parameters'] ) && ! empty( $sanitized_contact['parameters'] ))
+            // reindex 'query'
+            if ( isset( $sanitized_contact['query'] ) && ! empty( $sanitized_contact['query'] ))
             {
-                $sanitized_contact['parameters'] = array_values( $sanitized_contact['parameters'] );
+                $sanitized_contact['query'] = array_values( $sanitized_contact['query'] );
             }
 
             // sanitize customization
@@ -327,12 +334,13 @@ final class Input
      */
     public function sanitize_contact_uri( $contact_type, $uri )
     {
-        if ( '' === $uri || 'any' === $contact_type )
+        if ( '' === $uri )
         {
             return $uri;
         }
 
         $new_uri = '';
+        $uri = rawurldecode( $uri );
 
         $scheme = array_reduce(
             abmcb()->schemes,
@@ -364,16 +372,7 @@ final class Input
 
             case 'http':
             case 'https':
-                $parsed_uri = parse_url( $uri );
-
-                if ( isset( $parsed_uri['path'] ))
-                {
-                    $new_uri = $parsed_uri['scheme'] . '://' . $parsed_uri['host'] . $parsed_uri['path'];
-                }
-                else
-                {
-                    $new_uri = $parsed_uri['scheme'] . '://' . $parsed_uri['host'];
-                }
+                $new_uri = $uri;
                 break;
 
             default:
@@ -394,6 +393,7 @@ final class Input
     public function sanitize_parameter( $value, $field )
     {
         $sanitized_value = '';
+        $value = rawurldecode( $value );
 
         switch( $field )
         {
@@ -504,12 +504,15 @@ final class Input
     public function sanitize_email( $email )
     {
         $sanitized_email = preg_replace( '/\s+/', '', $email );
-        preg_match( '/^mailto:(.*)$/', $sanitized_email, $matches );
-        $sanitized_email = sanitize_email( $matches[1] );
-
-        if ( is_email( $sanitized_email ))
+        $match = preg_match( '/^mailto:(.*)$/', $sanitized_email, $matches );
+        if ( 1 === $match )
         {
-            return 'mailto:' . $sanitized_email;
+            $sanitized_email = sanitize_email( $matches[1] );
+
+            if ( is_email( $sanitized_email ))
+            {
+                return 'mailto:' . $sanitized_email;
+            }
         }
 
         return '';

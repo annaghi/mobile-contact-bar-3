@@ -155,10 +155,10 @@ final class IFrameController
         foreach ( $contacts as $contact )
         {
             $uri = $contact['uri'];
-            if ( $uri && 'any' !== $contact['type'] && ! empty( $contact['parameters'] ))
+            if ( $uri && ! empty( $contact['query'] ))
             {
                 $query_args = [];
-                foreach ( $contact['parameters'] as $parameter )
+                foreach ( $contact['query'] as $parameter )
                 {
                     $key   = rawurlencode( $parameter['key'] );
                     $value = rawurlencode( $parameter['value'] );

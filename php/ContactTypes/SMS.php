@@ -25,7 +25,7 @@ final class SMS extends ContactType
             'text'        => __( 'Send SMS text', 'mobile-contact-bar' ),
             'uri'         => '',
             'placeholder' => 'sms:15417543010 or sms:+15417543010',
-            'parameters'  => [
+            'query'       => [
                 [
                     'field'       => 'text',
                     'key'         => 'body',
