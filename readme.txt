@@ -130,7 +130,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Add] Display label above, below, and instead of the icon [text-below-icon](https://wordpress.org/support/topic/text-below-icon/), [add-label-under-icons](https://wordpress.org/support/topic/add-label-under-icons/)
 * [Add] Option for setting the bar to be closed as default [toggle-state](https://wordpress.org/support/topic/toggle-state-4/), [default-toggle-state](https://wordpress.org/support/topic/default-toggle-state/)
 * [Add] Let the + sign be optional in tel and sms protocols [telephone-remove](https://wordpress.org/support/topic/telephone-remove/)
-* [Fix] Decode / encode query string properly [e-mail-body](https://wordpress.org/support/topic/e-mail-body/)
+* [Fix] Decode / encode query string [e-mail-body](https://wordpress.org/support/topic/e-mail-body/)
 * [Fix] Move migration process to `init` in order to run it on both admin and public pages
 * [Update] Font Awesome 5.15.4
 
