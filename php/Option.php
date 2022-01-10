@@ -69,24 +69,6 @@ final class Option
 
 
     /**
-     * @param  mixed       $option
-     * @param  string|null $form   'encode' | 'decode'
-     * @return array
-     */
-    public function sanitize_option_migrations( $option, $form = null )
-    {
-        if ( $option && is_array( $option ))
-        {
-            return array_filter( $option, 'is_bool' );
-        }
-        else
-        {
-            return [];
-        }
-    }
-
-
-    /**
      * @param  array $contacts
      * @return array
      */
@@ -158,5 +140,23 @@ final class Option
            'settings' => $settings,
            'contacts' => $contacts,
        ];
+    }
+
+
+    /**
+     * @param  mixed       $option
+     * @param  string|null $form   'encode' | 'decode'
+     * @return array
+     */
+    public function sanitize_option_migrations( $option, $form = null )
+    {
+        if ( $option && is_array( $option ))
+        {
+            return array_filter( $option, 'is_bool' );
+        }
+        else
+        {
+            return [];
+        }
     }
 }

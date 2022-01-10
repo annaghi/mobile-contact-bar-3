@@ -322,6 +322,11 @@ final class Migrate_2_0_0
 
         switch( $protocol )
         {
+            case 'http':
+            case 'https':
+                $uri = $resource;
+                break;
+
             case 'tel':
             case 'sms':
             case 'mailto':
@@ -332,10 +337,8 @@ final class Migrate_2_0_0
                 $uri = $protocol . ':' . $resource . '?chat';
                 break;
 
-            case 'http':
-            case 'https':
-                $uri = $resource;
-                break;
+            default:
+                '';
         }
 
         return esc_url_raw( rawurldecode( $uri ), abmcb()->schemes );

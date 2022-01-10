@@ -368,24 +368,24 @@ final class Migrate_3_0_0
 
         switch( $scheme )
         {
-            case 'tel':
-                return 'tel';
-
-            case 'sms':
-                return 'sms';
-
-            case 'skype':
-                return 'skype';
-
-            case 'mailto':
-                return 'email';
-
             case 'http':
             case 'https':
                 return 'link';
 
+            case 'mailto':
+                return 'email';
+
+            case 'skype':
+                return 'skype';
+
+            case 'sms':
+                return 'sms';
+
+            case 'tel':
+                return 'tel';
+
             default:
-                return 'link';
+                return '';
         }
     }
 

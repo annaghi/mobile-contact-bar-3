@@ -73,7 +73,7 @@ final class Input
                 'icon'    => 'star',
                 'label'   => '',
                 'text'    => __( 'Rate the plugin', 'mobile-contact-bar' ),
-                'uri'     => 'https://wordpress.org/support/plugin/mobile-contact-bar/reviews/?filter=5#new-post',
+                'uri'     => 'https://wordpress.org/support/plugin/mobile-contact-bar/reviews/?filter=5',
                 'query'   => [],
                 'custom'  => array_merge( $default_customization,
                     [
@@ -340,7 +340,6 @@ final class Input
         }
 
         $new_uri = '';
-        $uri = rawurldecode( $uri );
 
         $scheme = array_reduce(
             abmcb()->schemes,
@@ -350,6 +349,19 @@ final class Input
 
         switch( $scheme )
         {
+            case 'http':
+            case 'https':
+                $new_uri = $uri;
+                break;
+
+            case 'mailto':
+                $new_uri = $this->sanitize_email( $uri );
+                break;
+
+            case 'skype':
+                $new_uri = $this->sanitize_skype( $uri );
+                break;
+
             case 'sms':
                 $new_uri = $this->sanitize_sms( $uri );
                 break;
@@ -358,27 +370,14 @@ final class Input
                 $new_uri = $this->sanitize_tel( $uri );
                 break;
 
-            case 'skype':
-                $new_uri = $this->sanitize_skype( $uri );
-                break;
-
             case 'viber':
                 $new_uri = $this->sanitize_viber( $uri );
-                break;
-
-            case 'mailto':
-                $new_uri = $this->sanitize_email( $uri );
-                break;
-
-            case 'http':
-            case 'https':
-                $new_uri = $uri;
                 break;
 
             default:
                 $new_uri = '';
         }
-    
+
         return $new_uri;
     }
 
@@ -393,7 +392,6 @@ final class Input
     public function sanitize_parameter( $value, $field )
     {
         $sanitized_value = '';
-        $value = rawurldecode( $value );
 
         switch( $field )
         {

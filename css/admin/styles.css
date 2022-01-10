@@ -3,6 +3,18 @@
  * License GPLv3 - https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
+/* NOTICES */
+
+.mcb-notice-option {
+    display: none;
+}
+
+.mcb-notice-option.notice-success,
+.mcb-notice-option.notice-warning,
+.mcb-notice-option.notice-error {
+    display: block;
+}
+
 /* HEADER */
 
 .mcb-header {
@@ -13,6 +25,10 @@
     background-color: #ffffff;
     border-bottom: 1px solid #ccd0d4;
     padding: 10px 20px;
+
+    position: sticky;
+    top: 32px;
+    z-index: 9;
 }
 .mcb-header h2 {
     font-size: 14px;
@@ -20,6 +36,11 @@
     display: inline-block;
     padding: 5px 0;
     margin: 0;
+}
+
+#mcb-submit-header {
+    margin-left: auto;
+    margin-right: 276px;
 }
 
 #mcb-badge-length {
@@ -81,6 +102,8 @@
     position: absolute;
     top: -30px;
     right: 0;
+
+    z-index: 99;
 }
 #screen-meta-links .show-settings {
     border-radius: 4px 4px 0 0;
@@ -145,22 +168,6 @@
 }
 
 @media only screen and (max-width: 782px) {
-    #screen-meta-links {
-        top: -40px;
-    }
-
-    .notice,
-    .wrap div.updated,
-    .wrap div.error,
-    .media-upload-form div.error {
-        margin-top: 0;
-    }
-}
-
-@media only screen and (max-width: 600px) {
-    #wpbody {
-        padding-top: 0;
-    }
     #wpbody-content {
         position: static;
     }
@@ -176,7 +183,31 @@
     }
 
     .mcb-header {
+        top: 46px;
+    }
+
+    #mcb-submit-header {
+        margin-right: 0;
+    }
+
+    .notice,
+    .wrap div.updated,
+    .wrap div.error,
+    .media-upload-form div.error {
+        margin-top: 0;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    /* TODO Check why is this needed. Which WP version? */
+    #wpbody {
+        padding-top: 0;
+    }
+    #wpbody-content {
         padding-top: 46px;
+    }
+    .mcb-header {
+        top: 46px;
     }
 }
 
@@ -559,29 +590,29 @@
 .wp-core-ui .button-primary.mcb-loading {
     background: linear-gradient(135deg, #00a0d2 25%, #135e96 25%, #135e96 50%, #00a0d2 50%, #00a0d2 75%, #135e96 75%);
     background-size: 50px 50px;
-    animation: loading-ribbon 3s linear infinite;
+    animation: mcb-loading-button 3s linear infinite;
     pointer-events: none;
 }
 
 .wp-core-ui .button-secondary.mcb-loading {
-    background: linear-gradient(135deg, #b5bcc2 25%, #f0f0f1 25%, #f0f0f1 50%, #b5bcc2 50%, #b5bcc2 75%, #f0f0f1 75%);
+    background: linear-gradient(135deg, #d7dade 25%, #f0f0f1 25%, #f0f0f1 50%, #d7dade 50%, #d7dade 75%, #f0f0f1 75%);
     background-size: 50px 50px;
-    animation: loading-ribbon 3s linear infinite;
+    animation: mcb-loading-button 3s linear infinite;
     pointer-events: none;
 }
 
 .wp-core-ui .mcb-details-type select.mcb-loading {
-    background: linear-gradient(135deg, #b5bcc2 25%, #f0f0f1 25%, #f0f0f1 50%, #b5bcc2 50%, #b5bcc2 75%, #f0f0f1 75%);
+    background: linear-gradient(135deg, #d7dade 25%, #f0f0f1 25%, #f0f0f1 50%, #d7dade 50%, #d7dade 75%, #f0f0f1 75%);
     background-size: 50px 50px;
-    animation: loading-ribbon 3s linear infinite;
+    animation: mcb-loading-button 3s linear infinite;
     pointer-events: none;
 }
 
 .mcb-loading-icon {
-    animation: loading-spinner 2s linear infinite;
+    animation: mcb-loading-icon 2s linear infinite;
 }
 
-@keyframes loading-ribbon {
+@keyframes mcb-loading-button {
     0% {
         background-position: 0 0;
     }
@@ -590,7 +621,7 @@
     }
 }
 
-@keyframes loading-spinner {
+@keyframes mcb-loading-icon {
     from {
         transform: rotate(0deg);
     }
