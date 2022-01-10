@@ -26,9 +26,6 @@ final class AdminController
             'disabled' => __( 'disabled', 'mobile-contact-bar' ),
             'enabled'  => __( 'enabled', 'mobile-contact-bar' ),
             'no_URI'   => __( '(no URI)', 'mobile-contact-bar' ),
-            'success'  => __( 'Settings saved.' ),
-            'warning'  => __( 'Settings saved, however couple of URIs and/or parameters were malformed, so they were cleared out.', 'mobile-contact-bar' ),
-            'error'    => __( 'Server error, settings are not saved.', 'mobile-contact-bar' ),
         ];
 
         add_options_page(
@@ -135,7 +132,6 @@ final class AdminController
             <h2><?php esc_html_e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?></h2>
             <span id="mcb-badge-length" class="<?php echo $badge_length; ?>"><?php echo count( $checked_contacts ); ?></span>
             <span id="mcb-badge-display" class="<?php echo $badge_display; ?>"><?php echo esc_html( $bar_device ); ?></span>
-            <!-- <input type="button" name="submit" id="mcb-submit-header" class="button button-primary" value="<?php esc_html_e( 'Save Changes' ); ?>"> -->
         </div>
         <?php
     }
@@ -148,8 +144,7 @@ final class AdminController
      */
     public function admin_init()
     {
-        // register_setting( abmcb()->id . '_group', abmcb()->id, [$this, 'callback_sanitize_option'] );
-        register_setting( abmcb()->id . '_group', abmcb()->id );
+        register_setting( abmcb()->id . '_group', abmcb()->id, [$this, 'callback_sanitize_option'] );
 
         abmcb( Settings\View::class )->add();
         abmcb( Contacts\View::class )->add();
@@ -176,7 +171,7 @@ final class AdminController
 
         add_meta_box(
             'mcb-meta-box-preview',
-            __( 'Live Preview' ),
+            __( 'Preview' ),
             [$this, 'callback_render_meta_box_preview'],
             abmcb()->page_suffix,
             'side',
@@ -310,7 +305,6 @@ final class AdminController
         }
 
         abmcb( Contacts\View::class )->render_icon_picker_template();
-        $this->render_notice_option_template();
     }
 
 
@@ -400,9 +394,7 @@ final class AdminController
                             <?php do_meta_boxes( abmcb()->page_suffix, 'side', null ); ?>
                         </div><!-- #postbox-container-1 -->
 
-                        <p class="submit">
-                            <input type="button" name="submit" id="mcb-submit-content" class="button button-primary" value="<?php esc_html_e( 'Save Changes' ); ?>">
-                        </p>
+                        <?php submit_button(); ?>
                         
                     </div><!-- #post-body -->
                     <br class="clear">
@@ -428,7 +420,7 @@ final class AdminController
     {
         ?>
         <div id="mcb-section-preview">
-            <iframe src="<?php echo add_query_arg( [abmcb()->slug . '-iframe' => true], get_home_url() ); ?>" title="<?php esc_attr_e( 'Live Preview' ); ?>"></iframe>
+            <iframe src="<?php echo add_query_arg( [abmcb()->slug . '-iframe' => true], get_home_url() ); ?>" title="<?php esc_attr_e( 'Preview' ); ?>"></iframe>
             <script>
             (function() {
                 jQuery('#mcb-section-preview iframe').on('load', function () {
@@ -591,21 +583,6 @@ final class AdminController
         <h4><?php _e( 'Sending instant messages to other Viber users, phones, or mobiles', 'mobile-contact-bar' ); ?></h4>
         <code>viber://pa?chatURI=&lt;Chat URI&gt;</code>
         <p class="mcb-tab-status-yellow"><?php _e( 'Inconsistent protocol', 'mobile-contact-bar' ); ?></p>
-        <?php
-    }
-
-
-    public function render_notice_option_template()
-    {
-        ?>
-        <script type="text/html" id="mcb-tmpl-notice-option">
-            <div class="notice is-dismissible mcb-notice-option">
-                <p><strong class="mcb-notice-message"></strong></p>
-                <button type="button" class="notice-dismiss">
-                    <span class="screen-reader-text"><?php _e( 'Dismiss this notice.' ); ?></span>
-                </button>
-            </div>
-        </script>
         <?php
     }
 }

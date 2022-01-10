@@ -4,8 +4,6 @@ namespace MobileContactBar\Controllers;
 
 use MobileContactBar\Contacts;
 use MobileContactBar\Icons;
-use MobileContactBar\Option;
-use stdClass;
 
 
 final class AJAXController
@@ -20,7 +18,6 @@ final class AJAXController
         'ajax_get_parameter',
         'ajax_get_contact_field',
         'ajax_get_icon',
-        'ajax_post_option_bar',
     ];
 
 
@@ -182,60 +179,6 @@ final class AJAXController
             }
         }
         wp_die();
-    }
-
-
-    /**
-     * Updates option_bar.
-     * 
-     * @return void
-     *
-     * @uses $_POST
-     */
-    public function ajax_post_option_bar()
-    {
-        if ( $this->verify_nonce() && isset( $_POST['fields'] ))
-        {
-            $data = json_decode( stripslashes( $_POST['fields'] ),true );
-
-	        if ( ! is_null( $data ) && $data )
-            {
-                $fields = [];
-		        foreach ( $data as $datum )
-                {
-                    preg_match( '#([^\[]*)(\[(.+)\])?#', $datum['name'], $matches );
-
-                    $array_bits = [];
-                    
-                    if ( isset( $matches[3] ))
-                    {
-                        $array_bits = explode( '][', $matches[3] );
-                    }
-
-                    $new_datum = [];
-
-                    for ( $i = count( $array_bits ) - 1; $i >= 0; $i-- )
-                    {
-                        if ( count( $array_bits ) - 1 === $i )
-                        {
-                            $new_datum[$array_bits[$i]] = wp_slash( $datum['value'] );
-                        }
-                        else
-                        {
-                            $new_datum = [$array_bits[$i] => $new_datum];
-                        }
-                    }
-
-                    $fields = array_replace_recursive( $fields, $new_datum );
-                }
-            }
-
-            abmcb( Option::class )->update_option( $fields, abmcb()->id, 'sanitize_option_bar' );
-            $option_bar = abmcb( Option::class )->get_option( abmcb()->id, 'sanitize_option_bar' );
-
-            wp_send_json_success( $option_bar );
-        }
-        wp_send_json_error();
     }
 
 

@@ -3,18 +3,6 @@
  * License GPLv3 - https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-/* NOTICES */
-
-.mcb-notice-option {
-    display: none;
-}
-
-.mcb-notice-option.notice-success,
-.mcb-notice-option.notice-warning,
-.mcb-notice-option.notice-error {
-    display: block;
-}
-
 /* HEADER */
 
 .mcb-header {
