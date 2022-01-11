@@ -314,8 +314,8 @@ final class View
                 </div>
                 <div class="mcb-input">
                     %2$s
-                    <button type="button" class="button mcb-action-pick-icon" title="%3$s">%3$s</button>
-                    <button type="button" class="button mcb-action-clear-icon" title="%4$s">%4$s</button>
+                    <button type="button" class="button button-secondary mcb-action-pick-icon" title="%3$s">%3$s</button>
+                    <button type="button" class="button button-secondary mcb-action-clear-icon" title="%4$s">%4$s</button>
                 </div>
             </div>',
             esc_attr__( 'Contact Icon', 'mobile-contact-bar' ),

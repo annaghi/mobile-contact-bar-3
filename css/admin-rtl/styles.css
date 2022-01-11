@@ -18,17 +18,24 @@
     top: 32px;
     z-index: 9;
 }
-.mcb-header h2 {
+.mcb-plugin-name {
     font-size: 14px;
-    line-height: 2.5714285714;
-    display: inline-block;
+    line-height: 2;
     padding: 5px 0;
     margin: 0;
 }
+.mcb-plugin-initialism {
+    text-transform: uppercase;
+    font-size: 14px;
+    line-height: 2;
+    padding: 5px 0;
+    margin: 0;
+    display: none;
+}
 
-#mcb-submit-header {
+#submit {
     margin-right: auto;
-    margin-left: 276px;
+    margin-left: 270px;
 }
 
 #mcb-badge-length {
@@ -36,7 +43,6 @@
     font-weight: normal;
     line-height: 1;
     border-radius: 50%;
-    display: inline-block;
     min-width: 1em;
     padding: 0.3em;
     text-align: center;
@@ -47,7 +53,6 @@
     font-weight: normal;
     line-height: 1;
     border-radius: 10px;
-    display: inline-block;
     padding: 0.3em 0.5em;
 }
 
@@ -83,14 +88,14 @@
 
 /* WP related styles */
 
-#wpbody-content {
-    position: relative;
+#wpcontent .mcb-header {
+    margin-right: -20px;
 }
-#screen-meta-links {
-    position: absolute;
-    top: -30px;
-    left: 0;
 
+#screen-meta-links {
+    position: fixed;
+    top: 61px;
+    left: 0;
     z-index: 99;
 }
 #screen-meta-links .show-settings {
@@ -99,10 +104,6 @@
 }
 #screen-meta-links .show-settings.screen-meta-active {
     border-bottom: none;
-}
-
-#wpcontent .mcb-header {
-    margin-right: -20px;
 }
 
 #poststuff {
@@ -156,9 +157,24 @@
 }
 
 @media only screen and (max-width: 782px) {
-    #wpbody-content {
-        position: static;
+    .mcb-header {
+        top: 46px;
     }
+    #submit {
+        margin-left: 0;
+        min-height: 32px;
+        line-height: 30px;
+        padding: 0 12px;
+        margin-bottom: 0;
+    }
+
+    .notice,
+    .wrap div.updated,
+    .wrap div.error,
+    .media-upload-form div.error {
+        margin-top: 0;
+    }
+
     #screen-meta-links {
         position: static;
     }
@@ -169,33 +185,24 @@
     #screen-meta-links .show-settings.screen-meta-active {
         border-bottom: 1px solid #c3c4c7;
     }
-
-    .mcb-header {
-        top: 46px;
-    }
-
-    #mcb-submit-header {
-        margin-left: 0;
-    }
-
-    .notice,
-    .wrap div.updated,
-    .wrap div.error,
-    .media-upload-form div.error {
-        margin-top: 0;
-    }
 }
 
 @media only screen and (max-width: 600px) {
-    /* TODO Check why is this needed. Which WP version? */
     #wpbody {
         padding-top: 0;
     }
-    #wpbody-content {
-        padding-top: 46px;
+    #wpadminbar {
+        margin-top: -46px;
     }
     .mcb-header {
-        top: 46px;
+        top: 0;
+        margin-top: 46px;
+    }
+    .mcb-plugin-name {
+        display: none;
+    }
+    .mcb-plugin-initialism {
+        display: block;
     }
 }
 
@@ -597,7 +604,13 @@
 }
 
 .mcb-loading-icon {
+    font-family: dashicons;
+    font-size: 1.6em;
     animation: mcb-loading-icon 2s linear infinite;
+}
+
+.mcb-loading-icon:before {
+    content: '\f531';
 }
 
 @keyframes mcb-loading-button {
@@ -614,7 +627,7 @@
         transform: rotate(0deg);
     }
     to {
-        transform: rotate(360deg);
+        transform: rotate(-360deg);
     }
 }
 

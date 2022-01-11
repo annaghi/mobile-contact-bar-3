@@ -129,9 +129,11 @@ final class AdminController
 
         ?>
         <div class="mcb-header">
-            <h2><?php esc_html_e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?></h2>
+            <h1 class="mcb-plugin-name"><?php esc_html_e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?></h1>
+            <h1 class="mcb-plugin-initialism"><?php echo abmcb()->mcb; ?></h1>
             <span id="mcb-badge-length" class="<?php echo $badge_length; ?>"><?php echo count( $checked_contacts ); ?></span>
             <span id="mcb-badge-display" class="<?php echo $badge_display; ?>"><?php echo esc_html( $bar_device ); ?></span>
+            <?php submit_button( null, 'primary large', 'submit', false, ['form' => 'mcb-form'] ); ?>
         </div>
         <?php
     }
@@ -273,10 +275,9 @@ final class AdminController
 
             wp_localize_script(
                 abmcb()->slug . '-admin',
-                abmcb()->id,
+                abmcb()->mcb,
                 [
                     'nonce'      => wp_create_nonce( abmcb()->id ),
-                    'rest_nonce' => wp_create_nonce( 'wp_rest' ),
                     'plugin_url' => plugin_dir_url( abmcb()->file ),
                     'l10n'       => $this->l10n,
                     'ti_icons'   => Icons::ti_icons(),
@@ -394,8 +395,6 @@ final class AdminController
                             <?php do_meta_boxes( abmcb()->page_suffix, 'side', null ); ?>
                         </div><!-- #postbox-container-1 -->
 
-                        <?php submit_button(); ?>
-                        
                     </div><!-- #post-body -->
                     <br class="clear">
 
@@ -428,6 +427,7 @@ final class AdminController
                     iframe.find('html').css({ 'pointer-events': 'none' });
                     iframe.find('body').css({ 'pointer-events': 'none' });
                     iframe.find('#mobile-contact-bar').css({ 'pointer-events': 'all' });
+                    iframe.attr('src', iframe.attr('src'));
                 });
             })(jQuery);
             </script>

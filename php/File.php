@@ -20,16 +20,16 @@ final class File
 
         $dir = trailingslashit( $wp_upload_dir['basedir'] . '/' . abmcb()->slug );
 
-        $rules  = "Options -Indexes\n";
-        $rules .= "deny from all\n";
-        $rules .= "<FilesMatch '\.(css)$'>\n";
-        $rules .= "Order Allow,Deny\n";
-        $rules .= "Allow from all\n";
-        $rules .= "</FilesMatch>\n";
+        $htaccess  = "Options -Indexes\n";
+        $htaccess .= "deny from all\n";
+        $htaccess .= "<FilesMatch '\.(css)$'>\n";
+        $htaccess .= "Order Allow,Deny\n";
+        $htaccess .= "Allow from all\n";
+        $htaccess .= "</FilesMatch>\n";
 
         $files = [
             $dir . 'index.php'       => "<?php\n// Silence is golden.\n",
-            $dir . '.htaccess'       => $rules,
+            $dir . '.htaccess'       => $htaccess,
             $dir . 'css/index.php'   => "<?php\n// Silence is golden.\n",
             $dir . abmcb()->base_css => '',
         ];

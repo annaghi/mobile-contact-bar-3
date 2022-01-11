@@ -3,7 +3,7 @@
  * License GPLv3 - https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-/* global isRtl, ajaxurl, pagenow, postboxes, mobile_contact_bar */
+/* global isRtl, ajaxurl, pagenow, postboxes, mcb */
 
 (function ($, window, document) {
     'use strict';
@@ -277,9 +277,7 @@
             .text('--');
     };
 
-    $.fn.loadingIcon = function (fa_path) {
-        var svg = '<svg class="mcb-icon mcb-loading-icon"><use xlink:href="' + fa_path + 'solid.svg#spinner"></use></svg>';
-
+    $.fn.loadingIcon = function () {
         this.find('input[name$="[brand]"]')
             .val('')
             .end()
@@ -295,9 +293,8 @@
             .end()
             .find('.mcb-summary-icon')
             .removeClass('mcb-blank-icon')
-            .addClass('mcb-fa')
+            .addClass('mcb-loading-icon')
             .empty()
-            .append(svg)
             .end()
             .find('.mcb-details-brand')
             .addClass('mcb-blank-icon')
@@ -305,9 +302,8 @@
             .end()
             .find('.mcb-details-icon')
             .removeClass('mcb-blank-icon')
-            .addClass('mcb-fa')
-            .empty()
-            .append(svg);
+            .addClass('mcb-loading-icon')
+            .empty();
     };
 
     var option = {
@@ -338,24 +334,22 @@
                 }
             };
 
+            // Generate icon lists
+            option.ti_icons = mcb.ti_icons;
+            option.fa_icons = [];
+            $.each(mcb.fa_icons, function (section, icons) {
+                $.each(icons, function (index, icon) {
+                    option.fa_icons.push(section + ' ' + icon);
+                });
+            });
+
             option.onReady();
         },
 
         onReady: function () {
-            // Generate icon lists
-            var ti_icons = mobile_contact_bar.ti_icons;
-            var fa_icons = [];
-            $.each(mobile_contact_bar.fa_icons, function (section, icons) {
-                $.each(icons, function (index, icon) {
-                    fa_icons.push(section + ' ' + icon);
-                });
-            });
-
-            // Slider value
-            $('.mcb-settings').on('input change', '.mcb-slider-input', function () {
-                $(this)
-                    .next('span')
-                    .html(this.value + ' ' + $(this).data('postfix'));
+            // Add loading indicator to the form submit button
+            $('#submit').on('click', function () {
+                $(this).addClass('mcb-loading');
             });
 
             // Highlight checked contact
@@ -379,8 +373,15 @@
             // Update badge-display
             $('#mcb-bar-device').on('change', 'input', function () {
                 'mcb-bar-device--none' === $(this).attr('id')
-                    ? $('#mcb-badge-display').removeClass().addClass('mcb-badge-disabled').text(mobile_contact_bar.l10n.disabled)
-                    : $('#mcb-badge-display').removeClass().addClass('mcb-badge-enabled').text(mobile_contact_bar.l10n.enabled);
+                    ? $('#mcb-badge-display').removeClass().addClass('mcb-badge-disabled').text(mcb.l10n.disabled)
+                    : $('#mcb-badge-display').removeClass().addClass('mcb-badge-enabled').text(mcb.l10n.enabled);
+            });
+
+            // Slider value
+            $('.mcb-settings').on('input change', '.mcb-slider-input', function () {
+                $(this)
+                    .next('span')
+                    .html(this.value + ' ' + $(this).data('postfix'));
             });
 
             // Close color picker on ESC
@@ -411,7 +412,7 @@
                     method: 'POST',
                     data: {
                         action: 'mcb_ajax_get_contact',
-                        nonce: mobile_contact_bar.nonce,
+                        nonce: mcb.nonce,
                         contact_key: contactKey
                     },
 
@@ -517,7 +518,7 @@
                     method: 'POST',
                     data: {
                         action: 'mcb_ajax_get_contact_field',
-                        nonce: mobile_contact_bar.nonce,
+                        nonce: mcb.nonce,
                         contact_key: contactKey,
                         contact_type: $(this).val()
                     },
@@ -541,9 +542,7 @@
 
                         [('historyback', 'historyforward', 'scrolltotop')].includes(data.contact_field.type)
                             ? contact.find('.mcb-summary-uri').text('#')
-                            : contact
-                                  .find('.mcb-summary-uri')
-                                  .text(!!data.contact_field.uri ? data.contact_field.uri : mobile_contact_bar.l10n.no_URI);
+                            : contact.find('.mcb-summary-uri').text(!!data.contact_field.uri ? data.contact_field.uri : mcb.l10n.no_URI);
 
                         contact.find('.mcb-details-text input').val(data.contact_field.text);
                         contact.find('.mcb-details-uri').replaceWith($(data.uri));
@@ -566,8 +565,8 @@
                 }, 100);
 
                 var iconList,
-                    ti_path = mobile_contact_bar.plugin_url + 'assets/svg/ti/tabler-sprite.svg',
-                    fa_path = mobile_contact_bar.plugin_url + 'assets/svg/fa/sprites/',
+                    ti_path = mcb.plugin_url + 'assets/svg/ti/tabler-sprite.svg',
+                    fa_path = mcb.plugin_url + 'assets/svg/fa/sprites/',
                     ti_filtered_icons = [],
                     fa_filtered_icons = [],
                     searchTerm = '',
@@ -589,8 +588,8 @@
 
                 iconList = $('#mcb-icon-picker-container ul');
 
-                fa_filtered_icons = filtered_icons(fa_icons, searchTerm);
-                ti_filtered_icons = filtered_icons(ti_icons, searchTerm);
+                fa_filtered_icons = filtered_icons(option.fa_icons, searchTerm);
+                ti_filtered_icons = filtered_icons(option.ti_icons, searchTerm);
 
                 // Change brand
                 $('body')
@@ -630,8 +629,8 @@
 
                         if (
                             !['ti', 'fa'].includes(brand) ||
-                            ('ti' === brand && !ti_icons.includes(icon)) ||
-                            ('fa' === brand && !fa_icons.includes(icon))
+                            ('ti' === brand && !option.ti_icons.includes(icon)) ||
+                            ('fa' === brand && !option.fa_icons.includes(icon))
                         ) {
                             contact.blankIcon();
                             return false;
@@ -642,58 +641,79 @@
                             method: 'POST',
                             data: {
                                 action: 'mcb_ajax_get_icon',
-                                nonce: mobile_contact_bar.nonce,
+                                nonce: mcb.nonce,
                                 brand: brand,
                                 group: names[0],
                                 icon: names[1]
                             },
 
                             beforeSend: function () {
-                                contact.loadingIcon(fa_path);
-                            }
-                        }).done(function (response) {
-                            if (!response) {
-                                contact.blankIcon();
-                                return false;
-                            }
-                            var svg = JSON.parse(response);
-                            if (svg.length <= 0) {
-                                contact.blankIcon();
-                                return false;
-                            }
+                                button.addClass('mcb-loading');
+                                contact.loadingIcon();
+                            },
 
-                            contact
-                                .find('input[name$="[brand]"]')
-                                .val(brand)
-                                .end()
-                                .find('input[name$="[group]"]')
-                                .val(names[0])
-                                .end()
-                                .find('input[name$="[icon]"]')
-                                .val(names[1])
-                                .end()
-                                .find('.mcb-summary-brand')
-                                .removeClass('mcb-blank-icon')
-                                .text(brand.toUpperCase())
-                                .end()
-                                .find('.mcb-summary-icon')
-                                .removeClass(['mcb-blank-icon', 'mcb-fa'])
-                                .empty()
-                                .append(svg)
-                                .end()
-                                .find('.mcb-details-brand')
-                                .removeClass('mcb-blank-icon')
-                                .text(brand.toUpperCase())
-                                .end()
-                                .find('.mcb-details-icon')
-                                .removeClass(['mcb-blank-icon', 'mcb-fa'])
-                                .empty()
-                                .append(svg);
-
-                            if ('fa' === brand) {
-                                contact.find('.mcb-summary-icon').addClass('mcb-fa').end().find('.mcb-details-icon').addClass('mcb-fa');
+                            complete: function () {
+                                button.removeClass('mcb-loading');
+                                contact
+                                    .find('.mcb-summary-icon')
+                                    .removeClass('mcb-loading-icon')
+                                    .end()
+                                    .find('.mcb-details-icon')
+                                    .removeClass('mcb-loading-icon');
                             }
-                        });
+                        })
+                            .done(function (response) {
+                                if (!response) {
+                                    contact.blankIcon();
+                                    return false;
+                                }
+                                var svg = JSON.parse(response);
+                                if (svg.length <= 0) {
+                                    contact.blankIcon();
+                                    return false;
+                                }
+
+                                contact
+                                    .find('input[name$="[brand]"]')
+                                    .val(brand)
+                                    .end()
+                                    .find('input[name$="[group]"]')
+                                    .val(names[0])
+                                    .end()
+                                    .find('input[name$="[icon]"]')
+                                    .val(names[1])
+                                    .end()
+                                    .find('.mcb-summary-brand')
+                                    .removeClass('mcb-blank-icon')
+                                    .text(brand.toUpperCase())
+                                    .end()
+                                    .find('.mcb-summary-icon')
+                                    .removeClass(['mcb-blank-icon', 'mcb-fa'])
+                                    .empty()
+                                    .append(svg)
+                                    .end()
+                                    .find('.mcb-details-brand')
+                                    .removeClass('mcb-blank-icon')
+                                    .text(brand.toUpperCase())
+                                    .end()
+                                    .find('.mcb-details-icon')
+                                    .removeClass(['mcb-blank-icon', 'mcb-fa'])
+                                    .empty()
+                                    .append(svg);
+
+                                if ('fa' === brand) {
+                                    contact.find('.mcb-summary-icon').addClass('mcb-fa').end().find('.mcb-details-icon').addClass('mcb-fa');
+                                }
+                            })
+                            .always(function () {
+                                button.removeClass('mcb-loading');
+                                contact
+                                    .find('.mcb-summary-icon')
+                                    .removeClass('mcb-loading-icon')
+                                    .end()
+                                    .find('.mcb-details-icon')
+                                    .removeClass('mcb-loading-icon');
+                            });
                     });
 
                 // Paginate icons
@@ -734,8 +754,8 @@
                         var brand = $('#mcb-icon-picker-container').find('button.mcb-brand-active').attr('data-brand');
 
                         searchTerm = $(this).val();
-                        ti_filtered_icons = filtered_icons(ti_icons, searchTerm);
-                        fa_filtered_icons = filtered_icons(fa_icons, searchTerm);
+                        ti_filtered_icons = filtered_icons(option.ti_icons, searchTerm);
+                        fa_filtered_icons = filtered_icons(option.fa_icons, searchTerm);
 
                         if ('ti' === brand) {
                             ti_update_picker_window(iconList, ti_path, ti_filtered_icons, 0);
@@ -800,7 +820,7 @@
                 var contact = $(this).closest('.mcb-contact');
 
                 if ('' === uri) {
-                    contact.find('.mcb-summary-uri').removeClass('mcb-monospace').text(mobile_contact_bar.l10n.no_URI);
+                    contact.find('.mcb-summary-uri').removeClass('mcb-monospace').text(mcb.l10n.no_URI);
                 } else {
                     contact.find('.mcb-summary-uri').addClass('mcb-monospace').text(uri);
                 }
@@ -823,7 +843,7 @@
                     method: 'POST',
                     data: {
                         action: 'mcb_ajax_get_parameter',
-                        nonce: mobile_contact_bar.nonce,
+                        nonce: mcb.nonce,
                         contact_key: contactKey,
                         parameter_key: parameterKey
                     },

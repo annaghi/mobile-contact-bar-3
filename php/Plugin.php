@@ -7,6 +7,7 @@ use ReflectionClass;
 
 
 /**
+ * @property string $mcb
  * @property string $id
  * @property string $slug
  * @property string $capability
@@ -16,6 +17,7 @@ use ReflectionClass;
 */
 final class Plugin extends Container
 {
+    const MCB          = 'mcb';
     const ID           = 'mobile_contact_bar';
     const SLUG         = 'mobile-contact-bar';
     const CAPABILITY   = 'manage_options';

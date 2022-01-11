@@ -618,17 +618,33 @@ final class Input
 
     public function sanitize_int( $setting, $value )
     {
-        return (( isset( $setting['min'] ) && (int) $value < $setting['min'] ) || ( isset( $setting['max'] ) && (int) $value > $setting['max'] ))
-            ? $setting['default']
-            : (int) $value;
+        if ( isset( $setting['min'] ) && (int) $value < $setting['min'] )
+        {
+            return (int) $setting['min'];
+        }
+
+        if ( isset( $setting['max'] ) && (int) $value > $setting['max'] )
+        {
+            return (int) $setting['max'];
+        }
+
+        return (int) $value;
     }
 
 
     public function sanitize_float( $setting, $value )
     {
-        return ( $setting['min'] <= (float) $value || (float) $value <= $setting['max'] )
-            ? (float) $value
-            : $setting['default'];
+        if ( isset( $setting['min'] ) && (float) $value < $setting['min'] )
+        {
+            return (float) $setting['min'];
+        }
+
+        if ( isset( $setting['max'] ) && (float) $value > $setting['max'] )
+        {
+            return (float) $setting['max'];
+        }
+
+        return (float) $value;
     }
 
 
