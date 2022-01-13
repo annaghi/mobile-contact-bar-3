@@ -37,48 +37,48 @@ final class Input
                     'title'    => __( 'Open in New Tab', 'mobile-contact-bar' ),
                     'label'    => __( 'Open links in a new browser tab', 'mobile-contact-bar' ),
                 ],
-                'vertical_alignment' => [
+                'position' => [
                     'type'     => 'radio',
                     'default'  => 'bottom',
-                    'title'    => __( 'Vertical Alignment', 'mobile-contact-bar' ),
+                    'title'    => __( 'Position', 'mobile-contact-bar' ),
                     'options'  => [
                         'top'    => __( 'top', 'mobile-contact-bar' ),
                         'bottom' => __( 'bottom', 'mobile-contact-bar' ),
+                        'left'   => __( 'left', 'mobile-contact-bar' ),
+                        'right'  => __( 'right', 'mobile-contact-bar' ),
                     ],
                 ],
                 'is_sticky' => [
                     'type'     => 'checkbox',
                     'default'  => 1,
-                    'title'    => __( 'Sticky Position', 'mobile-contact-bar' ),
-                    'label'    => __( 'Fix bar at its position relative to the viewport', 'mobile-contact-bar' ),
+                    'title'    => __( 'Sticky Bar', 'mobile-contact-bar' ),
+                    'label'    => __( 'Stick bar at its position relative to the viewport', 'mobile-contact-bar' ),
                 ],
-                'height' => [
+                'shortest' => [
                     'type'     => 'number',
                     'default'  => 70,
                     'min'      => 0,
-                    'title'    => __( 'Bar Height', 'mobile-contact-bar' ),
+                    'title'    => __( 'Shortest Side', 'mobile-contact-bar' ),
                     'postfix'  => 'px',
                 ],
-                'width' => [
+                'longest' => [
                     'type'     => 'number',
                     'trigger'  => '<100',
                     'default'  => 100,
                     'min'      => 0,
                     'max'      => 100,
-                    'title'    => __( 'Bar Width', 'mobile-contact-bar' ),
+                    'title'    => __( 'Longest Side', 'mobile-contact-bar' ),
                     'postfix'  => '%',
                 ],
-                'horizontal_alignment' => [
-                    'type'     => 'radio',
-                    'parent'   => 'width',
-                    'default'  => 'center',
-                    'title'    => __( 'Horizontal Alignment', 'mobile-contact-bar' ),
-                    'desc'     => __( 'It has effect if Bar Width is smaller than 100%.', 'mobile-contact-bar' ),
-                    'options'  => [
-                        'left'   => __( 'left', 'mobile-contact-bar' ),
-                        'center' => __( 'center', 'mobile-contact-bar' ),
-                        'right'  => __( 'right', 'mobile-contact-bar' ),
-                    ],
+                'alignment' => [
+                    'type'     => 'number',
+                    'parent'   => 'longest',
+                    'default'  => 50,
+                    'min'      => 0,
+                    'max'      => 100,
+                    'title'    => __( 'Alignment', 'mobile-contact-bar' ),
+                    'desc'     => __( 'It has effect if Longest Side of the bar is smaller than 100%.', 'mobile-contact-bar' ),
+                    'postfix'  => '%',
                 ],
                 'opacity' => [
                     'type'     => 'slider',
@@ -143,18 +143,18 @@ final class Input
                     'title'    => __( 'Space Height', 'mobile-contact-bar' ),
                     'postfix'  => 'px',
                 ],
-                'placeholder_height' => [
-                    'type'     => 'number',
-                    'default'  => 50,
-                    'min'      => 0,
-                    'title'    => __( 'Placeholder Height', 'mobile-contact-bar' ),
-                    'postfix'  => 'px',
-                ],
-                'placeholder_color' => [
-                    'type'     => 'color-picker',
-                    'default'  => '#ff647d',
-                    'title'    => __( 'Placeholder Color', 'mobile-contact-bar' ),
-                ],
+                // 'placeholder_height' => [
+                //     'type'     => 'number',
+                //     'default'  => 50,
+                //     'min'      => 0,
+                //     'title'    => __( 'Placeholder Height', 'mobile-contact-bar' ),
+                //     'postfix'  => 'px',
+                // ],
+                // 'placeholder_color' => [
+                //     'type'     => 'color-picker',
+                //     'default'  => '#ff647d',
+                //     'title'    => __( 'Placeholder Color', 'mobile-contact-bar' ),
+                // ],
             ],
 
             'icons_labels' => [
@@ -166,30 +166,6 @@ final class Input
                         'above' => __( 'above the icon', 'mobile-contact-bar' ),
                         'below' => __( 'below the icon', 'mobile-contact-bar' ),
                     ],
-                ],
-                'alignment' => [
-                    'type'     => 'radio',
-                    'trigger'  => '==centered',
-                    'default'  => 'justified',
-                    'title'    => __( 'Alignment', 'mobile-contact-bar' ),
-                    'options'  => [
-                        'justified' => __( 'justified', 'mobile-contact-bar' ),
-                        'centered'  => __( 'centered', 'mobile-contact-bar' ),
-                    ],
-                ],
-                'bar_color' => [
-                    'type'     => 'color-picker',
-                    'parent'   => 'alignment',
-                    'default'  => '',
-                    'title'    => __( 'Bar Color', 'mobile-contact-bar' ),
-                ],
-                'width' => [
-                    'type'     => 'number',
-                    'parent'   => 'alignment',
-                    'default'  => 70,
-                    'min'      => 0,
-                    'title'    => __( 'Item Width', 'mobile-contact-bar' ),
-                    'postfix'  => 'px',
                 ],
                 'gap' => [
                     'type'     => 'slider',

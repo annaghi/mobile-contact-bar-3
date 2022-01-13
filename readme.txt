@@ -4,7 +4,7 @@
 Contributors: anna.bansaghi
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YXJAZ7Q5EJFUA
 Tags: social media, icon, cta, call to action, woocommerce cart
-Requires at least: 4.9
+Requires at least: 5.4
 Tested up to: 5.8
 Requires PHP: 5.6.20
 Stable tag: 3.0.0
@@ -117,15 +117,17 @@ You have full control over the single cookie which is called *mobile_contact_bar
 == Changelog ==
 
 = 3.0.0 =
-* [Upgrade] Minimum supported WordPress version is 4.9.18
+* [Upgrade] Minimum supported WordPress version is 5.4
 * [Upgrade] Minimum supported PHP version is 5.6.20
 * [Upgrade] Replace icon fonts with SVG icons
 * [Upgrade] Reimplement plugin
 * [Rename] `#mobile-contact-bar-outer` to `#mobile-contact-bar-nav`
+* [Deprecate] Bar Placeholder, Icons Alignment
 * [Add] Introduce Tabler Icons 1.50.0
 * [Add] Browser history back and forward actions
 * [Add] Save CSS to file, and enqueue it [css-in-css-file](https://wordpress.org/support/topic/css-in-css-file/)
 + [Add] viber [viber-chat](https://wordpress.org/support/topic/problem-whit-link/)
+* [Add] Position bar on left or right side of the screen
 * [Add] CSS ID selector and color customization
 * [Add] Display label above, below, and instead of the icon [text-below-icon](https://wordpress.org/support/topic/text-below-icon/), [add-label-under-icons](https://wordpress.org/support/topic/add-label-under-icons/)
 * [Add] Option for setting the bar to be closed as default [toggle-state](https://wordpress.org/support/topic/toggle-state-4/), [default-toggle-state](https://wordpress.org/support/topic/default-toggle-state/)

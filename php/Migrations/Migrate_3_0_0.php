@@ -71,22 +71,44 @@ final class Migrate_3_0_0
                 {
                     $settings['bar']['is_sticky']                            = (int) $settings_v2['bar']['is_fixed'];
                 }
+                if ( isset( $settings_v2['bar']['height'] ))
+                {
+                    $settings['bar']['shortest']                             = (int) $settings_v2['bar']['height'];    
+                }
+                if ( isset( $settings_v2['bar']['width'] ))
+                {
+                    $settings['bar']['longest']                              = (int) $settings_v2['bar']['width'];    
+                }
                 if ( isset( $settings_v2['bar']['horizontal_position'] ))
                 {
-                    $settings['bar']['horizontal_alignment']                 = $settings_v2['bar']['horizontal_position'];
+                    switch( $settings_v2['bar']['horizontal_position'] )
+                    {
+                        case 'left':
+                            $settings['bar']['alignment']                    = 0;
+                            break;
+
+                        case 'center':
+                            $settings['bar']['alignment']                    = 50;
+                            break;
+
+                        case 'right':
+                            $settings['bar']['alignment']                    = 100;
+                            break;
+                    }
+                    
                 }
                 if ( isset( $settings_v2['bar']['vertical_position'] ))
                 {
-                    $settings['bar']['vertical_alignment']                   = $settings_v2['bar']['vertical_position'];    
+                    $settings['bar']['position']                             = $settings_v2['bar']['vertical_position'];    
                 }
-                if ( isset( $settings_v2['bar']['vertical_alignment'], $settings_v2['bar']['is_border'] ))
+                if ( isset( $settings_v2['bar']['vertical_position'], $settings_v2['bar']['is_border'] ))
                 {
-                    if ( $settings_v2['bar']['vertical_alignment'] === 'top' && $settings_v2['bar']['is_border'] === 'one' )
+                    if ( 'top' === $settings_v2['bar']['vertical_position'] && 'one' === $settings_v2['bar']['is_border'] )
                     {
                         $settings['bar']['is_borders']['top']                = 0;
                         $settings['bar']['is_borders']['bottom']             = 1;
                     }
-                    elseif ( $settings_v2['bar']['vertical_alignment'] === 'bottom' && $settings_v2['bar']['is_border'] === 'one' )
+                    elseif ( 'bottom' === $settings_v2['bar']['vertical_position'] && 'one' === $settings_v2['bar']['is_border'] )
                     {
                         $settings['bar']['is_borders']['top']                = 1;
                         $settings['bar']['is_borders']['bottom']             = 0;
@@ -102,17 +124,12 @@ final class Migrate_3_0_0
                 }
                 if ( isset( $settings_v2['bar']['color'] ))
                 {
-                    $settings['icons_labels']['bar_color']                   = $settings_v2['bar']['color'];
                     $settings['icons_labels']['background_color']['primary'] = $settings_v2['bar']['color'];
                 }
             }
 
             if ( isset( $settings_v2['icons'] ))
             {
-                if ( isset( $settings_v2['icons']['alignment'] ))
-                {
-                    $settings['icons_labels']['alignment']                   = $settings_v2['icons']['alignment'];
-                }
                 if ( isset( $settings_v2['icons']['width'] ))
                 {
                     $settings['icons_labels']['width']                       = (int) $settings_v2['icons']['width'];

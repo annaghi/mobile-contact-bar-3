@@ -25,9 +25,58 @@ final class PublicController
             if (( $is_mobile && 'mobile' === $device ) || ( ! $is_mobile && 'desktop' === $device ) || ( 'both' === $device ))
             {
                 add_action( 'wp_enqueue_scripts', [$this, 'wp_enqueue_scripts'] );
-                add_action( 'wp_footer', [$this, 'wp_footer'] );
+
+                if ( is_admin_bar_showing() && 'top' === abmcb()->option_bar['settings']['bar']['position'] )
+                {
+                    add_action( 'wp_head', [$this, 'wp_head'], 99 );
+                    add_action( 'wp_after_admin_bar_render', [$this, 'wp_render_mcb'] );
+                }
+                elseif ( 'top' === abmcb()->option_bar['settings']['bar']['position'] )
+                {
+                    add_action( 'wp_head', [$this, 'wp_head'], 99 );
+                    add_action( 'wp_footer', [$this, 'wp_render_mcb'] );
+                }
+                else
+                {
+                    add_action( 'wp_footer', [$this, 'wp_render_mcb'], 99 );
+                }
             }
         }
+    }
+
+
+    /**
+     * Renders inline styles if the bar will be positioned at the top of the screen.
+     * 
+     * @return void
+     */
+    public function wp_head()
+    {
+        $type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
+        $shortest  = (int) abmcb()->option_bar['settings']['bar']['shortest'];
+        $offset_32 = ( is_admin_bar_showing() ) ? 32 + $shortest : $shortest;
+        $offset_46 = ( is_admin_bar_showing() ) ? 46 + $shortest : $shortest;
+
+        ?>
+<style id="<?php echo abmcb()->slug, '-inline-css'; ?>"<?php echo $type_attr; ?> media="screen">
+    html { margin-top: <?php echo $offset_32; ?>px !important; }
+    * html body { margin-top: <?php echo $offset_32; ?>px !important; }
+    <?php if ( is_admin_bar_showing() ) : ?>
+        .admin-bar { --global--admin-bar--height:<?php echo $offset_32; ?>px; }
+    <?php else : ?>
+        :root { --global--admin-bar--height:<?php echo $offset_32; ?>px; }
+    <?php endif; ?>
+    @media screen and ( max-width: 782px ) {
+        html { margin-top: <?php echo $offset_46; ?>px !important; }
+        * html body { margin-top: <?php echo $offset_46; ?>px !important; }
+        <?php if ( is_admin_bar_showing() ) : ?>
+            .admin-bar { --global--admin-bar--height:<?php echo $offset_46; ?>px; }
+        <?php else : ?>
+            :root { --global--admin-bar--height:<?php echo $offset_46; ?>px; }
+        <?php endif; ?>
+    }
+</style>
+        <?php
     }
 
 
@@ -65,28 +114,9 @@ final class PublicController
      * 
      * @return void
      */
-    public function wp_footer()
+    public function wp_render_mcb()
     {
-        if ( ! has_action( 'mcb_public_render_html' ))
-        {
-            add_action( 'mcb_public_render_html', [$this, 'mcb_public_render_html'], 10, 3 );
-        }
-
-        do_action( 'mcb_public_render_html' );
-    }
-
-
-    /**
-     * Renders contact bar.
-     *
-     * @return void
-     */
-    public function mcb_public_render_html()
-    {
-        if ( 1 === did_action( 'mcb_public_render_html' ))
-        {    
-            echo $this->output();
-        }
+        echo $this->output();
     }
 
 
@@ -117,7 +147,7 @@ final class PublicController
 
         $out .= '<div id="mobile-contact-bar">';
 
-        if ( $settings['toggle']['is_render'] && $settings['bar']['is_sticky'] && in_array( $settings['bar']['vertical_alignment'], ['bottom', 'top'] ))
+        if ( $settings['toggle']['is_render'] && $settings['bar']['is_sticky'] && in_array( $settings['bar']['position'], ['bottom', 'top'] ))
         {
             $checked = ( $settings['toggle']['is_closed'] ) ? 'checked' : '';
             $out .= '<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox"' . $checked . '>';
@@ -125,7 +155,7 @@ final class PublicController
             $out .= ( $settings['toggle']['label'] ) ? '<span>' . esc_html( $settings['toggle']['label'] ) . '</span>' : '';
 
             $out .= '<svg viewBox="0 0 550 170" width="110" height="34" fill="currentColor">';
-            if ( 'bottom' === $settings['bar']['vertical_alignment'] )
+            if ( 'bottom' === $settings['bar']['position'] )
             {
                 if ( 'rounded' === $settings['toggle']['shape'] )
                 {
@@ -136,7 +166,7 @@ final class PublicController
                     $out .= $paths['bottom_sharp'];
                 }
             }
-            elseif ( 'top' === $settings['bar']['vertical_alignment'] )
+            elseif ( 'top' === $settings['bar']['position'] )
             {
                 if ( 'rounded' === $settings['toggle']['shape'] )
                 {
