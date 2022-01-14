@@ -67,17 +67,21 @@ final class Migrate_3_0_0
 
             if ( isset( $settings_v2['bar'] ))
             {
-                if ( isset( $settings_v2['bar']['is_fixed'] ))
-                {
-                    $settings['bar']['is_sticky']                            = (int) $settings_v2['bar']['is_fixed'];
-                }
                 if ( isset( $settings_v2['bar']['height'] ))
                 {
                     $settings['bar']['shortest']                             = (int) $settings_v2['bar']['height'];    
                 }
                 if ( isset( $settings_v2['bar']['width'] ))
                 {
-                    $settings['bar']['longest']                              = (int) $settings_v2['bar']['width'];    
+                    if ( 100 === (int) $settings_v2['bar']['width'] )
+                    {
+                        $settings['bar']['span']                             = 'stretch';
+                    }
+                    else
+                    {
+                        $settings['bar']['span']                             = 'fix';
+                    }
+                    
                 }
                 if ( isset( $settings_v2['bar']['horizontal_position'] ))
                 {
@@ -105,21 +109,21 @@ final class Migrate_3_0_0
                 {
                     if ( 'top' === $settings_v2['bar']['vertical_position'] && 'one' === $settings_v2['bar']['is_border'] )
                     {
-                        $settings['bar']['is_borders']['top']                = 0;
-                        $settings['bar']['is_borders']['bottom']             = 1;
+                        $settings['bar']['is_borders']['out']                = 0;
+                        $settings['bar']['is_borders']['in']                 = 1;
                     }
                     elseif ( 'bottom' === $settings_v2['bar']['vertical_position'] && 'one' === $settings_v2['bar']['is_border'] )
                     {
-                        $settings['bar']['is_borders']['top']                = 1;
-                        $settings['bar']['is_borders']['bottom']             = 0;
+                        $settings['bar']['is_borders']['in']                 = 1;
+                        $settings['bar']['is_borders']['out']                = 0;
                     }
                 }
                 if ( isset( $settings_v2['bar']['is_border'] ))
                 {
                     if ( $settings_v2['bar']['is_border'] === 'two' )
                     {
-                        $settings['bar']['is_borders']['top']                = 1;
-                        $settings['bar']['is_borders']['bottom']             = 1;
+                        $settings['bar']['is_borders']['in']                 = 1;
+                        $settings['bar']['is_borders']['out']                = 1;
                     }
                 }
                 if ( isset( $settings_v2['bar']['color'] ))

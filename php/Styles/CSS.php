@@ -53,21 +53,14 @@ final class CSS
         $styles .= $this->toggle( $bar, $toggle );
 
         $styles .= '#mobile-contact-bar ul{';
-        $styles .= 'box-sizing:border-box;';
+        // $styles .= 'box-sizing:border-box;';
         $styles .= 'list-style-type:none;';
         $styles .= 'margin:0;';
         $styles .= 'padding:0;';
         $styles .= 'overflow:hidden;';
-        if ( $bar['is_borders']['top'] )
-        {
-            $bar_border_color = empty( $bar['border_color'] ) ? 'transparent' : $bar['border_color'];
-            $styles .= 'border-top:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-        }
-        if ( $bar['is_borders']['bottom'] )
-        {
-            $bar_border_color = empty( $bar['border_color'] ) ? 'transparent' : $bar['border_color'];
-            $styles .= 'border-bottom:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-        }
+
+        $styles .= $this->bar_border( $bar );
+
         $styles .= '}';
 
 
@@ -142,16 +135,26 @@ final class CSS
     {
         $styles = '';
 
-        if ( $bar['is_sticky'] )
+        $grid_template_size = $bar['shortest'];
+        if ( $bar['is_borders']['in'] )
+        {
+            $grid_template_size = $grid_template_size - $bar['border_width'];
+        }
+        if ( $bar['is_borders']['out'] )
+        {
+            $grid_template_size = $grid_template_size - $bar['border_width'];
+        }
+
+        if ( $bar['is_fixed'] )
         {
             switch ( $bar['position'] )
             {
                 case 'top':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= 'width:' . $bar['longest'] . '%;';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'width:100%;' : 'width:' . $checked_contacts_count * $bar['shortest'] . 'px;';
                     $styles .= 'position:fixed;';
                     $styles .= 'top:0;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
                         $styles .= 'left:' . $bar['alignment'] . '%;';
                         $styles .= 'transform:translateX(-' . $bar['alignment'] . '%);';
@@ -163,8 +166,10 @@ final class CSS
                     $styles .= '}';
                     $styles .= '#mobile-contact-bar ul{';
                     $styles .= 'display:grid;';
-                    $styles .= 'grid-template-columns:repeat(' . $checked_contacts_count . ',1fr);';
-                    $styles .= 'grid-template-rows:' . $bar['shortest'] . 'px;';
+                    $styles .= ( 'stretch' === $bar['span'] )
+                        ? 'grid-template-columns: repeat(' . $checked_contacts_count . ',1fr);'
+                        : 'grid-template-columns: repeat(' . $checked_contacts_count . ',' . $bar['shortest'] . 'px);';
+                    $styles .= 'grid-template-rows:' . $grid_template_size . 'px;';
                     $styles .= '}';
 
                     $styles .= '#wpadminbar ~ #mobile-contact-bar{';
@@ -182,9 +187,9 @@ final class CSS
                     $styles .= 'position:sticky;';
                     $styles .= 'top:0;';
                     $styles .= 'margin-top:-' . $bar['shortest'] . 'px;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
-                        $styles .= 'left:' . ( 100 - $bar['longest'] ) * $bar['alignment'] / 100 . '%;';
+                        $styles .= 'left:calc(' . $bar['alignment'] . '% - '. ( $checked_contacts_count * $bar['shortest'] / 2 ) . 'px);';
                         $styles .= 'transform:none;';
                     }
                     $styles .= '}';
@@ -193,10 +198,10 @@ final class CSS
 
                 case 'bottom':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= 'width:' . $bar['longest'] . '%;';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'width:100%;' : 'width:' . $checked_contacts_count * $bar['shortest'] . 'px;';
                     $styles .= 'position:fixed;';
                     $styles .= 'bottom:0;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
                         $styles .= 'left:' . $bar['alignment'] . '%;';
                         $styles .= 'transform:translateX(-' . $bar['alignment'] . '%);';
@@ -208,18 +213,20 @@ final class CSS
                     $styles .= '}';
                     $styles .= '#mobile-contact-bar ul{';
                     $styles .= 'display:grid;';
-                    $styles .= 'grid-template-columns:repeat(' . $checked_contacts_count . ',1fr);';
-                    $styles .= 'grid-template-rows:' . $bar['shortest'] . 'px;';
+                    $styles .= ( 'stretch' === $bar['span'] )
+                        ? 'grid-template-columns: repeat(' . $checked_contacts_count . ',1fr);'
+                        : 'grid-template-columns: repeat(' . $checked_contacts_count . ',' . $bar['shortest'] . 'px);';
+                    $styles .= 'grid-template-rows:' . $grid_template_size . 'px;';
                     $styles .= '}';
                     break;
 
                 case 'left':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= 'height:' . $bar['longest'] . '%;';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:100%;' : 'height:' . $checked_contacts_count * $bar['shortest'] . 'px;';
                     $styles .= 'width:' . $bar['shortest'] . 'px;';
                     $styles .= 'position:fixed;';
                     $styles .= 'left:0;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
                         $styles .= 'top:' . $bar['alignment'] . '%;';
                         $styles .= 'transform:translateY(-' . $bar['alignment'] . '%);';
@@ -233,12 +240,13 @@ final class CSS
                     $styles .= 'height:100%;';
                     $styles .= 'display:grid;';
                     $styles .= 'grid-template-rows:repeat(' . $checked_contacts_count . ',1fr);';
-                    $styles .= 'grid-template-columns:' . $bar['shortest'] . 'px;';
+                    $styles .= 'grid-template-columns:' . $grid_template_size . 'px;';
                     $styles .= '}';
 
                     $styles .= '#wpadminbar ~ #mobile-contact-bar{';
-                    $styles .= 'height:calc(' . $bar['longest'] . '% - 32px);';
-                    if ( $bar['longest'] < 100 )
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:calc(100% - 32px);' : 'height:' . $checked_contacts_count * $bar['shortest'] . 'px;';
+                    $styles .= 'top:32px;';
+                    if ( 'fix' === $bar['span'] )
                     {
                         if ( $bar['alignment'] < 50 )
                         {
@@ -249,16 +257,13 @@ final class CSS
                             $styles .= 'top:' . $bar['alignment'] . '%;';
                         }
                     }
-                    else
-                    {
-                        $styles .= 'top:32px;';
-                    }
                     $styles .= '}';
 
                     $styles .= '@media only screen and (max-width: 782px){';
                     $styles .= '#wpadminbar ~ #mobile-contact-bar{';
-                    $styles .= 'height:calc(' . $bar['longest'] . '% - 46px);';
-                    if ( $bar['longest'] < 100 )
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:calc(100% - 46px);' : 'height:' . $checked_contacts_count * $bar['shortest'] . 'px;';
+                    $styles .= 'top:46px;';
+                    if ( 'fix' === $bar['span'] )
                     {
                         if ( $bar['alignment'] < 50 )
                         {
@@ -268,10 +273,6 @@ final class CSS
                         {
                             $styles .= 'top:' . $bar['alignment'] . '%;';
                         }
-                    }
-                    else
-                    {
-                        $styles .= 'top:46px;';
                     }
                     $styles .= '}';
                     $styles .= '}';
@@ -279,11 +280,11 @@ final class CSS
 
                 case 'right':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= 'height:' . $bar['longest'] . '%;';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:100%;' : 'height:' . $checked_contacts_count * $bar['shortest'] . 'px;';
                     $styles .= 'width:' . $bar['shortest'] . 'px;';
                     $styles .= 'position:fixed;';
                     $styles .= 'right:0;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
                         $styles .= 'top:' . $bar['alignment'] . '%;';
                         $styles .= 'transform:translateY(-' . $bar['alignment'] . '%);';
@@ -297,12 +298,13 @@ final class CSS
                     $styles .= 'height:100%;';
                     $styles .= 'display:grid;';
                     $styles .= 'grid-template-rows:repeat(' . $checked_contacts_count . ',1fr);';
-                    $styles .= 'grid-template-columns:' . $bar['shortest'] . 'px;';
+                    $styles .= 'grid-template-columns:' . $grid_template_size . 'px;';
                     $styles .= '}';
 
                     $styles .= '#wpadminbar ~ #mobile-contact-bar{';
-                    $styles .= 'height:calc(' . $bar['longest'] . '% - 32px);';
-                    if ( $bar['longest'] < 100 )
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:calc(100% - 32px);' : 'height:' . $checked_contacts_count * $bar['shortest'] . 'px;';
+                    $styles .= 'top:32px;';
+                    if ( 'fix' === $bar['span'] )
                     {
                         if ( $bar['alignment'] < 50 )
                         {
@@ -313,16 +315,13 @@ final class CSS
                             $styles .= 'top:' . $bar['alignment'] . '%;';
                         }
                     }
-                    else
-                    {
-                        $styles .= 'top:32px;';
-                    }
                     $styles .= '}';
 
                     $styles .= '@media only screen and (max-width: 782px){';
                     $styles .= '#wpadminbar ~ #mobile-contact-bar{';
-                    $styles .= 'height:calc(' . $bar['longest'] . '% - 46px);';
-                    if ( $bar['longest'] < 100 )
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:calc(100% - 46px);' : 'height:' . $checked_contacts_count * $bar['shortest'] . 'px;';
+                    $styles .= 'top:46px;';
+                    if ( 'fix' === $bar['span'] )
                     {
                         if ( $bar['alignment'] < 50 )
                         {
@@ -332,10 +331,6 @@ final class CSS
                         {
                             $styles .= 'top:' . $bar['alignment'] . '%;';
                         }
-                    }
-                    else
-                    {
-                        $styles .= 'top:46px;';
                     }
                     $styles .= '}';
                     $styles .= '}';
@@ -348,10 +343,10 @@ final class CSS
             {
                 case 'top':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= 'width:' . $bar['longest'] . '%;';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'width:100%;' : 'width:' . $checked_contacts_count * $bar['shortest'] . 'px;';
                     $styles .= 'position:absolute;';
                     $styles .= 'top:0;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
                         $styles .= 'left:' . $bar['alignment'] . '%;';
                         $styles .= 'transform:translateX(-' . $bar['alignment'] . '%);';
@@ -364,7 +359,7 @@ final class CSS
                     $styles .= '#mobile-contact-bar ul{';
                     $styles .= 'display:grid;';
                     $styles .= 'grid-template-columns:repeat(' . $checked_contacts_count . ',1fr);';
-                    $styles .= 'grid-template-rows:' . $bar['shortest'] . 'px;';
+                    $styles .= 'grid-template-rows:' . $grid_template_size . 'px;';
                     $styles .= '}';
 
                     $styles .= '#wpadminbar ~ #mobile-contact-bar{';
@@ -380,9 +375,9 @@ final class CSS
 
                 case 'bottom':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= 'width:' . $bar['longest'] . '%;';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'width:100%;' : 'width:' . $checked_contacts_count * $bar['shortest'] . 'px;';
                     $styles .= 'position:relative;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
                         $styles .= 'left:' . $bar['alignment'] . '%;';
                         $styles .= 'transform:translateX(-' . $bar['alignment'] . '%);';
@@ -395,58 +390,59 @@ final class CSS
                     $styles .= '#mobile-contact-bar ul{';
                     $styles .= 'display:grid;';
                     $styles .= 'grid-template-columns:repeat(' . $checked_contacts_count . ',1fr);';
-                    $styles .= 'grid-template-rows:' . $bar['shortest'] . 'px;';
+                    $styles .= 'grid-template-rows:' . $grid_template_size . 'px;';
                     $styles .= '}';
                     break;
 
                 case 'left':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= 'height:' . $bar['longest'] . '%;';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:100%;' : 'height:' . $checked_contacts_count * $bar['shortest'] . 'px;';
                     $styles .= 'width:' . $bar['shortest'] . 'px;';
                     $styles .= 'position:absolute;';
                     $styles .= 'left:0;';
                     $styles .= 'top:0;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
-                        $styles .= 'transform:translateY(' . $bar['alignment'] . '%);';
+                        $styles .= 'top:' . $bar['alignment'] . '%;';
+                        $styles .= 'transform:translateY(-' . $bar['alignment'] . '%);';
                     }
                     $styles .= '}';
                     $styles .= '#mobile-contact-bar ul{';
                     $styles .= 'height:100%;';
                     $styles .= 'display:grid;';
                     $styles .= 'grid-template-rows:repeat(' . $checked_contacts_count . ',1fr);';
-                    $styles .= 'grid-template-columns:' . $bar['shortest'] . 'px;';
+                    $styles .= 'grid-template-columns:' . $grid_template_size . 'px;';
                     $styles .= '}';
 
                     $styles .= '#wpadminbar ~ #mobile-contact-bar{';
-                    $styles .= 'height:calc(' . $bar['longest'] . '% - 32px);';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:calc(100% - 32px);' : 'height:' . $checked_contacts_count * $bar['shortest'] . 'px;';
                     $styles .= 'top:32px;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
                         if ( $bar['alignment'] < 50 )
                         {
-                            $styles .= 'transform:translateY(' . $bar['alignment'] . '%);';
+                            $styles .= 'top:calc(' . $bar['alignment'] . '% + 32px);';
                         }
                         else
                         {
-                            $styles .= 'transform:translateY(calc(' . $bar['alignment'] . '% + 32px));';
+                            $styles .= 'top:' . $bar['alignment'] . '%;';
                         }
                     }
                     $styles .= '}';
 
                     $styles .= '@media only screen and (max-width: 782px){';
                     $styles .= '#wpadminbar ~ #mobile-contact-bar{';
-                    $styles .= 'height:calc(' . $bar['longest'] . '% - 46px);';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:calc(100% - 46px);' : 'height:' . $checked_contacts_count * $bar['shortest'] . 'px;';
                     $styles .= 'top:46px;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
                         if ( $bar['alignment'] < 50 )
                         {
-                            $styles .= 'transform:translateY(' . $bar['alignment'] . '%);';
+                            $styles .= 'top:calc(' . $bar['alignment'] . '% + 46px);';
                         }
                         else
                         {
-                            $styles .= 'transform:translateY(calc(' . $bar['alignment'] . '% + 46px));';
+                            $styles .= 'top:' . $bar['alignment'] . '%;';
                         }
                     }
                     $styles .= '}';
@@ -454,58 +450,116 @@ final class CSS
                     break;
                 case 'right':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= 'height:' . $bar['longest'] . '%;';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:100%;' : 'height:' . $checked_contacts_count * $bar['shortest'] . 'px;';
                     $styles .= 'width:' . $bar['shortest'] . 'px;';
                     $styles .= 'position:absolute;';
                     $styles .= 'right:0;';
                     $styles .= 'top:0;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
-                        $styles .= 'transform:translateY(' . $bar['alignment'] . '%);';
+                        $styles .= 'top:' . $bar['alignment'] . '%;';
+                        $styles .= 'transform:translateY(-' . $bar['alignment'] . '%);';
                     }
                     $styles .= '}';
                     $styles .= '#mobile-contact-bar ul{';
                     $styles .= 'height:100%;';
                     $styles .= 'display:grid;';
                     $styles .= 'grid-template-rows:repeat(' . $checked_contacts_count . ',1fr);';
-                    $styles .= 'grid-template-columns:' . $bar['shortest'] . 'px;';
+                    $styles .= 'grid-template-columns:' . $grid_template_size . 'px;';
                     $styles .= '}';
 
                     $styles .= '#wpadminbar ~ #mobile-contact-bar{';
-                    $styles .= 'height:calc(' . $bar['longest'] . '% - 32px);';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:calc(100% - 32px);' : 'height:' . $checked_contacts_count * $bar['shortest'] . 'px;';
                     $styles .= 'top:32px;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
                         if ( $bar['alignment'] < 50 )
                         {
-                            $styles .= 'transform:translateY(' . $bar['alignment'] . '%);';
+                            $styles .= 'top:calc(' . $bar['alignment'] . '% + 32px);';
                         }
                         else
                         {
-                            $styles .= 'transform:translateY(calc(' . $bar['alignment'] . '% + 32px));';
+                            $styles .= 'top:' . $bar['alignment'] . '%;';
                         }
                     }
                     $styles .= '}';
 
                     $styles .= '@media only screen and (max-width: 782px){';
                     $styles .= '#wpadminbar ~ #mobile-contact-bar{';
-                    $styles .= 'height:calc(' . $bar['longest'] . '% - 46px);';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:calc(100% - 46px);' : 'height:' . $checked_contacts_count * $bar['shortest'] . 'px;';
                     $styles .= 'top:46px;';
-                    if ( $bar['longest'] < 100 )
+                    if ( 'fix' === $bar['span'] )
                     {
                         if ( $bar['alignment'] < 50 )
                         {
-                            $styles .= 'transform:translateY(' . $bar['alignment'] . '%);';
+                            $styles .= 'top:calc(' . $bar['alignment'] . '% + 46px);';
                         }
                         else
                         {
-                            $styles .= 'transform:translateY(calc(' . $bar['alignment'] . '% + 46px));';
+                            $styles .= 'top:' . $bar['alignment'] . '%;';
                         }
                     }
                     $styles .= '}';
                     $styles .= '}';
                     break;
             }
+        }
+
+        return $styles;
+    }
+
+
+    private function bar_border( $bar )
+    {
+        $styles = '';
+
+        $bar_border_color = empty( $bar['border_color'] ) ? 'transparent' : $bar['border_color'];
+
+        switch ( $bar['position'] )
+        {
+            case 'top':
+                if ( $bar['is_borders']['out'] )
+                {
+                    $styles .= 'border-top:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+                }
+                if ( $bar['is_borders']['in'] )
+                {
+                    $styles .= 'border-bottom:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+                }
+                break;
+
+            case 'bottom':
+                if ( $bar['is_borders']['in'] )
+                {
+                    $styles .= 'border-top:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+                }
+                if ( $bar['is_borders']['out'] )
+                {
+                    $styles .= 'border-bottom:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+                }
+                break;
+
+            case 'left':
+                if ( $bar['is_borders']['out'] )
+                {
+                    $styles .= 'border-left:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+                }
+                if ( $bar['is_borders']['in'] )
+                {
+                    $styles .= 'border-right:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+                }
+                break;
+
+            case 'right':
+                if ( $bar['is_borders']['in'] )
+                {
+                    $styles .= 'border-left:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+                }
+                if ( $bar['is_borders']['out'] )
+                {
+                    $styles .= 'border-right:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+                }
+                break;
         }
 
         return $styles;
@@ -559,7 +613,7 @@ final class CSS
     {
         $styles = '';
 
-        if ( $toggle['is_render'] && $bar['is_sticky'] )
+        if ( $toggle['is_render'] && $bar['is_fixed'] )
         {
             if ( $toggle['is_animation'] )
             {

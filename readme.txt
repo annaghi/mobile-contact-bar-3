@@ -122,7 +122,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Upgrade] Replace icon fonts with SVG icons
 * [Upgrade] Reimplement plugin
 * [Rename] `#mobile-contact-bar-outer` to `#mobile-contact-bar-nav`
-* [Deprecate] Bar Placeholder, Icons Alignment
+* [Deprecate] Bar Width, Bar Placeholder, Icons Alignment
 * [Add] Introduce Tabler Icons 1.50.0
 * [Add] Browser history back and forward actions
 * [Add] Save CSS to file, and enqueue it [css-in-css-file](https://wordpress.org/support/topic/css-in-css-file/)

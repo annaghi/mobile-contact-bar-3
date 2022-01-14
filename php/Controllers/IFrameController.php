@@ -144,7 +144,7 @@ final class IFrameController
 
         $out .= '<div id="mobile-contact-bar">';
 
-        if ( $settings['toggle']['is_render'] && $settings['bar']['is_sticky'] && in_array( $settings['bar']['position'], ['bottom', 'top'] ))
+        if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] && in_array( $settings['bar']['position'], ['bottom', 'top'] ))
         {
             $checked = ( $settings['toggle']['is_closed'] ) ? 'checked' : '';
             $out .= '<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox"' . $checked . '>';

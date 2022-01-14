@@ -48,36 +48,38 @@ final class Input
                         'right'  => __( 'right', 'mobile-contact-bar' ),
                     ],
                 ],
-                'is_sticky' => [
+                'is_fixed' => [
                     'type'     => 'checkbox',
                     'default'  => 1,
-                    'title'    => __( 'Sticky Bar', 'mobile-contact-bar' ),
-                    'label'    => __( 'Stick bar at its position relative to the viewport', 'mobile-contact-bar' ),
+                    'title'    => __( 'Fixed Bar', 'mobile-contact-bar' ),
+                    'label'    => __( 'Fix bar at its position relative to the viewport', 'mobile-contact-bar' ),
                 ],
                 'shortest' => [
                     'type'     => 'number',
-                    'default'  => 70,
+                    'default'  => 50,
                     'min'      => 0,
                     'title'    => __( 'Shortest Side', 'mobile-contact-bar' ),
                     'postfix'  => 'px',
                 ],
-                'longest' => [
-                    'type'     => 'number',
-                    'trigger'  => '<100',
-                    'default'  => 100,
-                    'min'      => 0,
-                    'max'      => 100,
-                    'title'    => __( 'Longest Side', 'mobile-contact-bar' ),
-                    'postfix'  => '%',
+                'span' => [
+                    'type'     => 'radio',
+                    'trigger'  => '==fix',
+                    'default'  => 'stretch',
+                    'title'    => __( 'Span on the Longest Side', 'mobile-contact-bar' ),
+                    'options'  => [
+                        'stretch' => __( 'stretched', 'mobile-contact-bar' ),
+                        'fix'     => __( 'fixed size', 'mobile-contact-bar' ),
+                    ],
                 ],
                 'alignment' => [
-                    'type'     => 'number',
-                    'parent'   => 'longest',
+                    'type'     => 'slider',
+                    'parent'   => 'span',
                     'default'  => 50,
                     'min'      => 0,
                     'max'      => 100,
-                    'title'    => __( 'Alignment', 'mobile-contact-bar' ),
-                    'desc'     => __( 'It has effect if Longest Side of the bar is smaller than 100%.', 'mobile-contact-bar' ),
+                    'step'     => 1,
+                    'title'    => __( 'Align on the Longest Side', 'mobile-contact-bar' ),
+                    'desc'     => __( 'Align bar across the longest side.', 'mobile-contact-bar' ),
                     'postfix'  => '%',
                 ],
                 'opacity' => [
@@ -111,13 +113,13 @@ final class Input
                     'trigger'  => '==true',
                     'title'    => __( 'Borders', 'mobile-contact-bar' ),
                     'options'  => [
-                        'top' => [
+                        'in' => [
                             'default' => 0,
-                            'label'   => __( 'top', 'mobile-contact-bar' ),
+                            'label'   => __( 'longest side in', 'mobile-contact-bar' ),
                         ],
-                        'bottom' => [
+                        'out' => [
                             'default' => 0,
-                            'label'   => __( 'bottom', 'mobile-contact-bar' ),
+                            'label'   => __( 'longest side out', 'mobile-contact-bar' ),
                         ],
                     ],
                 ],
