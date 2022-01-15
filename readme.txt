@@ -19,7 +19,7 @@ Allow your visitors to contact you via mobile phones, or access your site's page
 
 Mobile Contact Bar is a compact and highly customizable plugin, which allows your visitors to contact you directly via mobile phones, or access your site's pages instantly.
 
-The settings page is available under the *Settings / Mobile Contact Bar* menu in the WordPress admin.
+The settings page is available under the *Mobile Contact Bar* menu in the WordPress admin.
 
 
 
@@ -126,6 +126,7 @@ You have full control over the single cookie which is called *mobile_contact_bar
 * [Add] Introduce Tabler Icons 1.50.0
 * [Add] Browser history back and forward actions
 * [Add] Save CSS to file, and enqueue it [css-in-css-file](https://wordpress.org/support/topic/css-in-css-file/)
+* [Add] Show bar only on specific post types [hide-the-contact-bar-in-home-page](https://wordpress.org/support/topic/hide-the-contact-bar-in-home-page/), [remove-bar-from-a-specific-page](https://wordpress.org/support/topic/remove-bar-from-a-specific-page/)
 + [Add] viber [viber-chat](https://wordpress.org/support/topic/problem-whit-link/)
 * [Add] Position bar on left or right side of the screen
 * [Add] CSS ID selector and color customization

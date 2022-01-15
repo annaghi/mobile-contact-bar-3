@@ -21,7 +21,7 @@ final class Plugin extends Container
     const ID           = 'mobile_contact_bar';
     const SLUG         = 'mobile-contact-bar';
     const CAPABILITY   = 'manage_options';
-    const PAGE_SUFFIX  = 'settings_page_mobile-contact-bar';
+    const PAGE_SUFFIX  = 'toplevel_page_mobile-contact-bar';
     const SCHEMES      = ['viber', 'tel', 'sms', 'skype', 'mailto', 'https', 'http'];
     const WP_CRON_HOOK = 'mobile_contact_bar_weekly_scheduled_events';
 

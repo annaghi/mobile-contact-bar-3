@@ -28,12 +28,13 @@ final class AdminController
             'no_URI'   => __( '(no URI)', 'mobile-contact-bar' ),
         ];
 
-        add_options_page(
+        add_menu_page(
             __( 'Mobile Contact Bar', 'mobile-contact-bar' ),
             __( 'Mobile Contact Bar', 'mobile-contact-bar' ),
             abmcb()->capability,
             abmcb()->slug,
-            [$this, 'callback_render_page']
+            [$this, 'callback_render_page'],
+            'dashicons-smartphone'
         );
 
         add_action( 'load-' . abmcb()->page_suffix, [$this, 'load_screen_options'] );
@@ -332,7 +333,7 @@ final class AdminController
     public function plugin_action_links( $links )
     {
         return array_merge(
-            ['settings' => '<a href="' . admin_url( 'options-general.php?page=' . abmcb()->slug ) . '">' . esc_html__( 'Settings' ) . '</a>'],
+            ['settings' => '<a href="' . admin_url( 'admin.php?page=' . abmcb()->slug ) . '">' . esc_html__( 'Settings' ) . '</a>'],
             $links
         );
     }
