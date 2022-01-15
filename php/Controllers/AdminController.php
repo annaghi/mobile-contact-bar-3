@@ -15,8 +15,8 @@ final class AdminController
 
 
     /**
-     * Adds option page to the admin menu.
-     * Hooks the option page related screen tabs.
+     * Adds main plugin page to the admin menu.
+     * Hooks the page related screen tabs.
      * 
      * @return void
      */
@@ -28,13 +28,15 @@ final class AdminController
             'no_URI'   => __( '(no URI)', 'mobile-contact-bar' ),
         ];
 
+        $mcb_icon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik0gNDAwIDAgaCAtMjg4IGMgLTI2LjUxIDAgLTQ4IDIxLjQ5IC00OCA0OCB2IDQxNiBjIDAgMjYuNTEgMjEuNDkgNDggNDggNDggaCAyODggYyAyNi41MSAwIDQ4IC0yMS40OSA0OCAtNDggdiAtNDE2IGMgMCAtMjYuNTEgLTIxLjQ5IC00OCAtNDggLTQ4IHogbSA4IDQ2NCBjIDAgNC40MTEgLTMuNTg5IDggLTggOCBoIC0yODggYyAtNC40MTEgMCAtOCAtMy41ODkgLTggLTggdiAtNDE2IGMgMCAtNC40MTEgMy41ODkgLTggOCAtOCBoIDI4OCBjIDQuNDExIDAgOCAzLjU4OSA4IDggdiA0MTYgeiBtIC0yMjIgLTMyNCB2IC0yOCBjIDAgLTYuNjI3IC01LjM3MyAtMTIgLTEyIC0xMiBoIC0yOCBjIC02LjYyNyAwIC0xMiA1LjM3MyAtMTIgMTIgdiAyOCBjIDAgNi42MjcgNS4zNzMgMTIgMTIgMTIgaCAyOCBjIDYuNjI3IDAgMTIgLTUuMzczIDEyIC0xMiB6IG0gOTYgMCB2IC0yOCBjIDAgLTYuNjI3IC01LjM3MyAtMTIgLTEyIC0xMiBoIC0yOCBjIC02LjYyNyAwIC0xMiA1LjM3MyAtMTIgMTIgdiAyOCBjIDAgNi42MjcgNS4zNzMgMTIgMTIgMTIgaCAyOCBjIDYuNjI3IDAgMTIgLTUuMzczIDEyIC0xMiB6IG0gOTYgMCB2IC0yOCBjIDAgLTYuNjI3IC01LjM3MyAtMTIgLTEyIC0xMiBoIC0yOCBjIC02LjYyNyAwIC0xMiA1LjM3MyAtMTIgMTIgdiAyOCBjIDAgNi42MjcgNS4zNzMgMTIgMTIgMTIgaCAyOCBjIDYuNjI3IDAgMTIgLTUuMzczIDEyIC0xMiB6Ij48L3BhdGg+PC9zdmc+';
+
         add_menu_page(
             __( 'Mobile Contact Bar', 'mobile-contact-bar' ),
             __( 'Mobile Contact Bar', 'mobile-contact-bar' ),
             abmcb()->capability,
             abmcb()->slug,
             [$this, 'callback_render_page'],
-            'dashicons-smartphone'
+            $mcb_icon
         );
 
         add_action( 'load-' . abmcb()->page_suffix, [$this, 'load_screen_options'] );
@@ -108,7 +110,7 @@ final class AdminController
 
 
     /**
-     * Renders the plugin's option page header.
+     * Renders the plugin's page header.
      * 
      * @global $plugin_page
      * 
@@ -141,7 +143,7 @@ final class AdminController
 
 
     /**
-     * Adds sections and settings to the option page.
+     * Adds sections and settings to the plugin page.
      * 
      * @return void
      */
@@ -155,7 +157,7 @@ final class AdminController
 
 
     /**
-     * Adds meta boxes to the option page.
+     * Adds meta boxes to the plugin page.
      * Adjusts meta box classes.
      *
      * @global $plugin_page
@@ -241,7 +243,7 @@ final class AdminController
 
 
     /**
-     * Loads styles and scripts for the option page.
+     * Loads styles and scripts for the plugin page.
      *
      * @param  string $hook_suffix The specific admin page
      * @return void
@@ -368,7 +370,7 @@ final class AdminController
 
 
     /**
-     * Renders the plugin's option page content.
+     * Renders the plugin page content.
      * 
      * @return void
      */
