@@ -9,7 +9,7 @@
  * Author URI:        https://github.com/annaghi/mobile-contact-bar
  * License:           GPLv3
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.en.html
- * Requires at least: 4.9
+ * Requires at least: 5.4
  * Requires PHP:      5.6.20
  * Text Domain:       mobile-contact-bar
  *
