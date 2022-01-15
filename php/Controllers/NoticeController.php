@@ -59,8 +59,34 @@ final class NoticeController
 
     public function admin_notices()
     {
+        $this->display_page_notice();
         $this->display_major_notice();
         $this->display_minor_notice();
+    }
+
+
+    /**
+     * @return void
+     * 
+     * @global $plugin_page
+     */
+    protected function display_page_notice()
+    {
+        global $plugin_page;
+
+        if ( abmcb()->slug !== $plugin_page )
+        {
+            return;
+        }
+
+        if ( ! empty( $_GET['settings-updated'] ))
+        {
+            ?>
+            <div class="updated notice notice-success is-dismissible">
+                <p><strong><?php _e( 'Your changes have been saved.', 'mobile-contact-bar' ); ?></strong></p>
+            </div>
+            <?php
+        }
     }
 
 

@@ -106,10 +106,6 @@
     border-bottom: none;
 }
 
-#poststuff {
-    padding: 0;
-}
-
 #poststuff #post-body.columns-2 {
     margin-right: 400px;
 }
@@ -173,6 +169,7 @@
     .wrap div.error,
     .media-upload-form div.error {
         margin-top: 0;
+        margin-bottom: 25px;
     }
 
     #screen-meta-links {
@@ -184,6 +181,10 @@
     }
     #screen-meta-links .show-settings.screen-meta-active {
         border-bottom: 1px solid #c3c4c7;
+    }
+
+    #poststuff {
+        padding-top: 0;
     }
 }
 
