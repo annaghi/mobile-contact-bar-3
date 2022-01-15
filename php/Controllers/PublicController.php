@@ -13,8 +13,20 @@ final class PublicController
      * 
      * @return void
      */
-    public function init()
+    public function wp()
     {
+        $post_types = abmcb()->option_bar['settings']['bar']['show'];
+        
+        if ( ! (
+            ( $post_types['pages'] && 'page' === get_post_type() && ! is_front_page() )
+            || ( $post_types['posts'] && 'post' === get_post_type() )
+            || ( $post_types['homepage'] && is_front_page() )
+            || ( in_array( get_post_type(), array_filter( $post_types )))
+            ))
+        {
+            return;
+        }
+
         $this->checked_contacts = array_filter( abmcb()->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
 
         if ( count( $this->checked_contacts ) > 0 )

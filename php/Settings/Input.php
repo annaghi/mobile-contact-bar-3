@@ -145,6 +145,27 @@ final class Input
                     'title'    => __( 'Space Height', 'mobile-contact-bar' ),
                     'postfix'  => 'px',
                 ],
+                'show'         => [
+                    'type'     => 'checkbox-group',
+                    'title'    => __( 'Show on', 'mobile-contact-bar' ),
+                    'options'  => array_merge(
+                        [
+                            'homepage' => [
+                                'default' => 1,
+                                'label'   => __( 'Homepage', 'mobile-contact-bar' ),
+                            ],
+                            'pages' => [
+                                'default' => 1,
+                                'label'   => __( 'Pages', 'mobile-contact-bar' ),
+                            ],
+                            'posts' => [
+                                'default' => 1,
+                                'label'   => __( 'Posts', 'mobile-contact-bar' ),
+                            ],
+                        ],
+                        $this->post_types()
+                    ),
+                ],
                 // 'placeholder_height' => [
                 //     'type'     => 'number',
                 //     'default'  => 50,
@@ -420,6 +441,23 @@ final class Input
                 ],
             ],
         ];
+    }
+
+
+    private function post_types()
+    {
+        $options = [];
+        $post_types = get_post_types( ['_builtin' => false, 'public' => true], 'objects' );
+
+        foreach ( $post_types as $post_type )
+        {
+            $options[$post_type->name] = [
+                'default' => 1,
+                'label'   => __( $post_type->labels->name ),
+            ];
+        }
+
+        return $options;
     }
 
 

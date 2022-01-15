@@ -31,6 +31,8 @@ The settings page is available under the *Mobile Contact Bar* menu in the WordPr
 * Built-in icon picker with
     * [Font Awesome 5](https://fontawesome.com/) (CC BY 4.0 License) and
     * [Tabler Icons](https://tabler-icons.io/) (MIT License) integration
+* Customizable URLs using query string parameters
+* Show bar on selected post types
 * No data collection from your website's visitors
 * Super easy to use, no coding required!
 

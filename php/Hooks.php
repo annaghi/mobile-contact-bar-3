@@ -62,13 +62,13 @@ final class Hooks
         if ( isset( $_GET[abmcb()->slug . '-iframe'] ))
         {
             $this->iframe = abmcb( IFrameController::class );
-            add_action( 'init', [$this->iframe, 'init'] );
+            add_action( 'wp', [$this->iframe, 'wp'] );
         }
 
         if ( ! is_admin() && ! wp_doing_ajax() && ! isset( $_GET[abmcb()->slug . '-iframe'] ))
         {
             $this->public = abmcb( PublicController::class );
-            add_action( 'init', [$this->public, 'init'] );
+            add_action( 'wp', [$this->public, 'wp'] );
         }
     }
 }
