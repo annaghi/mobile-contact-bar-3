@@ -88,7 +88,7 @@ final class View
             case 'checkbox-group':
             case 'color-picker':
             case 'color-picker-group':
-                $out = esc_attr__( $setting['title'] );
+                $out = esc_html( $setting['title'] );
                 break;
 
             case 'text':
@@ -99,7 +99,7 @@ final class View
                     '<label for="mcb-%s-%s">%s</label>',
                     esc_attr( $section_key ),
                     esc_attr( $setting_key ),
-                    esc_attr__( $setting['title'] )
+                    esc_html( $setting['title'] )
                 );
                 break;
         }

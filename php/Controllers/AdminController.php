@@ -174,7 +174,7 @@ final class AdminController
 
         add_meta_box(
             'mcb-meta-box-preview',
-            __( 'Preview' ),
+            __( 'Preview', 'mobile-contact-bar' ),
             [$this, 'callback_render_meta_box_preview'],
             abmcb()->page_suffix,
             'side',
@@ -333,7 +333,7 @@ final class AdminController
     public function plugin_action_links( $links )
     {
         return array_merge(
-            ['settings' => '<a href="' . admin_url( 'admin.php?page=' . abmcb()->slug ) . '">' . esc_html__( 'Settings' ) . '</a>'],
+            ['settings' => '<a href="' . admin_url( 'admin.php?page=' . abmcb()->slug ) . '">' . esc_html__( 'Settings', 'mobile-contact-bar' ) . '</a>'],
             $links
         );
     }
@@ -420,7 +420,7 @@ final class AdminController
     {
         ?>
         <div id="mcb-section-preview">
-            <iframe src="<?php echo add_query_arg( [abmcb()->slug . '-iframe' => true], get_home_url() ); ?>" title="<?php esc_attr_e( 'Preview' ); ?>"></iframe>
+            <iframe src="<?php echo add_query_arg( [abmcb()->slug . '-iframe' => true], get_home_url() ); ?>" title="<?php esc_attr_e( 'Preview', 'mobile-contact-bar' ); ?>"></iframe>
             <script>
             (function() {
                 jQuery('#mcb-section-preview iframe').on('load', function () {

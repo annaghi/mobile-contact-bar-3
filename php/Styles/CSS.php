@@ -136,13 +136,31 @@ final class CSS
         $styles = '';
 
         $grid_template_size = $bar['shortest'];
-        if ( $bar['is_borders']['in'] )
+        switch ( $bar['position'] )
         {
-            $grid_template_size = $grid_template_size - $bar['border_width'];
-        }
-        if ( $bar['is_borders']['out'] )
-        {
-            $grid_template_size = $grid_template_size - $bar['border_width'];
+            case 'top':
+            case 'bottom':
+                if ( $bar['is_borders']['top'] )
+                {
+                    $grid_template_size = $grid_template_size - $bar['border_width'];
+                }
+                if ( $bar['is_borders']['bottom'] )
+                {
+                    $grid_template_size = $grid_template_size - $bar['border_width'];
+                }
+                break;
+
+            case 'left':
+            case 'right':
+                if ( $bar['is_borders']['left'] )
+                {
+                    $grid_template_size = $grid_template_size - $bar['border_width'];
+                }
+                if ( $bar['is_borders']['right'] )
+                {
+                    $grid_template_size = $grid_template_size - $bar['border_width'];
+                }
+                break;
         }
 
         if ( $bar['is_fixed'] )
@@ -515,51 +533,21 @@ final class CSS
 
         $bar_border_color = empty( $bar['border_color'] ) ? 'transparent' : $bar['border_color'];
 
-        switch ( $bar['position'] )
+        if ( $bar['is_borders']['top'] )
         {
-            case 'top':
-                if ( $bar['is_borders']['out'] )
-                {
-                    $styles .= 'border-top:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-                }
-                if ( $bar['is_borders']['in'] )
-                {
-                    $styles .= 'border-bottom:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-                }
-                break;
-
-            case 'bottom':
-                if ( $bar['is_borders']['in'] )
-                {
-                    $styles .= 'border-top:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-                }
-                if ( $bar['is_borders']['out'] )
-                {
-                    $styles .= 'border-bottom:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-                }
-                break;
-
-            case 'left':
-                if ( $bar['is_borders']['out'] )
-                {
-                    $styles .= 'border-left:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-                }
-                if ( $bar['is_borders']['in'] )
-                {
-                    $styles .= 'border-right:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-                }
-                break;
-
-            case 'right':
-                if ( $bar['is_borders']['in'] )
-                {
-                    $styles .= 'border-left:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-                }
-                if ( $bar['is_borders']['out'] )
-                {
-                    $styles .= 'border-right:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-                }
-                break;
+            $styles .= 'border-top:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+        }
+        if ( $bar['is_borders']['bottom'] )
+        {
+            $styles .= 'border-bottom:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+        }
+        if ( $bar['is_borders']['left'] )
+        {
+            $styles .= 'border-left:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+        }
+        if ( $bar['is_borders']['right'] )
+        {
+            $styles .= 'border-right:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
         }
 
         return $styles;

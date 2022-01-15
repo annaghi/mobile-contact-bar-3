@@ -113,13 +113,21 @@ final class Input
                     'trigger'  => '==true',
                     'title'    => __( 'Borders', 'mobile-contact-bar' ),
                     'options'  => [
-                        'in' => [
+                        'top' => [
                             'default' => 0,
-                            'label'   => __( 'longest side in', 'mobile-contact-bar' ),
+                            'label'   => __( 'top', 'mobile-contact-bar' ),
                         ],
-                        'out' => [
+                        'right' => [
                             'default' => 0,
-                            'label'   => __( 'longest side out', 'mobile-contact-bar' ),
+                            'label'   => __( 'right', 'mobile-contact-bar' ),
+                        ],
+                        'bottom' => [
+                            'default' => 0,
+                            'label'   => __( 'bottom', 'mobile-contact-bar' ),
+                        ],
+                        'left' => [
+                            'default' => 0,
+                            'label'   => __( 'left', 'mobile-contact-bar' ),
                         ],
                     ],
                 ],
