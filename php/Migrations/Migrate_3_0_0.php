@@ -4,6 +4,7 @@ namespace MobileContactBar\Migrations;
 
 use MobileContactBar\File;
 use MobileContactBar\ContactTypes;
+use MobileContactBar\Helper;
 use MobileContactBar\Settings;
 
 
@@ -50,10 +51,6 @@ final class Migrate_3_0_0
         {
             $settings_v2 = $this->option_bar_v2['settings'];
             $settings = $settings_v2;
-
-            $settings['bar']['is_secondary_colors']['focus']                 = 1;
-            $settings['bar']['is_secondary_colors']['hover']                 = 1;
-            $settings['bar']['is_secondary_colors']['active']                = 1;
 
             $settings['icons_labels']['background_color']['secondary']       = '';
             $settings['icons_labels']['icon_color']['secondary']             = '';
@@ -109,21 +106,21 @@ final class Migrate_3_0_0
                 {
                     if ( 'top' === $settings_v2['bar']['vertical_position'] && 'one' === $settings_v2['bar']['is_border'] )
                     {
-                        $settings['bar']['is_borders']['out']                = 0;
-                        $settings['bar']['is_borders']['in']                 = 1;
+                        $settings['bar']['is_borders']['top']                = 0;
+                        $settings['bar']['is_borders']['bottom']             = 1;
                     }
                     elseif ( 'bottom' === $settings_v2['bar']['vertical_position'] && 'one' === $settings_v2['bar']['is_border'] )
                     {
-                        $settings['bar']['is_borders']['in']                 = 1;
-                        $settings['bar']['is_borders']['out']                = 0;
+                        $settings['bar']['is_borders']['top']                 = 1;
+                        $settings['bar']['is_borders']['bottom']              = 0;
                     }
                 }
                 if ( isset( $settings_v2['bar']['is_border'] ))
                 {
                     if ( $settings_v2['bar']['is_border'] === 'two' )
                     {
-                        $settings['bar']['is_borders']['in']                 = 1;
-                        $settings['bar']['is_borders']['out']                = 1;
+                        $settings['bar']['is_borders']['top']                 = 1;
+                        $settings['bar']['is_borders']['bottom']              = 1;
                     }
                 }
                 if ( isset( $settings_v2['bar']['color'] ))
@@ -208,7 +205,13 @@ final class Migrate_3_0_0
             }
         }
 
-        return $settings;
+        $default_settings = abmcb( Settings\Input::class )->default_settings();
+        $refreshed_settings = Helper::array_intersect_key_recursive(
+            array_replace_recursive( $default_settings, $settings ),
+            $default_settings
+        );
+
+        return $refreshed_settings;
     }
 
 
