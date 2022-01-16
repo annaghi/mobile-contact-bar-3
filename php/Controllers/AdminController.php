@@ -32,7 +32,7 @@ final class AdminController
 
         add_menu_page(
             __( 'Mobile Contact Bar', 'mobile-contact-bar' ),
-            __( 'Mobile Contact Bar', 'mobile-contact-bar' ),
+            __( 'MCB Contact Bar', 'mobile-contact-bar' ),
             abmcb()->capability,
             abmcb()->slug,
             [$this, 'callback_render_page'],

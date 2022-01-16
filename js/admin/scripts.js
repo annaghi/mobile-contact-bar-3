@@ -348,8 +348,8 @@
 
         onReady: function () {
             // Add loading indicator to the form submit button
-            $('#submit').on('click', function () {
-                $(this).addClass('mcb-loading');
+            $('#mcb-form').submit(function () {
+                $('#submit').addClass('mcb-loading');
             });
 
             // Highlight checked contact

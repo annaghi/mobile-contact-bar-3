@@ -252,7 +252,7 @@ final class IFrameController
 
             $active = ( $uri == $current_url ) ? ' mobile-contact-bar-active' : '';
             $out .= sprintf( '<a class="mobile-contact-bar-item%s" href="%s"%s>', $active, esc_url( $uri, abmcb()->schemes ), $new_tab );
-            if ( $settings['icons_labels']['label_position'] === 'below' )
+            if ( 'below' === $settings['icons_labels']['label_position'] )
             {
                 $out .= $icon;
                 $out .= $label;

@@ -68,17 +68,20 @@ final class Migrate_3_0_0
                 {
                     $settings['bar']['shortest']                             = (int) $settings_v2['bar']['height'];    
                 }
-                if ( isset( $settings_v2['bar']['width'] ))
+                if ( isset( $settings_v2['bar']['width'], $settings_v2['icons']['alignment'] ))
                 {
-                    if ( 100 === (int) $settings_v2['bar']['width'] )
+                    if ( 100 === (int) $settings_v2['bar']['width'] && 'justified' === $settings_v2['icons']['alignment'] )
                     {
                         $settings['bar']['span']                             = 'stretch';
                     }
+                    elseif ( 100 === (int) $settings_v2['bar']['width'] && 'centered' === $settings_v2['icons']['alignment'] )
+                    {
+                        $settings['bar']['span']                             = 'fix_max';
+                    }
                     else
                     {
-                        $settings['bar']['span']                             = 'fix';
+                        $settings['bar']['span']                             = 'fix_min';
                     }
-                    
                 }
                 if ( isset( $settings_v2['bar']['horizontal_position'] ))
                 {
@@ -117,7 +120,7 @@ final class Migrate_3_0_0
                 }
                 if ( isset( $settings_v2['bar']['is_border'] ))
                 {
-                    if ( $settings_v2['bar']['is_border'] === 'two' )
+                    if ( 'two' === $settings_v2['bar']['is_border'] )
                     {
                         $settings['bar']['is_borders']['top']                 = 1;
                         $settings['bar']['is_borders']['bottom']              = 1;
@@ -126,6 +129,10 @@ final class Migrate_3_0_0
                 if ( isset( $settings_v2['bar']['color'] ))
                 {
                     $settings['icons_labels']['background_color']['primary'] = $settings_v2['bar']['color'];
+                }
+                if ( isset( $settings_v2['bar']['space_height'] ))
+                {
+                    $settings['bar']['space']                                 = (int) $settings_v2['bar']['space_height'];
                 }
             }
 
@@ -137,14 +144,14 @@ final class Migrate_3_0_0
                 }
                 if ( isset( $settings_v2['icons']['is_border'] ))
                 {
-                    if ( $settings_v2['icons']['is_border'] === 'two' )
+                    if ( 'two' === $settings_v2['icons']['is_border'] )
                     {
                         $settings['icons_labels']['is_borders']['top']       = 0;
                         $settings['icons_labels']['is_borders']['right']     = 1;
                         $settings['icons_labels']['is_borders']['bottom']    = 0;
                         $settings['icons_labels']['is_borders']['left']      = 1;
                     }
-                    elseif ( $settings_v2['icons']['is_border'] === 'four' )
+                    elseif ( 'four' === $settings_v2['icons']['is_border'] )
                     {
                         $settings['icons_labels']['is_borders']['top']       = 1;
                         $settings['icons_labels']['is_borders']['right']     = 1;
@@ -305,7 +312,7 @@ final class Migrate_3_0_0
                 }
                 $contact['label']   = '';
                 $contact['text']    = $contact_v2['title'];
-                $contact['uri']     = ( $contact_v2['uri'] === '#' ) ? '' : esc_url_raw( rawurldecode( $contact_v2['uri'] ), abmcb()->schemes );
+                $contact['uri']     = ( '#' === $contact_v2['uri'] ) ? '' : esc_url_raw( rawurldecode( $contact_v2['uri'] ), abmcb()->schemes );
                 $contact['custom']  = $default_customization;
 
                 if ( isset( $contact_v2['parameters'] ) && is_array( $contact_v2['parameters'] ))
@@ -343,7 +350,7 @@ final class Migrate_3_0_0
      */
     private function migrate_contact_type( $contact_type_v2, $uri_v2, $placeholder_v2 )
     {
-        if ( $contact_type_v2 === 'whatsapp' || ( untrailingslashit( $uri_v2 ) === 'https://api.whatsapp.com/send' ))
+        if ( 'whatsapp' === $contact_type_v2 || 'https://api.whatsapp.com/send' === ( untrailingslashit( $uri_v2 )))
         {
             return 'whatsapp';
         }
@@ -379,7 +386,7 @@ final class Migrate_3_0_0
      */
     private function migrate_general_contact_type( $uri_v2 )
     {
-        if ( untrailingslashit( $uri_v2 ) === 'https://api.whatsapp.com/send' )
+        if ( 'https://api.whatsapp.com/send' === untrailingslashit( $uri_v2 ))
         {
             return 'whatsapp';
         }

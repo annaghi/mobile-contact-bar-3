@@ -16,10 +16,10 @@ final class PublicController
     public function wp()
     {
         $post_types = abmcb()->option_bar['settings']['bar']['show'];
-        
+
         if ( ! (
-            ( $post_types['pages'] && 'page' === get_post_type() && ! is_front_page() )
-            || ( $post_types['posts'] && 'post' === get_post_type() )
+            ( $post_types['page'] && 'page' === get_post_type() && ! is_front_page() )
+            || ( $post_types['post'] && 'post' === get_post_type() )
             || ( $post_types['homepage'] && is_front_page() )
             || ( in_array( get_post_type(), array_filter( $post_types )))
             ))
@@ -267,7 +267,7 @@ final class PublicController
 
             $active = ( $uri == $current_url ) ? ' mobile-contact-bar-active' : '';
             $out .= sprintf( '<a class="mobile-contact-bar-item%s" href="%s"%s>', $active, esc_url( $uri, abmcb()->schemes ), $new_tab );
-            if ( $settings['icons_labels']['label_position'] === 'below' )
+            if ( 'below' === $settings['icons_labels']['label_position'] )
             {
                 $out .= $icon;
                 $out .= $label;
