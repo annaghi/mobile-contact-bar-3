@@ -113,7 +113,28 @@ final class IFrameController
      */
     public function wp_render_mcb()
     {
-        echo $this->output();
+        if ( ! has_action( 'mcb_public_render_html' ))
+        {
+            add_action( 'mcb_public_render_html', [$this, 'mcb_public_render_html'], 10, 2 );
+        }
+
+        do_action( 'mcb_public_render_html', abmcb()->option_bar['settings'], $this->checked_contacts );
+    }
+
+
+    /**
+     * Renders contact bar.
+     *
+     * @param  array $settings
+     * @param  array $contacts
+     * @return void
+     */
+    public function mcb_public_render_html( $settings, $contacts )
+    {
+        if ( 1 === did_action( 'mcb_public_render_html' ))
+        {    
+            echo $this->output( $settings, $contacts );
+        }
     }
 
 
@@ -122,18 +143,17 @@ final class IFrameController
      * 
      * @global $wp
      * 
+     * @param  array $settings
+     * @param  array $contacts
      * @return string
      */
-    public function output()
+    public function output( $settings, $contacts )
     {
         global $wp;
 
         $out = '';
 
         $current_url = home_url( add_query_arg( [], $wp->request ));
-
-        $settings = abmcb()->option_bar['settings'];
-        $contacts = $this->checked_contacts;
 
         $paths = [
             'top_rounded'    => '<path d="M 550 0 L 496.9 137.2 C 490.4 156.8 474.1 170 451.4 170 H 98.6 C 77.9 170 59.6 156.8 53.1 137.2 L 0 0 z">',
