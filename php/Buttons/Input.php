@@ -1,23 +1,23 @@
 <?php
 
-namespace MobileContactBar\Contacts;
+namespace MobileContactBar\Buttons;
 
 use MobileContactBar\Icons;
 use MobileContactBar\Helper;
-use MobileContactBar\ContactTypes;
+use MobileContactBar\ButtonTypes;
 use MobileContactBar\Settings;
 
 
 final class Input
 {
     /**
-     * Defines sample 'contacts'.
+     * Defines sample 'buttons'.
      *
      * @return array
      */
-    public function sample_contacts()
+    public function sample_buttons()
     {
-        $default_customization = ContactTypes\ContactType::default_customization();
+        $default_customization = ButtonTypes\Button::default_customization();
 
         return
         [
@@ -116,14 +116,14 @@ final class Input
 
 
     /**
-     * Retrieves the sample 'contacts' with unchecked items.
+     * Retrieves the sample 'buttons' with unchecked items.
      *
      * @return array
      */
-    public function unchecked_sample_contacts()
+    public function unchecked_sample_buttons()
     {
-        $sample_contacts = $this->sample_contacts();
-        return array_map( function ( $contact ) { return array_replace( $contact, ['checked' => 0] ); }, $sample_contacts );
+        $sample_buttons = $this->sample_buttons();
+        return array_map( function ( $button ) { return array_replace( $button, ['checked' => 0] ); }, $sample_buttons );
     }
 
 
@@ -145,63 +145,63 @@ final class Input
 
 
     /**
-     * Sanitizes the 'contacts'.
+     * Sanitizes the 'buttons'.
      *
-     * @param  array $contacts
+     * @param  array $buttons
      * @return array
      */
-    public function sanitize( $contacts = [] )
+    public function sanitize( $buttons = [] )
     {
-        if ( ! is_array( $contacts ))
+        if ( ! is_array( $buttons ))
         {
-            return $this->unchecked_sample_contacts();
+            return $this->unchecked_sample_buttons();
         }
 
-        $sanitized_contacts = [];
+        $sanitized_buttons = [];
 
-        $contact_types = abmcb()->contact_types;
-        $contact_types_keys = array_keys( $contact_types );
-        $empty_default_customization = ContactTypes\ContactType::empty_default_customization();
+        $button_types = abmcb()->button_types;
+        $button_types_keys = array_keys( $button_types );
+        $empty_default_customization = ButtonTypes\Button::empty_default_customization();
 
-        foreach ( $contacts as $contact_key => $contact )
+        foreach ( $buttons as $button_key => $button )
         {
-            $sanitized_contact = [];
+            $sanitized_button = [];
 
-            // remove contact if invalid 'query'
-            if ( isset( $contact['query'] ) && ! is_array( $contact['query'] ))
+            // remove button if invalid 'query'
+            if ( isset( $button['query'] ) && ! is_array( $button['query'] ))
             {
                 continue;
             }
 
-            // remove contact if 'custom' does not exist or invalid
-            if ( ! isset( $contact['custom'] ) || ! is_array( $contact['custom'] ))
+            // remove button if 'custom' does not exist or invalid
+            if ( ! isset( $button['custom'] ) || ! is_array( $button['custom'] ))
             {
                 continue;
             }
 
-            // remove contact if invalid 'type'
-            if ( ! isset( $contact['type'] ) || ! in_array( $contact['type'], $contact_types_keys ))
+            // remove button if invalid 'type'
+            if ( ! isset( $button['type'] ) || ! in_array( $button['type'], $button_types_keys ))
             {
                 continue;
             }
 
-            // Difference can only be with 'query' in Link contact type
-            $contact['custom'] = Helper::array_intersect_key_recursive(
-                array_replace_recursive( $empty_default_customization, $contact['custom'] ),
+            // Difference can only be with 'query' in Link button type
+            $button['custom'] = Helper::array_intersect_key_recursive(
+                array_replace_recursive( $empty_default_customization, $button['custom'] ),
                 $empty_default_customization
             );
-            $diff_contact = Helper::array_minus_key_recursive( Helper::array_keys_recursive( $contact ), $contact_types[$contact['type']]->keys());
-            // remove contact if invalid contact keys
-            if ( ! empty( $diff_contact ) && ['query'] !== array_keys( $diff_contact ))
+            $diff_button = Helper::array_minus_key_recursive( Helper::array_keys_recursive( $button ), $button_types[$button['type']]->keys());
+            // remove button if invalid button keys
+            if ( ! empty( $diff_button ) && ['query'] !== array_keys( $diff_button ))
             {
                 continue;
             }
 
-            // remove contact if invalid parameter keys
-            if ( isset( $diff_contact['query'] ))
+            // remove button if invalid parameter keys
+            if ( isset( $diff_button['query'] ))
             {
                 $diff_query = array_filter(
-                    $diff_contact['query'],
+                    $diff_button['query'],
                     function ( $parameter ) { return ( count( $parameter ) !== 2 || ! isset( $parameter['key'], $parameter['value'] )); }
                 );
                 if ( ! empty( $diff_query ))
@@ -210,129 +210,129 @@ final class Input
                 }
             }
 
-            // remove contact if invalid 'brand' but leave empty
-            if ( '' !== $contact['brand'] && ! in_array( $contact['brand'], ['ti', 'fa'] ))
+            // remove button if invalid 'brand' but leave empty
+            if ( '' !== $button['brand'] && ! in_array( $button['brand'], ['ti', 'fa'] ))
             {
                 continue;
             }
 
-            // remove contact if 'brand', 'group', or 'icon' do not match
-            if ( 'ti' === $contact['brand'] && '' !== $contact['group']
-                && ! ( Icons::is_ti_icon( $contact['icon'] )
-                    && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. $contact['icon'] . '.svg' )))
+            // remove button if 'brand', 'group', or 'icon' do not match
+            if ( 'ti' === $button['brand'] && '' !== $button['group']
+                && ! ( Icons::is_ti_icon( $button['icon'] )
+                    && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. $button['icon'] . '.svg' )))
             {
                 continue;
             }
-            if ( 'fa' === $contact['brand']
-                && ! ( Icons::is_fa_icon( $contact['group'], $contact['icon'] )
-                    && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' )))
+            if ( 'fa' === $button['brand']
+                && ! ( Icons::is_fa_icon( $button['group'], $button['icon'] )
+                    && file_exists( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . $button['group'] . '/' . $button['icon'] . '.svg' )))
             {
                 continue;
             }
 
             // 'type' is already sanitized
-            $sanitized_contact['type'] = $contact['type'];
+            $sanitized_button['type'] = $button['type'];
 
             // sanitize 'id'
             $is_any_color = array_filter(
-                $contact['custom'],
+                $button['custom'],
                 function ( $color ) { return ! empty( $color['primary'] || ! empty( $color['secondary'] )); }
             );
-            $value = sanitize_key( str_replace( ['#', '.'], '', $contact['id'] ));
+            $value = sanitize_key( str_replace( ['#', '.'], '', $button['id'] ));
             if ( '' === $value && $is_any_color )
             {
-                $sanitized_contact['id'] = 'mcb-sample-id-' . ( $this->max_key( $contacts, $sanitized_contacts ) + 1 );
+                $sanitized_button['id'] = 'mcb-sample-id-' . ( $this->max_key( $buttons, $sanitized_buttons ) + 1 );
             }
             else
             {
-                $sanitized_contact['id'] = $value;
+                $sanitized_button['id'] = $value;
             }
 
             // sanitize 'checked'
-            $sanitized_contact['checked'] = ( isset( $contact['checked'] ) && ( 0 === (int) $contact['checked'] || 1 === (int) $contact['checked'] ))
-                ? $contact['checked'] : 0;
+            $sanitized_button['checked'] = ( isset( $button['checked'] ) && ( 0 === (int) $button['checked'] || 1 === (int) $button['checked'] ))
+                ? $button['checked'] : 0;
 
             // 'brand' is already sanitized
-            $sanitized_contact['brand'] = $contact['brand'];
+            $sanitized_button['brand'] = $button['brand'];
 
             // 'group' is already sanitized
-            $sanitized_contact['group'] = $contact['group'];
+            $sanitized_button['group'] = $button['group'];
 
             // 'icon' is already sanitized
-            $sanitized_contact['icon'] = $contact['icon'];
+            $sanitized_button['icon'] = $button['icon'];
 
             // sanitize 'label'
-            $sanitized_contact['label'] = sanitize_text_field( $contact['label'] );
+            $sanitized_button['label'] = sanitize_text_field( $button['label'] );
 
             // sanitize 'text'
-            $sanitized_contact['text'] = sanitize_text_field( $contact['text'] );
+            $sanitized_button['text'] = sanitize_text_field( $button['text'] );
 
             // sanitize 'uri'
-            $sanitized_contact['uri'] = $this->sanitize_contact_uri( $contact['type'], $contact['uri'] );
+            $sanitized_button['uri'] = $this->sanitize_uri( $button['type'], $button['uri'] );
 
             // sanitize 'query'
-            if ( isset( $contact['query'] ))
+            if ( isset( $button['query'] ))
             {
-                $sanitized_contact['query'] = [];
+                $sanitized_button['query'] = [];
 
-                $contact_field = $contact_types[$contact['type']]->field();
+                $button_field = $button_types[$button['type']]->field();
 
-                foreach ( $contact['query'] as $parameter_key => $parameter )
+                foreach ( $button['query'] as $parameter_key => $parameter )
                 {
-                    if ( 'link' === $contact['type'] )
+                    if ( 'link' === $button['type'] )
                     {
                         $field = 'text';
                     }
                     else
                     {
-                        $parameter_index = array_search( $parameter['key'], array_column( $contact_field['query'], 'key' ));
-                        $parameter_type = $contact_field['query'][$parameter_index];
+                        $parameter_index = array_search( $parameter['key'], array_column( $button_field['query'], 'key' ));
+                        $parameter_type = $button_field['query'][$parameter_index];
                         $field = $parameter_type['field'];
                     }
 
                     // sanitize 'key'
-                    $sanitized_contact['query'][$parameter_key]['key'] = $this->sanitize_parameter( $parameter['key'], 'text' );
+                    $sanitized_button['query'][$parameter_key]['key'] = $this->sanitize_parameter( $parameter['key'], 'text' );
 
                     // santitize 'value'
-                    $sanitized_contact['query'][$parameter_key]['value'] = $this->sanitize_parameter( $parameter['value'], $field );
+                    $sanitized_button['query'][$parameter_key]['value'] = $this->sanitize_parameter( $parameter['value'], $field );
                 }
             }
-            // add 'query' for 'link' contact type if it was empty
-            if ( ( 'link' === $contact['type'] ) && ! isset( $contact['query'] ))
+            // add 'query' for 'link' button type if it was empty
+            if ( ( 'link' === $button['type'] ) && ! isset( $button['query'] ))
             {
-                $sanitized_contact['query'] = [];
+                $sanitized_button['query'] = [];
             }
             // reindex 'query'
-            if ( isset( $sanitized_contact['query'] ) && ! empty( $sanitized_contact['query'] ))
+            if ( isset( $sanitized_button['query'] ) && ! empty( $sanitized_button['query'] ))
             {
-                $sanitized_contact['query'] = array_values( $sanitized_contact['query'] );
+                $sanitized_button['query'] = array_values( $sanitized_button['query'] );
             }
 
             // sanitize customization
-            foreach ( $contact['custom'] as $custom_key => $custom )
+            foreach ( $button['custom'] as $custom_key => $custom )
             {  
                 foreach ( $custom as $option_key => $option )
                 {
-                    $sanitized_contact['custom'][$custom_key][$option_key] = abmcb( Settings\Input::class )->sanitize_color( $option );
+                    $sanitized_button['custom'][$custom_key][$option_key] = abmcb( Settings\Input::class )->sanitize_color( $option );
                 }
             }
 
-            $sanitized_contacts[$contact_key] = $sanitized_contact;
+            $sanitized_buttons[$button_key] = $sanitized_button;
         }
 
         // reindex
-        return array_values( $sanitized_contacts );
+        return array_values( $sanitized_buttons );
     }
 
 
     /**
-     * Sanitizes the contact URI.
+     * Sanitizes the URI.
      *
-     * @param  string $contact_type
-     * @param  string $uri          Contact URI (URL, phone number, email address, etc.)
-     * @return string               Sanitized URI
+     * @param  string $button_type
+     * @param  string $uri         URI (URL, phone number, email address, etc.)
+     * @return string              Sanitized URI
      */
-    public function sanitize_contact_uri( $contact_type, $uri )
+    public function sanitize_uri( $button_type, $uri )
     {
         if ( '' === $uri )
         {
@@ -551,20 +551,20 @@ final class Input
 
 
     /**
-     * @param  array $contacts
-     * @param  array $sanitized_contacts
+     * @param  array $buttons
+     * @param  array $sanitized_buttons
      * @return int
      */
-    public function max_key( $contacts, $sanitized_contacts )
+    public function max_key( $buttons, $sanitized_buttons )
     {
         $key = -1;
-        if ( 0 === count( $contacts ))
+        if ( 0 === count( $buttons ))
         {
             return $key;
         }
         else
         {
-            $ids = array_merge( array_column( $contacts, 'id' ), array_column( $sanitized_contacts, 'id' ));
+            $ids = array_merge( array_column( $buttons, 'id' ), array_column( $sanitized_buttons, 'id' ));
 
             foreach( $ids as $id )
             {

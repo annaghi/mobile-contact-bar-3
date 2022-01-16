@@ -1,9 +1,9 @@
 <?php
 
-namespace MobileContactBar\ContactTypes;
+namespace MobileContactBar\ButtonTypes;
 
 
-final class Skype extends ContactType
+final class Skype extends Button
 {
     public function __construct()
     {

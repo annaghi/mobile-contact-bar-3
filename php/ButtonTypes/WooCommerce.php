@@ -1,9 +1,9 @@
 <?php
 
-namespace MobileContactBar\ContactTypes;
+namespace MobileContactBar\ButtonTypes;
 
 
-final class WooCommerce extends ContactType
+final class WooCommerce extends Button
 {
     public function __construct()
     {

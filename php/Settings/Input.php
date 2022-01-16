@@ -169,7 +169,7 @@ final class Input
                 ],
             ],
 
-            'icons_labels' => [
+            'buttons' => [
                 'label_position' => [
                     'type'     => 'radio',
                     'default'  => 'below',

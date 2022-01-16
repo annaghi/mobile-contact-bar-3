@@ -180,17 +180,17 @@
         return this;
     };
 
-    $.fn.initSortableContacts = function () {
+    $.fn.initSortableButtons = function () {
         $(this).sortable({
-            connectWith: '#mcb-contacts',
+            connectWith: '#mcb-builder',
             handle: '.mcb-sortable-draggable',
-            items: '.mcb-contact',
+            items: '.mcb-button',
 
             start: function (event, ui) {
                 document.activeElement.blur();
 
                 $(this)
-                    .find('.mcb-contact')
+                    .find('.mcb-button')
                     .removeClass('mcb-opened')
                     .end()
                     .find('.mcb-action-toggle-details')
@@ -309,25 +309,23 @@
     var option = {
         init: function () {
             // Bind toggle child-settings
-            option.settings = $(
-                '#mcb-section-bar tbody, #mcb-section-icons_labels tbody, #mcb-section-toggle tbody, #mcb-section-badge tbody'
-            );
+            option.settings = $('#mcb-section-bar tbody, #mcb-section-buttons tbody, #mcb-section-toggle tbody, #mcb-section-badge tbody');
             option.settings.initSettings();
 
-            // Init contact list
-            option.contactList = $('#mcb-contacts');
-            option.contactList.initSortableContacts();
+            // Init button builder
+            option.builder = $('#mcb-builder');
+            option.builder.initSortableButtons();
 
             // Bind save-to-database on toggle postbox
             postboxes.add_postbox_toggles(pagenow);
 
-            // Close contact details on Contact List meta box closed
+            // Close button details on Button Builder meta box closed
             postboxes.pbhide = function (id) {
-                if ('mcb-meta-box-contacts' === id) {
+                if ('mcb-meta-box-builder' === id) {
                     document.activeElement.blur();
 
-                    option.contactList
-                        .find('.mcb-contact')
+                    option.builder
+                        .find('.mcb-button')
                         .removeClass('mcb-opened')
                         .find('.mcb-action-toggle-details')
                         .attr('aria-expanded', 'false');
@@ -352,22 +350,22 @@
                 $('#submit').addClass('mcb-loading');
             });
 
-            // Highlight checked contact
+            // Highlight checked button
             // Update badge-length
-            option.contactList.on('change', '.mcb-summary-checkbox input', function (event) {
+            option.builder.on('change', '.mcb-summary-checkbox input', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
                 if (this.checked) {
-                    $(this).closest('.mcb-contact').addClass('mcb-checked');
+                    $(this).closest('.mcb-button').addClass('mcb-checked');
                 } else {
-                    $(this).closest('.mcb-contact').removeClass('mcb-checked');
+                    $(this).closest('.mcb-button').removeClass('mcb-checked');
                 }
 
-                var checked_contacts_length = option.contactList.find('.mcb-checked').length;
-                0 === checked_contacts_length
+                var checked_buttons_length = option.builder.find('.mcb-checked').length;
+                0 === checked_buttons_length
                     ? $('#mcb-badge-length').removeClass().addClass('mcb-badge-disabled').text(0)
-                    : $('#mcb-badge-length').removeClass().addClass('mcb-badge-enabled').text(checked_contacts_length);
+                    : $('#mcb-badge-length').removeClass().addClass('mcb-badge-enabled').text(checked_buttons_length);
             });
 
             // Update badge-display
@@ -400,28 +398,28 @@
                 });
             });
 
-            // Add contact
-            $('#mcb-add-contact').click(function (event) {
+            // Add button
+            $('#mcb-add-button').click(function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
-                var contactKey = option.contactList.children('.mcb-contact').maxKey('contact') + 1;
+                var buttonKey = option.builder.children('.mcb-button').maxKey('button') + 1;
 
                 $.ajax({
                     url: ajaxurl,
                     method: 'POST',
                     data: {
-                        action: 'mcb_ajax_get_contact',
+                        action: 'mcb_ajax_get_button',
                         nonce: mcb.nonce,
-                        contact_key: contactKey
+                        button_key: buttonKey
                     },
 
                     beforeSend: function () {
-                        $('#mcb-add-contact').addClass('mcb-loading');
+                        $('#mcb-add-button').addClass('mcb-loading');
                     },
 
                     complete: function () {
-                        $('#mcb-add-contact').removeClass('mcb-loading');
+                        $('#mcb-add-button').removeClass('mcb-loading');
                     }
                 })
                     .done(function (response) {
@@ -433,94 +431,94 @@
                             return false;
                         }
 
-                        var contact = document.createElement('div');
-                        $(contact).addClass(['mcb-contact', 'mcb-opened']).attr('data-contact-key', contactKey);
-                        $(contact).append($(data.summary)).append($(data.details));
+                        var button = document.createElement('div');
+                        $(button).addClass(['mcb-button', 'mcb-opened']).attr('data-button-key', buttonKey);
+                        $(button).append($(data.summary)).append($(data.details));
 
-                        $(contact).find('.color-picker').wpColorPicker();
-                        $(contact).find('.mcb-action-toggle-details').attr('aria-expanded', 'true');
+                        $(button).find('.color-picker').wpColorPicker();
+                        $(button).find('.mcb-action-toggle-details').attr('aria-expanded', 'true');
 
-                        option.contactList.append(contact);
+                        option.builder.append(button);
                     })
                     .always(function () {
-                        $('#mcb-add-contact').removeClass('mcb-loading');
+                        $('#mcb-add-button').removeClass('mcb-loading');
                     });
             });
 
-            // Delete contact
+            // Delete button
             // Update badge-length
-            option.contactList.on('click', '.mcb-action-delete-contact', function (event) {
+            option.builder.on('click', '.mcb-action-delete-button', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
-                $(this).closest('.mcb-contact').remove();
+                $(this).closest('.mcb-button').remove();
 
-                var checked_contacts_length = option.contactList.find('.mcb-checked').length;
-                0 === checked_contacts_length
+                var checked_buttons_length = option.builder.find('.mcb-checked').length;
+                0 === checked_buttons_length
                     ? $('#mcb-badge-length').removeClass().addClass('mcb-badge-disabled').text(0)
-                    : $('#mcb-badge-length').removeClass().addClass('mcb-badge-enabled').text(checked_contacts_length);
+                    : $('#mcb-badge-length').removeClass().addClass('mcb-badge-enabled').text(checked_buttons_length);
             });
 
             // Toggle details
-            option.contactList.on('click', '.mcb-action-toggle-details', function (event) {
+            option.builder.on('click', '.mcb-action-toggle-details', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
-                $(this).toggleAriaExpanded().closest('.mcb-contact').toggleClass('mcb-opened');
+                $(this).toggleAriaExpanded().closest('.mcb-button').toggleClass('mcb-opened');
             });
 
             // Close details
-            option.contactList.on('click', '.mcb-action-close-details', function (event) {
+            option.builder.on('click', '.mcb-action-close-details', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
-                $(this).closest('.mcb-contact').removeClass('mcb-opened').find('.mcb-action-toggle-details').attr('aria-expanded', 'false');
-                document.getElementById('mcb-meta-box-contacts').scrollIntoView();
+                $(this).closest('.mcb-button').removeClass('mcb-opened').find('.mcb-action-toggle-details').attr('aria-expanded', 'false');
+                document.getElementById('mcb-meta-box-builder').scrollIntoView();
             });
 
             // Order higher
-            option.contactList.on('click', '.mcb-action-order-higher', function (event) {
+            option.builder.on('click', '.mcb-action-order-higher', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
                 var focused = document.activeElement;
-                var prev = $(this).closest('.mcb-contact').prev();
-                var contact = $(this).closest('.mcb-contact').detach();
+                var prev = $(this).closest('.mcb-button').prev();
+                var button = $(this).closest('.mcb-button').detach();
 
-                prev.before(contact);
+                prev.before(button);
                 focused.focus();
             });
 
             // Order lower
-            option.contactList.on('click', '.mcb-action-order-lower', function (event) {
+            option.builder.on('click', '.mcb-action-order-lower', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
                 var focused = document.activeElement;
-                var next = $(this).closest('.mcb-contact').next();
-                var contact = $(this).closest('.mcb-contact').detach();
+                var next = $(this).closest('.mcb-button').next();
+                var button = $(this).closest('.mcb-button').detach();
 
-                next.after(contact);
+                next.after(button);
                 focused.focus();
             });
 
-            // Change contact type
-            option.contactList.on('change', '.mcb-details-type select', function (event) {
+            // Change button type
+            option.builder.on('change', '.mcb-details-type select', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
                 var input = $(this);
-                var contact = $(this).closest('.mcb-contact');
-                var contactKey = contact.attr('data-contact-key');
+                var button = $(this).closest('.mcb-button');
+                var buttonKey = button.attr('data-button-key');
 
                 $.ajax({
                     url: ajaxurl,
                     method: 'POST',
                     data: {
-                        action: 'mcb_ajax_get_contact_field',
+                        action: 'mcb_ajax_get_button_field',
                         nonce: mcb.nonce,
-                        contact_key: contactKey,
-                        contact_type: $(this).val()
+                        button_key: buttonKey,
+                        button_type: $(this).val()
                     },
 
                     beforeSend: function () {
@@ -536,19 +534,19 @@
                             return false;
                         }
                         var data = JSON.parse(response);
-                        if (!data.hasOwnProperty('contact_field') || !data.hasOwnProperty('uri') || !data.hasOwnProperty('query')) {
+                        if (!data.hasOwnProperty('button_field') || !data.hasOwnProperty('uri') || !data.hasOwnProperty('query')) {
                             return false;
                         }
 
-                        [('historyback', 'historyforward', 'scrolltotop')].includes(data.contact_field.type)
-                            ? contact.find('.mcb-summary-uri').text('#')
-                            : contact.find('.mcb-summary-uri').text(!!data.contact_field.uri ? data.contact_field.uri : mcb.l10n.no_URI);
+                        [('historyback', 'historyforward', 'scrolltotop')].includes(data.button_field.type)
+                            ? button.find('.mcb-summary-uri').text('#')
+                            : button.find('.mcb-summary-uri').text(!!data.button_field.uri ? data.button_field.uri : mcb.l10n.no_URI);
 
-                        contact.find('.mcb-details-text input').val(data.contact_field.text);
-                        contact.find('.mcb-details-uri').replaceWith($(data.uri));
-                        contact.find('.mcb-builtin-query, .mcb-link-query, .mcb-builtin-parameter, .mcb-link-parameter').detach();
-                        contact.find('.mcb-details-uri').after($(data.query));
-                        contact.find('.mcb-details-type .mcb-description').text(data.contact_field.desc_type);
+                        button.find('.mcb-details-text input').val(data.button_field.text);
+                        button.find('.mcb-details-uri').replaceWith($(data.uri));
+                        button.find('.mcb-builtin-query, .mcb-link-query, .mcb-builtin-parameter, .mcb-link-parameter').detach();
+                        button.find('.mcb-details-uri').after($(data.query));
+                        button.find('.mcb-details-type .mcb-description').text(data.button_field.desc_type);
                     })
                     .always(function () {
                         input.removeClass('mcb-loading');
@@ -556,7 +554,7 @@
             });
 
             // Pick icon
-            option.contactList.on('click', '.mcb-action-pick-icon', function (event) {
+            option.builder.on('click', '.mcb-action-pick-icon', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
@@ -570,9 +568,9 @@
                     ti_filtered_icons = [],
                     fa_filtered_icons = [],
                     searchTerm = '',
-                    button = $(this),
-                    offset = button.offset(),
-                    contact = $(this).closest('.mcb-contact'),
+                    clickedButton = $(this),
+                    offset = clickedButton.offset(),
+                    button = $(this).closest('.mcb-button'),
                     picker = $(
                         $.parseHTML(
                             $('#mcb-tmpl-icon-picker')
@@ -632,7 +630,7 @@
                             ('ti' === brand && !option.ti_icons.includes(icon)) ||
                             ('fa' === brand && !option.fa_icons.includes(icon))
                         ) {
-                            contact.blankIcon();
+                            button.blankIcon();
                             return false;
                         }
 
@@ -648,13 +646,13 @@
                             },
 
                             beforeSend: function () {
-                                button.addClass('mcb-loading');
-                                contact.loadingIcon();
+                                clickedButton.addClass('mcb-loading');
+                                button.loadingIcon();
                             },
 
                             complete: function () {
-                                button.removeClass('mcb-loading');
-                                contact
+                                clickedButton.removeClass('mcb-loading');
+                                button
                                     .find('.mcb-summary-icon')
                                     .removeClass('mcb-loading-icon')
                                     .end()
@@ -664,16 +662,16 @@
                         })
                             .done(function (response) {
                                 if (!response) {
-                                    contact.blankIcon();
+                                    button.blankIcon();
                                     return false;
                                 }
                                 var svg = JSON.parse(response);
                                 if (svg.length <= 0) {
-                                    contact.blankIcon();
+                                    button.blankIcon();
                                     return false;
                                 }
 
-                                contact
+                                button
                                     .find('input[name$="[brand]"]')
                                     .val(brand)
                                     .end()
@@ -702,12 +700,12 @@
                                     .append(svg);
 
                                 if ('fa' === brand) {
-                                    contact.find('.mcb-summary-icon').addClass('mcb-fa').end().find('.mcb-details-icon').addClass('mcb-fa');
+                                    button.find('.mcb-summary-icon').addClass('mcb-fa').end().find('.mcb-details-icon').addClass('mcb-fa');
                                 }
                             })
                             .always(function () {
-                                button.removeClass('mcb-loading');
-                                contact
+                                clickedButton.removeClass('mcb-loading');
+                                button
                                     .find('.mcb-summary-icon')
                                     .removeClass('mcb-loading-icon')
                                     .end()
@@ -795,47 +793,47 @@
             });
 
             // Clear icon
-            option.contactList.on('click', '.mcb-action-clear-icon', function (event) {
+            option.builder.on('click', '.mcb-action-clear-icon', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
-                $(this).closest('.mcb-contact').blankIcon();
+                $(this).closest('.mcb-button').blankIcon();
             });
 
             // Update label
-            option.contactList.on('input', '.mcb-details-label input', function (event) {
+            option.builder.on('input', '.mcb-details-label input', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
-                var contact = $(this).closest('.mcb-contact');
-                contact.find('.mcb-summary-label').text($(this).val());
+                var button = $(this).closest('.mcb-button');
+                button.find('.mcb-summary-label').text($(this).val());
             });
 
             // Update URI
-            option.contactList.on('input', '.mcb-details-uri input', function (event) {
+            option.builder.on('input', '.mcb-details-uri input', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
                 var uri = $(this).val();
-                var contact = $(this).closest('.mcb-contact');
+                var button = $(this).closest('.mcb-button');
 
                 if ('' === uri) {
-                    contact.find('.mcb-summary-uri').removeClass('mcb-monospace').text(mcb.l10n.no_URI);
+                    button.find('.mcb-summary-uri').removeClass('mcb-monospace').text(mcb.l10n.no_URI);
                 } else {
-                    contact.find('.mcb-summary-uri').addClass('mcb-monospace').text(uri);
+                    button.find('.mcb-summary-uri').addClass('mcb-monospace').text(uri);
                 }
             });
 
             // Add parameter
-            option.contactList.on('click', '.mcb-action-add-parameter', function (event) {
+            option.builder.on('click', '.mcb-action-add-parameter', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
                 var input = $(this);
-                var contact = $(this).closest('.mcb-contact');
-                var parameters = contact.find('.mcb-link-parameter');
+                var button = $(this).closest('.mcb-button');
+                var parameters = button.find('.mcb-link-parameter');
 
-                var contactKey = contact.attr('data-contact-key'),
+                var buttonKey = button.attr('data-button-key'),
                     parameterKey = parameters.maxKey('parameter') + 1;
 
                 $.ajax({
@@ -844,7 +842,7 @@
                     data: {
                         action: 'mcb_ajax_get_parameter',
                         nonce: mcb.nonce,
-                        contact_key: contactKey,
+                        button_key: buttonKey,
                         parameter_key: parameterKey
                     },
 
@@ -865,7 +863,7 @@
                             return false;
                         }
 
-                        contact.find('.mcb-link-query').after($(parameter));
+                        button.find('.mcb-link-query').after($(parameter));
                     })
                     .always(function () {
                         input.removeClass('mcb-loading');
@@ -873,7 +871,7 @@
             });
 
             // Delete parameter
-            option.contactList.on('click', '.mcb-action-delete-parameter', function (event) {
+            option.builder.on('click', '.mcb-action-delete-parameter', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 

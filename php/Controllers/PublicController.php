@@ -5,7 +5,7 @@ namespace MobileContactBar\Controllers;
 
 final class PublicController
 {
-    public $checked_contacts = [];
+    public $checked_buttons = [];
 
 
     /**
@@ -27,9 +27,9 @@ final class PublicController
             return;
         }
 
-        $this->checked_contacts = array_filter( abmcb()->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
+        $this->checked_buttons = array_filter( abmcb()->option_bar['buttons'], function ( $button ) { return $button['checked']; });
 
-        if ( count( $this->checked_contacts ) > 0 )
+        if ( count( $this->checked_buttons ) > 0 )
         {
             $is_mobile = wp_is_mobile();
             $device = abmcb()->option_bar['settings']['bar']['device'];
@@ -133,22 +133,22 @@ final class PublicController
             add_action( 'mcb_public_render_html', [$this, 'mcb_public_render_html'], 10, 2 );
         }
 
-        do_action( 'mcb_public_render_html', abmcb()->option_bar['settings'], $this->checked_contacts );
+        do_action( 'mcb_public_render_html', abmcb()->option_bar['settings'], $this->checked_buttons );
     }
 
 
     /**
-     * Renders contact bar.
+     * Renders the bar.
      *
      * @param  array $settings
-     * @param  array $contacts
+     * @param  array $buttons
      * @return void
      */
-    public function mcb_public_render_html( $settings, $contacts )
+    public function mcb_public_render_html( $settings, $buttons )
     {
         if ( 1 === did_action( 'mcb_public_render_html' ))
         {    
-            echo $this->output( $settings, $contacts );
+            echo $this->output( $settings, $buttons );
         }
     }
 
@@ -159,10 +159,10 @@ final class PublicController
      * @global $wp
      * 
      * @param  array $settings
-     * @param  array $contacts
+     * @param  array $buttons
      * @return string
      */
-    public function output( $settings, $contacts )
+    public function output( $settings, $buttons )
     {
         global $wp;
 
@@ -217,13 +217,13 @@ final class PublicController
         $out .= '<ul>' . PHP_EOL;
         $new_tab = ( $settings['bar']['is_new_tab'] ) ? ' target="_blank" rel="noopener"' : '';
 
-        foreach ( $contacts as $contact )
+        foreach ( $buttons as $button )
         {
-            $uri = $contact['uri'];
-            if ( $uri && ! empty( $contact['query'] ))
+            $uri = $button['uri'];
+            if ( $uri && ! empty( $button['query'] ))
             {
                 $query_args = [];
-                foreach ( $contact['query'] as $parameter )
+                foreach ( $button['query'] as $parameter )
                 {
                     $key   = rawurlencode( $parameter['key'] );
                     $value = rawurlencode( $parameter['value'] );
@@ -236,24 +236,24 @@ final class PublicController
                 $uri = add_query_arg( $query_args, $uri );
             }
 
-            $badge = abmcb()->contact_types[$contact['type']]->badge();
-            $label = ( esc_attr( $contact['label'] ))
-                ? sprintf( '<span class="mobile-contact-bar-label">%s</span>', str_replace( '\n', '<br />', esc_attr( $contact['label'] )))
+            $badge = abmcb()->button_types[$button['type']]->badge();
+            $label = ( esc_attr( $button['label'] ))
+                ? sprintf( '<span class="mobile-contact-bar-label">%s</span>', str_replace( '\n', '<br />', esc_attr( $button['label'] )))
                 : '';
 
-            if ( 'ti' === $contact['brand'] )
+            if ( 'ti' === $button['brand'] )
             {
                 $icon = sprintf(
                     '<span class="mobile-contact-bar-icon">%s%s</span>',
-                    file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. $contact['icon'] . '.svg' ),
+                    file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. $button['icon'] . '.svg' ),
                     $badge
                 );
             }
-            elseif ( 'fa' === $contact['brand'] )
+            elseif ( 'fa' === $button['brand'] )
             {
                 $icon = sprintf(
                     '<span class="mobile-contact-bar-icon mobile-contact-bar-fa">%s%s</span>',
-                    file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . $contact['group'] . '/' . $contact['icon'] . '.svg' ),
+                    file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . $button['group'] . '/' . $button['icon'] . '.svg' ),
                     $badge
                 );
             }
@@ -262,12 +262,12 @@ final class PublicController
                 $icon = '';
             }
 
-            $id = esc_attr( $contact['id'] );
+            $id = esc_attr( $button['id'] );
             $out .= sprintf( '<li%s>', ( $id ) ? sprintf( ' id="%s"', $id ) : '' );
 
             $active = ( $uri == $current_url ) ? ' mobile-contact-bar-active' : '';
             $out .= sprintf( '<a class="mobile-contact-bar-item%s" href="%s"%s>', $active, esc_url( $uri, abmcb()->schemes ), $new_tab );
-            if ( 'below' === $settings['icons_labels']['label_position'] )
+            if ( 'below' === $settings['buttons']['label_position'] )
             {
                 $out .= $icon;
                 $out .= $label;
@@ -277,11 +277,11 @@ final class PublicController
                 $out .= $label;
                 $out .= $icon;
             }
-            $out .= sprintf( '<span class="screen-reader-text">%s</span>', esc_html( $contact['text'] ));
+            $out .= sprintf( '<span class="screen-reader-text">%s</span>', esc_html( $button['text'] ));
             $out .= '</a>';
 
             ob_start();
-            echo abmcb()->contact_types[$contact['type']]->script();
+            echo abmcb()->button_types[$button['type']]->script();
             $out .= ob_get_contents();
             ob_end_clean();
 
@@ -294,7 +294,7 @@ final class PublicController
         $out .= '</div>';
 
         unset( $settings );
-        unset( $contacts );
+        unset( $buttons );
 
         return $out;
     }

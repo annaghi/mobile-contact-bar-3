@@ -1,9 +1,9 @@
 <?php
 
-namespace MobileContactBar\ContactTypes;
+namespace MobileContactBar\ButtonTypes;
 
 
-final class ScrollToTop extends ContactType
+final class ScrollToTop extends Button
 {
     public function __construct()
     {

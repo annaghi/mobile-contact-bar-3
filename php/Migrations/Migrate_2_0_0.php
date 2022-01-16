@@ -34,9 +34,9 @@ final class Migrate_2_0_0
     public function migrate_option_bar()
     {
         $settings = $this->migrate_settings();
-        $contacts = $this->migrate_contacts();
+        $buttons  = $this->migrate_buttons();
 
-        update_option( abmcb()->id, ['settings' => $settings, 'contacts' => $contacts] );
+        update_option( abmcb()->id, ['settings' => $settings, 'buttons' => $buttons] );
     }
 
 
@@ -127,9 +127,9 @@ final class Migrate_2_0_0
     /**
      * @return array
      */
-    private function migrate_contacts()
+    private function migrate_buttons()
     {
-        $contacts = [];
+        $buttons = [];
 
         if ( isset( $this->option_bar_v1['contacts'] ) && is_array( $this->option_bar_v1['contacts'] ))
         {
@@ -137,27 +137,27 @@ final class Migrate_2_0_0
 
             foreach( $contacts_v1 as $id_v1 => $contact_v1 )
             {
-                $contact = [];
-                $contact['checked'] = 1;
+                $button = [];
+                $button['checked'] = 1;
 
                 $uri = $this->migrate_uri( $contact_v1['protocol'], $contact_v1['resource'] );
-                $contact['uri'] = $uri;
+                $button['uri'] = $uri;
 
                 switch( $id_v1 )
                 {
                     case 'phone':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fas fa-phone';
-                        $contact['title']       = 'Phone Number for calling';
-                        $contact['placeholder'] = 'tel:+15417543010';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fas fa-phone';
+                        $button['title']       = 'Phone Number for calling';
+                        $button['placeholder'] = 'tel:+15417543010';
                         break;
 
                     case 'text':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'far fa-comment';
-                        $contact['title']       = 'Phone Number for texting';
-                        $contact['placeholder'] = 'sms:+15417543010';
-                        $contact['parameters']  = [
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'far fa-comment';
+                        $button['title']       = 'Phone Number for texting';
+                        $button['placeholder'] = 'sms:+15417543010';
+                        $button['parameters']  = [
                             [
                                 'key'         => 'body',
                                 'type'        => 'text',
@@ -168,16 +168,16 @@ final class Migrate_2_0_0
 
                         if( isset( $contact_v1['parameters'], $contact_v1['parameters']['body'] ))
                         {
-                            $contact['parameters'][0]['value'] = rawurlencode( rawurldecode( $contact_v1['parameters']['body'] ));
+                            $button['parameters'][0]['value'] = rawurlencode( rawurldecode( $contact_v1['parameters']['body'] ));
                         }
                         break;
 
                     case 'email':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'far fa-envelope';
-                        $contact['title']       = 'Email Address';
-                        $contact['placeholder'] = 'mailto:username@example.com';
-                        $contact['parameters']  = [
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'far fa-envelope';
+                        $button['title']       = 'Email Address';
+                        $button['placeholder'] = 'mailto:username@example.com';
+                        $button['parameters']  = [
                             [
                                 'key'         => 'subject',
                                 'type'        => 'text',
@@ -204,7 +204,7 @@ final class Migrate_2_0_0
                             ],
                         ];
 
-                        foreach( $contact['parameters'] as &$parameter )
+                        foreach( $button['parameters'] as &$parameter )
                         {
                             $key = $parameter['key'];
 
@@ -217,95 +217,95 @@ final class Migrate_2_0_0
                         break;
 
                     case 'skype':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fab fa-skype';
-                        $contact['title']       = 'Skype for calling';
-                        $contact['placeholder'] = 'skype:username?call';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fab fa-skype';
+                        $button['title']       = 'Skype for calling';
+                        $button['placeholder'] = 'skype:username?call';
                         break;
 
                     case 'address':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fas fa-map-marker-alt';
-                        $contact['title']       = 'Google Maps';
-                        $contact['placeholder'] = 'https://google.com/maps/place/Dacre+St,+London+UK/';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fas fa-map-marker-alt';
+                        $button['title']       = 'Google Maps';
+                        $button['placeholder'] = 'https://google.com/maps/place/Dacre+St,+London+UK/';
                         break;
 
                     case 'facebook':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fab fa-facebook-f';
-                        $contact['title']       = 'Facebook';
-                        $contact['placeholder'] = 'https://www.facebook.com/username';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fab fa-facebook-f';
+                        $button['title']       = 'Facebook';
+                        $button['placeholder'] = 'https://www.facebook.com/username';
                         break;
 
                     case 'twitter':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fab fa-twitter';
-                        $contact['title']       = 'Twitter';
-                        $contact['placeholder'] = 'https://twitter.com/username';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fab fa-twitter';
+                        $button['title']       = 'Twitter';
+                        $button['placeholder'] = 'https://twitter.com/username';
                         break;
 
                     case 'googleplus':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fab fa-google-plus-g';
-                        $contact['title']       = 'Google+';
-                        $contact['placeholder'] = 'https://plus.google.com/username';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fab fa-google-plus-g';
+                        $button['title']       = 'Google+';
+                        $button['placeholder'] = 'https://plus.google.com/username';
                         break;
 
                     case 'instagram':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fab fa-instagram';
-                        $contact['title']       = 'Instagram';
-                        $contact['placeholder'] = 'https://www.instagram.com/username';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fab fa-instagram';
+                        $button['title']       = 'Instagram';
+                        $button['placeholder'] = 'https://www.instagram.com/username';
                         break;
 
                     case 'youtube':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fab fa-youtube';
-                        $contact['title']       = 'YouTube';
-                        $contact['placeholder'] = 'https://www.youtube.com/user/username';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fab fa-youtube';
+                        $button['title']       = 'YouTube';
+                        $button['placeholder'] = 'https://www.youtube.com/user/username';
                         break;
 
                     case 'pinterest':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fab fa-pinterest-p';
-                        $contact['title']       = 'Pinterest';
-                        $contact['placeholder'] = 'https://www.pinterest.com/username';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fab fa-pinterest-p';
+                        $button['title']       = 'Pinterest';
+                        $button['placeholder'] = 'https://www.pinterest.com/username';
                         break;
 
                     case 'tumblr':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fab fa-tumblr';
-                        $contact['title']       = 'Tumblr';
-                        $contact['placeholder'] = 'https://username.tumblr.com';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fab fa-tumblr';
+                        $button['title']       = 'Tumblr';
+                        $button['placeholder'] = 'https://username.tumblr.com';
                         break;
 
                     case 'linkedin':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fab fa-linkedin-in';
-                        $contact['title']       = 'LinkedIn';
-                        $contact['placeholder'] = 'https://www.linkedin.com/in/username';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fab fa-linkedin-in';
+                        $button['title']       = 'LinkedIn';
+                        $button['placeholder'] = 'https://www.linkedin.com/in/username';
                         break;
 
                     case 'vimeo':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fab fa-vimeo-v';
-                        $contact['title']       = 'Vimeo';
-                        $contact['placeholder'] = 'https://vimeo.com/username';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fab fa-vimeo-v';
+                        $button['title']       = 'Vimeo';
+                        $button['placeholder'] = 'https://vimeo.com/username';
                         break;
 
                     case 'flickr':
-                        $contact['type']        = 'Sample';
-                        $contact['icon']        = 'fab fa-flickr';
-                        $contact['title']       = 'Flickr';
-                        $contact['placeholder'] = 'https://www.flickr.com/people/username';
+                        $button['type']        = 'Sample';
+                        $button['icon']        = 'fab fa-flickr';
+                        $button['title']       = 'Flickr';
+                        $button['placeholder'] = 'https://www.flickr.com/people/username';
                         break;
                 }
 
-                $contacts[] = $contact;
+                $buttons[] = $button;
             }
         }
 
-        return $contacts;
+        return $buttons;
     }
 
 

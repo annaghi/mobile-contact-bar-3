@@ -26,16 +26,16 @@ final class Plugin extends Container
     const WP_CRON_HOOK = 'mobile_contact_bar_weekly_scheduled_events';
 
 
-    public $file = '';
-    public $name = '';
+    public $file       = '';
+    public $name       = '';
     public $plugin_uri = '';
-    public $version = '';
+    public $version    = '';
 
 
     /**
      * @var array
      */
-    public $contact_types = [];
+    public $button_types = [];
 
 
     /**
@@ -51,7 +51,7 @@ final class Plugin extends Container
 
     
     /**
-     * Multidimensional array of the plugin's option, divided into sections: 'settings', 'contacts'.
+     * Multidimensional array of the plugin's option, divided into sections: 'settings', 'buttons'.
      *
      * @var array
      */
@@ -93,9 +93,9 @@ final class Plugin extends Container
         $plugin_data = get_file_data(
             $file,
             [
-                'name'        => 'Plugin Name',
-                'plugin_uri'  => 'Plugin URI',
-                'version'     => 'Version',
+                'name'       => 'Plugin Name',
+                'plugin_uri' => 'Plugin URI',
+                'version'    => 'Version',
             ],
             'plugin'
         );
@@ -262,14 +262,14 @@ final class Plugin extends Container
 
 
     /**
-     * Creates instances for contact types.
+     * Creates instances for button types.
      * Creates or updates the plugin options (version, bar) in the database - when needed.
      * 
      * @return void
      */
     private function install( $activate = '' )
     {
-        $this->register_contact_types();
+        $this->register_button_types();
 
         $version = get_option( self::ID . '_version' );
 
@@ -298,15 +298,15 @@ final class Plugin extends Container
 
 
     /**
-     * Creates instances for contact types.
+     * Creates instances for button types.
      *  
      * @return void
      */
-    private function register_contact_types()
+    private function register_button_types()
     {
-        $contact_types = [];
+        $button_types = [];
 
-        $dir = plugin_dir_path( $this->file ) . 'php/ContactTypes';
+        $dir = plugin_dir_path( $this->file ) . 'php/ButtonTypes';
 
         if ( is_dir( $dir ))
         {
@@ -315,18 +315,18 @@ final class Plugin extends Container
             {
                 if ( 'file' === $fileinfo->getType() )
                 {
-                    $contact_type = str_replace( '.php', '', $fileinfo->getFilename() );
-                    $contact_type_class = Helper::build_class_name( $contact_type, 'ContactTypes');
-                    if ( class_exists( $contact_type_class ) && ! ( new ReflectionClass( $contact_type_class ))->isAbstract() )
+                    $button_type = str_replace( '.php', '', $fileinfo->getFilename() );
+                    $button_type_class = Helper::build_class_name( $button_type, 'ButtonTypes');
+                    if ( class_exists( $button_type_class ) && ! ( new ReflectionClass( $button_type_class ))->isAbstract() )
                     {
-                        $contact_types[strtolower( $contact_type )] = abmcb( $contact_type_class );
+                        $button_types[strtolower( $button_type )] = abmcb( $button_type_class );
                     }
                 }
             }
         }
 
-        uasort( $contact_types, function ( $a, $b ) { return strcmp( $a->field()['title'], $b->field()['title'] ); });
-        $this->contact_types = $contact_types;
+        uasort( $button_types, function ( $a, $b ) { return strcmp( $a->field()['title'], $b->field()['title'] ); });
+        $this->button_types = $button_types;
     }
 
 

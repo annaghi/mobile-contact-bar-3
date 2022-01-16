@@ -3,7 +3,7 @@
 namespace MobileContactBar;
 
 use MobileContactBar\Settings;
-use MobileContactBar\Contacts;
+use MobileContactBar\Buttons;
 
 
 final class Option
@@ -38,51 +38,51 @@ final class Option
             $settings = abmcb( Settings\Input::class )->default_settings();    
         }
 
-        if ( $option && is_array( $option ) && isset( $option['contacts'] ))
+        if ( $option && is_array( $option ) && isset( $option['buttons'] ))
         {
             switch ( $form )
             {
                 case 'encode':
-                    $contacts = abmcb( Contacts\Input::class )->sanitize( $option['contacts'] );
-                    $contacts = $this->encode_contacts( $contacts );
+                    $buttons = abmcb( Buttons\Input::class )->sanitize( $option['buttons'] );
+                    $buttons = $this->encode_buttons( $buttons );
                     break;
 
                 case 'decode':
-                    $contacts = $this->decode_contacts( $option['contacts'] );
-                    $contacts = abmcb( Contacts\Input::class )->sanitize( $contacts );
+                    $buttons = $this->decode_buttons( $option['buttons'] );
+                    $buttons = abmcb( Buttons\Input::class )->sanitize( $buttons );
                     break;
 
                 default:
-                    $contacts = [];
+                    $buttons = [];
             }
         }
         else
         {
-            $contacts = [];
+            $buttons = [];
         }
 
         return [
             'settings' => $settings,
-            'contacts' => $contacts,
+            'buttons'  => $buttons,
         ];
     }
 
 
     /**
-     * @param  array $contacts
+     * @param  array $buttons
      * @return array
      */
-    public function encode_contacts( $contacts )
+    public function encode_buttons( $buttons )
     {
-        if ( is_array( $contacts ))
+        if ( is_array( $buttons ))
         {
-            foreach ( $contacts as &$contact )
+            foreach ( $buttons as &$button )
             {
-                $contact['uri'] = esc_url_raw( untrailingslashit( rawurldecode( $contact['uri'] )), abmcb()->schemes );
+                $button['uri'] = esc_url_raw( untrailingslashit( rawurldecode( $button['uri'] )), abmcb()->schemes );
 
-                if ( isset( $contact['query'] ) && is_array( $contact['query'] ))
+                if ( isset( $button['query'] ) && is_array( $button['query'] ))
                 {
-                    foreach ( $contact['query'] as &$parameter )
+                    foreach ( $button['query'] as &$parameter )
                     {
                         $parameter['key']   = rawurlencode( rawurldecode( $parameter['key'] ));
                         $parameter['value'] = rawurlencode( rawurldecode( $parameter['value'] ));
@@ -90,28 +90,28 @@ final class Option
                     unset( $parameter );
                 }
             }
-            unset( $contact );
+            unset( $button );
         }
 
-        return $contacts;
+        return $buttons;
     }
 
 
     /**
-     * @param  array $contacts
+     * @param  array $buttons
      * @return array
      */
-    public function decode_contacts( $contacts )
+    public function decode_buttons( $buttons )
     {
-        if ( is_array( $contacts ))
+        if ( is_array( $buttons ))
         {
-            foreach ( $contacts as &$contact )
+            foreach ( $buttons as &$button )
             {
-                $contact['uri'] = untrailingslashit( rawurldecode( $contact['uri'] ));
+                $button['uri'] = untrailingslashit( rawurldecode( $button['uri'] ));
 
-                if ( isset( $contact['query'] ) && is_array( $contact['query'] ))
+                if ( isset( $button['query'] ) && is_array( $button['query'] ))
                 {
-                    foreach ( $contact['query'] as &$parameter )
+                    foreach ( $button['query'] as &$parameter )
                     {
                         $parameter['key']   = rawurldecode( $parameter['key'] );
                         $parameter['value'] = rawurldecode( $parameter['value'] );
@@ -119,26 +119,26 @@ final class Option
                     unset( $parameter );
                 }
             }
-            unset( $contact );
+            unset( $button );
         }
 
-        return $contacts;
+        return $buttons;
     }
 
 
     /**
      * Returns the default bar-option.
      *
-     * @return array Option initialized with default settings, contacts
+     * @return array Option initialized with default settings, buttons
      */
     public function default_option_bar()
     {
        $settings = abmcb( Settings\Input::class )->default_settings();
-       $contacts = abmcb( Contacts\Input::class )->sample_contacts();
+       $buttons = abmcb( Buttons\Input::class )->sample_buttons();
 
        return [
            'settings' => $settings,
-           'contacts' => $contacts,
+           'buttons'  => $buttons,
        ];
     }
 

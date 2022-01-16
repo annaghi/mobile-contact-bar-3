@@ -235,37 +235,37 @@
     display: flex;
 }
 
-/* CONTACT LIST */
+/* BUTTON BUILDER */
 
-#mcb-meta-box-contacts.postbox .inside {
+#mcb-meta-box-builder.postbox .inside {
     margin-top: 0;
     padding: 0;
 }
 
-#mcb-meta-box-contacts.postbox .inside {
+#mcb-meta-box-builder.postbox .inside {
     line-height: 1.5;
     font-size: 14px;
 }
 
-#mcb-section-contacts {
+#mcb-section-builder {
     margin: 0;
 }
 
-#mcb-footer-contacts {
+#mcb-footer-builder {
     background-color: #f8f8f8;
     padding: 15px 12px;
     display: flex;
     justify-content: flex-end;
 }
 
-#mcb-add-contact {
+#mcb-add-button {
     display: flex;
     align-items: center;
     gap: 4px;
     padding-left: 6px;
 }
 
-/* Contact Summary */
+/* Button Summary */
 
 .mcb-summary {
     display: grid;
@@ -358,7 +358,7 @@
     color: #cbd0d4;
 }
 
-.mcb-contact.ui-sortable-placeholder {
+.mcb-button.ui-sortable-placeholder {
     background-color: #cccccc;
     box-shadow: inset 0 1px rgba(0, 0, 0, 0.1);
 }
@@ -400,10 +400,10 @@
     width: 1.5em;
 }
 
-.mcb-contact:first-child .mcb-action-order-higher,
-.mcb-contact:first-child .mcb-action-order-higher:hover,
-.mcb-contact:last-child .mcb-action-order-lower,
-.mcb-contact:last-child .mcb-action-order-lower:hover {
+.mcb-button:first-child .mcb-action-order-higher,
+.mcb-button:first-child .mcb-action-order-higher:hover,
+.mcb-button:last-child .mcb-action-order-lower,
+.mcb-button:last-child .mcb-action-order-lower:hover {
     border: 1px solid #dedede;
     color: #a7aaad;
     cursor: default;
@@ -441,30 +441,30 @@
     color: #ffffff !important;
 }
 
-.mcb-action-delete-contact,
+.mcb-action-delete-button,
 .mcb-action-delete-parameter,
-.mcb-opened .mcb-action-delete-contact,
+.mcb-opened .mcb-action-delete-button,
 .mcb-opened .mcb-action-delete-parameter {
     color: #dc3232;
 }
-.mcb-action-icon.mcb-action-delete-contact:hover,
+.mcb-action-icon.mcb-action-delete-button:hover,
 .mcb-action-icon.mcb-action-delete-parameter:hover,
-.mcb-opened .mcb-action-icon.mcb-action-delete-contact:hover,
+.mcb-opened .mcb-action-icon.mcb-action-delete-button:hover,
 .mcb-opened .mcb-action-icon.mcb-action-delete-parameter:hover {
     background-color: #dc3231;
     border-color: #dc3231;
     color: #ffffff;
 }
 
-.mcb-action-icon.mcb-action-delete-contact:active,
-.mcb-action-icon.mcb-action-delete-contact:focus,
-.mcb-action-icon.mcb-action-delete-contact:visited,
+.mcb-action-icon.mcb-action-delete-button:active,
+.mcb-action-icon.mcb-action-delete-button:focus,
+.mcb-action-icon.mcb-action-delete-button:visited,
 .mcb-action-icon.mcb-action-delete-parameter:active,
 .mcb-action-icon.mcb-action-delete-parameter:focus,
 .mcb-action-icon.mcb-action-delete-parameter:visited,
-.mcb-opened .mcb-action-icon.mcb-action-delete-contact:active,
-.mcb-opened .mcb-action-icon.mcb-action-delete-contact:focus,
-.mcb-opened .mcb-action-icon.mcb-action-delete-contact:visited,
+.mcb-opened .mcb-action-icon.mcb-action-delete-button:active,
+.mcb-opened .mcb-action-icon.mcb-action-delete-button:focus,
+.mcb-opened .mcb-action-icon.mcb-action-delete-button:visited,
 .mcb-opened .mcb-action-icon.mcb-action-delete-parameter:active,
 .mcb-opened .mcb-action-icon.mcb-action-delete-parameter:focus,
 .mcb-opened .mcb-action-icon.mcb-action-delete-parameter:visited {
@@ -480,7 +480,7 @@
     margin-left: 15px;
 }
 
-/* Contact Details */
+/* Button Details */
 
 .mcb-details {
     background-color: #ffffff;
@@ -532,7 +532,7 @@
 
 /* Customization */
 
-.mcb-contact {
+.mcb-button {
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 .mcb-link-query,
@@ -552,7 +552,7 @@
 }
 .mcb-link-parameter .mcb-parameter-key,
 .mcb-builtin-parameter .mcb-parameter-value,
-.mcb-close-contact {
+.mcb-close-button {
     border-top: #ededed solid 1px;
 }
 
@@ -655,16 +655,16 @@
     font-weight: normal;
 }
 
-.mcb-contact.mcb-opened .mcb-summary {
+.mcb-button.mcb-opened .mcb-summary {
     background-color: #00a0d2;
     border-color: #00a0d2;
     color: #ffffff;
 }
 
-.mcb-contact:not(.mcb-opened) .mcb-details {
+.mcb-button:not(.mcb-opened) .mcb-details {
     display: none;
 }
-.mcb-contact.mcb-opened.mcb-checked .mcb-summary {
+.mcb-button.mcb-opened.mcb-checked .mcb-summary {
     box-shadow: inset 4px 0 #005077;
 }
 
@@ -930,10 +930,10 @@
 .mcb-settings .mcb-slider-value {
     vertical-align: top;
 }
-.mcb-setting-icons_labels-background_color td,
-.mcb-setting-icons_labels-icon_color td,
-.mcb-setting-icons_labels-label_color td,
-.mcb-setting-icons_labels-border_color td,
+.mcb-setting-buttons-background_color td,
+.mcb-setting-buttons-icon_color td,
+.mcb-setting-buttons-label_color td,
+.mcb-setting-buttons-border_color td,
 .mcb-setting-badges-background_color td,
 .mcb-setting-badges-font_color td,
 .mcb-setting-toggle-background_color td,
@@ -968,10 +968,10 @@
 }
 
 @media only screen and (max-width: 600px) {
-    .mcb-setting-icons_labels-background_color td,
-    .mcb-setting-icons_labels-icon_color td,
-    .mcb-setting-icons_labels-label_color td,
-    .mcb-setting-icons_labels-border_color td,
+    .mcb-setting-buttons-background_color td,
+    .mcb-setting-buttons-icon_color td,
+    .mcb-setting-buttons-label_color td,
+    .mcb-setting-buttons-border_color td,
     .mcb-setting-badges-background_color td,
     .mcb-setting-badges-font_color td,
     .mcb-setting-toggle-background_color td,

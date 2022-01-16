@@ -3,7 +3,7 @@
 namespace MobileContactBar\Migrations;
 
 use MobileContactBar\File;
-use MobileContactBar\ContactTypes;
+use MobileContactBar\ButtonTypes;
 use MobileContactBar\Helper;
 use MobileContactBar\Settings;
 
@@ -34,9 +34,9 @@ final class Migrate_3_0_0
     public function migrate_option_bar()
     {
         $settings = $this->migrate_settings();
-        $contacts = $this->migrate_contacts();
+        $buttons  = $this->migrate_buttons();
 
-        update_option( abmcb()->id, ['settings' => $settings, 'contacts' => $contacts] );
+        update_option( abmcb()->id, ['settings' => $settings, 'buttons' => $buttons] );
     }
 
 
@@ -52,35 +52,35 @@ final class Migrate_3_0_0
             $settings_v2 = $this->option_bar_v2['settings'];
             $settings = $settings_v2;
 
-            $settings['icons_labels']['background_color']['secondary']       = '';
-            $settings['icons_labels']['icon_color']['secondary']             = '';
-            $settings['icons_labels']['label_color']['secondary']            = '';
-            $settings['icons_labels']['border_color']['secondary']           = '';
+            $settings['buttons']['background_color']['secondary']       = '';
+            $settings['buttons']['icon_color']['secondary']             = '';
+            $settings['buttons']['label_color']['secondary']            = '';
+            $settings['buttons']['border_color']['secondary']           = '';
 
-            $settings['badges']['background_color']                          = [];
-            $settings['badges']['font_color']                                = [];
-            $settings['badges']['background_color']['secondary']             = '';
-            $settings['badges']['font_color']['secondary']                   = '';
+            $settings['badges']['background_color']                     = [];
+            $settings['badges']['font_color']                           = [];
+            $settings['badges']['background_color']['secondary']        = '';
+            $settings['badges']['font_color']['secondary']              = '';
 
             if ( isset( $settings_v2['bar'] ))
             {
                 if ( isset( $settings_v2['bar']['height'] ))
                 {
-                    $settings['bar']['shortest']                             = (int) $settings_v2['bar']['height'];    
+                    $settings['bar']['shortest']                        = (int) $settings_v2['bar']['height'];    
                 }
                 if ( isset( $settings_v2['bar']['width'], $settings_v2['icons']['alignment'] ))
                 {
                     if ( 100 === (int) $settings_v2['bar']['width'] && 'justified' === $settings_v2['icons']['alignment'] )
                     {
-                        $settings['bar']['span']                             = 'stretch';
+                        $settings['bar']['span']                        = 'stretch';
                     }
                     elseif ( 100 === (int) $settings_v2['bar']['width'] && 'centered' === $settings_v2['icons']['alignment'] )
                     {
-                        $settings['bar']['span']                             = 'fix_max';
+                        $settings['bar']['span']                        = 'fix_max';
                     }
                     else
                     {
-                        $settings['bar']['span']                             = 'fix_min';
+                        $settings['bar']['span']                        = 'fix_min';
                     }
                 }
                 if ( isset( $settings_v2['bar']['horizontal_position'] ))
@@ -88,51 +88,51 @@ final class Migrate_3_0_0
                     switch( $settings_v2['bar']['horizontal_position'] )
                     {
                         case 'left':
-                            $settings['bar']['alignment']                    = 0;
+                            $settings['bar']['alignment']               = 0;
                             break;
 
                         case 'center':
-                            $settings['bar']['alignment']                    = 50;
+                            $settings['bar']['alignment']               = 50;
                             break;
 
                         case 'right':
-                            $settings['bar']['alignment']                    = 100;
+                            $settings['bar']['alignment']               = 100;
                             break;
                     }
                     
                 }
                 if ( isset( $settings_v2['bar']['vertical_position'] ))
                 {
-                    $settings['bar']['position']                             = $settings_v2['bar']['vertical_position'];    
+                    $settings['bar']['position']                        = $settings_v2['bar']['vertical_position'];    
                 }
                 if ( isset( $settings_v2['bar']['vertical_position'], $settings_v2['bar']['is_border'] ))
                 {
                     if ( 'top' === $settings_v2['bar']['vertical_position'] && 'one' === $settings_v2['bar']['is_border'] )
                     {
-                        $settings['bar']['is_borders']['top']                = 0;
-                        $settings['bar']['is_borders']['bottom']             = 1;
+                        $settings['bar']['is_borders']['top']           = 0;
+                        $settings['bar']['is_borders']['bottom']        = 1;
                     }
                     elseif ( 'bottom' === $settings_v2['bar']['vertical_position'] && 'one' === $settings_v2['bar']['is_border'] )
                     {
-                        $settings['bar']['is_borders']['top']                 = 1;
-                        $settings['bar']['is_borders']['bottom']              = 0;
+                        $settings['bar']['is_borders']['top']           = 1;
+                        $settings['bar']['is_borders']['bottom']        = 0;
                     }
                 }
                 if ( isset( $settings_v2['bar']['is_border'] ))
                 {
                     if ( 'two' === $settings_v2['bar']['is_border'] )
                     {
-                        $settings['bar']['is_borders']['top']                 = 1;
-                        $settings['bar']['is_borders']['bottom']              = 1;
+                        $settings['bar']['is_borders']['top']           = 1;
+                        $settings['bar']['is_borders']['bottom']        = 1;
                     }
                 }
                 if ( isset( $settings_v2['bar']['color'] ))
                 {
-                    $settings['icons_labels']['background_color']['primary'] = $settings_v2['bar']['color'];
+                    $settings['buttons']['background_color']['primary'] = $settings_v2['bar']['color'];
                 }
                 if ( isset( $settings_v2['bar']['space_height'] ))
                 {
-                    $settings['bar']['space']                                 = (int) $settings_v2['bar']['space_height'];
+                    $settings['bar']['space']                           = (int) $settings_v2['bar']['space_height'];
                 }
             }
 
@@ -140,42 +140,42 @@ final class Migrate_3_0_0
             {
                 if ( isset( $settings_v2['icons']['width'] ))
                 {
-                    $settings['icons_labels']['width']                       = (int) $settings_v2['icons']['width'];
+                    $settings['buttons']['width']                       = (int) $settings_v2['icons']['width'];
                 }
                 if ( isset( $settings_v2['icons']['is_border'] ))
                 {
                     if ( 'two' === $settings_v2['icons']['is_border'] )
                     {
-                        $settings['icons_labels']['is_borders']['top']       = 0;
-                        $settings['icons_labels']['is_borders']['right']     = 1;
-                        $settings['icons_labels']['is_borders']['bottom']    = 0;
-                        $settings['icons_labels']['is_borders']['left']      = 1;
+                        $settings['buttons']['is_borders']['top']       = 0;
+                        $settings['buttons']['is_borders']['right']     = 1;
+                        $settings['buttons']['is_borders']['bottom']    = 0;
+                        $settings['buttons']['is_borders']['left']      = 1;
                     }
                     elseif ( 'four' === $settings_v2['icons']['is_border'] )
                     {
-                        $settings['icons_labels']['is_borders']['top']       = 1;
-                        $settings['icons_labels']['is_borders']['right']     = 1;
-                        $settings['icons_labels']['is_borders']['bottom']    = 1;
-                        $settings['icons_labels']['is_borders']['left']      = 1;
+                        $settings['buttons']['is_borders']['top']       = 1;
+                        $settings['buttons']['is_borders']['right']     = 1;
+                        $settings['buttons']['is_borders']['bottom']    = 1;
+                        $settings['buttons']['is_borders']['left']      = 1;
                     }
                 }
                 if ( isset( $settings_v2['icons']['border_color'] ))
                 {
-                    $settings['icons_labels']['border_color']['primary']     = $settings_v2['icons']['border_color'];
+                    $settings['buttons']['border_color']['primary']     = $settings_v2['icons']['border_color'];
                 }
                 if ( isset( $settings_v2['icons']['border_width'] ))
                 {
-                    $settings['icons_labels']['border_width']                = (int) $settings_v2['icons']['border_width'];
+                    $settings['buttons']['border_width']                = (int) $settings_v2['icons']['border_width'];
                 }
                 if ( isset( $settings_v2['icons']['size'] ))
                 {
-                    $settings['icons_labels']['icon_size']                   = $this->migrate_icon_size( $settings_v2['icons']['size'] );
+                    $settings['buttons']['icon_size']                   = $this->migrate_icon_size( $settings_v2['icons']['size'] );
                 }
                 if ( isset( $settings_v2['icons']['color'] ))
                 {
-                    $settings['icons_labels']['icon_color']['primary']       = $settings_v2['icons']['color'];
-                    $settings['icons_labels']['label_color']['primary']      = $settings_v2['icons']['color'];
-                    $settings['toggle']['font_color']['primary']             = $settings_v2['icons']['color'];
+                    $settings['buttons']['icon_color']['primary']       = $settings_v2['icons']['color'];
+                    $settings['buttons']['label_color']['primary']      = $settings_v2['icons']['color'];
+                    $settings['toggle']['font_color']['primary']        = $settings_v2['icons']['color'];
                 }
             }
 
@@ -183,11 +183,11 @@ final class Migrate_3_0_0
             {
                 if ( isset( $settings_v2['toggle']['color'] ))
                 {
-                    $settings['toggle']['background_color']['primary']       = $settings_v2['toggle']['color'];
+                    $settings['toggle']['background_color']['primary']  = $settings_v2['toggle']['color'];
                 }
                 if ( isset( $settings_v2['toggle']['size'] ))
                 {
-                    $settings['toggle']['font_size']                         = (float) $settings_v2['toggle']['size'];
+                    $settings['toggle']['font_size']                    = (float) $settings_v2['toggle']['size'];
                 }
             }
 
@@ -195,19 +195,19 @@ final class Migrate_3_0_0
             {
                 if ( isset( $settings_v2['badges']['place'] ))
                 {
-                    $settings['badges']['position']                          = $settings_v2['badges']['place'];
+                    $settings['badges']['position']                     = $settings_v2['badges']['place'];
                 }
                 if ( isset( $settings_v2['badges']['size'] ))
                 {
-                    $settings['badges']['size']                              = round( floor( $settings_v2['badges']['size'] * 1.25 * 200 ) / 10, 0, PHP_ROUND_HALF_DOWN ) / 20;
+                    $settings['badges']['size']                         = round( floor( $settings_v2['badges']['size'] * 1.25 * 200 ) / 10, 0, PHP_ROUND_HALF_DOWN ) / 20;
                 }
                 if ( isset( $settings_v2['badges']['background_color'] ))
                 {
-                    $settings['badges']['background_color']['primary']       = $settings_v2['badges']['background_color'];
+                    $settings['badges']['background_color']['primary']  = $settings_v2['badges']['background_color'];
                 }
                 if ( isset( $settings_v2['badges']['font_color'] ))
                 {
-                    $settings['badges']['font_color']['primary']             = $settings_v2['badges']['font_color'];
+                    $settings['badges']['font_color']['primary']        = $settings_v2['badges']['font_color'];
                 }
             }
         }
@@ -268,14 +268,14 @@ final class Migrate_3_0_0
     /**
      * @return array
      */
-    private function migrate_contacts()
+    private function migrate_buttons()
     {
-        $contacts = [];
+        $buttons = [];
 
         if ( isset( $this->option_bar_v2['contacts'] ) && is_array( $this->option_bar_v2['contacts'] ))
         {
             $contacts_v2 = $this->option_bar_v2['contacts'];
-            $default_customization = ContactTypes\ContactType::default_customization();
+            $default_customization = ButtonTypes\Button::default_customization();
 
             foreach ( $contacts_v2 as $contact_v2 )
             {
@@ -285,19 +285,19 @@ final class Migrate_3_0_0
                     continue;
                 }
 
-                $contact_type = $this->migrate_contact_type( strtolower( $contact_v2['type'] ), $contact_v2['uri'], $contact_v2['placeholder'] );
-                if ( empty( $contact_type ))
+                $button_type = $this->migrate_button_type( strtolower( $contact_v2['type'] ), $contact_v2['uri'], $contact_v2['placeholder'] );
+                if ( empty( $button_type ))
                 {
                     continue;
                 }
 
-                $contact            = [];
-                $contact['type']    = $contact_type;
-                $contact['id']      = '';
-                $contact['checked'] = ( isset( $contact_v2['checked'] )) ? $contact_v2['checked'] : 0;
-                $contact['brand']   = '';
-                $contact['group']   = ''; 
-                $contact['icon']    = '';
+                $button            = [];
+                $button['type']    = $button_type;
+                $button['id']      = '';
+                $button['checked'] = ( isset( $contact_v2['checked'] )) ? $contact_v2['checked'] : 0;
+                $button['brand']   = '';
+                $button['group']   = ''; 
+                $button['icon']    = '';
                 if ( isset( $contact_v2['icon'] ))
                 {
                     $group = $this->migrate_group( $contact_v2['icon'] );
@@ -305,19 +305,19 @@ final class Migrate_3_0_0
 
                     if ( ! empty( $group ) && ! empty( $icon ))
                     {
-                        $contact['brand'] = 'fa';
-                        $contact['group'] = $group; 
-                        $contact['icon']  = $icon;
+                        $button['brand'] = 'fa';
+                        $button['group'] = $group; 
+                        $button['icon']  = $icon;
                     }
                 }
-                $contact['label']   = '';
-                $contact['text']    = $contact_v2['title'];
-                $contact['uri']     = ( '#' === $contact_v2['uri'] ) ? '' : esc_url_raw( rawurldecode( $contact_v2['uri'] ), abmcb()->schemes );
-                $contact['custom']  = $default_customization;
+                $button['label']   = '';
+                $button['text']    = $contact_v2['title'];
+                $button['uri']     = ( '#' === $contact_v2['uri'] ) ? '' : esc_url_raw( rawurldecode( $contact_v2['uri'] ), abmcb()->schemes );
+                $button['custom']  = $default_customization;
 
                 if ( isset( $contact_v2['parameters'] ) && is_array( $contact_v2['parameters'] ))
                 {
-                    $contact['query'] = [];
+                    $button['query'] = [];
 
                     foreach ( $contact_v2['parameters'] as $parameter_v2 )
                     {
@@ -325,42 +325,42 @@ final class Migrate_3_0_0
                         $parameter['key']   = ( isset( $parameter_v2['key'] ))   ? rawurlencode( rawurldecode( $parameter_v2['key'] ))   : '';
                         $parameter['value'] = ( isset( $parameter_v2['value'] )) ? rawurlencode( rawurldecode( $parameter_v2['value'] )) : '';
 
-                        $contact['query'][] = $parameter;
+                        $button['query'][] = $parameter;
                     }
                 }
 
-                if ( 'link' === $contact['type'] && ! isset( $contact['query'] ))
+                if ( 'link' === $button['type'] && ! isset( $button['query'] ))
                 {
-                    $contact['query'] = [];
+                    $button['query'] = [];
                 }
 
-                $contacts[] = $contact;
+                $buttons[] = $button;
             }
         }
 
-        return $contacts;
+        return $buttons;
     }
 
 
     /**
-     * @param  string $contact_type_v2
+     * @param  string $button_type_v2
      * @param  string $uri_v2
      * @param  string $placeholder_v2
      * @return string
      */
-    private function migrate_contact_type( $contact_type_v2, $uri_v2, $placeholder_v2 )
+    private function migrate_button_type( $button_type_v2, $uri_v2, $placeholder_v2 )
     {
-        if ( 'whatsapp' === $contact_type_v2 || 'https://api.whatsapp.com/send' === ( untrailingslashit( $uri_v2 )))
+        if ( 'whatsapp' === $button_type_v2 || 'https://api.whatsapp.com/send' === ( untrailingslashit( $uri_v2 )))
         {
             return 'whatsapp';
         }
 
-        switch ( $contact_type_v2 )
+        switch ( $button_type_v2 )
         {
             case 'email':
             case 'whatsapp':
             case 'woocommerce':
-                return $contact_type_v2;
+                return $button_type_v2;
 
             case 'scrolltop':
                 return 'scrolltotop';
@@ -369,10 +369,10 @@ final class Migrate_3_0_0
                 return 'sms';
 
             case 'custom':
-                return $this->migrate_general_contact_type( $uri_v2 );
+                return $this->migrate_general_button_type( $uri_v2 );
 
             case 'sample':
-                return $this->migrate_general_contact_type( $placeholder_v2 );
+                return $this->migrate_general_button_type( $placeholder_v2 );
 
             default:
                 return '';
@@ -384,7 +384,7 @@ final class Migrate_3_0_0
      * @param  string $uri_v2
      * @return string
      */
-    private function migrate_general_contact_type( $uri_v2 )
+    private function migrate_general_button_type( $uri_v2 )
     {
         if ( 'https://api.whatsapp.com/send' === untrailingslashit( $uri_v2 ))
         {
@@ -473,7 +473,7 @@ final class Migrate_3_0_0
     {
         $meta_boxes = array_merge(
             array_map( function ( $section ) { return 'mcb-meta-box-' . $section; }, abmcb( Settings\Input::class )->sections() ),
-            ['mcb-meta-box-contacts']
+            ['mcb-meta-box-builder']
         );
 
         if ( ! class_exists( 'WooCommerce' ))

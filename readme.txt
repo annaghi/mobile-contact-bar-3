@@ -3,7 +3,7 @@
 === Mobile Contact Bar ===
 Contributors: anna.bansaghi
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YXJAZ7Q5EJFUA
-Tags: social media, icon, cta, call to action, woocommerce cart
+Tags: social media, icon, cta button, call to action, woocommerce cart
 Requires at least: 5.4
 Tested up to: 5.8
 Requires PHP: 5.6.20
@@ -109,9 +109,9 @@ You have full control over the single cookie which is called *mobile_contact_bar
 
 == Screenshots ==
 
-1. Contact List box
-2. Icons box, Toggle box
-3. Bar box
+1. Button Builder meta box
+2. Buttons, Toggle meta boxes
+3. Bar meta box
 4. Settings &rarr; Mobile Contact Bar
 
 

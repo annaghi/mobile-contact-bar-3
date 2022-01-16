@@ -2,7 +2,7 @@
 
 namespace MobileContactBar\Controllers;
 
-use MobileContactBar\Contacts;
+use MobileContactBar\Buttons;
 use MobileContactBar\Icons;
 
 
@@ -14,42 +14,42 @@ final class AJAXController
      * @var array
      */
     public $admin_actions = [
-        'ajax_get_contact',
+        'ajax_get_button',
         'ajax_get_parameter',
-        'ajax_get_contact_field',
+        'ajax_get_button_field',
         'ajax_get_icon',
     ];
 
 
     /**
-     * Sends HTML for a new contact with type 'link'.
+     * Sends HTML for a new button with type 'link'.
      * 
      * @return void
      *
      * @uses $_POST
      */
-    public function ajax_get_contact()
+    public function ajax_get_button()
     {
         if ( $this->verify_nonce()
-            && isset( $_POST['contact_key'] )
-            && (int) $_POST['contact_key'] >= 0 )
+            && isset( $_POST['button_key'] )
+            && (int) $_POST['button_key'] >= 0 )
         {
             $data = [];
 
-            $contact_key = (int) $_POST['contact_key'];
-            $contact_field = abmcb()->contact_types['link']->field();
+            $button_key = (int) $_POST['button_key'];
+            $button_field = abmcb()->button_types['link']->field();
     
-            $data['summary'] = abmcb( Contacts\View::class )->output_summary(
+            $data['summary'] = abmcb( Buttons\View::class )->output_summary(
                 [
-                    'contact_key' => $contact_key,
-                    'contact'     => $contact_field,
+                    'button_key' => $button_key,
+                    'button'     => $button_field,
                 ]
             );
 
-            $data['details'] = abmcb( Contacts\View::class )->output_details(
+            $data['details'] = abmcb( Buttons\View::class )->output_details(
                 [
-                    'contact_key' => $contact_key,
-                    'contact'     => $contact_field,
+                    'button_key' => $button_key,
+                    'button'     => $button_field,
                 ]
             );
     
@@ -73,16 +73,16 @@ final class AJAXController
     public function ajax_get_parameter()
     {
         if ( $this->verify_nonce()
-            && isset( $_POST['contact_key'], $_POST['parameter_key'] )
-            && (int) $_POST['contact_key'] >= 0
+            && isset( $_POST['button_key'], $_POST['parameter_key'] )
+            && (int) $_POST['button_key'] >= 0
             && (int) $_POST['parameter_key'] >= 0 )
         {
-            $contact_key = (int) $_POST['contact_key'];
+            $button_key = (int) $_POST['button_key'];
             $parameter_key = (int) $_POST['parameter_key'];
 
-            $data = abmcb( Contacts\View::class )->output_link_parameter(
+            $data = abmcb( Buttons\View::class )->output_link_parameter(
                 [
-                    'contact_key'    => $contact_key,
+                    'button_key'     => $button_key,
                     'parameter_type' => ['field' => 'text'],
                     'parameter_key'  => $parameter_key,
                     'parameter'      => ['key' => '', 'value' => ''],
@@ -100,40 +100,40 @@ final class AJAXController
 
 
     /**
-     * Sends HTML and contact_type for the selected contact type.
+     * Sends HTML and button_type for the selected button type.
      * 
      * @return void
      *
      * @uses $_POST
      */
-    public function ajax_get_contact_field()
+    public function ajax_get_button_field()
     {
-        $contact_types = abmcb()->contact_types;
+        $button_types = abmcb()->button_types;
 
         if ( $this->verify_nonce()
-            && isset( $_POST['contact_key'], $_POST['contact_type'] )
-            && (int) $_POST['contact_key'] >= 0
-            && in_array( $_POST['contact_type'], array_keys( $contact_types )))
+            && isset( $_POST['button_key'], $_POST['button_type'] )
+            && (int) $_POST['button_key'] >= 0
+            && in_array( $_POST['button_type'], array_keys( $button_types )))
         {
             $data = [];
 
-            $contact_key = (int) $_POST['contact_key'];
-            $contact_field = $contact_types[$_POST['contact_type']]->field();
+            $button_key = (int) $_POST['button_key'];
+            $button_field = $button_types[$_POST['button_type']]->field();
 
-            $data['contact_field'] = $contact_field;
-            $data['uri'] = abmcb( Contacts\View::class )->output_details_uri(
+            $data['button_field'] = $button_field;
+            $data['uri'] = abmcb( Buttons\View::class )->output_details_uri(
                 [
-                    'contact_key'   => $contact_key,
-                    'contact'       => $contact_field,
-                    'contact_field' => $contact_field,
+                    'button_key'   => $button_key,
+                    'button'       => $button_field,
+                    'button_field' => $button_field,
                 ]
             );
 
-            $data['query'] = abmcb( Contacts\View::class )->output_query(
+            $data['query'] = abmcb( Buttons\View::class )->output_query(
                 [
-                    'contact_key'   => $contact_key,
-                    'contact'       => $contact_field,
-                    'contact_field' => $contact_field,
+                    'button_key'   => $button_key,
+                    'button'       => $button_field,
+                    'button_field' => $button_field,
                 ]
             );
     

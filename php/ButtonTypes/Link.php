@@ -1,9 +1,9 @@
 <?php
 
-namespace MobileContactBar\ContactTypes;
+namespace MobileContactBar\ButtonTypes;
 
 
-final class Tel extends ContactType
+final class Link extends Button
 {
     public function __construct()
     {
@@ -16,15 +16,16 @@ final class Tel extends ContactType
         return [
             'type'        => $this->type,
             'id'          => '',
-            'title'       => __( 'Phone', 'mobile-contact-bar' ),
+            'title'       => __( 'Link', 'mobile-contact-bar' ),
             'checked'     => 0,
             'brand'       => 'fa',
             'group'       => 'solid',
-            'icon'        => 'phone',
-            'label'       => __( 'Call Us', 'mobile-contact-bar' ),
-            'text'        => __( 'Make a call', 'mobile-contact-bar' ),
+            'icon'        => 'external-link-square-alt',
+            'label'       => '',
+            'text'        => __( 'Go to this link', 'mobile-contact-bar' ),
             'uri'         => '',
-            'placeholder' => 'tel:15417543010 or tel:+15417543010',
+            'placeholder' => 'http(s)://www.somesite.com/path?query#fragment',
+            'query'       => [],
             'custom'      => self::default_customization(),
             'desc_type'   => __( 'type desc', 'mobile-contact-bar' ),
             'desc_uri'    => __( 'URI desc', 'mobile-contact-bar' ),

@@ -1,9 +1,9 @@
 <?php
 
-namespace MobileContactBar\ContactTypes;
+namespace MobileContactBar\ButtonTypes;
 
 
-final class WhatsApp extends ContactType
+final class Viber extends Button
 {
     public function __construct()
     {
@@ -16,27 +16,27 @@ final class WhatsApp extends ContactType
         return [
             'type'        => $this->type,
             'id'          => '',
-            'title'       => 'WhatsApp',
+            'title'       => 'Viber',
             'checked'     => 0,
             'brand'       => 'fa',
             'group'       => 'brands',
-            'icon'        => 'whatsapp',
-            'label'       => 'WhatsApp',
-            'text'        => 'WhatsApp',
-            'uri'         => 'https://api.whatsapp.com/send',
-            'placeholder' => 'place',
+            'icon'        => 'viber',
+            'label'       => 'Viber',
+            'text'        => 'Viber',
+            'uri'         => 'viber://pa?chatURI=your_URI',
+            'placeholder' => 'viber://pa?chatURI=your_URI',
             'query'       => [
                 [
                     'field'       => 'text',
-                    'key'         => 'phone',
+                    'key'         => 'context',
                     'value'       => '',
-                    'placeholder' => '15417543010',
+                    'placeholder' => __( 'Context ...', 'mobile-contact-bar' ),
                 ],
                 [
                     'field'       => 'text',
                     'key'         => 'text',
                     'value'       => '',
-                    'placeholder' => __( 'Message ...', 'mobile-contact-bar' ),
+                    'placeholder' => __( 'Text ...', 'mobile-contact-bar' ),
                 ],
             ],
             'custom'      => self::default_customization(),

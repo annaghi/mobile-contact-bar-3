@@ -51,7 +51,7 @@ final class File
      */
     public function write( $option_bar = [] )
     {
-        if ( $option_bar && is_array( $option_bar ) && isset( $option_bar['settings'], $option_bar['contacts'] ))
+        if ( $option_bar && is_array( $option_bar ) && isset( $option_bar['settings'], $option_bar['buttons'] ))
         {
             $wp_upload_dir = wp_upload_dir();
             if ( ! realpath( $wp_upload_dir['basedir'] ))
@@ -60,7 +60,7 @@ final class File
             }
     
             $base_css = wp_normalize_path( $wp_upload_dir['basedir'] . '/' . abmcb()->slug . '/' . abmcb()->base_css );
-            file_put_contents( $base_css, abmcb( Styles\CSS::class )->output( $option_bar['settings'], $option_bar['contacts'] ));
+            file_put_contents( $base_css, abmcb( Styles\CSS::class )->output( $option_bar['settings'], $option_bar['buttons'] ));
         }
     }
 }

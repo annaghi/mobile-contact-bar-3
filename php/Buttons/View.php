@@ -1,23 +1,23 @@
 <?php
 
-namespace MobileContactBar\Contacts;
+namespace MobileContactBar\Buttons;
 
 use MobileContactBar\Icons;
-use MobileContactBar\ContactTypes;
+use MobileContactBar\ButtonTypes;
 
 
 final class View
 {
     /**
-     * Adds Contact List meta box to the options page.
+     * Adds Button Builder meta box to the options page.
      * 
      * @return void
      */
     public function add()
     {
         add_settings_section(
-            'mcb-meta-box-contacts',
-            __( 'Contact List', 'mobile-contact-bar' ),
+            'mcb-meta-box-builder',
+            __( 'Button Builder', 'mobile-contact-bar' ),
             false,
             abmcb()->id
         );
@@ -69,31 +69,31 @@ final class View
 
 
     /**
-     * Renders the contact list.
+     * Renders the Button Builder.
      * 
      * @return void
      */
-    public function render_contacts()
+    public function render_builder()
     {
         $settings = abmcb()->option_bar['settings'];
-        $contacts = abmcb()->option_bar['contacts'];
+        $buttons  = abmcb()->option_bar['buttons'];
 
         ?>
-        <div id="mcb-section-contacts">
-            <div id="mcb-contacts">
-            <?php foreach ( $contacts as $contact_key => $contact ) : ?>
-                <div class="mcb-contact<?php echo ( $contact['checked'] ) ? ' mcb-checked' : ''?>" data-contact-key="<?php echo esc_attr( $contact_key ); ?>">
+        <div id="mcb-section-builder">
+            <div id="mcb-builder">
+            <?php foreach ( $buttons as $button_key => $button ) : ?>
+                <div class="mcb-button<?php echo ( $button['checked'] ) ? ' mcb-checked' : ''?>" data-button-key="<?php echo esc_attr( $button_key ); ?>">
                 <?php
-                    echo $this->output_summary( ['contact_key' => $contact_key, 'contact' => $contact] );
-                    echo $this->output_details( ['contact_key' => $contact_key, 'contact' => $contact] );
+                    echo $this->output_summary( ['button_key' => $button_key, 'button' => $button] );
+                    echo $this->output_details( ['button_key' => $button_key, 'button' => $button] );
                 ?>
                 </div>
             <?php endforeach; ?>
             </div>
-            <div id="mcb-footer-contacts">
-                <button type="button" class="button button-primary" id="mcb-add-contact" title="<?php esc_attr_e( 'Add New Contact', 'mobile-contact-bar' ); ?>">
+            <div id="mcb-footer-builder">
+                <button type="button" class="button button-primary" id="mcb-add-button" title="<?php esc_attr_e( 'Add New Button', 'mobile-contact-bar' ); ?>">
                     <span class="dashicons dashicons-plus-alt2" aria-hidden="true"></span>
-                    <span><?php esc_html_e( 'New Contact', 'mobile-contact-bar' ); ?></span>
+                    <span><?php esc_html_e( 'New Button', 'mobile-contact-bar' ); ?></span>
                 </button>
             </div>
         </div>
@@ -102,11 +102,11 @@ final class View
 
 
     /**
-     * Outputs contact summary.
+     * Outputs button summary.
      *
      * @param  array  $args
-     * 	       string $contact_key
-     * 	       array  $contact
+     * 	       string $button_key
+     * 	       array  $button
      * @return string              HTML
      */
     public function output_summary( $args )
@@ -115,7 +115,7 @@ final class View
 
         $out = '';
 
-        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_key ) . ']';
+        $prefix = abmcb()->id . '[buttons][' . esc_attr( $button_key ) . ']';
 
         $out .= '<div class="mcb-summary">';
 
@@ -134,7 +134,7 @@ final class View
             '<div class="mcb-summary-checkbox">
                 <input type="checkbox" name="' . $prefix . '[checked]" value="1" %s>
             </div>',
-            ( $contact['checked'] ) ? checked( $contact['checked'], 1, false ) : ''
+            ( $button['checked'] ) ? checked( $button['checked'], 1, false ) : ''
         );
 
         $out .= '</div>';
@@ -142,20 +142,20 @@ final class View
         $out .= '<div class="mcb-summary-cta">';
 
         // 'icon'
-        if ( 'ti' === $contact['brand'] )
+        if ( 'ti' === $button['brand'] )
         {
             $out .= sprintf(
                 '<div class="mcb-summary-brand">%s</div><div class="mcb-summary-icon">%s</div>',
-                esc_attr( strtoupper( $contact['brand'] )),
-                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. esc_attr( $contact['icon'] ) . '.svg' )
+                esc_attr( strtoupper( $button['brand'] )),
+                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. esc_attr( $button['icon'] ) . '.svg' )
             );
         }
-        elseif ( 'fa' === $contact['brand'] )
+        elseif ( 'fa' === $button['brand'] )
         {
             $out .= sprintf(
                 '<div class="mcb-summary-brand">%s</div><div class="mcb-summary-icon mcb-fa">%s</div>',
-                esc_attr( strtoupper( $contact['brand'] )),
-                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . esc_attr( $contact['group'] ) . '/' . esc_attr( $contact['icon'] ) . '.svg' )
+                esc_attr( strtoupper( $button['brand'] )),
+                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . esc_attr( $button['group'] ) . '/' . esc_attr( $button['icon'] ) . '.svg' )
             );
         }
         else
@@ -166,19 +166,19 @@ final class View
         // 'label'
         $out .= sprintf(
             '<div class="mcb-summary-label">%s</div>',
-            esc_attr( $contact['label'] )
+            esc_attr( $button['label'] )
         );
 
         $out .= '</div>';
 
         // 'URI'
-        if ( in_array( $contact['type'], ['historyback', 'historyforward', 'scrolltotop'] ))
+        if ( in_array( $button['type'], ['historyback', 'historyforward', 'scrolltotop'] ))
         {
             $out .= '<div class="mcb-summary-uri mcb-monospace">#</div>';
         }
         else
         {
-            $uri = esc_attr( $contact['uri'] );
+            $uri = esc_attr( $button['uri'] );
             $out .= sprintf(
                 '<div class="mcb-summary-uri%s">%s</div>',
                 empty( $uri ) ? '' : ' mcb-monospace',
@@ -189,11 +189,11 @@ final class View
         $out .= '<div class="mcb-right-actions">';
 
         $out .= sprintf(
-            '<button type="button" class="mcb-action-icon mcb-action-delete-contact" title="%1$s">
+            '<button type="button" class="mcb-action-icon mcb-action-delete-button" title="%1$s">
                 <span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
                 <span class="screen-reader-text">%1$s</span>
             </button>',
-            esc_attr__( 'Delete this contact', 'mobile-contact-bar' )
+            esc_attr__( 'Delete this button', 'mobile-contact-bar' )
         );
 
         $out .= sprintf(
@@ -201,7 +201,7 @@ final class View
                 <span class="dashicons dashicons-arrow-up-alt2" aria-hidden="true"></span>
                 <span class="screen-reader-text">%1$s</span>
             </button>',
-            esc_attr__( 'Order contact higher', 'mobile-contact-bar' )
+            esc_attr__( 'Order button higher', 'mobile-contact-bar' )
         );
 
         $out .= sprintf(
@@ -209,7 +209,7 @@ final class View
                 <span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>
                 <span class="screen-reader-text">%1$s</span>
             </button>',
-            esc_attr__( 'Order contact lower', 'mobile-contact-bar' )
+            esc_attr__( 'Order button lower', 'mobile-contact-bar' )
         );
 
         $out .= sprintf(
@@ -217,7 +217,7 @@ final class View
                 <span class="dashicons dashicons-admin-tools" aria-hidden="true"></span>
                 <span class="screen-reader-text">%1$s</span>
             </button>',
-            esc_attr__( 'Edit contact', 'mobile-contact-bar' )
+            esc_attr__( 'Edit button', 'mobile-contact-bar' )
         );
 
         $out .= '</div>';
@@ -228,11 +228,11 @@ final class View
 
 
     /**
-     * Outputs editable contact details.
+     * Outputs editable button details.
      *
      * @param  array  $args
-     * 	       string $contact_key
-     * 	       array  $contact
+     * 	       string $button_key
+     * 	       array  $button
      * @return string              HTML
      */
     public function output_details( $args )
@@ -241,30 +241,30 @@ final class View
 
         $out = '';
 
-        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_key ) . ']';
+        $prefix = abmcb()->id . '[buttons][' . esc_attr( $button_key ) . ']';
 
-        $contact_field = abmcb()->contact_types[$contact['type']]->field();
+        $button_field = abmcb()->button_types[$button['type']]->field();
 
         $out .= '<div class="mcb-details">';
 
         // 'brand' hidden
-        $out .= sprintf( '<input type="hidden" name="' . $prefix . '[brand]" value="%s">', esc_attr( $contact['brand'] ));
+        $out .= sprintf( '<input type="hidden" name="' . $prefix . '[brand]" value="%s">', esc_attr( $button['brand'] ));
 
         // 'group' hidden
-        $out .= sprintf( '<input type="hidden" name="' . $prefix . '[group]" value="%s">', esc_attr( $contact['group'] ));
+        $out .= sprintf( '<input type="hidden" name="' . $prefix . '[group]" value="%s">', esc_attr( $button['group'] ));
 
         // 'icon' hidden
-        $out .= sprintf( '<input type="hidden" name="' . $prefix . '[icon]" value="%s">', esc_attr( $contact['icon'] ));
+        $out .= sprintf( '<input type="hidden" name="' . $prefix . '[icon]" value="%s">', esc_attr( $button['icon'] ));
 
         // 'type' input
         $select = '<select name="' . $prefix . '[type]" id="' . $prefix . '[type]">';
-        foreach ( abmcb()->contact_types as $contact_type )
+        foreach ( abmcb()->button_types as $button_type )
         {
-            $field = $contact_type->field();
+            $field = $button_type->field();
             $select .= sprintf(
                 '<option value="%s" %s>%s</option>',
                 esc_attr( $field['type'] ),
-                selected( $field['type'], $contact['type'], false ),
+                selected( $field['type'], $button['type'], false ),
                 esc_html( $field['title'] )
             );
         }
@@ -278,27 +278,27 @@ final class View
                 </div>
                 <div class="mcb-input">%s</div>
             </div>',
-            esc_html__( 'Contact Type', 'mobile-contact-bar' ),
-            esc_html( $contact_field['desc_type'] ),
+            esc_html__( 'Type', 'mobile-contact-bar' ),
+            esc_html( $button_field['desc_type'] ),
             $select,
-            esc_html( $contact['type'] )
+            esc_html( $button['type'] )
         );
 
         // 'icon' visible
-        if ( 'ti' === $contact['brand'] )
+        if ( 'ti' === $button['brand'] )
         {
             $icon = sprintf(
                 '<span class="mcb-details-brand">%s</span><span class="mcb-details-icon">%s</span>',
-                esc_attr( strtoupper( $contact['brand'] )),
-                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. esc_attr( $contact['icon'] ) . '.svg' )
+                esc_attr( strtoupper( $button['brand'] )),
+                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. esc_attr( $button['icon'] ) . '.svg' )
             );
         }
-        elseif ( 'fa' === $contact['brand'] )
+        elseif ( 'fa' === $button['brand'] )
         {
             $icon = sprintf(
                 '<span class="mcb-details-brand">%s</span><span class="mcb-details-icon mcb-fa">%s</span>',
-                esc_attr( strtoupper( $contact['brand'] )),
-                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . esc_attr( $contact['group'] ) . '/' . esc_attr( $contact['icon'] ) . '.svg' )
+                esc_attr( strtoupper( $button['brand'] )),
+                file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . esc_attr( $button['group'] ) . '/' . esc_attr( $button['icon'] ) . '.svg' )
             );
         }
         else
@@ -318,7 +318,7 @@ final class View
                     <button type="button" class="button button-secondary mcb-action-clear-icon" title="%4$s">%4$s</button>
                 </div>
             </div>',
-            esc_html__( 'Contact Icon', 'mobile-contact-bar' ),
+            esc_html__( 'Icon', 'mobile-contact-bar' ),
             $icon,
             esc_attr__( 'Select Icon', 'mobile-contact-bar' ),
             esc_attr__( 'Clear Icon', 'mobile-contact-bar' )
@@ -335,9 +335,9 @@ final class View
                     <input type="text" name="' . $prefix . '[label]" id="' . $prefix . '[label]" value="%s">
                 </div>
             </div>',
-            esc_html__( 'Contact Label', 'mobile-contact-bar' ),
+            esc_html__( 'Label', 'mobile-contact-bar' ),
             esc_html__( 'Use \n for new lines', 'mobile-contact-bar' ),
-            esc_attr( $contact['label'] )
+            esc_attr( $button['label'] )
         );
 
         // 'text' input
@@ -351,12 +351,12 @@ final class View
                 </div>
             </div>',
             esc_html__( 'Screen Reader Text', 'mobile-contact-bar' ),
-            esc_attr( $contact['text'] )
+            esc_attr( $button['text'] )
         );
 
-        $out .= $this->output_details_uri( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_field' => $contact_field] );
-        $out .= $this->output_query( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_field' => $contact_field] );
-        $out .= $this->output_customization( ['contact_key' => $contact_key, 'contact' => $contact, 'contact_field' => $contact_field] );
+        $out .= $this->output_details_uri( ['button_key' => $button_key, 'button' => $button, 'button_field' => $button_field] );
+        $out .= $this->output_query( ['button_key' => $button_key, 'button' => $button, 'button_field' => $button_field] );
+        $out .= $this->output_customization( ['button_key' => $button_key, 'button' => $button, 'button_field' => $button_field] );
 
         // Close details button
         $out .= sprintf(
@@ -381,14 +381,14 @@ final class View
 
         $out = '';
 
-        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_key ) . ']';
+        $prefix = abmcb()->id . '[buttons][' . esc_attr( $button_key ) . ']';
 
-        if ( in_array( $contact['type'], ['historyback', 'historyforward', 'scrolltotop'] ))
+        if ( in_array( $button['type'], ['historyback', 'historyforward', 'scrolltotop'] ))
         {
             // 'URI' hidden
             $out .= sprintf(
                 '<input type="hidden" name="' . $prefix . '[uri]" value="%s">',
-                esc_attr( $contact['uri'] )
+                esc_attr( $button['uri'] )
             );
 
             // 'URI' visible
@@ -400,8 +400,8 @@ final class View
                     </div>
                     <div class="mcb-input">#</div>
                 </div>',
-                esc_html__( 'Contact URI', 'mobile-contact-bar' ),
-                esc_html( $contact_field['desc_uri'] )
+                esc_html__( 'URI', 'mobile-contact-bar' ),
+                esc_html( $button_field['desc_uri'] )
             );
         }
         else
@@ -417,10 +417,10 @@ final class View
                         <input type="text" name="' . $prefix . '[uri]" id="' . $prefix . '[uri]" placeholder="%s" value="%s">
                     </div>
                 </div>',
-                esc_html__( 'Contact URI', 'mobile-contact-bar' ),
-                esc_html( $contact_field['desc_uri'] ),
-                esc_attr( $contact_field['placeholder'] ),
-                esc_attr( $contact['uri'] )
+                esc_html__( 'URI', 'mobile-contact-bar' ),
+                esc_html( $button_field['desc_uri'] ),
+                esc_attr( $button_field['placeholder'] ),
+                esc_attr( $button['uri'] )
             );
         }
 
@@ -432,8 +432,8 @@ final class View
      * Outputs query head row.
      *
      * @param  array  $args
-     * 	       string $contact_key
-     * 	       array  $contact
+     * 	       string $button_key
+     * 	       array  $button
      * @return string              HTML
      */
     public function output_query( $args )
@@ -442,7 +442,7 @@ final class View
 
         $out = '';
 
-        if ( 'link' === $contact['type'] )
+        if ( 'link' === $button['type'] )
         {
             $out .= sprintf(
                 '<div class="mcb-row mcb-link-query">
@@ -457,11 +457,11 @@ final class View
                 esc_attr__( 'Add Parameter', 'mobile-contact-bar' )
             );
             
-            foreach ( $contact['query'] as $parameter_key => $parameter )
+            foreach ( $button['query'] as $parameter_key => $parameter )
             {
                 $out .= $this->output_link_parameter(
                     [
-                        'contact_key'    => $contact_key,
+                        'button_key'     => $button_key,
                         'parameter_type' => ['field' => 'text'],
                         'parameter_key'  => $parameter_key,
                         'parameter'      => $parameter
@@ -469,7 +469,7 @@ final class View
                 );
             }
         }
-        elseif ( isset( $contact['query'] ))
+        elseif ( isset( $button['query'] ))
         {
             $out .= sprintf(
                 '<div class="mcb-row mcb-builtin-query">
@@ -481,13 +481,13 @@ final class View
                 esc_html__( 'Query String', 'mobile-contact-bar' )
             );
 
-            foreach ( $contact['query'] as $parameter_key => $parameter )
+            foreach ( $button['query'] as $parameter_key => $parameter )
             {
-                $parameter_index = array_search( $parameter['key'], array_column( $contact_field['query'], 'key' ));
-                $parameter_type = $contact_field['query'][$parameter_index];
+                $parameter_index = array_search( $parameter['key'], array_column( $button_field['query'], 'key' ));
+                $parameter_type = $button_field['query'][$parameter_index];
                 $out .= $this->output_builtin_parameter(
                     [
-                        'contact_key'    => $contact_key,
+                        'button_key'     => $button_key,
                         'parameter_type' => $parameter_type,
                         'parameter_key'  => $parameter_key,
                         'parameter'      => $parameter
@@ -504,7 +504,7 @@ final class View
      * Outputs parameter with editable key-value.
      *
      * @param  array  $args
-     *         string $contact_key
+     *         string $button_key
      * 	       string $parameter_key
      * 	       array  $parameter_key
      * @return string                 HTML
@@ -515,7 +515,7 @@ final class View
 
         $out = '';
 
-        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_key ) . '][query][' . esc_attr( $parameter_key ) . ']';
+        $prefix = abmcb()->id . '[buttons][' . esc_attr( $button_key ) . '][query][' . esc_attr( $parameter_key ) . ']';
 
         $out .= sprintf(
             '<div class="mcb-link-parameter" data-parameter-key="%d">',
@@ -595,7 +595,7 @@ final class View
      * Outputs parameter with editable value.
      *
      * @param  array  $args
-     *         string $contact_key
+     *         string $button_key
      * 	       string $parameter_key
      * 	       array  $parameter_key
      * @return string                 HTML
@@ -606,7 +606,7 @@ final class View
 
         $out = '';
 
-        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_key ) . '][query][' . esc_attr( $parameter_key ) . ']';
+        $prefix = abmcb()->id . '[buttons][' . esc_attr( $button_key ) . '][query][' . esc_attr( $parameter_key ) . ']';
 
         $out .= '<div class="mcb-builtin-parameter">';
 
@@ -668,11 +668,11 @@ final class View
 
 
     /**
-     * Outputs the CSS ID selector input and custom colors of the contact.
+     * Outputs the CSS ID selector input and custom colors of the button.
      *
      * @param  array  $args
-     * 	       string $contact_key
-     * 	       array  $contact
+     * 	       string $button_key
+     * 	       array  $button
      * @return string              HTML
      */
     public function output_customization( $args )
@@ -681,8 +681,8 @@ final class View
 
         $out = '';
 
-        $prefix = abmcb()->id . '[contacts][' . esc_attr( $contact_key ) . ']';
-        $custom_fields = ContactTypes\ContactType::custom_fields();
+        $prefix = abmcb()->id . '[buttons][' . esc_attr( $button_key ) . ']';
+        $custom_fields = ButtonTypes\Button::custom_fields();
 
         // 'id' input
         $out .= sprintf(
@@ -696,10 +696,10 @@ final class View
                 </div>
             </div>',
             esc_html__( 'CSS ID selector', 'mobile-contact-bar' ),
-            preg_match( '/^mcb-sample-id-[0-9]+/', $contact['id'] )
+            preg_match( '/^mcb-sample-id-[0-9]+/', $button['id'] )
                 ? esc_html__( 'This is a generated ID, do not rely on it. Change it to your needs.', 'mobile-contact-bar' )
                 : esc_html__( 'Used when custom colors are specified.', 'mobile-contact-bar' ),
-            esc_attr( $contact['id'] )
+            esc_attr( $button['id'] )
         );
 
         // 'custom' inputs
@@ -724,7 +724,7 @@ final class View
                     esc_html( $option['desc'] ),
                     esc_attr( $custom_key ),
                     esc_attr( $option_key ),
-                    esc_attr( $contact['custom'][$custom_key][$option_key] )
+                    esc_attr( $button['custom'][$custom_key][$option_key] )
                 );
             }
             $out .= '</div>';

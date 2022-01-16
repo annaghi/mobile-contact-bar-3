@@ -1,12 +1,12 @@
 <?php
 
-namespace MobileContactBar\ContactTypes;
+namespace MobileContactBar\ButtonTypes;
 
 use MobileContactBar\Helper;
 use ReflectionClass;
 
 
-abstract class ContactType
+abstract class Button
 {
     protected $type = '';
 

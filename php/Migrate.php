@@ -2,7 +2,7 @@
 
 namespace MobileContactBar;
 
-use MobileContactBar\Contacts;
+use MobileContactBar\Buttons;
 use DirectoryIterator;
 
 
@@ -44,9 +44,9 @@ final class Migrate
         $this->run_all();
 
         $option_bar = abmcb( Option::class )->get_option( abmcb()->id, 'sanitize_option_bar' );
-        if ( empty( $option_bar['contacts'] ))
+        if ( empty( $option_bar['buttons'] ))
         {
-            $option_bar['contacts'] = abmcb( Contacts\Input::class )->unchecked_sample_contacts();
+            $option_bar['buttons'] = abmcb( Buttons\Input::class )->unchecked_sample_buttons();
         }
         abmcb( Option::class )->update_option( $option_bar, abmcb()->id, 'sanitize_option_bar' );
 

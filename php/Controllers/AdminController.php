@@ -6,7 +6,7 @@ use MobileContactBar\Icons;
 use MobileContactBar\File;
 use MobileContactBar\Option;
 use MobileContactBar\Settings;
-use MobileContactBar\Contacts;
+use MobileContactBar\Buttons;
 
 
 final class AdminController
@@ -125,16 +125,16 @@ final class AdminController
             return;
         }
 
-        $checked_contacts = array_filter( abmcb()->option_bar['contacts'], function ( $contact ) { return $contact['checked']; });
+        $checked_buttons = array_filter( abmcb()->option_bar['buttons'], function ( $button ) { return $button['checked']; });
         $bar_device = ( 'none' === abmcb()->option_bar['settings']['bar']['device'] ) ? $this->l10n['disabled'] : $this->l10n['enabled'];
-        $badge_length = ( 0 == count( $checked_contacts )) ? 'mcb-badge-disabled' : 'mcb-badge-enabled';
+        $badge_length = ( 0 == count( $checked_buttons )) ? 'mcb-badge-disabled' : 'mcb-badge-enabled';
         $badge_display = ( 'none' === abmcb()->option_bar['settings']['bar']['device'] ) ? 'mcb-badge-disabled' : 'mcb-badge-enabled';
 
         ?>
         <div class="mcb-header">
             <h1 class="mcb-plugin-name"><?php esc_html_e( 'Mobile Contact Bar', 'mobile-contact-bar' ); ?></h1>
             <h1 class="mcb-plugin-initialism"><?php echo abmcb()->mcb; ?></h1>
-            <span id="mcb-badge-length" class="<?php echo $badge_length; ?>"><?php echo count( $checked_contacts ); ?></span>
+            <span id="mcb-badge-length" class="<?php echo $badge_length; ?>"><?php echo count( $checked_buttons ); ?></span>
             <span id="mcb-badge-display" class="<?php echo $badge_display; ?>"><?php echo esc_html( $bar_device ); ?></span>
             <?php submit_button( null, 'primary large', 'submit', false, ['form' => 'mcb-form'] ); ?>
         </div>
@@ -152,7 +152,7 @@ final class AdminController
         register_setting( abmcb()->id . '_group', abmcb()->id, [$this, 'callback_sanitize_option'] );
 
         abmcb( Settings\View::class )->add();
-        abmcb( Contacts\View::class )->add();
+        abmcb( Buttons\View::class )->add();
     }
 
 
@@ -194,7 +194,7 @@ final class AdminController
                 'default'
             );
 
-            if ( 'mcb-meta-box-contacts' !== $section['id'] )
+            if ( 'mcb-meta-box-builder' !== $section['id'] )
             {
                 add_filter( 'postbox_classes_' . abmcb()->page_suffix . '_' . $section['id'], [$this, 'postbox_classes_mcb_settings'] );
             }
@@ -216,12 +216,12 @@ final class AdminController
             $order_meta_boxes = [];
             if ( class_exists( 'WooCommerce' ))
             {
-                $order_meta_boxes['advanced'] = 'mcb-meta-box-bar,mcb-meta-box-icons_labels,mcb-meta-box-badges,mcb-meta-box-toggle,mcb-meta-box-contacts';
+                $order_meta_boxes['advanced'] = 'mcb-meta-box-bar,mcb-meta-box-buttons,mcb-meta-box-badges,mcb-meta-box-toggle,mcb-meta-box-builder';
                 $order_meta_boxes['side'] = 'mcb-meta-box-preview';
             }
             else
             {
-                $order_meta_boxes['advanced'] = 'mcb-meta-box-bar,mcb-meta-box-icons_labels,mcb-meta-box-toggle,mcb-meta-box-contacts';
+                $order_meta_boxes['advanced'] = 'mcb-meta-box-bar,mcb-meta-box-buttons,mcb-meta-box-toggle,mcb-meta-box-builder';
                 $order_meta_boxes['side'] = 'mcb-meta-box-preview';
             }
             update_user_meta( $user_id, 'meta-box-order_' . abmcb()->page_suffix, $order_meta_boxes );
@@ -308,7 +308,7 @@ final class AdminController
             return;
         }
 
-        abmcb( Contacts\View::class )->render_icon_picker_template();
+        abmcb( Buttons\View::class )->render_icon_picker_template();
     }
 
 
@@ -450,9 +450,9 @@ final class AdminController
     {
         $section_name = str_replace( '-meta-box-', '-section-', $section['id'] );
 
-        if ( 'mcb-section-contacts' === $section_name )
+        if ( 'mcb-section-builder' === $section_name )
         {
-            echo abmcb( Contacts\View::class )->render_contacts();
+            echo abmcb( Buttons\View::class )->render_builder();
         }
         else
         {

@@ -1,9 +1,9 @@
 <?php
 
-namespace MobileContactBar\ContactTypes;
+namespace MobileContactBar\ButtonTypes;
 
 
-final class SMS extends ContactType
+final class SMS extends Button
 {
     public function __construct()
     {

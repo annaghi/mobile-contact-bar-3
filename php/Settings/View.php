@@ -21,7 +21,7 @@ final class View
                 continue;
             }
 
-            $title = ucwords( str_replace( '_', ' & ', $section_key ), ' &');
+            $title = ucwords( $section_key );
 
             add_settings_section(
                 'mcb-meta-box-' . $section_key,

@@ -1,9 +1,9 @@
 <?php
 
-namespace MobileContactBar\ContactTypes;
+namespace MobileContactBar\ButtonTypes;
 
 
-final class HistoryForward extends ContactType
+final class HistoryForward extends Button
 {
     public function __construct()
     {

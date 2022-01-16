@@ -1,9 +1,9 @@
 <?php
 
-namespace MobileContactBar\ContactTypes;
+namespace MobileContactBar\ButtonTypes;
 
 
-final class Email extends ContactType
+final class Email extends Button
 {
     public function __construct()
     {
