@@ -32,7 +32,7 @@ final class IFrameController
             elseif ( 'top' === abmcb()->option_bar['settings']['bar']['position'] )
             {
                 add_action( 'wp_head', [$this, 'wp_head'], 99 );
-                add_action( 'wp_footer', [$this, 'wp_render_mcb'] );
+                add_action( 'wp_footer', [$this, 'wp_render_mcb'], 99 );
             }
             else
             {
@@ -143,8 +143,8 @@ final class IFrameController
      * 
      * @global $wp
      * 
-     * @param  array $settings
-     * @param  array $buttons
+     * @param  array  $settings
+     * @param  array  $buttons
      * @return string
      */
     public function output( $settings, $buttons )
@@ -155,44 +155,23 @@ final class IFrameController
 
         $current_url = home_url( add_query_arg( [], $wp->request ));
 
-        $paths = [
-            'top_rounded'    => '<path d="M 550 0 L 496.9 137.2 C 490.4 156.8 474.1 170 451.4 170 H 98.6 C 77.9 170 59.6 156.8 53.1 137.2 L 0 0 z">',
-            'top_sharp'      => '<path d="M 550 0 L 494.206 170 H 65.794 L 0 0 z">',
-            'bottom_rounded' => '<path d="M 550 170 L 496.9 32.8 C 490.4 13.2 474.1 0 451.4 0 H 98.6 C 77.9 0 59.6 13.2 53.1 32.8 L 0 170 z">',
-            'bottom_sharp'   => '<path d="M 550 170 L 494.206 0 H 65.794 L 0 170 z">',
-        ];
-
         $out .= '<div id="mobile-contact-bar">';
 
-        if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] && in_array( $settings['bar']['position'], ['bottom', 'top'] ))
+        if ( $settings['toggle']['is_render'] && $settings['bar']['is_fixed'] )
         {
             $checked = ( $settings['toggle']['is_closed'] ) ? 'checked' : '';
             $out .= '<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox"' . $checked . '>';
+
             $out .= '<label for="mobile-contact-bar-toggle-checkbox" id="mobile-contact-bar-toggle">';
             $out .= ( $settings['toggle']['label'] ) ? '<span>' . esc_html( $settings['toggle']['label'] ) . '</span>' : '';
-
             $out .= '<svg viewBox="0 0 550 170" width="110" height="34" fill="currentColor">';
-            if ( 'bottom' === $settings['bar']['position'] )
+            if ( 'rounded' === $settings['toggle']['shape'] )
             {
-                if ( 'rounded' === $settings['toggle']['shape'] )
-                {
-                    $out .= $paths['bottom_rounded'];
-                }
-                else
-                {
-                    $out .= $paths['bottom_sharp'];
-                }
+                $out .= '<path d="M 550 170 L 497 33 C 490.5 13.4 474.2 0 450 0 H 100 C 75.8 0 59.5 13.4 53 33 L 0 170 Z">';
             }
-            elseif ( 'top' === $settings['bar']['position'] )
+            else
             {
-                if ( 'rounded' === $settings['toggle']['shape'] )
-                {
-                    $out .= $paths['top_rounded'];
-                }
-                else
-                {
-                    $out .= $paths['top_sharp'];
-                }
+                $out .= '<path d="M 550 170 L 495 0 H 55 L 0 170 Z">';
             }
             $out .= '</svg>';
             $out .= '</label>';
@@ -277,9 +256,6 @@ final class IFrameController
         $out .= '</nav>';
 
         $out .= '</div>';
-
-        unset( $settings );
-        unset( $buttons );
 
         return $out;
     }

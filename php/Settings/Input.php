@@ -156,7 +156,7 @@ final class Input
                 ],
                 'show'         => [
                     'type'     => 'checkbox-group',
-                    'title'    => __( 'Show on screens', 'mobile-contact-bar' ),
+                    'title'    => __( 'Show on', 'mobile-contact-bar' ),
                     'options'  => array_merge(
                         [
                             'homepage' => [

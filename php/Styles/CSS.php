@@ -24,7 +24,6 @@ final class CSS
         $checked_buttons = array_filter( $contacts, function ( $contact ) { return $contact['checked']; } );
         $checked_buttons_count = count( $checked_buttons );
 
-
         // Bar
         $styles .= '#mobile-contact-bar{';
         $styles .= 'box-sizing:border-box;';
@@ -46,26 +45,24 @@ final class CSS
         $styles .= '}';
 
         $styles .= '#mobile-contact-bar-nav{';
-        $styles .= 'overflow:hidden;';
+        // $styles .= 'overflow:hidden;';
         $styles .= 'height:100%;';
+        $styles .= 'width:100%;';
         $styles .= '}';
 
         $styles .= $this->toggle( $bar, $toggle );
 
-        $styles .= '#mobile-contact-bar ul{';
-        // $styles .= 'box-sizing:border-box;';
+        $styles .= '#mobile-contact-bar-nav ul{';
         $styles .= 'list-style-type:none;';
         $styles .= 'margin:0;';
         $styles .= 'padding:0;';
         $styles .= 'overflow:hidden;';
-
         $styles .= $this->bar_border( $bar );
-
         $styles .= '}';
 
 
         // Item
-        $styles .= '#mobile-contact-bar li{';
+        $styles .= '#mobile-contact-bar-nav li{';
         $styles .= 'margin:0;';
         $styles .= 'padding:0;';
         $styles .= '}';
@@ -75,6 +72,7 @@ final class CSS
         $styles .= 'text-decoration:none;';
         $styles .= 'outline:none;';
         $styles .= 'cursor:pointer;';
+        $styles .= 'box-sizing:border-box;';
         $styles .= 'display:flex;';
         $styles .= 'flex-direction:column;';
         $styles .= 'justify-content:center;';
@@ -83,7 +81,7 @@ final class CSS
         $styles .= 'height:100%;';
         $styles .= '}';
 
-        $styles .= $this->item_border( $button );
+        $styles .= $this->item_border( $bar, $button );
 
         $styles .= '.mobile-contact-bar-icon{';
         $styles .= 'display:inline-flex;';
@@ -113,8 +111,7 @@ final class CSS
 
         $styles .= $this->item_pseudo_classes( $bar, $button, $toggle, $badge );
 
-
-        $styles .= $this->bar_position( $bar, $button, $toggle, $checked_buttons_count );
+        $styles .= $this->bar_position( $bar, $button, $checked_buttons_count );
 
 
         // Item customization
@@ -131,7 +128,34 @@ final class CSS
     }
 
 
-    private function bar_position( $bar, $button, $toggle, $checked_buttons_count )
+    private function bar_border( $bar )
+    {
+        $styles = '';
+
+        $bar_border_color = empty( $bar['border_color'] ) ? 'transparent' : $bar['border_color'];
+
+        if ( $bar['is_borders']['top'] )
+        {
+            $styles .= 'border-top:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+        }
+        if ( $bar['is_borders']['bottom'] )
+        {
+            $styles .= 'border-bottom:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+        }
+        if ( $bar['is_borders']['left'] )
+        {
+            $styles .= 'border-left:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+        }
+        if ( $bar['is_borders']['right'] )
+        {
+            $styles .= 'border-right:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
+        }
+
+        return $styles;
+    }
+
+
+    private function bar_position( $bar, $button, $checked_buttons_count )
     {
         $styles = '';
 
@@ -170,7 +194,6 @@ final class CSS
                 case 'top':
                     $styles .= '#mobile-contact-bar{';
                     $styles .= 'will-change:transform;';
-                    $styles .= ( 'fix_max' === $bar['span'] ) ? 'background-color:' . $button['background_color']['primary'] . ';' : '';
                     $styles .= ( 'fix_min' === $bar['span'] ) ? 'width:' . $checked_buttons_count * $bar['shortest'] . 'px;' : 'width:100%;';
                     $styles .= 'position:fixed;';
                     $styles .= 'top:' . $bar['space'] . 'px;';
@@ -188,14 +211,15 @@ final class CSS
                     if ( 'fix_max' === $bar['span'] )
                     {
                         $styles .= '#mobile-contact-bar-nav{';
-                        $styles .= 'width:' . $checked_buttons_count * $bar['shortest'] . 'px;';
-                        $styles .= 'position:relative;';
-                        $styles .= 'left:' . $bar['alignment'] . '%;';
-                        $styles .= 'transform:translateX(-' . $bar['alignment'] . '%);';
+                        $styles .= 'background-color:' . $button['background_color']['primary'] . ';';
                         $styles .= '}';
                     }
 
-                    $styles .= '#mobile-contact-bar ul{';
+                    $styles .= '#mobile-contact-bar-nav ul{';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'width:100%;' : 'width:' . $checked_buttons_count * $bar['shortest'] . 'px;';
+                    $styles .= 'position:relative;';
+                    $styles .= 'left:' . $bar['alignment'] . '%;';
+                    $styles .= 'transform:translateX(-' . $bar['alignment'] . '%);';
                     $styles .= 'display:grid;';
                     $styles .= ( 'stretch' === $bar['span'] )
                         ? 'grid-template-columns: repeat(' . $checked_buttons_count . ',1fr);'
@@ -229,7 +253,6 @@ final class CSS
 
                 case 'bottom':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= ( 'fix_max' === $bar['span'] ) ? 'background-color:' . $button['background_color']['primary'] . ';' : '';
                     $styles .= ( 'fix_min' === $bar['span'] ) ? 'width:' . $checked_buttons_count * $bar['shortest'] . 'px;' : 'width:100%;';
                     $styles .= 'position:fixed;';
                     $styles .= 'bottom:' . $bar['space'] . 'px;';
@@ -247,27 +270,30 @@ final class CSS
                     if ( 'fix_max' === $bar['span'] )
                     {
                         $styles .= '#mobile-contact-bar-nav{';
-                        $styles .= 'width:' . $checked_buttons_count * $bar['shortest'] . 'px;';
-                        $styles .= 'position:relative;';
-                        $styles .= 'left:' . $bar['alignment'] . '%;';
-                        $styles .= 'transform:translateX(-' . $bar['alignment'] . '%);';
+                        $styles .= 'background-color:' . $button['background_color']['primary'] . ';';
                         $styles .= '}';
                     }
 
-                    $styles .= '#mobile-contact-bar ul{';
+                    $styles .= '#mobile-contact-bar-nav ul{';
                     $styles .= ( 'stretch' === $bar['span'] ) ? 'width:100%;' : 'width:' . $checked_buttons_count * $bar['shortest'] . 'px;';
+                    $styles .= 'position:relative;';
+                    $styles .= 'left:' . $bar['alignment'] . '%;';
+                    $styles .= 'transform:translateX(-' . $bar['alignment'] . '%);';
                     $styles .= 'display:grid;';
                     $styles .= ( 'stretch' === $bar['span'] )
                         ? 'grid-template-columns: repeat(' . $checked_buttons_count . ',1fr);'
                         : 'grid-template-columns: repeat(' . $checked_buttons_count . ',' . $bar['shortest'] . 'px);';
-                    $styles .= 'grid-template-rows:' . $grid_template_size . 'px;';
+                    $styles .= 'grid-template-rows:auto;';
+                    $styles .= '}';
+
+                    $styles .= '#mobile-contact-bar-nav li{';
+                    $styles .= 'height:' . $grid_template_size . 'px;';
                     $styles .= '}';
                     break;
 
                 case 'left':
                 case 'right':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= ( 'fix_max' === $bar['span'] ) ? 'background-color:' . $button['background_color']['primary'] . ';' : '';
                     $styles .= ( 'fix_min' === $bar['span'] ) ? 'height:' . $checked_buttons_count * $bar['shortest'] . 'px;' : 'height:100%;';
                     $styles .= 'width:' . $bar['shortest'] . 'px;';
                     $styles .= 'position:fixed;';
@@ -286,18 +312,22 @@ final class CSS
                     if ( 'fix_max' === $bar['span'] )
                     {
                         $styles .= '#mobile-contact-bar-nav{';
-                        $styles .= 'height:' . $checked_buttons_count * $bar['shortest'] . 'px;';
-                        $styles .= 'position:absolute;';
-                        $styles .= 'top:' . $bar['alignment'] . '%;';
-                        $styles .= 'transform:translateY(-' . $bar['alignment'] . '%);';
+                        $styles .= 'background-color:' . $button['background_color']['primary'] . ';';
                         $styles .= '}';
                     }
 
-                    $styles .= '#mobile-contact-bar ul{';
-                    $styles .= 'height:100%;';
+                    $styles .= '#mobile-contact-bar-nav ul{';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:100%;' : 'height:' . $checked_buttons_count * $bar['shortest'] . 'px;';
+                    $styles .= 'position:absolute;';
+                    $styles .= 'top:' . $bar['alignment'] . '%;';
+                    $styles .= 'transform:translateY(-' . $bar['alignment'] . '%);';
                     $styles .= 'display:grid;';
                     $styles .= 'grid-template-rows:repeat(' . $checked_buttons_count . ',1fr);';
-                    $styles .= 'grid-template-columns:' . $grid_template_size . 'px;';
+                    $styles .= 'grid-template-columns:auto;';
+                    $styles .= '}';
+
+                    $styles .= '#mobile-contact-bar-nav li{';
+                    $styles .= 'width:' . $grid_template_size . 'px;';
                     $styles .= '}';
 
                     $styles .= '#wpadminbar ~ #mobile-contact-bar{';
@@ -348,7 +378,6 @@ final class CSS
             {
                 case 'top':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= ( 'fix_max' === $bar['span'] ) ? 'background-color:' . $button['background_color']['primary'] . ';' : '';
                     $styles .= ( 'fix_min' === $bar['span'] ) ? 'width:' . $checked_buttons_count * $bar['shortest'] . 'px;' : 'width:100%;';
                     $styles .= 'position:absolute;';
                     $styles .= 'top:' . $bar['space'] . 'px;';
@@ -366,14 +395,15 @@ final class CSS
                     if ( 'fix_max' === $bar['span'] )
                     {
                         $styles .= '#mobile-contact-bar-nav{';
-                        $styles .= 'width:' . $checked_buttons_count * $bar['shortest'] . 'px;';
-                        $styles .= 'position:relative;';
-                        $styles .= 'left:' . $bar['alignment'] . '%;';
-                        $styles .= 'transform:translateX(-' . $bar['alignment'] . '%);';
+                        $styles .= 'background-color:' . $button['background_color']['primary'] . ';';
                         $styles .= '}';
                     }
 
-                    $styles .= '#mobile-contact-bar ul{';
+                    $styles .= '#mobile-contact-bar-nav ul{';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'width:100%;' : 'width:' . $checked_buttons_count * $bar['shortest'] . 'px;';
+                    $styles .= 'position:relative;';
+                    $styles .= 'left:' . $bar['alignment'] . '%;';
+                    $styles .= 'transform:translateX(-' . $bar['alignment'] . '%);';
                     $styles .= 'display:grid;';
                     $styles .= 'grid-template-columns:repeat(' . $checked_buttons_count . ',1fr);';
                     $styles .= 'grid-template-rows:' . $grid_template_size . 'px;';
@@ -392,7 +422,6 @@ final class CSS
 
                 case 'bottom':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= ( 'fix_max' === $bar['span'] ) ? 'background-color:' . $button['background_color']['primary'] . ';' : '';
                     $styles .= ( 'fix_min' === $bar['span'] ) ? 'width:' . $checked_buttons_count * $bar['shortest'] . 'px;' : 'width:100%;';
                     $styles .= 'position:relative;';
                     $styles .= 'bottom:' . $bar['space'] . 'px;';
@@ -410,14 +439,15 @@ final class CSS
                     if ( 'fix_max' === $bar['span'] )
                     {
                         $styles .= '#mobile-contact-bar-nav{';
-                        $styles .= 'width:' . $checked_buttons_count * $bar['shortest'] . 'px;';
-                        $styles .= 'position:relative;';
-                        $styles .= 'left:' . $bar['alignment'] . '%;';
-                        $styles .= 'transform:translateX(-' . $bar['alignment'] . '%);';
+                        $styles .= 'background-color:' . $button['background_color']['primary'] . ';';
                         $styles .= '}';
                     }
 
-                    $styles .= '#mobile-contact-bar ul{';
+                    $styles .= '#mobile-contact-bar-nav ul{';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'width:100%;' : 'width:' . $checked_buttons_count * $bar['shortest'] . 'px;';
+                    $styles .= 'position:relative;';
+                    $styles .= 'left:' . $bar['alignment'] . '%;';
+                    $styles .= 'transform:translateX(-' . $bar['alignment'] . '%);';
                     $styles .= 'display:grid;';
                     $styles .= 'grid-template-columns:repeat(' . $checked_buttons_count . ',1fr);';
                     $styles .= 'grid-template-rows:' . $grid_template_size . 'px;';
@@ -427,7 +457,6 @@ final class CSS
                 case 'left':
                 case 'right':
                     $styles .= '#mobile-contact-bar{';
-                    $styles .= ( 'fix_max' === $bar['span'] ) ? 'background-color:' . $button['background_color']['primary'] . ';' : '';
                     $styles .= ( 'fix_min' === $bar['span'] ) ? 'height:' . $checked_buttons_count * $bar['shortest'] . 'px;' : 'height:100%;';
                     $styles .= 'width:' . $bar['shortest'] . 'px;';
                     $styles .= 'position:absolute;';
@@ -446,15 +475,15 @@ final class CSS
                     if ( 'fix_max' === $bar['span'] )
                     {
                         $styles .= '#mobile-contact-bar-nav{';
-                        $styles .= 'height:' . $checked_buttons_count * $bar['shortest'] . 'px;';
-                        $styles .= 'position:absolute;';
-                        $styles .= 'top:' . $bar['alignment'] . '%;';
-                        $styles .= 'transform:translateY(-' . $bar['alignment'] . '%);';
+                        $styles .= 'background-color:' . $button['background_color']['primary'] . ';';
                         $styles .= '}';
                     }
 
-                    $styles .= '#mobile-contact-bar ul{';
-                    $styles .= 'height:100%;';
+                    $styles .= '#mobile-contact-bar-nav ul{';
+                    $styles .= ( 'stretch' === $bar['span'] ) ? 'height:100%;' : 'height:' . $checked_buttons_count * $bar['shortest'] . 'px;';
+                    $styles .= 'position:absolute;';
+                    $styles .= 'top:' . $bar['alignment'] . '%;';
+                    $styles .= 'transform:translateY(-' . $bar['alignment'] . '%);';
                     $styles .= 'display:grid;';
                     $styles .= 'grid-template-rows:repeat(' . $checked_buttons_count . ',1fr);';
                     $styles .= 'grid-template-columns:' . $grid_template_size . 'px;';
@@ -506,71 +535,85 @@ final class CSS
         return $styles;
     }
 
-
-    private function bar_border( $bar )
-    {
-        $styles = '';
-
-        $bar_border_color = empty( $bar['border_color'] ) ? 'transparent' : $bar['border_color'];
-
-        if ( $bar['is_borders']['top'] )
-        {
-            $styles .= 'border-top:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-        }
-        if ( $bar['is_borders']['bottom'] )
-        {
-            $styles .= 'border-bottom:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-        }
-        if ( $bar['is_borders']['left'] )
-        {
-            $styles .= 'border-left:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-        }
-        if ( $bar['is_borders']['right'] )
-        {
-            $styles .= 'border-right:' . $bar['border_width'] . 'px solid ' . $bar_border_color . ';';
-        }
-
-        return $styles;
-    }
-
-
-    private function item_border( $button )
+    private function item_border( $bar, $button )
     {
         $styles = '';
 
         $border_color = empty( $button['border_color']['primary'] ) ? 'transparent' : $button['border_color']['primary'];
 
-        if ( $button['is_borders']['top'] )
+        switch ( $bar['position'] )
         {
-            $styles .= '.mobile-contact-bar-item{';
-            $styles .= 'border-top:' . $button['border_width'] . 'px solid ' . $border_color . ';';
-            $styles .= '}';
-        }
-        if ( $button['is_borders']['bottom'] )
-        {
-            $styles .= '.mobile-contact-bar-item{';
-            $styles .= 'border-bottom:' . $button['border_width'] . 'px solid ' . $border_color . ';';
-            $styles .= '}';
-        }
-        if ( $button['is_borders']['left'] && $button['is_borders']['right'] )
-        {
-            $styles .= '#mobile-contact-bar li{';
-            $styles .= 'border-left:' . $button['border_width'] . 'px solid ' . $border_color . ';';
-            $styles .= '}';
+            case 'top':
+            case 'bottom':
+                if ( $button['is_borders']['top'] )
+                {
+                    $styles .= '.mobile-contact-bar-item{';
+                    $styles .= 'border-top:' . $button['border_width'] . 'px solid ' . $border_color . ';';
+                    $styles .= '}';
+                }
+                if ( $button['is_borders']['bottom'] )
+                {
+                    $styles .= '.mobile-contact-bar-item{';
+                    $styles .= 'border-bottom:' . $button['border_width'] . 'px solid ' . $border_color . ';';
+                    $styles .= '}';
+                }
+                if ( $button['is_borders']['left'] && $button['is_borders']['right'] )
+                {
+                    $styles .= '#mobile-contact-bar-nav li{';
+                    $styles .= 'border-left:' . $button['border_width'] . 'px solid ' . $border_color . ';';
+                    $styles .= '}';
 
-            $styles .= '#mobile-contact-bar li:last-child{';
-            $styles .= 'border-right:' . $button['border_width'] . 'px solid ' . $border_color . ';';
-            $styles .= '}';
-        }
-        if (( $button['is_borders']['left'] && ! $button['is_borders']['right'] ) || ( ! $button['is_borders']['left'] && $button['is_borders']['right'] ))
-        {
-            $styles .= '#mobile-contact-bar li{';
-            $styles .= 'border-left:' . $button['border_width'] . 'px solid ' . $border_color . ';';
-            $styles .= '}';
+                    $styles .= '#mobile-contact-bar-nav li:last-child{';
+                    $styles .= 'border-right:' . $button['border_width'] . 'px solid ' . $border_color . ';';
+                    $styles .= '}';
+                }
+                if (( $button['is_borders']['left'] && ! $button['is_borders']['right'] ) || ( ! $button['is_borders']['left'] && $button['is_borders']['right'] ))
+                {
+                    $styles .= '#mobile-contact-bar-nav li{';
+                    $styles .= 'border-left:' . $button['border_width'] . 'px solid ' . $border_color . ';';
+                    $styles .= '}';
 
-            $styles .= '#mobile-contact-bar li:first-child{';
-            $styles .= 'border-left:0;';
-            $styles .= '}';
+                    $styles .= '#mobile-contact-bar-nav li:first-child{';
+                    $styles .= 'border-left:0;';
+                    $styles .= '}';
+                }
+                break;
+
+            case 'left':
+            case 'right':
+                if ( $button['is_borders']['left'] )
+                {
+                    $styles .= '.mobile-contact-bar-item{';
+                    $styles .= 'border-left:' . $button['border_width'] . 'px solid ' . $border_color . ';';
+                    $styles .= '}';
+                }
+                if ( $button['is_borders']['right'] )
+                {
+                    $styles .= '.mobile-contact-bar-item{';
+                    $styles .= 'border-right:' . $button['border_width'] . 'px solid ' . $border_color . ';';
+                    $styles .= '}';
+                }
+                if ( $button['is_borders']['top'] && $button['is_borders']['bottom'] )
+                {
+                    $styles .= '#mobile-contact-bar-nav li{';
+                    $styles .= 'border-top:' . $button['border_width'] . 'px solid ' . $border_color . ';';
+                    $styles .= '}';
+        
+                    $styles .= '#mobile-contact-bar-nav li:last-child{';
+                    $styles .= 'border-bottom:' . $button['border_width'] . 'px solid ' . $border_color . ';';
+                    $styles .= '}';
+                }
+                if (( $button['is_borders']['top'] && ! $button['is_borders']['bottom'] ) || ( ! $button['is_borders']['top'] && $button['is_borders']['bottom'] ))
+                {
+                    $styles .= '#mobile-contact-bar-nav li{';
+                    $styles .= 'border-top:' . $button['border_width'] . 'px solid ' . $border_color . ';';
+                    $styles .= '}';
+        
+                    $styles .= '#mobile-contact-bar-nav li:first-child{';
+                    $styles .= 'border-top:0;';
+                    $styles .= '}';
+                }
+                break;
         }
 
         return $styles;
@@ -581,98 +624,14 @@ final class CSS
     {
         $styles = '';
 
+        // 55 = 110 / 2 half of toggle longest
+        // 34                   toggle shortest
+
         if ( $toggle['is_render'] && $bar['is_fixed'] )
         {
-            if ( $toggle['is_animation'] )
-            {
-                if ( 0 === $bar['space'] && 'bottom' === $bar['position'] )
-                {
-                    $styles .= '#mobile-contact-bar-nav{';
-                    $styles .= 'transition:bottom 1s ease;';
-                    $styles .= '}';
-
-                    $styles .= '#mobile-contact-bar-toggle{';
-                    $styles .= 'transition:bottom 1s ease;';
-                    $styles .= '}';
-                }
-                elseif ( 0 === $bar['space'] && 'top' === $bar['position'] )
-                {
-                    $styles .= '#mobile-contact-bar-nav{';
-                    $styles .= 'transition:top 1s ease;';
-                    $styles .= '}';
-
-                    $styles .= '#mobile-contact-bar-toggle{';
-                    $styles .= 'transition:top 1s ease;';
-                    $styles .= '}';
-                }
-                else
-                {
-                    $styles .= '#mobile-contact-bar-nav{';
-                    $styles .= 'transition:height 1s ease;';
-                    $styles .= '}';
-
-                    $styles .= '.mobile-contact-bar-icon,';
-                    $styles .= '.mobile-contact-bar-label,';
-                    $styles .= '.mobile-contact-bar-badge{';
-                    $styles .= 'opacity:1;';
-                    $styles .= 'transition:opacity 0.5s ease;';
-                    $styles .= '}';
-                }
-            }
-            if ( 0 === $bar['space'] && 'bottom' === $bar['position'] )
-            {
-                $styles .= '#mobile-contact-bar-nav{';
-                $styles .= 'position:relative;';
-                $styles .= 'bottom:0;';
-                $styles .= '}';
-
-                $styles .= '#mobile-contact-bar-toggle{';
-                $styles .= 'bottom:0;';
-                $styles .= '}';
-
-                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
-                $styles .= 'bottom:-' . $bar['shortest'] . 'px;';
-                $styles .= '}';
-
-                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-toggle{';
-                $styles .= 'bottom:-' . $bar['shortest'] . 'px;';
-                $styles .= '}';
-            }
-            elseif ( 0 === $bar['space'] && 'top' === $bar['position'] )
-            {
-                $styles .= '#mobile-contact-bar-nav{';
-                $styles .= 'position:relative;';
-                $styles .= 'top:0;';
-                $styles .= '}';
-
-                $styles .= '#mobile-contact-bar-toggle{';
-                $styles .= 'top:' . $bar['shortest'] . 'px;';
-                $styles .= '}';
-
-                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
-                $styles .= 'top:-' . $bar['shortest'] . 'px;';
-                $styles .= '}';
-
-                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-toggle{';
-                $styles .= 'top:0;';
-                $styles .= '}';
-            }
-            else
-            {
-                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
-                $styles .= 'height:0;';
-                $styles .= '}';
-    
-                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav .mobile-contact-bar-icon,';
-                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav .mobile-contact-bar-label,';
-                $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav .mobile-contact-bar-badge{';
-                $styles .= 'opacity:0;';
-                $styles .= '}';
-            }
-
-            $styles .= '#mobile-contact-bar-toggle-checkbox{';
-            $styles .= 'display:none;';
-            $styles .= 'position:absolute;';
+            $styles .= '#mobile-contact-bar-inner{';
+            $styles .= 'position:relative;';
+            $styles .= 'height:100%;';
             $styles .= '}';
 
             $styles .= '#mobile-contact-bar-toggle{';
@@ -680,30 +639,188 @@ final class CSS
             $styles .= ( empty( $toggle['background_color']['primary'] )) ? '' : 'color:' . $toggle['background_color']['primary'] . ';';
             $styles .= 'cursor:pointer;';
             $styles .= 'line-height:0;';
-            $styles .= 'margin:0 auto;';
+            $styles .= 'margin:0;';
             $styles .= 'padding:0;';
-            $styles .= 'position:relative;';
-            $styles .= 'z-index:2;';
-            $styles .= '}';
-
-            $styles .= '#mobile-contact-bar-toggle span{';
-            $styles .= 'display:inline-block;';
-            $styles .= ( empty( $toggle['font_color']['primary'] )) ? '' : 'color:' . $toggle['font_color']['primary'] . ';';
-            $styles .= 'font-size:' . $toggle['font_size'] . 'em;';
             $styles .= 'position:absolute;';
-            $styles .= 'bottom:50%;';
-            $styles .= 'left:50%;';
-            $styles .= 'transform:translate(-50%);';
-            $styles .= 'text-align:center;';
-            $styles .= 'width:100%;';
             $styles .= 'z-index:2;';
             $styles .= '}';
 
-            $styles .= '#mobile-contact-bar-toggle svg{';
-            $styles .= 'display:inline-block;';
-            $styles .= 'pointer-events:none;';
-            $styles .= 'z-index:1;';
+            $styles .= '#mobile-contact-bar-toggle-checkbox{';
+            $styles .= 'display:none;';
+            $styles .= 'position:absolute;';
             $styles .= '}';
+
+            switch ( $bar['position'] )
+            {
+                case 'top':
+                    $styles .= '#mobile-contact-bar-toggle{';
+                    $styles .= 'transform:rotateX(180deg);';
+                    $styles .= 'top:' . $bar['shortest']. 'px;';
+                    $styles .= 'left:calc(50% - 55px);';
+                    $styles .= ( $toggle['is_animation'] ) ? 'transition:top 500ms ease;' : '';
+                    $styles .= '}';
+
+                    if ( 0 === $bar['space'] )
+                    {
+                        $styles .= '#mobile-contact-bar-nav{';
+                        $styles .= 'position:relative;';
+                        $styles .= 'top:0;';
+                        $styles .= ( $toggle['is_animation'] ) ? 'transition:top 500ms ease;' : '';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
+                        $styles .= 'top:-' . $bar['shortest'] . 'px;';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-toggle{';
+                        $styles .= 'top:0;';
+                        $styles .= '}';
+                    }
+                    else
+                    {
+                        $styles .= '#mobile-contact-bar-nav{';
+                        $styles .= 'transform:scaleY(1);';
+                        $styles .= 'transform-origin:top;';
+                        $styles .= 'transition:all 500ms ease;';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
+                        $styles .= 'transform:scaleY(0);';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-toggle{';
+                        $styles .= 'top:0;';
+                        $styles .= '}';
+                    }
+                    break;
+
+                case 'bottom':
+                    $styles .= '#mobile-contact-bar-toggle{';
+                    $styles .= 'top:-34px;';
+                    $styles .= 'left:calc(50% - 55px);';
+                    $styles .= ( $toggle['is_animation'] ) ? 'transition:top 500ms ease;' : '';
+                    $styles .= '}';
+
+                    if ( 0 === $bar['space'] )
+                    {
+                        $styles .= '#mobile-contact-bar-nav{';
+                        $styles .= 'position:relative;';
+                        $styles .= 'bottom:0;';
+                        $styles .= ( $toggle['is_animation'] ) ? 'transition:bottom 500ms ease;' : '';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
+                        $styles .= 'bottom:-' . $bar['shortest'] . 'px;';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-toggle{';
+                        $styles .= 'top:' . ( $bar['shortest'] - 34 ) . 'px;';
+                        $styles .= '}';
+                    }
+                    else
+                    {
+                        $styles .= '#mobile-contact-bar-nav{';
+                        $styles .= 'transform:scaleY(1);';
+                        $styles .= 'transform-origin:bottom;';
+                        $styles .= 'transition:all 500ms ease;';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
+                        $styles .= 'transform:scaleY(0);';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-toggle{';
+                        $styles .= 'top:' . ( $bar['shortest'] - 34 ) . 'px;';
+                        $styles .= '}';
+                    }
+                    break;
+
+                case 'left':
+                    $styles .= '#mobile-contact-bar-toggle{';
+                    $styles .= 'transform-origin:top left;';
+                    $styles .= 'transform:rotateZ(90deg);';
+                    $styles .= 'top:calc(50% - 55px);';
+                    $styles .= 'left:' . ( 34 + $bar['shortest'] ) . 'px;';
+                    $styles .= ( $toggle['is_animation'] ) ? 'transition:left 500ms ease;' : '';
+                    $styles .= '}';
+
+                    if ( 0 === $bar['space'] )
+                    {
+                        $styles .= '#mobile-contact-bar-nav{';
+                        $styles .= 'position:relative;';
+                        $styles .= 'left:0;';
+                        $styles .= ( $toggle['is_animation'] ) ? 'transition:left 500ms ease;' : '';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
+                        $styles .= 'left:-' . $bar['shortest'] . 'px;';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-toggle{';
+                        $styles .= 'left:34px;';
+                        $styles .= '}';
+                    }
+                    else
+                    {
+                        $styles .= '#mobile-contact-bar-nav{';
+                        $styles .= 'transform:scaleX(1);';
+                        $styles .= 'transform-origin:left;';
+                        $styles .= 'transition:all 500ms ease;';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
+                        $styles .= 'transform:scaleX(0);';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-toggle{';
+                        $styles .= 'left:34px;';
+                        $styles .= '}';
+                    }
+                    break;
+
+                case 'right':
+                    $styles .= '#mobile-contact-bar-toggle{';
+                    $styles .= 'transform-origin:top left;';
+                    $styles .= 'transform:rotateZ(90deg) scaleY(-1);';
+                    $styles .= 'top:calc(50% - 55px);';
+                    $styles .= 'left:-34px;';
+                    $styles .= ( $toggle['is_animation'] ) ? 'transition:left 500ms ease;' : '';
+                    $styles .= '}';
+
+                    if ( 0 === $bar['space'] )
+                    {
+                        $styles .= '#mobile-contact-bar-nav{';
+                        $styles .= 'position:relative;';
+                        $styles .= 'left:0;';
+                        $styles .= ( $toggle['is_animation'] ) ? 'transition:left 500ms ease;' : '';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
+                        $styles .= 'left:' . $bar['shortest'] . 'px;';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-toggle{';
+                        $styles .= 'left:' . ( $bar['shortest'] - 34 ) . 'px;';
+                        $styles .= '}';
+                    }
+                    else
+                    {
+                        $styles .= '#mobile-contact-bar-nav{';
+                        $styles .= 'transform:scaleX(1);';
+                        $styles .= 'transform-origin:right;';
+                        $styles .= 'transition:all 500ms ease;';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-nav{';
+                        $styles .= 'transform:scaleX(0);';
+                        $styles .= '}';
+
+                        $styles .= '#mobile-contact-bar-toggle-checkbox:checked ~ #mobile-contact-bar-toggle{';
+                        $styles .= 'left:' . ( $bar['shortest'] - 34 ) . 'px;';
+                        $styles .= '}';   
+                    }
+                    break;
+            }
         }
 
         return $styles;
