@@ -163,7 +163,7 @@ final class IFrameController
             $out .= '<input id="mobile-contact-bar-toggle-checkbox" name="mobile-contact-bar-toggle-checkbox" type="checkbox"' . $checked . '>';
 
             $out .= '<label for="mobile-contact-bar-toggle-checkbox" id="mobile-contact-bar-toggle">';
-            $out .= ( $settings['toggle']['label'] ) ? '<span>' . esc_html( $settings['toggle']['label'] ) . '</span>' : '';
+            $out .= ( $settings['toggle']['label'] ) ? '<div>' . esc_html( $settings['toggle']['label'] ) . '</div>' : '';
             $out .= '<svg viewBox="0 0 550 170" width="110" height="34" fill="currentColor">';
             if ( 'rounded' === $settings['toggle']['shape'] )
             {
