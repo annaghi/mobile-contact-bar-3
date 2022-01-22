@@ -75,7 +75,7 @@ class MobileContactBar_Plugin_Check
             __( 'This plugin requires %s or greater in order to work properly.', 'mobile-contact-bar' ),
             __( 'PHP version', 'mobile-contact-bar' ),
             __( 'WordPress version', 'mobile-contact-bar' ),
-            __( 'You can use the %1$s plugin to restore %2$s to the previous version, or', 'mobile-contact-bar' ),
+            __( 'You can use the %s plugin to restore %s to the previous version, or', 'mobile-contact-bar' ),
             __( 'please contact your hosting provider or server administrator about', 'mobile-contact-bar' ),
             __( 'please consider', 'mobile-contact-bar' ),
             __( 'updating PHP', 'mobile-contact-bar' ),
