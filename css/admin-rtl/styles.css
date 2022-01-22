@@ -3,6 +3,12 @@
  * License GPLv3 - https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
+/* SCREEN TABS */
+
+.mcb-tab-textarea {
+    margin: 20px 0px;
+}
+
 /* HEADER */
 
 .mcb-header {
@@ -65,25 +71,6 @@
     color: #ffffff;
     background-color: #d63638;
     border: 2px solid #d63638;
-}
-
-.mcb-tab-status-green {
-    color: #46b450;
-}
-.mcb-tab-status-yellow {
-    color: #ffb900;
-}
-.help-tab-content ul li {
-    list-style-type: none;
-    margin-right: 0;
-}
-.mcb-tab-query-parameter-key {
-    display: inline-block;
-    font-weight: 500;
-    min-width: 55px;
-}
-.contextual-help-sidebar a {
-    text-decoration: none;
 }
 
 /* WP related styles */

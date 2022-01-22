@@ -2,10 +2,10 @@
 
 namespace MobileContactBar\Buttons;
 
-use MobileContactBar\Icons;
 use MobileContactBar\Helper;
 use MobileContactBar\ButtonTypes;
 use MobileContactBar\Settings;
+use MobileContactBar\Modules\Icons;
 
 
 final class Input

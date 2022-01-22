@@ -28,10 +28,10 @@ final class File
         $htaccess .= "</FilesMatch>\n";
 
         $files = [
-            $dir . 'index.php'       => "<?php\n// Silence is golden.\n",
-            $dir . '.htaccess'       => $htaccess,
-            $dir . 'css/index.php'   => "<?php\n// Silence is golden.\n",
-            $dir . abmcb()->base_css => '',
+            $dir . 'index.php'     => "<?php\n// Silence is golden.\n",
+            $dir . '.htaccess'     => $htaccess,
+            $dir . 'css/index.php' => "<?php\n// Silence is golden.\n",
+            $dir . abmcb()->css    => '',
         ];
         foreach ( $files as $file => $contents )
         {
@@ -59,8 +59,21 @@ final class File
                 $wp_upload_dir = wp_upload_dir( null, true, true );
             }
     
-            $base_css = wp_normalize_path( $wp_upload_dir['basedir'] . '/' . abmcb()->slug . '/' . abmcb()->base_css );
-            file_put_contents( $base_css, abmcb( Styles\CSS::class )->output( $option_bar['settings'], $option_bar['buttons'] ));
+            $css = wp_normalize_path( $wp_upload_dir['basedir'] . '/' . abmcb()->slug . '/' . abmcb()->css );
+            file_put_contents( $css, abmcb( Styles\CSS::class )->output( $option_bar['settings'], $option_bar['buttons'] ));
+        }
+    }
+
+
+    public function download( $filename, $content )
+    {
+        if ( current_user_can( abmcb()->capability ))
+        {
+            nocache_headers();
+            header( 'Content-Type: text/plain' );
+            header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+            echo html_entity_decode( $content );
+            exit;
         }
     }
 }

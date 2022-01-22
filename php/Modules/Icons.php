@@ -1,6 +1,6 @@
 <?php
 
-namespace MobileContactBar;
+namespace MobileContactBar\Modules;
 
 
 final class Icons

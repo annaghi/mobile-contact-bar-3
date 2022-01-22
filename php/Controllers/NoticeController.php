@@ -158,7 +158,7 @@ final class NoticeController
         <div class="updated notice notice-success is-dismissible mobile-contact-bar-notice" data-dismiss="major">
             <p><?php echo $message; ?></p>
             <p>
-                <a href="<?php echo esc_url( abmcb()->plugin_uri . '#developers' ); ?>" target="_blank" rel="noopener" class="button mobile-contact-bar-whats-new">
+                <a href="<?php echo esc_url( 'https://wordpress.org/plugins/mobile-contact-bar/#developers' ); ?>" target="_blank" rel="noopener" class="button mobile-contact-bar-whats-new">
                     <span class="mobile-contact-bar-whats-new-icon">
                         <?php include_once plugin_dir_path( abmcb()->file ) . 'assets/img/whats-new-icon.svg'; ?>
                     </span>

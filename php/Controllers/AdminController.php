@@ -2,11 +2,12 @@
 
 namespace MobileContactBar\Controllers;
 
-use MobileContactBar\Icons;
 use MobileContactBar\File;
 use MobileContactBar\Option;
 use MobileContactBar\Settings;
 use MobileContactBar\Buttons;
+use MobileContactBar\Modules\Icons;
+use MobileContactBar\Modules\SystemInfo;
 
 
 final class AdminController
@@ -41,71 +42,6 @@ final class AdminController
 
         add_action( 'load-' . abmcb()->page_suffix, [$this, 'load_screen_options'] );
         add_action( 'load-' . abmcb()->page_suffix, [$this, 'load_help'] );
-    }
-
-
-    /**
-     * Triggers add_meta_boxes on 'add_meta_boxes' hook.
-     * Adds screen options tab.
-     * 
-     * @return void
-     */
-    public function load_screen_options()
-    {
-        do_action( 'add_meta_boxes', abmcb()->page_suffix, null );
-        add_screen_option( 'layout_columns', ['max' => 2, 'default' => 2] );
-    }
-
-
-    /**
-     * Adds contextual help menu.
-     * 
-     * @return void
-     */
-    public function load_help()
-    {
-        $screen = get_current_screen();
-
-        $tabs =
-        [
-            [
-                'title'    => __( 'Links', 'mobile-contact-bar' ),
-                'id'       => 'mcb-link',
-                'callback' => [$this, 'callback_render_help_tab_link'],
-            ],
-            [
-                'title'    => __( 'Emails', 'mobile-contact-bar' ),
-                'id'       => 'mcb-mailto',
-                'callback' => [$this, 'callback_render_help_tab_mailto'],
-            ],
-            [
-                'title'    => __( 'Phone calls', 'mobile-contact-bar' ),
-                'id'       => 'mcb-tel',
-                'callback' => [$this, 'callback_render_help_tab_tel'],
-            ],
-            [
-                'title'    => __( 'SMS', 'mobile-contact-bar' ),
-                'id'       => 'mcb-sms',
-                'callback' => [$this, 'callback_render_help_tab_sms'],
-            ],
-            [
-                'title'    => __( 'Skype', 'mobile-contact-bar' ),
-                'id'       => 'mcb-skype',
-                'callback' => [$this, 'callback_render_help_tab_skype'],
-            ],
-            [
-                'title'    => __( 'Viber', 'mobile-contact-bar' ),
-                'id'       => 'mcb-viber',
-                'callback' => [$this, 'callback_render_help_tab_viber'],
-            ],
-        ];
-
-        foreach ( $tabs as $tab )
-        {
-            $screen->add_help_tab( $tab );
-        }
-
-        $screen->set_help_sidebar( $this->output_help_sidebar() );
     }
 
 
@@ -153,6 +89,8 @@ final class AdminController
 
         abmcb( Settings\View::class )->add();
         abmcb( Buttons\View::class )->add();
+
+        $this->download_system_info();
     }
 
 
@@ -354,18 +292,18 @@ final class AdminController
 
 
     /**
-     * Outputs help sidebar.
+     * Downloads System Info in a txt file.
      * 
-     * @return string HTML
+     * @return void
      */
-    public function output_help_sidebar()
+    public function download_system_info()
     {
-        $out  = '';
-        $out .= '<h4>' . esc_html__( 'About', 'mobile-contact-bar' ) . '</h4>';
-        $out .= '<p><span class="dashicons dashicons-admin-plugins"></span> ' . sprintf( __( 'Version %s', 'mobile-contact-bar' ), abmcb()->version ) . '</p>';
-        $out .= '<p><span class="dashicons dashicons-wordpress"></span> <a href="' . esc_url( abmcb()->plugin_uri ) . '" target="_blank">' . __( 'View details', 'mobile-contact-bar' ) . '</a></p>';
-
-        return $out;
+        $request = filter_input( INPUT_POST, abmcb()->mcb, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+        if ( ! empty( $request['_action'] ) && empty( $request['_ajax_request'] ))
+        {
+            check_admin_referer( $request['_action'] );
+            abmcb( File::class )->download( abmcb()->id . '-system-info.txt', abmcb( SystemInfo::class )->get() );
+        }
     }
 
 
@@ -414,32 +352,6 @@ final class AdminController
 
 
     /**
-     * Renders Preview meta box.
-     * 
-     * @return void
-     */
-    public function callback_render_meta_box_preview()
-    {
-        ?>
-        <div id="mcb-section-preview">
-            <iframe src="<?php echo add_query_arg( [abmcb()->slug . '-iframe' => true], get_home_url() ); ?>" title="<?php esc_attr_e( 'Preview', 'mobile-contact-bar' ); ?>"></iframe>
-            <script>
-            (function() {
-                jQuery('#mcb-section-preview iframe').on('load', function () {
-                    var iframe = jQuery(this).contents();
-                    iframe.find('html').css({ 'pointer-events': 'none' });
-                    iframe.find('body').css({ 'pointer-events': 'none' });
-                    iframe.find('#mobile-contact-bar').css({ 'pointer-events': 'all' });
-                    iframe.attr('src', iframe.attr('src'));
-                });
-            })(jQuery);
-            </script>
-        </div>
-        <?php
-    }
-
-
-    /**
      * Renders a meta box.
      *
      * @param  object $object  null
@@ -466,126 +378,130 @@ final class AdminController
         }
     }
 
-    
+
     /**
-     * Renders 'links' help tab.
+     * Renders Preview meta box.
      * 
      * @return void
      */
-    public function callback_render_help_tab_link()
+    public function callback_render_meta_box_preview()
     {
         ?>
-        <h4><?php _e( 'Linking to web pages on your or others websites', 'mobile-contact-bar' ); ?></h4>
-        <code>http://domain.com</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>http://domain.com/path/to/page</code>
-        <p><?php _e( 'For secure websites using SSL to encrypt data and authenticate the website use the <code>https</code> protocol:', 'mobile-contact-bar' ); ?></p>
-        <code>https://domain.com</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>https://domain.com/path/to/page</code>
-        <p><?php _e( 'You can append query string parameters to URLs using the', 'mobile-contact-bar' ); ?> <span class="mcb-tab-button button">&nbsp;<?php _e( 'Add Parameter', 'mobile-contact-bar' ); ?></span> <?php _e( 'button', 'mobile-contact-bar' ); ?></p>
-        <p class="mcb-tab-status-green"><?php _e( 'Standardised protocol', 'mobile-contact-bar' ); ?></p>
+        <div id="mcb-section-preview">
+            <iframe src="<?php echo add_query_arg( [abmcb()->slug . '-iframe' => true], get_home_url() ); ?>" title="<?php esc_attr_e( 'Preview', 'mobile-contact-bar' ); ?>"></iframe>
+            <script>
+            (function() {
+                jQuery('#mcb-section-preview iframe').on('load', function () {
+                    var iframe = jQuery(this).contents();
+                    iframe.find('html').css({ 'pointer-events': 'none' });
+                    iframe.find('body').css({ 'pointer-events': 'none' });
+                    iframe.find('#mobile-contact-bar').css({ 'pointer-events': 'all' });
+                    iframe.attr('src', iframe.attr('src'));
+                });
+            })(jQuery);
+            </script>
+        </div>
         <?php
     }
 
 
     /**
-     * Renders 'mailto' help tab.
+     * Triggers add_meta_boxes on 'add_meta_boxes' hook.
+     * Adds screen options tab.
      * 
      * @return void
      */
-    public function callback_render_help_tab_mailto()
+    public function load_screen_options()
     {
+        do_action( 'add_meta_boxes', abmcb()->page_suffix, null );
+        add_screen_option( 'layout_columns', ['max' => 2, 'default' => 2] );
+    }
+
+
+    /**
+     * Adds contextual help menu.
+     * 
+     * @return void
+     */
+    public function load_help()
+    {
+        $screen = get_current_screen();
+
+        $tabs =
+        [
+            [
+                'title'    => __( 'System Info', 'mobile-contact-bar' ),
+                'id'       => 'mcb-system-info',
+                'callback' => [$this, 'callback_render_help_system_info'],
+            ],
+            [
+                'title'    => __( 'Contact Support', 'mobile-contact-bar' ),
+                'id'       => 'mcb-contact-support',
+                'callback' => [$this, 'callback_render_help_contact_support'],
+            ],
+        ];
+
+        foreach ( $tabs as $tab )
+        {
+            $screen->add_help_tab( $tab );
+        }
+
+        $screen->set_help_sidebar( $this->output_help_sidebar() );
+    }
+
+
+    /**
+     * Outputs help sidebar.
+     * 
+     * @return string HTML
+     */
+    public function output_help_sidebar()
+    {
+        $out  = '';
+        $out .= '<h4>' . esc_html__( 'About', 'mobile-contact-bar' ) . '</h4>';
+        $out .= '<p><span class="dashicons dashicons-admin-plugins"></span> ' . sprintf( __( 'Version %s', 'mobile-contact-bar' ), abmcb()->version ) . '</p>';
+        $out .= '<p><span class="dashicons dashicons-info"></span> <a href="' . esc_url( 'https://wordpress.org/plugins/mobile-contact-bar/' ) . '" target="_blank">' . __( 'View details', 'mobile-contact-bar' ) . '</a></p>';
+        $out .= '<p><span class="dashicons dashicons-wordpress"></span> <a href="' . esc_url( 'https://wordpress.org/support/plugin/mobile-contact-bar/' ) . '" target="_blank">' . __( 'Support Forum', 'mobile-contact-bar' ) . '</a></p>';
+
+        return $out;
+    }
+
+
+    /**
+     * Renders 'System Info' help tab.
+     * 
+     * @return void
+     */
+    public function callback_render_help_system_info()
+    {
+        $system_info = abmcb( SystemInfo::class )->get();
+
         ?>
-        <h4><?php _e( 'Sending emails to email addresses', 'mobile-contact-bar' ); ?></h4>
-        <code>mailto:someone@domain.com</code>
-        <p><?php _e( 'Optional query parameters:', 'mobile-contact-bar' ); ?></p>
-        <ul>
-            <li>
-                <span class="mcb-tab-query-parameter-key">subject</span>
-                <span><?php _e( 'Text to appear in the subject line of the message.', 'mobile-contact-bar' ); ?></span>
-            </li>
-            <li>
-                <span class="mcb-tab-query-parameter-key">body</span>
-                <span><?php _e( 'Text to appear in the body of the message.', 'mobile-contact-bar' ); ?></span>
-            </li>
-            <li>
-                <span class="mcb-tab-query-parameter-key">cc</span>
-                <span><?php _e( 'Addresses to be included in the carbon copy section of the message. Separate addresses with commas.', 'mobile-contact-bar' ); ?></span>
-            </li>
-            <li>
-                <span class="mcb-tab-query-parameter-key">bcc</span>
-                <span><?php _e( 'Addresses to be included in the blind carbon copy section of the message. Separate addresses with commas.', 'mobile-contact-bar' ); ?></span>
-            </li>
-        </ul>
-        <p class="mcb-tab-status-green"><?php _e( 'Standardised protocol', 'mobile-contact-bar' ); ?></p>
+        <form id="mcb-system-info-form" method="post">
+            <textarea class="large-text code mcb-tab-textarea" name="<?php echo abmcb()->mcb; ?>[system-info]" rows="20" onclick="this.select()" readonly><?php echo esc_attr( $system_info ); ?></textarea>
+            <input type="hidden" name="<?php echo abmcb()->mcb; ?>[_action]" value="download-system-info">
+            <?php wp_nonce_field( 'download-system-info' ); ?>
+            <button type="submit" id="mcb-download-system-info" class="button button-secondary"><?php _e( 'Download System Info', 'mobile-contact-bar' ); ?></button>
+        </form>
         <?php
     }
 
 
     /**
-     * Renders 'tel' help tab.
+     * Renders 'Contact Support' help tab.
      * 
      * @return void
      */
-    public function callback_render_help_tab_tel()
+    public function callback_render_help_contact_support()
     {
         ?>
-        <h4><?php _e( 'Initiating phone or mobile audio calls', 'mobile-contact-bar' ); ?></h4>
-        <code>tel:15417543010</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>tel:+15417543010</code>
-        <p><?php _e( 'Use the international dialing format: the plus sign (<code>+</code>), country code, area code, and number. You can separate each segment of the number with a hyphen (<code>-</code>) for easier reading.', 'mobile-contact-bar' ); ?></p>
-        <p class="mcb-tab-status-green"><?php _e( 'Standardised protocol', 'mobile-contact-bar' ); ?></p>
-        <?php
-    }
-
-
-    /**
-     * Renders 'sms' help tab.
-     * 
-     * @return void
-     */
-    public function callback_render_help_tab_sms()
-    {
-        ?>
-        <h4><?php _e( 'Sending text messages to mobile phones', 'mobile-contact-bar' ); ?></h4>
-        <code>sms:15417543010</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>sms:+15417543010</code>
-        <p><?php _e( 'Use the international dialing format: the plus sign (<code>+</code>), country code, area code, and number. You can separate each segment of the number with a hyphen (<code>-</code>) for easier reading.', 'mobile-contact-bar' ); ?></p>
-        <p><?php _e( 'Optional query parameter:', 'mobile-contact-bar' ); ?></p>
-        <ul>
-            <li>
-                <span class="mcb-tab-query-parameter-key">body</span>
-                <span><?php _e( 'Text message to appear in the body of the message (it does not always work).', 'mobile-contact-bar' ); ?></span>
-            </li>
-        </ul>
-        <p class="mcb-tab-status-yellow"><?php _e( 'Inconsistent protocol', 'mobile-contact-bar' ); ?></p>
-        <?php
-    }
-
-
-    /**
-     * Renders 'skype' help tab.
-     * 
-     * @return void
-     */
-    public function callback_render_help_tab_skype()
-    {
-        ?>
-        <h4><?php _e( 'Sending instant messages to other Skype users, phones, or mobiles', 'mobile-contact-bar' ); ?></h4>
-        <code>skype:username?chat</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>skype:+phone-number?chat</code>
-        <h4><?php _e( 'Initiating audio calls to other Skype users, phones, or mobiles', 'mobile-contact-bar' ); ?></h4>
-        <code>skype:username?call</code> <?php _e( 'or', 'mobile-contact-bar' ); ?> <code>skype:+phone-number?call</code>
-        <p class="mcb-tab-status-yellow"><?php _e( 'Inconsistent protocol', 'mobile-contact-bar' ); ?></p>
-        <?php
-    }
-
-
-    /**
-     * Renders 'viber' help tab.
-     * 
-     * @return void
-     */
-    public function callback_render_help_tab_viber()
-    {
-        ?>
-        <h4><?php _e( 'Sending instant messages to other Viber users, phones, or mobiles', 'mobile-contact-bar' ); ?></h4>
-        <code>viber://pa?chatURI=&lt;Chat URI&gt;</code>
-        <p class="mcb-tab-status-yellow"><?php _e( 'Inconsistent protocol', 'mobile-contact-bar' ); ?></p>
+            <p><strong><?php printf( __( 'Please send an email to %s and include the following details:', 'mobile-contact-bar' ), '<a href="mailto:support@mobilecontactbar.com?subject=Support%20request">support@mobilecontactbar.com</a>' ); ?></strong></p>
+            <ul>
+                <li><?php _e( 'A detailed description of the problem you are having and the steps to reproduce it.', 'mobile-contact-bar' ); ?></li>
+                <li><?php _e( 'Download and attach the Mobile Contact Bar <strong>System Info</strong> report to the email.', 'mobile-contact-bar' ); ?></li>
+                <li><?php _e( 'Please also include screenshots if they will help explain the problem.', 'mobile-contact-bar' ); ?></li>
+            </ul>
+            <p><span class="required"><?php _e( 'Please be aware that if your email does not include the Mobile Contact Bar System Info report (as requested above), the response may be delayed or possibly ignored altogether. Thank you for understanding.', 'mobile-contact-bar' ); ?></span></p>
         <?php
     }
 }

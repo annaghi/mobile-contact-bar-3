@@ -26,10 +26,9 @@ final class Plugin extends Container
     const WP_CRON_HOOK = 'mobile_contact_bar_weekly_scheduled_events';
 
 
-    public $file       = '';
-    public $name       = '';
-    public $plugin_uri = '';
-    public $version    = '';
+    public $file    = '';
+    public $name    = '';
+    public $version = '';
 
 
     /**
@@ -41,7 +40,7 @@ final class Plugin extends Container
     /**
      * @var string
      */
-    public $base_css = 'css/mcb-base.css';
+    public $css = 'css/mcb.css';
 
 
     /**
@@ -93,9 +92,8 @@ final class Plugin extends Container
         $plugin_data = get_file_data(
             $file,
             [
-                'name'       => 'Plugin Name',
-                'plugin_uri' => 'Plugin URI',
-                'version'    => 'Version',
+                'name'    => 'Plugin Name',
+                'version' => 'Version',
             ],
             'plugin'
         );

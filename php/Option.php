@@ -159,4 +159,15 @@ final class Option
             return [];
         }
     }
+
+
+    /**
+     * @param  string $path
+     * @param  mixed  $fallback
+     * @return mixed
+     */
+    public function get_wp_option( $path, $fallback = '' )
+    {
+        return get_option( $path, $fallback );
+    }
 }

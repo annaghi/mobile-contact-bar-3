@@ -87,7 +87,7 @@ final class IFrameController
         $wp_upload_dir = wp_get_upload_dir();
         wp_enqueue_style(
             abmcb()->slug . '-base',
-            $wp_upload_dir['baseurl'] . '/' . abmcb()->slug . '/' . abmcb()->base_css,
+            $wp_upload_dir['baseurl'] . '/' . abmcb()->slug . '/' . abmcb()->css,
             [],
             abmcb()->version,
             'all'

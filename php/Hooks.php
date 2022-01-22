@@ -33,7 +33,7 @@ final class Hooks
         $this->cron = abmcb( CronController::class );
         add_filter( 'cron_schedules', [$this->cron, 'cron_schedules'] );
         add_action( 'wp',  [$this->cron, 'wp'] );
-        add_action( abmcb()->wp_cron_hook, [$this->cron, 'clear_stat_cache'] );
+        add_action( abmcb()->wp_cron_hook, [$this->cron, 'weekly_events'] );
 
         if ( is_admin() )
         {

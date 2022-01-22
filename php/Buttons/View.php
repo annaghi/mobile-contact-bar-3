@@ -2,8 +2,8 @@
 
 namespace MobileContactBar\Buttons;
 
-use MobileContactBar\Icons;
 use MobileContactBar\ButtonTypes;
+use MobileContactBar\Modules\Icons;
 
 
 final class View

@@ -3,7 +3,7 @@
 namespace MobileContactBar\Controllers;
 
 use MobileContactBar\Buttons;
-use MobileContactBar\Icons;
+use MobileContactBar\Modules\Icons;
 
 
 final class AJAXController
