@@ -39,17 +39,17 @@ class MobileContactBar_Plugin_Check
 
     public function is_valid()
     {
-        return $this->is_PHP_valid() && $this->is_WP_valid();
+        return $this->is_php_valid() && $this->is_wp_valid();
     }
 
 
-    public function is_PHP_valid()
+    public function is_php_valid()
     {
         return ! version_compare( PHP_VERSION, $this->versions['php'], '<' );
     }
 
 
-    public function is_WP_valid()
+    public function is_wp_valid()
     {
         global $wp_version;
         return ! version_compare( $wp_version, $this->versions['wp'], '<' );
@@ -94,7 +94,7 @@ class MobileContactBar_Plugin_Check
             '<a href="https://wordpress.org/plugins/wp-rollback/">WP Rollback</a>',
             $plugin_name
         );
-        if ( ! $this->is_PHP_valid() )
+        if ( ! $this->is_php_valid() )
         {
             printf(
                 $notice_template,
@@ -103,7 +103,7 @@ class MobileContactBar_Plugin_Check
                 $rollback_message . ' ' . $messages[5] . ' ' . sprintf( '<a href="https://wordpress.org/support/update-php/" target="_blank">%s</a>', $messages[7] )
             );
         }
-        elseif ( ! $this->is_WP_valid() )
+        elseif ( ! $this->is_wp_valid() )
         {
             printf(
                 $notice_template,
