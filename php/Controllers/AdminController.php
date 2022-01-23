@@ -430,6 +430,11 @@ final class AdminController
         $tabs =
         [
             [
+                'title'    => __( 'Troubleshooting', 'mobile-contact-bar' ),
+                'id'       => 'mcb-troubleshooting',
+                'callback' => [$this, 'callback_render_help_troubleshooting'],
+            ],
+            [
                 'title'    => __( 'System Info', 'mobile-contact-bar' ),
                 'id'       => 'mcb-system-info',
                 'callback' => [$this, 'callback_render_help_system_info'],
@@ -464,6 +469,30 @@ final class AdminController
         $out .= '<p><span class="dashicons dashicons-wordpress"></span> <a href="' . esc_url( 'https://wordpress.org/support/plugin/mobile-contact-bar/' ) . '" target="_blank">' . __( 'Support Forum', 'mobile-contact-bar' ) . '</a></p>';
 
         return $out;
+    }
+
+
+    /**
+     * Renders 'Troubleshooting' help tab.
+     * 
+     * @return void
+     */
+    public function callback_render_help_troubleshooting()
+    {
+        ?>
+        <dl>
+            <dt><strong><?php _e( '1. Make sure you are using the latest version of Mobile Contact Bar.', 'mobile-contact-bar' ); ?></strong></dt>
+            <dd><?php _e( 'If you are not using the latest version and are experiencing problems, chances are good that your problem has already been addressed in the latest version.', 'mobile-contact-bar' ); ?></dd>
+            <dt><strong><?php _e( '2. Deactivate and activate again the Mobile Contact Bar plugin.', 'mobile-contact-bar' ); ?></strong></dt>
+            <dd><?php _e( 'During the activation the plugin tries to heal the settings, the buttons, and the CSS file.', 'mobile-contact-bar' ); ?></dd>
+            <dt><strong><?php _e( '3. Temporarily switch to an official WordPress Theme.', 'mobile-contact-bar' ); ?></strong></dt>
+            <dd><?php _e( 'Try switching to an official WordPress Theme (i.e. Twenty Twenty) and then see if you are still experiencing problems with the plugin. If this fixes the problem then there is a compatibility issue with your theme.', 'mobile-contact-bar' ); ?></dd>
+            <dt><strong><?php _e( '4. Temporarily deactivate all of your plugins.', 'mobile-contact-bar' ); ?></strong></dt>
+            <dd><?php _e( 'If switching to an official WordPress theme did not fix anything, the final thing to try is to deactivate all of your plugins except for Mobile Contact Bar. If this fixes the problem then there is a compatibility issue with one of your plugins.', 'mobile-contact-bar' ); ?>
+            <br /><?php _e( 'To find out which plugin is incompatible with Mobile Contact Bar you will need to reactivate your plugins one-by-one until you find the plugin that is causing the problem. But keep continuing to test the rest of your plugins. Hopefully you won’t find any more but it’s always better to make sure.', 'mobile-contact-bar' ); ?></dd>
+        </dl>
+        <p><strong><?php _e( 'If you find an incompatible theme or plugin, please Contact Support so we can fix it.', 'mobile-contact-bar' ); ?></strong></p>
+        <?php
     }
 
 
