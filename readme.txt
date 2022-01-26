@@ -5,7 +5,7 @@ Contributors: anna.bansaghi
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YXJAZ7Q5EJFUA
 Tags: social media, icon, cta button, call to action, woocommerce cart
 Requires at least: 5.4
-Tested up to: 5.8
+Tested up to: 5.9
 Requires PHP: 5.6.20
 Stable tag: 3.0.0
 License: GPLv3
@@ -19,7 +19,7 @@ Allow your visitors to contact you via mobile phones, or access your site's page
 
 Mobile Contact Bar is a compact and highly customizable plugin, which allows your visitors to contact you directly via mobile phones, or access your site's pages instantly.
 
-The settings page is available under the *Mobile Contact Bar* menu in the WordPress admin.
+The settings page is available under the *MCB Contact Bar* menu in the WordPress admin.
 
 
 
@@ -34,7 +34,7 @@ The settings page is available under the *Mobile Contact Bar* menu in the WordPr
 * Customizable URLs using query string parameters
 * Show bar on selected post types
 * No data collection from your website's visitors
-* Super easy to use, no coding required!
+* Easy to use, no coding required!
 
 
 
@@ -78,19 +78,19 @@ The settings page is available under the *Mobile Contact Bar* menu in the WordPr
 
 = First time Mobile Contact Bar user =
 
-Thank you for choosing Mobile Contact Bar! In order to create your bar, simply activate the plugin and visit the plugin's settings page by clicking on *Settings &rarr; Mobile Contact Bar* in your left navigation menu.
-Once the plugin page loads, open the *Bar* box, choose the *Display on Devices* option, select the device type to enable the bar and then press the *Save Changes* button at the bottom of the page.
-Mobile Contact Bar will automatically create a default bar with an envelope icon, which uses the email address of your site's admin.
+Thank you for choosing Mobile Contact Bar! In order to create your bar, simply activate the plugin and visit the plugin's page by clicking on *MCB Contact Bar* in your left navigation menu.
+Once the plugin page loads, open the *Bar* box, choose the *Display on Devices* option, select the device type to enable the bar and then press the *Save Changes* button at the top of the page.
+Mobile Contact Bar will automatically create a default bar with a couple of buttons for you.
 
-= Adding icons to your bar =
+= Adding buttons to your bar =
 
-To add more icons to your bar, open the *Contact List* box, find a particular list item, select the checkbox, customize the icon and fill in the URI field.
-In order to add custom links, click on the *New Contact* button or on one of the icons at the top of the list.
+To add more buttons to your bar, open the *Button Builder* box, find a particular list item, select the checkbox, customize the icon and fill in the URI field.
+In order to add more buttons, click on the *New Button* at the bottom of the list.
 
 
 = Positioning and styling your bar =
 
-To set options for bar (positions, colors, borders, width, height, space, placeholder, etc.), open the *Bar* box and check the changes on the *Real-time Model*.
+To set options for bar (positions, colors, borders, width, height, space, placeholder, etc.), open the *Bar* box and check the changes on the *Preview*.
 Open the *Icons*, *Badges*, or *Toggle* box and set options for icons, badges, or toggle, respectively.
 
 
@@ -100,7 +100,7 @@ Open the *Icons*, *Badges*, or *Toggle* box and set options for icons, badges, o
 The plugin works fine without JavaScript on the front-end of your site.
 We use JavaScript on the front-end in two cases:
 1. if the toggle is activated, then the plugin has an option for saving the toggle state in a cookie, and
-2. the *Scroll to Top*, *Back in History*, or *Forward in History* actions use inline JavaScript for their functionality.
+2. *Scroll to Top*, *Back in History*, and *Forward in History* actions use inline JavaScript for their functionality.
 
 = Cookies =
 You have full control over the single cookie which is called *mobile_contact_bar_toggle*.
