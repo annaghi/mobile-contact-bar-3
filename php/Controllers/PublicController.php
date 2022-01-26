@@ -66,9 +66,12 @@ final class PublicController
     {
         $type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
         $shortest  = (int) abmcb()->option_bar['settings']['bar']['shortest'];
-        $offset_32 = ( is_admin_bar_showing() ) ? 32 + $shortest : $shortest;
-        $offset_46 = ( is_admin_bar_showing() ) ? 46 + $shortest : $shortest;
+        $space     = (int) abmcb()->option_bar['settings']['bar']['space'];
+        $offset_32 = ( is_admin_bar_showing() ) ? 32 + $shortest + $space : $shortest + $space;
+        $offset_46 = ( is_admin_bar_showing() ) ? 46 + $shortest + $space : $shortest + $space;
 
+        if ( $offset_32 > 32 && $offset_46 > 46 )
+        {
         ?>
 <style id="<?php echo abmcb()->slug, '-inline-css'; ?>"<?php echo $type_attr; ?> media="screen">
     html { margin-top: <?php echo $offset_32; ?>px !important; }
@@ -89,6 +92,7 @@ final class PublicController
     }
 </style>
         <?php
+        }
     }
 
 

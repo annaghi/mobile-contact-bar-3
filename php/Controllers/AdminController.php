@@ -484,7 +484,7 @@ final class AdminController
             <dt><strong><?php _e( '1. Make sure you are using the latest version of Mobile Contact Bar.', 'mobile-contact-bar' ); ?></strong></dt>
             <dd><?php _e( 'If you are not using the latest version and are experiencing problems, chances are good that your problem has already been addressed in the latest version.', 'mobile-contact-bar' ); ?></dd>
             <dt><strong><?php _e( '2. Deactivate and activate again the Mobile Contact Bar plugin.', 'mobile-contact-bar' ); ?></strong></dt>
-            <dd><?php _e( 'During the activation the plugin tries to heal the settings, the buttons, and the CSS file.', 'mobile-contact-bar' ); ?></dd>
+            <dd><?php _e( 'During the reactivation the plugin tries to heal the settings, the buttons, and the CSS file.', 'mobile-contact-bar' ); ?></dd>
             <dt><strong><?php _e( '3. Temporarily switch to an official WordPress Theme.', 'mobile-contact-bar' ); ?></strong></dt>
             <dd><?php _e( 'Try switching to an official WordPress Theme (i.e. Twenty Twenty) and then see if you are still experiencing problems with the plugin. If this fixes the problem then there is a compatibility issue with your theme.', 'mobile-contact-bar' ); ?></dd>
             <dt><strong><?php _e( '4. Temporarily deactivate all of your plugins.', 'mobile-contact-bar' ); ?></strong></dt>
@@ -507,7 +507,7 @@ final class AdminController
 
         ?>
         <form id="mcb-system-info-form" method="post">
-            <textarea class="large-text code mcb-tab-textarea" name="<?php echo abmcb()->mcb; ?>[system-info]" rows="20" onclick="this.select()" readonly><?php echo esc_attr( $system_info ); ?></textarea>
+            <textarea class="large-text code mcb-tab-textarea" name="<?php echo abmcb()->mcb; ?>[system-info]" rows="15" onclick="this.select()" readonly><?php echo esc_attr( $system_info ); ?></textarea>
             <input type="hidden" name="<?php echo abmcb()->mcb; ?>[_action]" value="download-system-info">
             <?php wp_nonce_field( 'download-system-info' ); ?>
             <button type="submit" id="mcb-download-system-info" class="button button-secondary"><?php _e( 'Download System Info', 'mobile-contact-bar' ); ?></button>
@@ -524,7 +524,7 @@ final class AdminController
     public function callback_render_help_contact_support()
     {
         ?>
-            <p><strong><?php printf( __( 'Please send an email to %s and include the following details:', 'mobile-contact-bar' ), '<a href="mailto:support@mobilecontactbar.com?subject=Support%20request">support@mobilecontactbar.com</a>' ); ?></strong></p>
+            <p><strong><?php printf( __( 'Please send an email to %s and include the following details:', 'mobile-contact-bar' ), '<a href="mailto:support@mobilecontactbar.com?subject=MCB%20support%20request">support@mobilecontactbar.com</a>' ); ?></strong></p>
             <ul>
                 <li><?php _e( 'A detailed description of the problem you are having and the steps to reproduce it.', 'mobile-contact-bar' ); ?></li>
                 <li><?php _e( 'Download and attach the Mobile Contact Bar <strong>System Info</strong> report to the email.', 'mobile-contact-bar' ); ?></li>

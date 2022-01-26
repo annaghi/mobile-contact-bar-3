@@ -60,9 +60,9 @@ final class Input
                     'default'  => 'stretch',
                     'title'    => __( 'Span on the Longest Side', 'mobile-contact-bar' ),
                     'options'  => [
-                        'stretch' => __( 'stretched full width', 'mobile-contact-bar' ),
-                        'fix_min' => __( 'fixed size min width', 'mobile-contact-bar' ),
-                        'fix_max' => __( 'fixed size full width', 'mobile-contact-bar' ),
+                        'stretch' => __( 'stretched', 'mobile-contact-bar' ),
+                        'fix_min' => __( 'fixed size min', 'mobile-contact-bar' ),
+                        'fix_max' => __( 'fixed size max', 'mobile-contact-bar' ),
                     ],
                 ],
                 'alignment' => [
@@ -75,6 +75,16 @@ final class Input
                     'title'    => __( 'Align on the Longest Side', 'mobile-contact-bar' ),
                     'desc'     => __( 'Align bar across the longest side.', 'mobile-contact-bar' ),
                     'postfix'  => '%',
+                ],
+                'icon_size' => [
+                    'type'     => 'radio',
+                    'parent'   => 'span',
+                    'default'  => 'equal',
+                    'title'    => __( 'Icon Size', 'mobile-contact-bar' ),
+                    'options'  => [
+                        'equal'       => __( 'equal', 'mobile-contact-bar' ),
+                        'fit_content' => __( 'fit content', 'mobile-contact-bar' ),
+                    ],
                 ],
                 'shortest' => [
                     'type'     => 'number',
@@ -178,6 +188,15 @@ final class Input
                         'above' => __( 'above the icon', 'mobile-contact-bar' ),
                         'below' => __( 'below the icon', 'mobile-contact-bar' ),
                     ],
+                ],
+                'padding'=> [
+                    'type'     => 'slider',
+                    'default'  => 0.8,
+                    'min'      => 0,
+                    'max'      => 5,
+                    'step'     => 0.05,
+                    'postfix'  => 'em',
+                    'title'    => __( 'Padding along the longest axis', 'mobile-contact-bar' ),
                 ],
                 'gap' => [
                     'type'     => 'slider',
