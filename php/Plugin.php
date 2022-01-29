@@ -193,36 +193,8 @@ final class Plugin extends Container
     public function plugins_loaded()
     {
         add_action( 'init', [$this, 'init'] );
-
-        if ( version_compare( get_bloginfo( 'version' ), '5.1', '<' ))
-        {
-            add_action( 'wpmu_new_blog', [$this, 'wpmu_new_blog'] );
-        }
-        else
-        {
-            add_action( 'wp_initialize_site', [$this, 'wp_initialize_site'] );
-        }
-
+        add_action( 'wp_initialize_site', [$this, 'wp_initialize_site'] );
         abmcb( Hooks::class )->add();
-    }
-
-
-    /**
-     * Runs the plugin installation for the newly created site.
-     *
-     * @param  int  $blog_id Blog ID of the newly created blog
-     * @return void
-     */
-    public function wpmu_new_blog( $blog_id )
-    {
-        if ( ! is_plugin_active_for_network( plugin_basename( $this->file )))
-        {
-            return;
-        }
-
-        switch_to_blog( $blog_id );
-        $this->install();
-        restore_current_blog();
     }
 
 
@@ -323,13 +295,18 @@ final class Plugin extends Container
             }
         }
 
+        if ( ! class_exists( 'WooCommerce' ))
+        {
+            unset( $button_types['woocommerce'] );
+        }
+
         uasort( $button_types, function ( $a, $b ) { return strcmp( $a->field()['title'], $b->field()['title'] ); });
         $this->button_types = $button_types;
     }
 
 
     /**
-     * Unschedule cron events.
+     * Unschedules cron events.
      * 
      * @return void
      */

@@ -346,13 +346,15 @@
 
         onReady: function () {
             // Update iframe
-            $('#mcb-section-preview iframe').on('load', function () {
-                var iframe = $(this).contents();
-                iframe.attr('src', iframe.attr('src'));
-                iframe.find('html').css({ 'pointer-events': 'none' });
-                iframe.find('body').css({ 'pointer-events': 'none' });
-                iframe.find('#mobile-contact-bar').css({ 'pointer-events': 'all' });
-            });
+            // $('#mcb-section-preview iframe').on('load', function () {
+            //     // var iframe = $(this).contents();
+            //     // var css = iframe.find('#mobile-contact-bar-css');
+            //     // css.attr('href', css.attr('href') + '#' + new Date().getTime());
+            //     // iframe.attr('src', iframe.attr('src'));
+            //     // iframe.find('html').css({ 'pointer-events': 'none' });
+            //     // iframe.find('body').css({ 'pointer-events': 'none' });
+            //     // iframe.find('#mobile-contact-bar').css({ 'pointer-events': 'all' });
+            // });
 
             // Add loading indicator to the form submit button
             $('#mcb-form').submit(function () {

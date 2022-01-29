@@ -86,6 +86,12 @@ final class Input
                         'fit_content' => __( 'fit content', 'mobile-contact-bar' ),
                     ],
                 ],
+                'background_color' => [
+                    'type'     => 'color-picker',
+                    'parent'   => 'span',
+                    'default'  => '#174b38',
+                    'title'    => __( 'Background Color', 'mobile-contact-bar' ),
+                ],
                 'shortest' => [
                     'type'     => 'number',
                     'default'  => 50,
@@ -180,13 +186,13 @@ final class Input
             ],
 
             'buttons' => [
-                'label_position' => [
+                'shape' => [
                     'type'     => 'radio',
-                    'default'  => 'below',
-                    'title'    => __( 'Label Position', 'mobile-contact-bar' ),
+                    'default'  => 'rectangle',
+                    'title'    => __( 'Shape', 'mobile-contact-bar' ),
                     'options'  => [
-                        'above' => __( 'above the icon', 'mobile-contact-bar' ),
-                        'below' => __( 'below the icon', 'mobile-contact-bar' ),
+                        'rectangle' => __( 'rectangle', 'mobile-contact-bar' ),
+                        'circle'    => __( 'circle', 'mobile-contact-bar' ),
                     ],
                 ],
                 'padding'=> [
@@ -196,7 +202,26 @@ final class Input
                     'max'      => 5,
                     'step'     => 0.05,
                     'postfix'  => 'em',
-                    'title'    => __( 'Padding along the longest axis', 'mobile-contact-bar' ),
+                    'title'    => __( 'Padding inside a button', 'mobile-contact-bar' ),
+                    'desc'     => __( 'Button padding along the longest axis', 'mobile-contact-bar' ),
+                ],
+                'margin'=> [
+                    'type'     => 'slider',
+                    'default'  => 0,
+                    'min'      => 0,
+                    'max'      => 5,
+                    'step'     => 0.05,
+                    'postfix'  => 'em',
+                    'title'    => __( 'Margin between buttons', 'mobile-contact-bar' ),
+                ],
+                'label_position' => [
+                    'type'     => 'radio',
+                    'default'  => 'below',
+                    'title'    => __( 'Label Position', 'mobile-contact-bar' ),
+                    'options'  => [
+                        'above' => __( 'above the icon', 'mobile-contact-bar' ),
+                        'below' => __( 'below the icon', 'mobile-contact-bar' ),
+                    ],
                 ],
                 'gap' => [
                     'type'     => 'slider',
@@ -205,7 +230,8 @@ final class Input
                     'max'      => 3,
                     'step'     => 0.2,
                     'postfix'  => 'em',
-                    'title'    => __( 'Gap between Icon and Label', 'mobile-contact-bar' ),
+                    'title'    => __( 'Gap', 'mobile-contact-bar' ),
+                    'desc'     => __( 'Gap betweeen icon and label', 'mobile-contact-bar' ),
                 ],
                 'icon_size' => [
                     'type'     => 'slider',

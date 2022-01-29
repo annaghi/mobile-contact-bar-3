@@ -393,10 +393,16 @@ final class AdminController
             (function() {
                 jQuery('#mcb-section-preview iframe').on('load', function () {
                     var iframe = jQuery(this).contents();
+                    iframe.attr('src', iframe.attr('src'));
+
+                    var css = iframe.find('#<?php echo abmcb()->id; ?>-css');
+                    css.attr('href', css.attr('href') + '#' + new Date().getTime());
+                    
+                    iframe.attr('src', iframe.attr('src'));
                     iframe.find('html').css({ 'pointer-events': 'none' });
                     iframe.find('body').css({ 'pointer-events': 'none' });
                     iframe.find('#mobile-contact-bar').css({ 'pointer-events': 'all' });
-                    iframe.attr('src', iframe.attr('src'));
+                    
                 });
             })(jQuery);
             </script>

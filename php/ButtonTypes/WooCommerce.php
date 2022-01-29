@@ -52,8 +52,6 @@ final class WooCommerce extends Button
 
     public function woocommerce_add_to_cart_fragments( $fragments )
     {
-        global $woocommerce;
-
         $fragments['.mobile-contact-bar-badge'] = $this->output_badge();
 
         return $fragments;

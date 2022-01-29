@@ -105,7 +105,7 @@ final class PublicController
     {
         $wp_upload_dir = wp_get_upload_dir();
         wp_enqueue_style(
-            abmcb()->slug . '-base',
+            abmcb()->slug,
             $wp_upload_dir['baseurl'] . '/' . abmcb()->slug . '/' . abmcb()->css,
             [],
             abmcb()->version,
@@ -229,7 +229,7 @@ final class PublicController
                 $icon = sprintf(
                     '<span class="mobile-contact-bar-icon">%s%s</span>',
                     file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/ti/icons/'. $button['icon'] . '.svg' ),
-                    $badge
+                    ( 'rectangle' === $settings['buttons']['shape'] ) ? $badge : ''
                 );
             }
             elseif ( 'fa' === $button['brand'] )
@@ -237,7 +237,7 @@ final class PublicController
                 $icon = sprintf(
                     '<span class="mobile-contact-bar-icon mobile-contact-bar-fa">%s%s</span>',
                     file_get_contents( plugin_dir_path( abmcb()->file ) . 'assets/svg/fa/svgs/' . $button['group'] . '/' . $button['icon'] . '.svg' ),
-                    $badge
+                    ( 'rectangle' === $settings['buttons']['shape'] ) ? $badge : ''
                 );
             }
             else
@@ -260,7 +260,9 @@ final class PublicController
                 $out .= $label;
                 $out .= $icon;
             }
+
             $out .= sprintf( '<span class="screen-reader-text">%s</span>', esc_html( $button['text'] ));
+            $out .= ( 'circle' === $settings['buttons']['shape'] ) ? $badge : '';
             $out .= '</a>';
 
             ob_start();

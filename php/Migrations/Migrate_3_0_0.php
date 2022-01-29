@@ -478,7 +478,7 @@ final class Migrate_3_0_0
 
         if ( ! class_exists( 'WooCommerce' ))
         {
-            $meta_boxes = array_diff( $meta_boxes, 'mcb-meta-box-badges' );
+            $meta_boxes = array_diff( $meta_boxes, ['mcb-meta-box-badges'] );
         }
         
         $user_id = get_current_user_id();
