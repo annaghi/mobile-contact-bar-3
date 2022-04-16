@@ -180,6 +180,20 @@
         return this;
     };
 
+    $.fn.closeAllButtons = function (currentButtonKey) {
+        document.activeElement.blur();
+
+        var buttons = this.find(`.mcb-button[data-button-key!="${currentButtonKey}"]`);
+
+        buttons
+            .removeClass('mcb-opened')
+            .find('.mcb-action-toggle-details, .mcb-action-toggle-query, .mcb-action-toggle-customization')
+            .attr('aria-expanded', 'false')
+            .end()
+            .find('.mcb-details, .mcb-query, .mcb-customization')
+            .addClass('mcb-hidden');
+    };
+
     $.fn.initSortableButtons = function () {
         $(this).sortable({
             connectWith: '#mcb-builder',
@@ -187,14 +201,7 @@
             items: '.mcb-button',
 
             start: function (event, ui) {
-                document.activeElement.blur();
-
-                $(this)
-                    .find('.mcb-button')
-                    .removeClass('mcb-opened')
-                    .end()
-                    .find('.mcb-action-toggle-details')
-                    .attr('aria-expanded', 'false');
+                $(this).closeAllButtons();
 
                 ui.placeholder.height(ui.item.children('.mcb-summary').outerHeight());
                 ui.helper.height(ui.item.children('.mcb-summary').outerHeight());
@@ -322,13 +329,7 @@
             // Close button details on Button Builder meta box closed
             postboxes.pbhide = function (id) {
                 if ('mcb-meta-box-builder' === id) {
-                    document.activeElement.blur();
-
-                    option.builder
-                        .find('.mcb-button')
-                        .removeClass('mcb-opened')
-                        .find('.mcb-action-toggle-details')
-                        .attr('aria-expanded', 'false');
+                    option.builder.closeAllButtons();
                 }
             };
 
@@ -427,6 +428,7 @@
 
                     beforeSend: function () {
                         $('#mcb-add-button').addClass('mcb-loading');
+                        option.builder.closeAllButtons();
                     },
 
                     complete: function () {
@@ -438,53 +440,32 @@
                             return false;
                         }
                         var data = JSON.parse(response);
-                        if (!data.hasOwnProperty('summary') || !data.hasOwnProperty('details')) {
+                        if (
+                            !data.hasOwnProperty('summary') ||
+                            !data.hasOwnProperty('details') ||
+                            !data.hasOwnProperty('query') ||
+                            !data.hasOwnProperty('customization')
+                        ) {
                             return false;
                         }
 
                         var button = document.createElement('div');
                         $(button).addClass(['mcb-button', 'mcb-opened']).attr('data-button-key', buttonKey);
-                        $(button).append($(data.summary)).append($(data.details));
+                        $(button).append($(data.summary)).append($(data.details)).append($(data.query)).append($(data.customization));
 
                         $(button).find('.color-picker').wpColorPicker();
-                        $(button).find('.mcb-action-toggle-details').attr('aria-expanded', 'true');
+                        $(button)
+                            .find('.mcb-action-toggle-details')
+                            .attr('aria-expanded', 'true')
+                            .end()
+                            .find('.mcb-details')
+                            .removeClass('mcb-hidden');
 
                         option.builder.append(button);
                     })
                     .always(function () {
                         $('#mcb-add-button').removeClass('mcb-loading');
                     });
-            });
-
-            // Delete button
-            // Update badge-length
-            option.builder.on('click', '.mcb-action-delete-button', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                $(this).closest('.mcb-button').remove();
-
-                var checked_buttons_length = option.builder.find('.mcb-checked').length;
-                0 === checked_buttons_length
-                    ? $('#mcb-badge-length').removeClass().addClass('mcb-badge-disabled').text(0)
-                    : $('#mcb-badge-length').removeClass().addClass('mcb-badge-enabled').text(checked_buttons_length);
-            });
-
-            // Toggle details
-            option.builder.on('click', '.mcb-action-toggle-details', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                $(this).toggleAriaExpanded().closest('.mcb-button').toggleClass('mcb-opened');
-            });
-
-            // Close details
-            option.builder.on('click', '.mcb-action-close-details', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                $(this).closest('.mcb-button').removeClass('mcb-opened').find('.mcb-action-toggle-details').attr('aria-expanded', 'false');
-                document.getElementById('mcb-meta-box-builder').scrollIntoView();
             });
 
             // Order higher
@@ -511,6 +492,89 @@
 
                 next.after(button);
                 focused.focus();
+            });
+
+            // Delete button
+            // Update badge-length
+            option.builder.on('click', '.mcb-action-delete-button', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                $(this).closest('.mcb-button').remove();
+
+                var checked_buttons_length = option.builder.find('.mcb-checked').length;
+                0 === checked_buttons_length
+                    ? $('#mcb-badge-length').removeClass().addClass('mcb-badge-disabled').text(0)
+                    : $('#mcb-badge-length').removeClass().addClass('mcb-badge-enabled').text(checked_buttons_length);
+            });
+
+            // Toggle details
+            option.builder.on('click', '.mcb-action-toggle-details', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                var button = $(this).closest('.mcb-button');
+
+                option.builder.closeAllButtons(button.attr('data-button-key'));
+
+                $(this).toggleAriaExpanded();
+
+                button
+                    .toggleClass('mcb-opened', $(this).attr('aria-expanded') === 'true')
+                    .find('.mcb-details')
+                    .toggleClass('mcb-hidden')
+                    .end()
+                    .find('.mcb-action-toggle-query, .mcb-action-toggle-customization')
+                    .attr('aria-expanded', false)
+                    .end()
+                    .find('.mcb-query, .mcb-customization')
+                    .addClass('mcb-hidden');
+            });
+
+            // Toggle query
+            option.builder.on('click', '.mcb-action-toggle-query', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                var button = $(this).closest('.mcb-button');
+
+                option.builder.closeAllButtons(button.attr('data-button-key'));
+
+                $(this).toggleAriaExpanded();
+
+                button
+                    .toggleClass('mcb-opened', $(this).attr('aria-expanded') === 'true')
+                    .find('.mcb-query')
+                    .toggleClass('mcb-hidden')
+                    .end()
+                    .find('.mcb-action-toggle-details, .mcb-action-toggle-customization')
+                    .attr('aria-expanded', false)
+                    .end()
+                    .find('.mcb-details, .mcb-customization')
+                    .addClass('mcb-hidden');
+            });
+
+            // Toggle customization
+            option.builder.on('click', '.mcb-action-toggle-customization', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                var button = $(this).closest('.mcb-button');
+
+                option.builder.closeAllButtons(button.attr('data-button-key'));
+
+                $(this).toggleAriaExpanded();
+
+                button
+                    .toggleClass('mcb-opened', $(this).attr('aria-expanded') === 'true')
+                    .find('.mcb-customization')
+                    .toggleClass('mcb-hidden')
+                    .end()
+                    .find('.mcb-action-toggle-details, .mcb-action-toggle-query')
+                    .attr('aria-expanded', false)
+                    .end()
+                    .find('.mcb-details, .mcb-query')
+                    .addClass('mcb-hidden');
             });
 
             // Change button type
@@ -555,9 +619,11 @@
 
                         button.find('.mcb-details-text input').val(data.button_field.text);
                         button.find('.mcb-details-uri').replaceWith($(data.uri));
-                        button.find('.mcb-builtin-query, .mcb-link-query, .mcb-builtin-parameter, .mcb-link-parameter').detach();
-                        button.find('.mcb-details-uri').after($(data.query));
                         button.find('.mcb-details-type .mcb-description').text(data.button_field.desc_type);
+
+                        button.find('.mcb-query').detach();
+                        button.find('.mcb-action-toggle-query').toggleClass('mcb-disabled', data.query === '');
+                        button.find('.mcb-details').after($(data.query));
                     })
                     .always(function () {
                         input.removeClass('mcb-loading');

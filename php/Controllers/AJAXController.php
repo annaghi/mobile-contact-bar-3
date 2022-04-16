@@ -52,6 +52,20 @@ final class AJAXController
                     'button'     => $button_field,
                 ]
             );
+
+            $data['query'] = abmcb( Buttons\View::class )->output_query_string(
+                [
+                    'button_key' => $button_key,
+                    'button'     => $button_field,
+                ]
+            );
+
+            $data['customization'] = abmcb( Buttons\View::class )->output_customization(
+                [
+                    'button_key' => $button_key,
+                    'button'     => $button_field,
+                ]
+            );
     
             $response = json_encode( $data );
             if ( $response )
@@ -129,11 +143,10 @@ final class AJAXController
                 ]
             );
 
-            $data['query'] = abmcb( Buttons\View::class )->output_query(
+            $data['query'] = abmcb( Buttons\View::class )->output_query_string(
                 [
                     'button_key'   => $button_key,
                     'button'       => $button_field,
-                    'button_field' => $button_field,
                 ]
             );
     

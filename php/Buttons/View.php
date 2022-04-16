@@ -86,6 +86,8 @@ final class View
                 <?php
                     echo $this->output_summary( ['button_key' => $button_key, 'button' => $button] );
                     echo $this->output_details( ['button_key' => $button_key, 'button' => $button] );
+                    echo $this->output_query_string( ['button_key' => $button_key, 'button' => $button] );
+                    echo $this->output_customization( ['button_key' => $button_key, 'button' => $button] );
                 ?>
                 </div>
             <?php endforeach; ?>
@@ -189,14 +191,6 @@ final class View
         $out .= '<div class="mcb-right-actions">';
 
         $out .= sprintf(
-            '<button type="button" class="mcb-action-icon mcb-action-delete-button" title="%1$s">
-                <span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
-                <span class="screen-reader-text">%1$s</span>
-            </button>',
-            esc_attr__( 'Delete this button', 'mobile-contact-bar' )
-        );
-
-        $out .= sprintf(
             '<button type="button" class="mcb-action-icon mcb-action-order-higher" title="%1$s">
                 <span class="dashicons dashicons-arrow-up-alt2" aria-hidden="true"></span>
                 <span class="screen-reader-text">%1$s</span>
@@ -213,11 +207,36 @@ final class View
         );
 
         $out .= sprintf(
+            '<button type="button" class="mcb-action-icon mcb-action-delete-button" title="%1$s">
+                <span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
+                <span class="screen-reader-text">%1$s</span>
+            </button>',
+            esc_attr__( 'Delete this button', 'mobile-contact-bar' )
+        );
+
+        $out .= sprintf(
             '<button type="button" class="mcb-action-icon mcb-action-toggle-details" title="%1$s" aria-expanded="false">
                 <span class="dashicons dashicons-admin-tools" aria-hidden="true"></span>
                 <span class="screen-reader-text">%1$s</span>
             </button>',
             esc_attr__( 'Edit button', 'mobile-contact-bar' )
+        );
+
+        $out .= sprintf(
+            '<button type="button" class="mcb-action-icon mcb-action-toggle-query %2$s" title="%1$s" aria-expanded="false">
+                <span class="dashicons dashicons-list-view" aria-hidden="true"></span>
+                <span class="screen-reader-text">%1$s</span>
+            </button>',
+            esc_attr__( 'Query String', 'mobile-contact-bar' ),
+            ( 'link' === $button['type'] ) || ( isset( $button['query'] )) ? '' : 'mcb-disabled'
+        );
+
+        $out .= sprintf(
+            '<button type="button" class="mcb-action-icon mcb-action-toggle-customization" title="%1$s" aria-expanded="false">
+                <span class="dashicons dashicons-admin-customizer" aria-hidden="true"></span>
+                <span class="screen-reader-text">%1$s</span>
+            </button>',
+            esc_attr__( 'Custom Styles', 'mobile-contact-bar' )
         );
 
         $out .= '</div>';
@@ -245,7 +264,7 @@ final class View
 
         $button_field = abmcb()->button_types[$button['type']]->field();
 
-        $out .= '<div class="mcb-details">';
+        $out .= '<div class="mcb-details mcb-hidden">';
 
         // 'brand' hidden
         $out .= sprintf( '<input type="hidden" name="' . $prefix . '[brand]" value="%s">', esc_attr( $button['brand'] ));
@@ -355,19 +374,6 @@ final class View
         );
 
         $out .= $this->output_details_uri( ['button_key' => $button_key, 'button' => $button, 'button_field' => $button_field] );
-        $out .= $this->output_query( ['button_key' => $button_key, 'button' => $button, 'button_field' => $button_field] );
-        $out .= $this->output_customization( ['button_key' => $button_key, 'button' => $button, 'button_field' => $button_field] );
-
-        // Close details button
-        $out .= sprintf(
-            '<div class="mcb-row mcb-close-details">
-                <div class="mcb-label"></div>
-                <div class="mcb-input">
-                    <button type="button" class="button mcb-action-close-details" title="%1$s">%1$s</button>
-                </div>
-            </div>',
-            esc_attr__( 'Close details', 'mobile-contact-bar' )
-        );
 
         $out .= '</div>';
 
@@ -436,14 +442,19 @@ final class View
      * 	       array  $button
      * @return string              HTML
      */
-    public function output_query( $args )
+    public function output_query_string( $args )
     {
         extract( $args );
+
+        $prefix = abmcb()->id . '[buttons][' . esc_attr( $button_key ) . ']';
+
+        $button_field = abmcb()->button_types[$button['type']]->field();
 
         $out = '';
 
         if ( 'link' === $button['type'] )
         {
+            $out .= '<div class="mcb-query mcb-hidden">';
             $out .= sprintf(
                 '<div class="mcb-row mcb-link-query">
                     <div class="mcb-label">
@@ -468,19 +479,11 @@ final class View
                     ]
                 );
             }
+            $out .= '</div>';
         }
         elseif ( isset( $button['query'] ))
         {
-            $out .= sprintf(
-                '<div class="mcb-row mcb-builtin-query">
-                    <div class="mcb-label">
-                        <label>%s</label>
-                    </div>
-                    <div class="mcb-input"></div>
-                </div>',
-                esc_html__( 'Query String', 'mobile-contact-bar' )
-            );
-
+            $out .= '<div class="mcb-query mcb-hidden">';
             foreach ( $button['query'] as $parameter_key => $parameter )
             {
                 $parameter_index = array_search( $parameter['key'], array_column( $button_field['query'], 'key' ));
@@ -494,6 +497,7 @@ final class View
                     ]
                 );
             }
+            $out .= '</div>';
         }
 
         return $out;
@@ -684,6 +688,8 @@ final class View
         $prefix = abmcb()->id . '[buttons][' . esc_attr( $button_key ) . ']';
         $custom_fields = ButtonTypes\Button::custom_fields();
 
+        $out .= '<div class="mcb-customization mcb-hidden">';
+
         // 'id' input
         $out .= sprintf(
             '<div class="mcb-row mcb-details-id">
@@ -730,6 +736,8 @@ final class View
             $out .= '</div>';
             $out .= '</div>';
         }
+
+        $out .= '</div>';
 
         return $out;
     }
